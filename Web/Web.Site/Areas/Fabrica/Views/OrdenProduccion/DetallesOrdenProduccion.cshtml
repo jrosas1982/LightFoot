@@ -1,0 +1,162 @@
+﻿
+@{
+    ViewData["Title"] = "DetallesOrdenProduccion";
+    Layout = "_Layout";
+}
+
+@model OrdenProduccionDetalleModel
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Detalles Orden de Produccion @Model.OrdenProduccion.Id</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Dashboard_1", "Dashboards")">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Fabrica</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "OrdenProduccion", new { area = "fabrica" })">Ordenes de Produccion</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>Detalles</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <h5>Progreso</h5>
+    <div class="progress">
+        <div style="width: 60%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" role="progressbar" class="progress-bar  progress-bar-striped  progress-bar-animated bg-primary">
+            <span class="sr-only">60% Complete (success)</span>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-lg-5">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Etapa @Model.OrdenProduccion.EtapaOrdenProduccion.Descripcion (2 de 6)
+                </div>
+
+                <div class="panel-body">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-action">
+                            <h4 class="mb-0">Articulo:</h4>
+                            <h2 class="text-right mt-0">@Model.OrdenProduccion.Articulo.Nombre</h2>
+                        </li>
+                        <li class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <h4>Color:</h4>
+                                <p>@Model.OrdenProduccion.Articulo.Color</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <h4>Talle:</h4>
+                                <p>@Model.OrdenProduccion.Articulo.TalleArticulo</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <h4>Cantidad Total a Fabricar:</h4>
+                                <p>@Model.OrdenProduccion.CantidadTotal</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <h4>Estado de la etapa:</h4>
+                                <p>@Model.OrdenProduccion.EstadoEtapaOrdenProduccion.GetDisplayName()</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <h4>Sucursal Destino:</h4>
+                                <p>@Model.OrdenProduccion.SolicitudDetalle.Solicitud.Sucursal.Nombre</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="panel-footer">
+                    <button type="button" class="btn btn-danger btn-lg w-100 my-1">Marcar como Retrabajo</button>
+                    <button type="button" class="btn btn-info btn-lg w-100 my-1">Pausar Etapa</button>
+                    <button type="button" class="btn btn-primary btn-lg w-100 my-1">Avanzar Etapa</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Historial de eventos</h5>
+                </div>
+                <div class="ibox-content">
+                    <p>
+                        This is basic example of Step
+                    </p>
+                    <div id="wizard">
+                        @foreach (var etapa in Model.EtapasOrdenProduccion)
+                        {
+                            <h1>@etapa.Descripcion</h1>
+                            <div class="step-content w-100">
+                                <div class="">
+                                    <table class="table table-hover">
+                                        <thead class="">
+                                            <tr>
+                                                <th colspan="2" class="text-center"><h2>Hello in Step 1</h2></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var estado in Model.EstadosEtapaOrdenProduccion)
+                                            {
+                                                <tr>
+                                                    <td class="text-left">@estado</td>
+                                                    <td class="text-center">12:05:16</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Styles {
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/iCheck/custom.css" />
+        <link rel="stylesheet" href="~/lib/steps/jquery.steps.css" />
+    </environment>
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/iCheck/icheck.min.js"></script>
+        <script src="~/lib/steps/jquery.steps.min.js"></script>
+        <script src="~/lib/validate/jquery.validate.min.js"></script>
+    </environment>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#wizard").steps({
+                startIndex: @(Model.OrdenProduccion.EtapaOrdenProduccion.Orden - 1),
+                onStepChanging: function (event, currentIndex, newIndex) { if (newIndex > @(Model.OrdenProduccion.EtapaOrdenProduccion.Orden - 1)) return false; return true; }
+            });
+
+
+        });
+    </script>
+}

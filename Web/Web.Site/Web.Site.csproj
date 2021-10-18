@@ -1,0 +1,192 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Views\Sucursal\**" />
+    <Content Remove="Views\Sucursal\**" />
+    <EmbeddedResource Remove="Views\Sucursal\**" />
+    <None Remove="Views\Sucursal\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\GestionController.cs" />
+    <Compile Remove="Controllers\Gestion\SucursalController.cs" />
+    <Compile Remove="Controllers\Gestion\UsuarioController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Gestion\Solicitud\SolicitudCrearEditar.cshtml" />
+    <Content Remove="Views\Pages\Login.cshtml" />
+    <Content Remove="_ViewImports.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Areas\Abm\Views\Sucursal\Index.cshtml" />
+    <None Include="Views\AppViews\ActivityStream.cshtml" />
+    <None Include="Views\AppViews\Article.cshtml" />
+    <None Include="Views\AppViews\Blog.cshtml" />
+    <None Include="Views\AppViews\Calendar.cshtml" />
+    <None Include="Views\AppViews\Clients.cshtml" />
+    <None Include="Views\AppViews\Contacts.cshtml" />
+    <None Include="Views\AppViews\Contacts2.cshtml" />
+    <None Include="Views\AppViews\FAQ.cshtml" />
+    <None Include="Views\AppViews\FileManager.cshtml" />
+    <None Include="Views\AppViews\IssueTracker.cshtml" />
+    <None Include="Views\AppViews\OutlookView.cshtml" />
+    <None Include="Views\AppViews\PinBoard.cshtml" />
+    <None Include="Views\AppViews\Profile.cshtml" />
+    <None Include="Views\AppViews\Profile2.cshtml" />
+    <None Include="Views\AppViews\ProjectDetail.cshtml" />
+    <None Include="Views\AppViews\Projects.cshtml" />
+    <None Include="Views\AppViews\SocialFeed.cshtml" />
+    <None Include="Views\AppViews\TeamsBoard.cshtml" />
+    <None Include="Views\AppViews\Timeline.cshtml" />
+    <None Include="Views\AppViews\VoteList.cshtml" />
+    <None Include="Views\CSSAnimations\Index.cshtml" />
+    <None Include="Views\Dashboards\Dashboard_1.cshtml" />
+    <None Include="Views\Dashboards\Dashboard_2.cshtml" />
+    <None Include="Views\Dashboards\Dashboard_3.cshtml" />
+    <None Include="Views\Dashboards\Dashboard_4.cshtml" />
+    <None Include="Views\Dashboards\Dashboard_4_1.cshtml" />
+    <None Include="Views\Dashboards\Dashboard_5.cshtml" />
+    <None Include="Views\Ecommerce\Cart.cshtml" />
+    <None Include="Views\Ecommerce\Orders.cshtml" />
+    <None Include="Views\Ecommerce\Payments.cshtml" />
+    <None Include="Views\Ecommerce\ProductDetail.cshtml" />
+    <None Include="Views\Ecommerce\ProductEdit.cshtml" />
+    <None Include="Views\Ecommerce\ProductsGrid.cshtml" />
+    <None Include="Views\Ecommerce\ProductsList.cshtml" />
+    <None Include="Views\Forms\Advanced.cshtml" />
+    <None Include="Views\Forms\Autocomplete.cshtml" />
+    <None Include="Views\Forms\BasicFroms.cshtml" />
+    <None Include="Views\Forms\FileUpload.cshtml" />
+    <None Include="Views\Forms\Markdown.cshtml" />
+    <None Include="Views\Forms\NuevoContacto.cshtml" />
+    <None Include="Views\Forms\NuevoProductoVoestalpine.cshtml" />
+    <None Include="Views\Forms\TextEditor.cshtml" />
+    <None Include="Views\Forms\Wizard.cshtml" />
+    <None Include="Views\Gallery\BasicGallery.cshtml" />
+    <None Include="Views\Gallery\BootstrapCarusela.cshtml" />
+    <None Include="Views\Gallery\SlickCarusela.cshtml" />
+    <None Include="Views\Gestion\Proveedor\Index.cshtml" />
+    <None Include="Views\Gestion\Proveedor\ProveedorCrearEditar.cshtml" />
+    <None Include="Views\Gestion\Solicitud\Index.cshtml" />
+    <None Include="Views\Graphs\C3charts.cshtml" />
+    <None Include="Views\Graphs\Chartist.cshtml" />
+    <None Include="Views\Graphs\Chartjs.cshtml" />
+    <None Include="Views\Graphs\Flot.cshtml" />
+    <None Include="Views\Graphs\Morris.cshtml" />
+    <None Include="Views\Graphs\Peity.cshtml" />
+    <None Include="Views\Graphs\Rickshaw.cshtml" />
+    <None Include="Views\Graphs\Sparkline.cshtml" />
+    <None Include="Views\GridOptions\Index.cshtml" />
+    <None Include="Views\Landing\Index.cshtml" />
+    <None Include="Views\Layouts\Index.cshtml" />
+    <None Include="Views\Layouts\OffCanvas.cshtml" />
+    <None Include="Views\Mailbox\AlertEmail.cshtml" />
+    <None Include="Views\Mailbox\BasicActionEmail.cshtml" />
+    <None Include="Views\Mailbox\BillingEmail.cshtml" />
+    <None Include="Views\Mailbox\ComposeEmail.cshtml" />
+    <None Include="Views\Mailbox\EmailTemplates.cshtml" />
+    <None Include="Views\Mailbox\EmailView.cshtml" />
+    <None Include="Views\Mailbox\Inbox.cshtml" />
+    <None Include="Views\Metrics\Index.cshtml" />
+    <None Include="Views\Miscellaneous\AgileBoard.cshtml" />
+    <None Include="Views\Miscellaneous\Chat_view.cshtml" />
+    <None Include="Views\Miscellaneous\Clipboard.cshtml" />
+    <None Include="Views\Miscellaneous\CodeEditor.cshtml" />
+    <None Include="Views\Miscellaneous\Datamaps.cshtml" />
+    <None Include="Views\Miscellaneous\Diff.cshtml" />
+    <None Include="Views\Miscellaneous\Forum_post_view.cshtml" />
+    <None Include="Views\Miscellaneous\Forum_view.cshtml" />
+    <None Include="Views\Miscellaneous\GoogleMaps.cshtml" />
+    <None Include="Views\Miscellaneous\I18support.cshtml" />
+    <None Include="Views\Miscellaneous\IdleTimer.cshtml" />
+    <None Include="Views\Miscellaneous\LiveFavicon.cshtml" />
+    <None Include="Views\Miscellaneous\LoadingButtons.cshtml" />
+    <None Include="Views\Miscellaneous\Masonry.cshtml" />
+    <None Include="Views\Miscellaneous\ModalWindow.cshtml" />
+    <None Include="Views\Miscellaneous\NestableList.cshtml" />
+    <None Include="Views\Miscellaneous\Notification.cshtml" />
+    <None Include="Views\Miscellaneous\PasswordMeter.cshtml" />
+    <None Include="Views\Miscellaneous\PdfViewer.cshtml" />
+    <None Include="Views\Miscellaneous\SocialButtons.cshtml" />
+    <None Include="Views\Miscellaneous\Spinners.cshtml" />
+    <None Include="Views\Miscellaneous\SpinnersUsage.cshtml" />
+    <None Include="Views\Miscellaneous\SweetAlert.cshtml" />
+    <None Include="Views\Miscellaneous\TextSpinners.cshtml" />
+    <None Include="Views\Miscellaneous\Timeline_second_version.cshtml" />
+    <None Include="Views\Miscellaneous\Tour.cshtml" />
+    <None Include="Views\Miscellaneous\Tree_view.cshtml" />
+    <None Include="Views\Miscellaneous\Truncate.cshtml" />
+    <None Include="Views\Miscellaneous\Validation.cshtml" />
+    <None Include="Views\Pages\EmptyPage.cshtml" />
+    <None Include="Views\Pages\ForgotPassword.cshtml" />
+    <None Include="Views\Pages\InternalServerError.cshtml" />
+    <None Include="Views\Pages\Invoice.cshtml" />
+    <None Include="Views\Pages\InvoicePrint.cshtml" />
+    <None Include="Views\Pages\LockScreen.cshtml" />
+    <None Include="Views\Pages\LoginVoestalpine.cshtml" />
+    <None Include="Views\Pages\Login_2.cshtml" />
+    <None Include="Views\Pages\NotFoundError.cshtml" />
+    <None Include="Views\Pages\Register.cshtml" />
+    <None Include="Views\Pages\SearchResults.cshtml" />
+    <None Include="Views\Shared\_Footer.cshtml" />
+    <None Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Views\Shared\_Layout_2.cshtml" />
+    <None Include="Views\Shared\_Layout_3.cshtml" />
+    <None Include="Views\Shared\_Layout_4.cshtml" />
+    <None Include="Views\Shared\_Navigation.cshtml" />
+    <None Include="Views\Shared\_NavigationOffCanvas.cshtml" />
+    <None Include="Views\Shared\_RightSidebar.cshtml" />
+    <None Include="Views\Shared\_SkinConfig.cshtml" />
+    <None Include="Views\Shared\_TopNavbar.cshtml" />
+    <None Include="Views\Shared\_TopNavbar2.cshtml" />
+    <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="Views\Tables\DataTables.cshtml" />
+    <None Include="Views\Tables\FooTables.cshtml" />
+    <None Include="Views\Tables\jqGrid.cshtml" />
+    <None Include="Views\Tables\StaticTables.cshtml" />
+    <None Include="Views\UIElements\BadgesLabelsProgress.cshtml" />
+    <None Include="Views\UIElements\Buttons.cshtml" />
+    <None Include="Views\UIElements\DraggablePanels.cshtml" />
+    <None Include="Views\UIElements\HelperClasses.cshtml" />
+    <None Include="Views\UIElements\Icons.cshtml" />
+    <None Include="Views\UIElements\NotificationsTooltips.cshtml" />
+    <None Include="Views\UIElements\ResizablePanels.cshtml" />
+    <None Include="Views\UIElements\TablesPanels.cshtml" />
+    <None Include="Views\UIElements\Tabs.cshtml" />
+    <None Include="Views\UIElements\Typography.cshtml" />
+    <None Include="Views\UIElements\Video.cshtml" />
+    <None Include="Views\Widgets\Index.cshtml" />
+    <None Include="Views\_ViewImports.cshtml" />
+    <None Include="Views\_ViewStart.cshtml" />
+    <None Include="_ViewImports.cshtml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="BeginCollectionItemCore" Version="1.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Core.Aplicacion\Core.Aplicacion.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Views\Gestion\Sucursal\" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,90 @@
+﻿@{
+    ViewData["Title"] = "Crear Insumo";
+    bool esEdicion = (Model.Id != 0);
+    Layout = "_Layout";
+}
+
+@using Web.Site.Areas
+@model InsumoModel
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>@(esEdicion ? "Modificar" : "Crear")</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Dashboard_1", "Dashboards")">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Gestion</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <a href="@Url.Action("Index", "Insumo", new { area = "abm" })">Insumos</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>@(esEdicion ? "Modificar" : "Crear")</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight ecommerce">
+
+    @using (Html.BeginForm(esEdicion ? "Editar" : "Crear", "Insumo", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Id)
+        <div class="ibox-content m-b-sm border-bottom">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Nombre)
+                        @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @id = "Nombre", @class = "form-control", @placeholder = "Nombre de Insumo" } })
+                        @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Descripcion)
+                        @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @id = "Descripcion", @class = "form-control", @placeholder = "Descripcion" } })
+                        @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Unidad)
+                        @Html.EditorFor(model => model.Unidad, new { htmlAttributes = new { @id = "Unidad", @class = "form-control", @placeholder = "Unidad" } })
+                        @Html.ValidationMessageFor(model => model.Unidad, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align:right">
+            <button type="Submit" class="btn btn-w-m btn-primary">@(esEdicion ? "Modificar" : "Crear") Insumo </button>
+        </div>
+    }
+</div>
+
+@section Styles {
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/switchery/switchery.css" />
+
+    </environment>
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/switchery/switchery.js"></script>
+
+    </environment>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var elem = document.querySelector('.js-switch_3');
+            var switchery = new Switchery(elem, { color: '#1AB394' });
+        });
+    </script>
+}
+

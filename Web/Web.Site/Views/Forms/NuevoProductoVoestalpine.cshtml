@@ -1,0 +1,158 @@
+﻿
+@{
+    ViewData["Title"] = "FormularioNuevoProducto";
+}
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row justify-content-center">
+        <div class="col-9">
+            <h1>Nuevo producto</h1>
+            <p>Nulla veniam justo diam est velit eos ullamcorper sed minim</p>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li>
+                                <a href="#" class="dropdown-item">Config option 1</a>
+                            </li>
+                            <li>
+                                <a href="#" class="dropdown-item">Config option 2</a>
+                            </li>
+                        </ul>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-12">
+                            <form role="form">
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <input type="text" placeholder="Nombre" class="form-control" required />
+                                    </div>
+                                </div> @*nombre*@
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <input type="text" placeholder="Referencia" class="form-control" />
+                                    </div>
+                                    <div class="form-group col-6">
+                                        @*<input type="text" placeholder="Categoría" class="form-control" />*@
+                                        <input list="categoria" name="categoria" class="form-control" placeholder="Categoría" />
+                                        <datalist id="categoria">
+                                            <option value="Opcion 1"></option>
+                                            <option value="Opcion 2"></option>
+                                            <option value="Opcion 3"></option>
+                                        </datalist>
+                                    </div>
+                                </div> @*referencia*@
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        @*<input type="text" placeholder="Tipo de item" class="form-control" />*@
+                                        <input list="items" name="items" class="form-control" placeholder="Tipo de items" />
+                                        <datalist id="items">
+                                            <option value="Simple"></option>
+                                            <option value="Combo"></option>
+                                            <option value="Item con variante"></option>
+                                        </datalist>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        @*<input type="number" placeholder="Unidad" class="form-control" />*@
+                                        <input list="unidad" name="unidad" class="form-control" placeholder="Unidad de medida" />
+                                        <datalist id="unidad">
+                                            <option value="Servicio"></option>
+                                            <option value="Unidad"></option>
+                                            <option value="Peso"></option>
+                                            <option value="Longitud"></option>
+                                            <option value="Área"></option>
+                                            <option value="Volumen"></option>
+                                        </datalist>
+                                    </div>
+                                </div> @*Tipo de items*@
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <textarea placeholder="Descripción" class="form-control"></textarea>
+                                    </div>
+                                </div> @*TextArea*@
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <input type="file" name="file" placeholder="Cargar imagen" class="form-control" id="loadImage">
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <input type="number" name="price" placeholder="Precio" class="form-control"/>
+                                    </div>
+                                </div> @*file imagen y precio*@
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-end">
+                    <div class="padding col-1">
+                        <button class="btn btn-sm btn-primary float-right m-t-n-xs" type="submit"><strong>Cancelar</strong></button>
+                    </div>                        
+                    <div class="padding col-1">
+                         <button class="btn btn-sm btn-primary float-right m-t-n-xs" type="submit"><strong>Guardar</strong></button>
+                    </div>
+                </div> @*Botones*@
+        </div>  
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/lib/iCheck/custom.css" />
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Productio">
+        <script src="~/lib/iCheck/icheck.min.js"></script>
+    </environment>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+        });
+    </script>
+}
+
+<style>
+    input{
+        border-radius: 3px; 
+    }
+
+    input:hover, textarea:hover {
+        transition: border 0.3s ease-in-out;
+        border: 0.5px solid #1eb9a9;
+    }
+
+    textarea {
+        width: 100%;
+        min-height: 100px;
+    }   
+
+    .padding{
+        padding: 20px 5px 0;
+        margin: 1px 3px 1px;
+    }
+
+    #loadImage{
+        border:none;
+    }
+</style>
+

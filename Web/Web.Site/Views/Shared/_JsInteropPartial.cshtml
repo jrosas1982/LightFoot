@@ -1,0 +1,5 @@
+﻿@if (TempData["JsFunction"] != null)
+{
+    <script src="~/custom/Personalizado.js"></script>
+    <script type="text/javascript">@Html.Raw(TempData["JsFunction"]);</script>
+}

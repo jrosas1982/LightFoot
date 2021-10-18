@@ -1,0 +1,127 @@
+﻿
+@{
+    ViewData["Title"] = "FormularioNuevoContacto";
+}
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="ibox">
+                <div class="ibox-title">
+                    @*<h5>New contact</h5>*@
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li>
+                                <a href="#" class="dropdown-item">Config option 1</a>
+                            </li>
+                            <li>
+                                <a href="#" class="dropdown-item">Config option 2</a>
+                            </li>
+                        </ul>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h3 class="m-t-none m-b">Nuevo contacto</h3>
+                            <form role="form">
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <input type="text" placeholder="Tipo de identificación" class="form-control" />
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <input type="text" placeholder="Identificación" class="form-control" />
+                                    </div>
+                                </div> @*tipo de identificación*@
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <input type="text" placeholder="Nombre" class="form-control" required />
+                                    </div>
+                                </div> @*nombre*@
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <input type="text" placeholder="Condición de IVA" class="form-control" />
+                                    </div>
+                                </div> @*IVA*@
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <input type="text" placeholder="Localidad/Provincia" class="form-control" />
+                                    </div>
+                                </div> @*Prov/país*@
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <input type="text" placeholder="Domicilio" class="form-control" />
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <input type="number" placeholder="Código postal" class="form-control" />
+                                    </div>
+                                </div> @*domicilio*@
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <input type="email" placeholder="Email" class="form-control" required />
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <input type="tel" placeholder="Celular" class="form-control" required />
+                                    </div>
+                                </div> @*email*@
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <input type="tel" placeholder="Teléfono 1" class="form-control" />
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <input type="tel" placeholder="Teléfono 2" class="form-control" />
+                                    </div>
+                                </div> @*telefonos*@
+                                <div class="padding">
+                                    <button class="btn btn-sm btn-primary float-right m-t-n-xs" type="submit"><strong>Alta cliente</strong></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/lib/iCheck/custom.css" />
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Productio">
+        <script src="~/lib/iCheck/icheck.min.js"></script>
+    </environment>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+        });
+    </script>
+}
+
+<style>
+    input:hover {
+        transition: border 0.3s ease-in-out;
+        border: 0.5px solid #1eb9a9;
+    }
+
+    .padding{
+        padding: 20px 5px 0;
+    }
+</style>
+

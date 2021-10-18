@@ -1,0 +1,60 @@
+﻿<head>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+</head>
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+@*Aprtura de WebSocket (no se que hace)*@
+<script type="text/javascript">
+    Object.defineProperty(WebSocket, 'OPEN', { value: 1, });
+</script>
+@*conexion al SignalR*@
+<script type="text/javascript">
+    var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationsHub").build();
+    connection.start(); 
+</script>
+
+<script type="text/javascript">    
+    connection.on("GetUsuarios", function (message) {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true,
+            "onclick": function() { window.location = "@Url.Action("Index", "Articulo", new { area = "abm" })"; },
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000",
+            "extendedTimeOut": "1200",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+        toastr["info"](`<h4>${message}</h4>`);
+    });
+
+    connection.on("UsuarioEditado", function (message, id) {
+        console.log(id);
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true,
+            "onclick": function() { window.location = '/abm/Usuario/CrearEditar?IdUsuario=' + id; },
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000",
+            "extendedTimeOut": "1200",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+        toastr["info"](`<h4>${message}</h4>`);
+    });
+</script>
+

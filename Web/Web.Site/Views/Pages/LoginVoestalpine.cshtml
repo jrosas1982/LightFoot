@@ -1,0 +1,261 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] Login Voestalpine</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <environment names="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" />
+        <link rel="stylesheet" href="~/css/animate.css" />
+        <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="~/css/animate.css" />
+        <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    </environment>
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600|Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+    <style>
+        #btn-inicio {
+            background-color: #0282b4;
+            border-block-color: #0282b4;
+        }
+
+        .colorVoestalpineInput {
+            border-radius: 3px;
+        }
+
+        .colorVoestalpineInput:focus {
+                border-color: #0282b4;
+            }
+
+        #btn-inicio:hover {
+                transition: .3s ease all;
+                background-color: white;
+                color: #555;
+        }
+
+        .colorVoestalpineInput:active {
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .ibox-content {
+            background-color: #ffffff;
+            color: inherit;
+            padding: 15px 20px 20px 20px;
+            border-color: #e7eaec;
+            border-image: none;
+            border-style: solid solid none;
+            border-width: 1px 0;
+            box-shadow: 1px 1px 5px rgba(0,0,0,.3);
+        }
+
+        .btn-abrir-popup{
+            margin-top: 10px;
+        }
+        /*OVERLAY*/
+        .overlay {
+            background: rgba(0,0,0,.3);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+        }
+
+        .overlay.active{
+            visibility: visible;
+        }
+
+        .popup{
+            background: white;
+            box-shadow: 0 0 5px 0 rgba(0,0,0,.3);
+            border-radius: 3px;
+            font-family: 'Monserrat', sans-serif;
+            padding: 20px;
+            text-align: center;
+            width: 600px;
+            transition: 0.3s ease all;   
+            transform: scale(0.7);
+            opacity: 0;
+        }
+
+        .popup .btn-cerrar-popup{
+            font-size: 16px;
+            line-height: 16px;
+            display: block;
+            text-align: right;
+            color: #BBBBBB;
+            transition: .3s ease all;
+        }
+
+        .popup .btn-cerrar-popup:hover{
+            color: black;
+        }
+
+        .popup h3{
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            @*opacity: 0;*@
+        }
+
+        .popup h4 {
+            font-size: 26px;
+            font-weight: 300;
+            margin-bottom: 40px;
+            @*opacity: 0;*@
+        }
+
+        .popup form contenedor.contenedor-inputs{
+
+        }
+
+        .estiloInputDiv input {
+            width: 100%;
+            margin-bottom: 20px;
+            height: 52px;
+            line-height: 52px;
+            font-size: 18px;
+            text-align: center;
+            border: 1px solid #BBB;
+        }
+
+        .estiloInputDiv input:hover {
+            outline: none;
+            border: 0.5px solid #0282b4;
+        }
+
+        .estiloInputDiv input:focus {
+            outline: none;
+            border: 0.5px solid #0282b4;
+        }
+
+        .btn-submit {
+                    padding: 0 20px;
+                    height: 40px;
+                    line-height: 40px;
+                    border: none;
+                    color: white;
+                    background-color: #0282b4;
+                    border-radius: 3px;
+                    font-family: 'Monserrat', sans-serif;
+                    font-size: 16px;
+                    cursor: pointer;
+                    transition: .3s ease all;
+                }
+
+        .btn-submit:hover{
+            background-color:white;
+            color:black;
+            border: 1px solid #BBB;
+            box-shadow: 0 0 5px 0 rgba(0,0,0,.3);
+        }
+
+        .btn-submit:active {
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        /*ANIMACIONES*/
+
+        .popup.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body class="gray-bg">
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <div>
+                <img src="~/images/VoestalpineLogoNombre.PNG" style="margin: 0px; padding: 50px 0; width:100%; height: 100%;" />
+            </div>
+            <div class="ibox-content">
+                <h3>Bienvenido</h3>
+                @*<p>Tempor consequat sit ipsum assum dolor elitr facilisis vero clita et dolore eos eros et assum.</p>*@
+                <form class="m-t" role="form" action="#">
+                    <div class="form-group">
+                        <input type="text" class="form-control colorVoestalpineInput" placeholder="Usuario" required="">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control colorVoestalpineInput" placeholder="Contraseña" required="">
+                    </div>
+                    <button type="submit" class="btn btn-primary block full-width m-b" id="btn-inicio">Iniciar sesión</button>
+                </form>
+
+                <a href="#"><small>¿Olvidaste tu contraseña?</small></a>
+                @*<p class="text-muted text-center"><small>¿Aún no tienes cuenta?</small></p>*@
+                @*<a class="btn btn-sm btn-white btn-block" href="@Url.Action(" Register", "Pages" )">Crear cuenta nueva</a>*@
+                <button id="btn-abrir-popup" class="btn-abrir-popup btn btn-sm btn-white btn-block">Nuevo usuario</button>
+                <p class="m-t"> <small>Todos los derechos reservados. &copy; 2021</small> </p>
+            </div>
+        </div>
+    </div>
+    <div class="overlay" id="overlay">
+        <div class="popup" id="popup">
+            <a href="#" id="btn-cerrar-popup" class="btn-cerrar-popup"><i class="fas fa-times"></i></a>
+            <h3>Registro</h3>
+            @*<h4>es rápido y fácil.</h4>*@
+            <form action="">
+                <div class="contenedor-inputs">
+                    <div class="row">
+                        <div class="col-6 estiloInputDiv">
+                            <input type="text" placeholder="Nombre">
+                        </div>
+                        <div class="col-6 estiloInputDiv">
+                            <input type="text" placeholder="Apellido">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 estiloInputDiv">
+                            <input type="email" placeholder="Correo electrónico"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 estiloInputDiv">
+                            <input type="password" placeholder="Contraseña"/>
+                        </div>
+                    </div>
+                    <input type="submit" id="btn-registrar" class="btn-submit" value="Crear nuevo usuario">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        var btnAbrirPopup = document.getElementById('btn-abrir-popup'),
+            overlay = document.getElementById('overlay'),
+            popup = document.getElementById('popup'),
+            btnCerrarPopup = document.getElementById('btn-cerrar-popup'),
+            btnRegistrar = document.getElementById('btn-registrar');
+
+        btnAbrirPopup.addEventListener('click', function () {
+            overlay.classList.add('active');
+            popup.classList.add('active');
+        });
+
+        btnCerrarPopup.addEventListener('click', function () {
+            overlay.classList.remove('active');
+            popup.classList.remove('active');
+        });
+
+        btnRegistrar.addEventListener('click', function () {
+            overlay.classList.remove('active');
+            popup.classList.remove('active');
+        });
+    </script>
+</body>
+</html>

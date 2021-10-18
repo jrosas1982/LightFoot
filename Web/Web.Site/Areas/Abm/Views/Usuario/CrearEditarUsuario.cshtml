@@ -1,0 +1,162 @@
+﻿@{
+    ViewData["Title"] = "Crear Usuario";
+    bool esEdicion = (Model.Usuario.Id != 0);
+    Layout = "_Layout";
+
+}
+@using Web.Site.Areas
+@model UsuarioModel
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>@(esEdicion ? "Modificar" : "Crear")</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Dashboard_1", "Dashboards")">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Gestion</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Usuario", new { area = "abm" })">Usuarios</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>@(esEdicion ? "Modificar" : "Crear")</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight ecommerce">
+
+    @using (Html.BeginForm(esEdicion ? "Editar" : "Crear", "Usuario", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Usuario.Id)
+        for (int i = 0; i < Model.usuarioRoles.Count(); i++)
+        {
+            @Html.HiddenFor(x => x.usuarioRoles[i])
+        }
+        <div class="ibox-content m-b-sm border-bottom">
+            @if (!esEdicion)
+            {
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Usuario.NombreUsuario)
+                            @Html.EditorFor(model => model.Usuario.NombreUsuario, new { htmlAttributes = new { @id = "Nombe", @class = "form-control", @placeholder = "Nombre  de Usuario" } })
+                            @Html.ValidationMessageFor(model => model.Usuario.NombreUsuario, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                @Html.HiddenFor(x => x.Usuario.NombreUsuario)
+            }
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Usuario.UsuarioRol)
+                        @Html.DropDownListFor(m => m.Usuario.UsuarioRol, new SelectList(Model.usuarioRoles, "", "", Model.usuarioRoles.First()), new { @class = "form-control m-b", @id = "dropdownUsuario" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Usuario.Contraseña)
+                        @Html.EditorFor(model => model.Usuario.Contraseña, new { htmlAttributes = new { @id = "Contrasenia", @class = "form-control", @placeholder = "Contraseña", @type = "password" } })
+                        @Html.ValidationMessageFor(model => model.Usuario.Contraseña, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Usuario.Nombre)
+                        @Html.EditorFor(model => model.Usuario.Nombre, new { htmlAttributes = new { @id = "Nombe", @class = "form-control", @placeholder = "Nombre " } })
+                        @Html.ValidationMessageFor(model => model.Usuario.Nombre, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Usuario.Apellido)
+                        @Html.EditorFor(model => model.Usuario.Apellido, new { htmlAttributes = new { @id = "Apellido", @class = "form-control", @placeholder = "Apellido " } })
+                        @Html.ValidationMessageFor(model => model.Usuario.Apellido, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Usuario.DNI)
+                        @Html.EditorFor(model => model.Usuario.DNI, new { htmlAttributes = new { @id = "DNI", @class = "form-control", @placeholder = "DNI", @type = "text" } })
+                        @Html.ValidationMessageFor(model => model.Usuario.DNI, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Usuario.Email)
+                        @Html.EditorFor(model => model.Usuario.Email, new { htmlAttributes = new { @id = "Email", @class = "form-control", @placeholder = "ejemplo@email.com", @type = "email" } })
+                        @Html.ValidationMessageFor(model => model.Usuario.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Usuario.Direccion)
+                        @Html.EditorFor(model => model.Usuario.Direccion, new { htmlAttributes = new { @id = "Dirección", @class = "form-control", @placeholder = "Direccion" } })
+                        @Html.ValidationMessageFor(model => model.Usuario.Direccion, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Usuario.Telefono)
+                        @Html.EditorFor(model => model.Usuario.Telefono, new { htmlAttributes = new { @id = "Telefono", @class = "form-control", @placeholder = "Telefono" } })
+                        @Html.ValidationMessageFor(model => model.Usuario.Telefono, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Usuario.Activo)
+                        @Html.CheckBoxFor(m => m.Usuario.Activo, new { @id = "Activo", @class = "js-switch_3" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align:right">
+            <button type="Submit" class="btn btn-w-m btn-primary">@(esEdicion ? "Modificar" : "Crear") Usuario </button>
+        </div>
+    }
+</div>
+
+@section Styles {
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/switchery/switchery.css" />
+
+    </environment>
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/switchery/switchery.js"></script>
+
+    </environment>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var elem = document.querySelector('.js-switch_3');
+            var switchery = new Switchery(elem, { color: '#1AB394' });
+        });
+    </script>
+}
+

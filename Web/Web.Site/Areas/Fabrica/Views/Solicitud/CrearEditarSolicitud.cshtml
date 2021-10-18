@@ -1,0 +1,230 @@
+﻿@{
+    ViewData["Title"] = "Crear Solicitud";
+    bool esEdicion = (Model.Id != 0);
+    Layout = "_Layout";
+}
+
+@using Web.Site.Areas
+@model SolicitudModel
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>@(esEdicion ? "Modificar" : "Crear")</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Dashboard_1", "Dashboards")">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Fabrica</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Solicitudes</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>@(esEdicion ? "Modificar" : "Nueva") Solcitud</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+
+<div class="wrapper wrapper-content animated fadeInRight ecommerce">
+
+    @using (Html.BeginForm(esEdicion ? "Editar" : "Crear", "Solicitud", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Id)
+        <div class="ibox-content m-b-sm border-bottom">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.IdSucursal)
+                        @Html.DropDownListFor(m => m.IdSucursal, new SelectList(Model.Sucursales, "Id", "Descripcion", Model.Sucursales.First()), new { @class = "form-control m-b", @id = "dropdownSucursales" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="wrapper wrapper-content animated fadeInRight ecommerce">
+            <div class="ibox-content m-b-sm border-bottom">
+                <table id="ListaAriticulo" class="table table-bordered">
+                    <tr>
+                        <th>Nombre Articulo </th>
+                        <th>Color</th>
+                        <th>Talle</th>
+                        <th>Cantidad</th>
+                        <th>Descripción</th>
+                        <th>Borrar</th>
+                    </tr>
+                    <tbody>
+                        @if (Model.SolicitudDetalles != null)
+                        {
+                            @foreach (var Adds in Model.SolicitudDetalles)
+                            {
+                                if (Adds != null)
+                                {
+                                    @await Html.PartialAsync("_SolicitudDetalle", Adds)
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="ibox-content border-0 pt-0 pr-0">
+                    <div class="text-center d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#NewCommentModal">
+                            Agregar Articulo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align:right">
+            <button type="Submit" class="btn btn-w-m btn-primary">@(esEdicion ? "Modificar" : "Crear") Solicitud </button>
+        </div>
+        @* MODAL NEW COMMENT *@
+        <div class="modal inmodal fade" id="NewCommentModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header pb-1">
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-center">
+                                <h1 style="font-size:30px;">Nuevo Articulo</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-floating">
+                            @Html.LabelFor(m => m.Articulos)
+                            @Html.DropDownListFor(m => m.Articulos, new List<SelectListItem>( Model.Articulos), " -- Seleccionar Articulo --", new { @id = "dropdownArticulos", @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-floating">
+                            @Html.LabelFor(m => m.Detalle.Articulo.TalleArticulo)
+                            @Html.DropDownListFor(m => m.Detalle.Articulo.TalleArticulo, new List<SelectListItem>(), " -- Seleccionar Talle --", new { @id = "newTalless", @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-floating">
+                            @Html.LabelFor(m => m.Detalle.Articulo.Color)
+                            @Html.DropDownListFor(m => m.Detalle.Articulo.Color, new List<SelectListItem>(), " -- Seleccionar Color --", new { @id = "newColor", @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="modal-body py-2">
+                        <div class="form-floating">
+                            @Html.LabelFor(m => m.Detalle.CantidadSolicitada)
+                            @Html.EditorFor(model => model.Detalle.CantidadSolicitada, new { htmlAttributes = new { @id = "CantidadSolicitada", @class = "form-control", @placeholder = "" } })
+                            @Html.ValidationMessageFor(model => model.Detalle.CantidadSolicitada, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-floating">
+                            @Html.LabelFor(m => m.Detalle.Motivo)
+                            @Html.EditorFor(model => model.Detalle.Motivo, new { htmlAttributes = new { @id = "Motivo", @class = "form-control", @placeholder = "" } })
+                            @Html.ValidationMessageFor(model => model.Detalle.Motivo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="button" onclick="addArticulo()" class="btn btn-primary" data-dismiss="modal">Agregar Articulo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Styles {
+    <environment names="Development,Staging,Production">
+
+    </environment>
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+
+    </environment>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#dropdownArticulos').change(function () {
+                $("#newTalless").empty();
+                $('#newColor').empty();
+                $.ajax({
+                    type: "post",
+                    url: "/fabrica/solicitud/TallesPorArticulo",
+                    data: { NombreArticulo: $("#dropdownArticulos").val() },
+                    datatype: "json",
+                    traditional: true,
+                    success: function (data) {
+                        var talleArticulo = "<select id='newTalless'>";
+                        talleArticulo = talleArticulo + '<option value="">--Seleccioné--</option>';
+                        for (var i = 0; i < data.length; i++) {
+                            talleArticulo = talleArticulo + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                        }
+                        talleArticulo = talleArticulo + '</select>';
+                        $('#newTalless').html(talleArticulo);
+                    }
+                });
+            });
+            $('#newTalless').change(function () {
+                $.ajax({
+                    type: "post",
+                    url: "/fabrica/solicitud/ColoresPorArticulo",
+                    data: { NumeroTalle: $("#newTalless").val() },
+                    datatype: "json",
+                    traditional: true,
+                    success: function (data) {
+                        var ColorArticulo = "<select id='newColor'>";
+                        ColorArticulo = ColorArticulo + '<option value="">--Seleccioné--</option>';
+                        for (var i = 0; i < data.length; i++) {
+                            ColorArticulo = ColorArticulo + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                        }
+                        ColorArticulo = ColorArticulo + '</select>';
+                        $('#newColor').html(ColorArticulo);
+                    }
+                });
+            });
+        });
+
+        function ClearModal()
+        {
+            $("#IdArticulo").val("");
+            $("#CantidadSolicitada").val("");
+            $("#Motivo").val("");                
+            $("#dropdownArticulos").val("");
+            $("#newColor").val("");
+            $("#newTalless").val("");
+        }
+
+        function addArticulo() {
+            $.ajax({
+                type: "post",
+                url: "/fabrica/solicitud/agregardetalle",
+                data: {
+                    IdArticulo: $("#IdArticulo").val(),
+                    CantidadSolicitada: $("#CantidadSolicitada").val(),
+                    Motivo: $("#Motivo").val(),
+                    Articulo: {
+                        Nombre: $("#dropdownArticulos").val(),
+                        Color: $("#newColor").val(),
+                        TalleArticulo: $("#newTalless").val()
+                    }
+
+                }
+            }).done(function (partialView) {
+                $('#ListaAriticulo tbody:last-child').after().append(partialView);
+                ClearModal();
+            });
+        }
+        function removeRow(row) {
+            $(row).parents('tr').first().remove();
+        }
+
+    </script>
+}
+

@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Login";
+    Layout = "_LoginLayout";
+    var returnUrl = @Context.Request.Query["returnurl"];
+}
+
+@model Web.Site.Areas.UserLoginModel
+<div class="d-flex align-items-center justify-content-center mt-1 mt-sm-3 mt-md-4">
+    <div class="white-bg col-xl-5 col-md-6 loginscreen animated fadeInDown p-2 p-sm-3 m-3">
+        <figure class="text-center mt-3 w-100">
+            <img src="/recursos/LightFoot_isotipo_svg_gray.svg" 
+                 alt="logo svg light foot" 
+                 style=" width:8rem; " />
+        </figure>
+        <h2 class="text-center">Bienvenido a LightFoot</h2>
+        <p class="text-center">Inicia sesion a continuacion.</p>
+        @using (Html.BeginForm("LoginUser", "Auth", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            for (int i = 0; i < Model.Sucursales.Count(); i++)
+            {
+                @Html.HiddenFor(x => x.Sucursales[i])
+            }
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.UserLoginDTO.IdSucursal)
+                        @Html.DropDownListFor(m => m.UserLoginDTO.IdSucursal, new SelectList(Model.Sucursales, "Id", "Descripcion", Model.Sucursales.First()), new { @class = "form-control m-b", @id = "dropdownSucursales" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.UserLoginDTO.NombreUsuario)
+                        @Html.EditorFor(model => model.UserLoginDTO.NombreUsuario, new { htmlAttributes = new { @id = "Nombre", @class = "form-control", @placeholder = "Nombre Usuario" } })
+                        @Html.ValidationMessageFor(model => model.UserLoginDTO.NombreUsuario, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.UserLoginDTO.Contraseña)
+                        @Html.EditorFor(model => model.UserLoginDTO.Contraseña, new { htmlAttributes = new { @id = "Contrasena", @class = "form-control", @placeholder = "Contraseña", @type = "Password" } })
+                        @Html.ValidationMessageFor(model => model.UserLoginDTO.Contraseña, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.UserLoginDTO.Recuerdame)
+                        @Html.CheckBoxFor(model => model.UserLoginDTO.Recuerdame, new { htmlAttributes = new { @id = "Recuerdame", @lass = "checkbox checkbox-success" } })
+                        @Html.ValidationMessageFor(model => model.UserLoginDTO.Recuerdame, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:right">
+                <button type="Submit" class="btn btn-w-m btn-primary w-100"> Login </button>
+            </div>
+
+        }
+        <a href="#"><small>Olvidaste el password?</small></a>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Core.Dominio.SeedWork;
+
+namespace Core.Dominio.AggregatesModel
+{
+    public class ProveedorInsumoHistorico : EntityBase
+    {
+        [Key]
+        public int Id { get; set; }
+        public int IdProveedor { get; set; }
+        public int IdInsumo { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Precio { get; set; }
+
+        // ProveedorInsumo (Id, IdProveedor, IdInsumo, Precio)
+
+        [ForeignKey("IdProveedor")]
+        public virtual Proveedor Proveedor { get; set; }
+
+        [ForeignKey("IdInsumo")]
+        public virtual Insumo Insumo { get; set; }
+
+
+    }
+
+    //ProveedorInsumoHistorico (Id, IdProveedor, IdInsumo, Precio)
+}

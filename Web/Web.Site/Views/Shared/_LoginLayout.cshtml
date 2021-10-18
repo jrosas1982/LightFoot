@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Add local styles, mostly for plugins css file -->
+    @if (IsSectionDefined("Styles"))
+        @await RenderSectionAsync("Styles", required: false)
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/css/animate.css" />
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+
+    <!-- LightFoot Begin-->
+    <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+    <link rel="stylesheet" href="~/custom/Personalizado.css" />
+    <!-- LightFoot End -->
+</head>
+<body class="gray-bg">
+    @RenderBody()
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/Popper/popper.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/metisMenu/dist/jquery.metisMenu.js"></script>
+    <script src="~/lib/pace/pace.min.js"></script>
+    <script src="~/lib/slimScroll/jquery.slimscroll.min.js"></script>
+    <script src="~/js/script.js" asp-append-version="true"></script>
+
+    <!-- LightFoot Begin-->
+    <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
+    @*<script src="~/custom/Personalizado.js"></script>*@
+    @*<script type="text/javascript">@Html.Raw(ViewBag.JsFunction);</script>*@
+    @*<partial name="_JsInteropPartial"/>*@
+    @await Html.PartialAsync("_JsInteropPartial")
+    <!-- LightFoot End -->
+
+    @if (IsSectionDefined("scripts"))
+        @await RenderSectionAsync("scripts", required: false)
+</body>
+</html>
+

@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Add local styles, mostly for plugins css file -->
+    @if (IsSectionDefined("Styles"))
+        @await RenderSectionAsync("Styles", required: false)
+
+    <!-- LightFoot Begin-->
+    <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+    <link rel="stylesheet" href="~/custom/Personalizado.css" />
+    <!-- LightFoot End -->
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/css/animate.css" />
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+
+</head>
+<body>
+
+    <!-- Skin configuration box -->
+    <!-- <partial name="_SkinConfig" /> -->
+    <!-- Wrapper-->
+    <div id="wrapper" class="@Html.PageClass()">
+
+        <!-- Navigation -->
+        <partial name="_Navigation" />
+
+        <!-- Page wraper -->
+        <div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass">
+
+            <!-- Top Navbar -->
+            <partial name="_TopNavbar" />
+
+            <!-- Main view  -->
+            @RenderBody()
+
+            <!-- Footer -->
+            <partial name="_Footer" />
+
+        </div>
+        <!-- End page wrapper-->
+        <!-- Right Sidebar -->
+        <partial name="_RightSidebar" />
+
+    </div>
+    <!-- End wrapper-->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/Popper/popper.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/metisMenu/dist/jquery.metisMenu.js"></script>
+    <script src="~/lib/pace/pace.min.js"></script>
+    <script src="~/lib/slimScroll/jquery.slimscroll.min.js"></script>
+    <script src="~/js/script.js" asp-append-version="true"></script>
+
+    <!-- LightFoot Begin-->
+    Object.defineProperty(WebSocket, 'OPEN', { value: 1, });
+    <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="~/custom/signalr.min.js"></script>
+    @*<script src="~/custom/Personalizado.js"></script>*@
+    @*<script type="text/javascript">@Html.Raw(ViewBag.JsFunction);</script>*@
+    <!-- LightFoot End -->
+    @*<partial name="_JsInteropPartial"/>*@
+
+    @await Html.PartialAsync("_JsInteropPartial")
+
+    @await Html.PartialAsync("_NotificationsHub")
+
+    @if (IsSectionDefined("scripts"))
+        @await RenderSectionAsync("scripts", required: false)
+</body>
+</html>
