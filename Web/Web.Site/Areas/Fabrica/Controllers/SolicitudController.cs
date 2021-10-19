@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
@@ -79,7 +80,35 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Crear(Solicitud solicitud)
         {
-            await _solicitudService.CrearSolicitud(solicitud);
+            var detallesSolicitud = new List<SolicitudDetalle>()
+            {
+                new SolicitudDetalle()
+                {
+                    IdArticulo = 11,
+                    CantidadSolicitada = 15,
+                    Motivo = "pq si",
+                },
+                new SolicitudDetalle()
+                {
+                    IdArticulo = 8,
+                    CantidadSolicitada = 15,
+                    Motivo = "pq si 2",
+                },
+                 new SolicitudDetalle()
+                {
+                    IdArticulo = 4,
+                    CantidadSolicitada = 15,
+                    Motivo = "pq si 3",
+                }
+            };
+
+            await _solicitudService.CrearSolicitud(solicitud, detallesSolicitud);
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> AprobarSolicitud(int idSolicitud)
+        {
+            await _solicitudService.AprobarSolicitud(idSolicitud);
             return RedirectToAction("Index");
         }
 
