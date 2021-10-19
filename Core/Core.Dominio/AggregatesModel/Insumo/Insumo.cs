@@ -17,6 +17,5 @@ namespace Core.Dominio.AggregatesModel
         [ForeignKey("IdReceta")]
         public virtual Receta Receta { get; set; }
         public virtual ICollection<ProveedorInsumoHistorico> InsumoHistorico { get; set; }
-        public virtual ICollection<RecetaDetalle> RecetaDetalle { get; set; }
     }
 }
