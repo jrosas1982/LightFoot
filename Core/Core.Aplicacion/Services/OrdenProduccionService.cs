@@ -38,7 +38,7 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<OrdenProduccionEvento>> GetOrdenEventos(int idOrdenProduccion)
         {
-            return await _db.OrdeneProduccionEventos.ToListAsync();
+            return await _db.OrdenesProduccionEventos.ToListAsync();
         }
 
         public async Task<IEnumerable<EstadoEtapaOrdenProduccion>> GetEstadosEtapaOrden()
