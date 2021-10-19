@@ -9,7 +9,7 @@ namespace Core.Aplicacion.Interfaces
         public Task<IEnumerable<Solicitud>> GetSolicitudes();
         public Task<Solicitud> BuscarPorId(int IdSolicitud);
 
-        public Task CrearSolicitud(Solicitud solicitud);
+        public Task CrearSolicitud(Solicitud solicitud, IEnumerable<SolicitudDetalle> solicitudDetalles);
         public Task EditarSolicitud(Solicitud solicitud);
         public Task<bool> EliminarSolicitud(Solicitud solicitud);
 

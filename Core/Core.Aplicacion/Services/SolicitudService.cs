@@ -61,11 +61,35 @@ namespace Core.Aplicacion.Services
             return solicitud;
         }
 
-        public async Task CrearSolicitud(Solicitud solicitud)
+        public async Task CrearSolicitud(Solicitud solicitud, IEnumerable<SolicitudDetalle> solicitudDetalles)
         {
-            _db.Add(solicitud);
+            if(!_db.Sucursales.Any(x => x.Id == solicitud.IdSucursal))
+                throw new Exception("No es posible procesar la solicitud. La sucursal especificada no existe");
+
+            var idArticulos = _db.Articulos.Select(x => x.Id);
+            if (solicitudDetalles.Any(x => !idArticulos.Contains(x.IdArticulo)))
+                 throw new Exception("No es posible procesar la solicitud. Al menos un detalle posee un articulo no existente");
+
+            var cantidadDeIdArticulos = solicitudDetalles.GroupBy(x => x.IdArticulo);
+            if (cantidadDeIdArticulos.Any(x => x.Count() > 1))
+                throw new Exception("El detalle de una solicitud no pueden poseeer articulos repetidos");
+
+            //var solicitudAdd = new Solicitud()
+            //{
+            //    IdSucursal = solicitud.IdSucursal,
+            //    EstadoSolicitud = EstadoSolicitud.PendienteAprobacion,
+            //    Comentario = solicitud.Comentario
+            //};
+
+             _db.Solicitudes.Add(solicitud);        
+
+            foreach (var detalle in solicitudDetalles)
+            {
+                solicitud.SolicitudDetalles.Add(detalle);
+            }
+
             await _db.SaveChangesAsync();
-            _logger.LogInformation($"Solicitud creada: {solicitud.Comentario}");
+            _logger.LogInformation($"Solicitud creada: {solicitud.Id}");
         }
 
         public async Task EditarSolicitud(Solicitud solicitud)
