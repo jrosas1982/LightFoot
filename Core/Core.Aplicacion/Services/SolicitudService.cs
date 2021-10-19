@@ -24,64 +24,20 @@ namespace Core.Aplicacion.Services
             _fabricacion = fabricacion;
         }
 
-
-        public async Task<IEnumerable<Solicitud>> GetSolicitudes()
-        {
-            var solicitudesList = _db.Solicitudes
-                .AsNoTracking()
-                .Include(x => x.Sucursal)
-                .Include(x => x.SolicitudDetalles)
-                    .ThenInclude(x => x.Articulo)
-                .Include(x => x.SolicitudDetalles)
-                    .ThenInclude(x => x.OrdenesProduccion);
-
-            var queryString = solicitudesList.ToQueryString();
-
-            _logger.LogInformation("Se buscaron las solicitudes");
-            return await solicitudesList.ToListAsync().ConfigureAwait(false);
-        }
-
-        public async Task<IEnumerable<SolicitudDetalle>> GetSolicitudDetalles(int idSolicitud)
-        {
-            var detallesSolicitud = _db.SolicitudDetalles.Where(x => x.IdSolicitud == idSolicitud);
-
-            return await detallesSolicitud.ToListAsync();
-        }
-
-        public async Task<IEnumerable<SolicitudEvento>> GetSolicitudEventos(int idSolicitud)
-        {
-            var eventosSolicitud = _db.SolicitudEventos.Where(x => x.IdSolicitud == idSolicitud);
-
-            return await Task.FromResult(eventosSolicitud);
-        }
-
-        public async Task<Solicitud> BuscarPorId(int idSolicitud)
-        {
-            var solicitud = await _db.Solicitudes.FindAsync(idSolicitud);
-            return solicitud;
-        }
-
         public async Task CrearSolicitud(Solicitud solicitud, IEnumerable<SolicitudDetalle> solicitudDetalles)
         {
-            if(!_db.Sucursales.Any(x => x.Id == solicitud.IdSucursal))
+            if (!_db.Sucursales.Any(x => x.Id == solicitud.IdSucursal))
                 throw new Exception("No es posible procesar la solicitud. La sucursal especificada no existe");
 
             var idArticulos = _db.Articulos.Select(x => x.Id);
             if (solicitudDetalles.Any(x => !idArticulos.Contains(x.IdArticulo)))
-                 throw new Exception("No es posible procesar la solicitud. Al menos un detalle posee un articulo no existente");
+                throw new Exception("No es posible procesar la solicitud. Al menos un detalle posee un articulo no existente");
 
             var cantidadDeIdArticulos = solicitudDetalles.GroupBy(x => x.IdArticulo);
             if (cantidadDeIdArticulos.Any(x => x.Count() > 1))
                 throw new Exception("El detalle de una solicitud no pueden poseeer articulos repetidos");
 
-            //var solicitudAdd = new Solicitud()
-            //{
-            //    IdSucursal = solicitud.IdSucursal,
-            //    EstadoSolicitud = EstadoSolicitud.PendienteAprobacion,
-            //    Comentario = solicitud.Comentario
-            //};
-
-             _db.Solicitudes.Add(solicitud);        
+            _db.Solicitudes.Add(solicitud);
 
             foreach (var detalle in solicitudDetalles)
             {
@@ -91,49 +47,6 @@ namespace Core.Aplicacion.Services
             await _db.SaveChangesAsync();
             _logger.LogInformation($"Solicitud creada: {solicitud.Id}");
         }
-
-        public async Task EditarSolicitud(Solicitud solicitud)
-        {
-            var solicitudDB = await _db.Solicitudes.FindAsync(solicitud.Id);
-
-            solicitudDB.IdSucursal = solicitud.IdSucursal;
-            solicitudDB.EstadoSolicitud = solicitud.EstadoSolicitud;
-            solicitudDB.Comentario = solicitud.Comentario;
-
-            _db.Update(solicitudDB);
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task<bool> EliminarSolicitud(Solicitud solicitud)
-        {
-            try
-            {
-                var solicitudDB = await _db.Solicitudes.FindAsync(solicitud.Id);
-                _db.Remove(solicitudDB);
-                await _db.SaveChangesAsync();
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public async Task<IEnumerable<EstadoSolicitud>> GetEstadosSolicitud()
-        {
-            return await Task.FromResult(EnumExtensions.GetValues<EstadoSolicitud>());
-        }
-
-        public async Task<IList<CantidadInsumoNecesarioStock>> GetVerificacionInsumosStock(int Idsolicitud)
-        {
-            var insumosNecesarios = await _fabricacion.ContabilizarInsumosRequeridos(Idsolicitud);
-
-            var insumosVerificados = await _fabricacion.VerificarStockInsumos(insumosNecesarios);
-
-            return insumosVerificados;
-        }
-
 
         public async Task AprobarSolicitud(int idSolicitud, string comentario = "")
         {
@@ -191,13 +104,65 @@ namespace Core.Aplicacion.Services
             await _db.SaveChangesAsync();
         }
 
-        public async Task AgregarSolicitudDetalles(int idSolicitud, IEnumerable<SolicitudDetalle> solicitudDetalle) => throw new NotImplementedException();
+        public async Task<Solicitud> BuscarPorId(int idSolicitud)
+        {
+            var solicitud = await _db.Solicitudes.FindAsync(idSolicitud);
+            return solicitud;
+        }
 
-        public async Task EliminarSolicitudDetalle(int idSolicitudDetalle) => throw new NotImplementedException();
+        public async Task<IEnumerable<Solicitud>> GetSolicitudes()
+        {
+            var solicitudesList = _db.Solicitudes
+                .AsNoTracking()
+                .Include(x => x.Sucursal)
+                .Include(x => x.SolicitudDetalles)
+                    .ThenInclude(x => x.Articulo)
+                .Include(x => x.SolicitudDetalles)
+                    .ThenInclude(x => x.OrdenesProduccion);
 
-        public async Task EliminarSolicitudEvento(int idSolicitudDetalle) => throw new NotImplementedException();
+            var queryString = solicitudesList.ToQueryString();
 
-        
+            _logger.LogInformation("Se buscaron las solicitudes");
+            return await solicitudesList.ToListAsync().ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<SolicitudDetalle>> GetSolicitudDetalles(int idSolicitud)
+        {
+            var detallesSolicitud = _db.SolicitudDetalles.Where(x => x.IdSolicitud == idSolicitud);
+
+            return await detallesSolicitud.ToListAsync();
+        }
+
+        public async Task<IEnumerable<SolicitudEvento>> GetSolicitudEventos(int idSolicitud)
+        {
+            var eventosSolicitud = _db.SolicitudEventos.Where(x => x.IdSolicitud == idSolicitud);
+
+            return await Task.FromResult(eventosSolicitud);
+        }
+
+        public async Task<IEnumerable<EstadoSolicitud>> GetEstadosSolicitud()
+        {
+            return await Task.FromResult(EnumExtensions.GetValues<EstadoSolicitud>());
+        }
+
+        public async Task<bool> HayStockSuficiente(int idSolicitud) 
+        {
+            var insumosVerificados = await GetVerificacionInsumosStock(idSolicitud);
+
+            var hayStock = !insumosVerificados.Any(x => x.CantidadDisponible < x.CantidadNecesaria);
+
+            return await Task.FromResult(hayStock);
+        }
+
+
+        private async Task<IList<CantidadInsumoNecesarioStock>> GetVerificacionInsumosStock(int Idsolicitud)
+        {
+            var insumosNecesarios = await _fabricacion.ContabilizarInsumosRequeridos(Idsolicitud);
+
+            var insumosVerificados = await _fabricacion.VerificarStockInsumos(insumosNecesarios);
+
+            return insumosVerificados;
+        }
 
     }
 }
