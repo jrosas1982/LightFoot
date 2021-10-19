@@ -17,9 +17,9 @@ namespace Core.Aplicacion.Interfaces
         public Task<OrdenProduccion> BuscarPorId(int idOrdenProduccion);
         public Task<IEnumerable<OrdenProduccion>> GetOrdenes();
         public Task<IEnumerable<OrdenProduccionEvento>> GetOrdenEventos(int idOrdenProduccion);
-        public Task<IEnumerable<EstadoOrdenProduccion>> GetOrdenEstados();
-        public Task<IEnumerable<EtapaOrdenProduccion>> GetOrdenEtapas();
-        public Task<IEnumerable<EstadoEtapaOrdenProduccion>> GetOrdenEstadoEtapas();
+        public Task<IEnumerable<EstadoOrdenProduccion>> GetEstadosOrden();
+        public Task<IEnumerable<EtapaOrdenProduccion>> GetEtapasOrden();
+        public Task<IEnumerable<EstadoEtapaOrdenProduccion>> GetEstadoEtapasOrden();
         public Task<int> GetProgreso(int IdOrdenProduccion);
     }
 }

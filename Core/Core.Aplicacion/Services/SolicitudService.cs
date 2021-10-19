@@ -151,7 +151,9 @@ namespace Core.Aplicacion.Services
 
         public async Task<bool> HayStockSuficiente(int idSolicitud) 
         {
-            var insumosVerificados = await GetVerificacionInsumosStock(idSolicitud);
+            var insumosNecesarios = await _fabricacion.ContabilizarInsumosRequeridos(idSolicitud);
+
+            var insumosVerificados = await _fabricacion.VerificarStockInsumos(insumosNecesarios);
 
             var hayStock = !insumosVerificados.Any(x => x.CantidadDisponible < x.CantidadNecesaria);
 
