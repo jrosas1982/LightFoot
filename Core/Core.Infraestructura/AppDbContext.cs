@@ -25,32 +25,46 @@ namespace Core.Infraestructura
 
         }
 
-        public DbSet<ArticuloCategoria> ArticuloCategorias { get; set; }
         public DbSet<Articulo> Articulos { get; set; }
-        public DbSet<CajaSucursal> CajaSucursales { get; set; }
-        public DbSet<Cliente> Clientes { get; set; }
-        public DbSet<Insumo> Insumos { get; set; }
+        public DbSet<ArticuloCategoria> ArticulosCategoria { get; set; }
+        public DbSet<ArticuloStock> ArticulosStock { get; set; }
+        public DbSet<MovimientoStock> MovimientosStock { get; set; }
 
+        public DbSet<Cliente> Clientes { get; set; }
+        public DbSet<ClienteCuentaCorriente> ClientesCuentaCorriente { get; set; }
+
+        public DbSet<Compra> Compras { get; set; }
+        public DbSet<CompraArticulo> ComprasArticulos { get; set; }
+        public DbSet<CompraInsumo> ComprasInsumos { get; set; }
+
+        public DbSet<Insumo> Insumos { get; set; }
+        public DbSet<InsumoStock> InsumosStock { get; set; }
         public DbSet<Receta> Recetas { get; set; }
         public DbSet<RecetaDetalle> RecetaDetalles { get; set; }
 
         public DbSet<EtapaOrdenProduccion> EtapasOrdenProduccion { get; set; }
         public DbSet<OrdenProduccion> OrdenesProduccion { get; set; }
-        public DbSet<OrdenProduccionEvento> OrdeneProduccionEventos { get; set; }
+        public DbSet<OrdenProduccionEvento> OrdenesProduccionEventos { get; set; }
 
         public DbSet<Proveedor> Proveedores { get; set; }
+        public DbSet<ProveedorArticulo> ProveedoresArticulos { get; set; }
+        public DbSet<ProveedorArticuloHistorico> ProveedoresArticulosHistorico { get; set; }
+        public DbSet<ProveedorCuentaCorriente> ProveedoresCuentaCorriente { get; set; }
+        public DbSet<ProveedorInsumo> ProveedoresInsumos { get; set; }
+        public DbSet<ProveedorInsumoHistorico> ProveedoresInsumosHistorico { get; set; }
+
         public DbSet<Solicitud> Solicitudes { get; set; }
         public DbSet<SolicitudDetalle> SolicitudDetalles { get; set; }
         public DbSet<SolicitudEvento> SolicitudEventos { get; set; }
 
-        public DbSet<ArticuloStock> ArticulosStock { get; set; }
-        public DbSet<InsumoStock> InsumosStock { get; set; }
+        public DbSet<CajaSucursal> CajaSucursales { get; set; }
         public DbSet<Sucursal> Sucursales { get; set; }
 
-        public DbSet<UsuarioApi> UsuariosApi { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<UsuarioApi> UsuariosApi { get; set; }
 
-        //public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Venta> Ventas { get; set; }
+        public DbSet<VentaDetalle> VentasDetalle { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

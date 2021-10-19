@@ -22,6 +22,7 @@ namespace Core.Aplicacion.Helpers
             _logger = logger;
         }
 
+        // TODO testear
         public async Task<IList<CantidadInsumo>> ContabilizarInsumosRequeridos(int Idsolicitud)
         {
             //Solicitud
@@ -65,6 +66,7 @@ namespace Core.Aplicacion.Helpers
             return ListadoAcumRecetaDetalles;
         }
 
+        // TODO testear
         public async Task<IList<CantidadInsumoNecesarioStock>> VerificarStockInsumos(IList<CantidadInsumo> insumosNecesarios)
         {
             var insumosStock = _db.InsumosStock.Where(x => insumosNecesarios.Select(y => y.IdInsumo).Contains(x.IdInsumo));
@@ -77,6 +79,10 @@ namespace Core.Aplicacion.Helpers
             return await insumosVerificados.ToListAsync();
         }
 
+        // TODO testear
+        public async Task ReservarStockInsumos(IList<CantidadInsumo> insumosNecesarios)
+        {
+            var insumosStock = _db.InsumosStock.Where(x => insumosNecesarios.Select(y => y.IdInsumo).Contains(x.IdInsumo));
 
             foreach (var insumo in insumosStock)
             {

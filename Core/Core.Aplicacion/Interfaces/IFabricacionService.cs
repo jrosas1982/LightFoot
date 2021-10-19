@@ -10,5 +10,6 @@ namespace Core.Aplicacion.Interfaces
     {
         Task<IList<CantidadInsumo>> ContabilizarInsumosRequeridos(int Idsolicitud);
         Task<IList<CantidadInsumoNecesarioStock>> VerificarStockInsumos(IList<CantidadInsumo> insumosNecesarios);
+        Task ReservarStockInsumos(IList<CantidadInsumo> insumosNecesarios);
     }
 }

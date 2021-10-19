@@ -4,7 +4,7 @@ using Core.Dominio.SeedWork;
 
 namespace Core.Dominio.AggregatesModel
 {
-    public class ProvedorCuentaCorriente : EntityBase
+    public class ProveedorCuentaCorriente : EntityBase
     {
         [Key]
         public int Id { get; set; }

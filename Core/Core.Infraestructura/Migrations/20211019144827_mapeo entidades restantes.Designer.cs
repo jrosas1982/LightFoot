@@ -4,14 +4,16 @@ using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Infraestructura.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211019144827_mapeo entidades restantes")]
+    partial class mapeoentidadesrestantes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -455,7 +457,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Cortado",
-                            FechaCreacion = new DateTime(2021, 10, 19, 19, 34, 9, 649, DateTimeKind.Local).AddTicks(4102),
+                            FechaCreacion = new DateTime(2021, 10, 19, 11, 48, 26, 477, DateTimeKind.Local).AddTicks(6616),
                             Orden = 1
                         },
                         new
@@ -464,7 +466,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Aparado",
-                            FechaCreacion = new DateTime(2021, 10, 19, 19, 34, 9, 649, DateTimeKind.Local).AddTicks(4306),
+                            FechaCreacion = new DateTime(2021, 10, 19, 11, 48, 26, 477, DateTimeKind.Local).AddTicks(6825),
                             Orden = 2
                         },
                         new
@@ -473,7 +475,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Preparacion",
-                            FechaCreacion = new DateTime(2021, 10, 19, 19, 34, 9, 649, DateTimeKind.Local).AddTicks(4315),
+                            FechaCreacion = new DateTime(2021, 10, 19, 11, 48, 26, 477, DateTimeKind.Local).AddTicks(6833),
                             Orden = 3
                         },
                         new
@@ -482,7 +484,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Montado",
-                            FechaCreacion = new DateTime(2021, 10, 19, 19, 34, 9, 649, DateTimeKind.Local).AddTicks(4318),
+                            FechaCreacion = new DateTime(2021, 10, 19, 11, 48, 26, 477, DateTimeKind.Local).AddTicks(6837),
                             Orden = 4
                         },
                         new
@@ -491,7 +493,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Pegado",
-                            FechaCreacion = new DateTime(2021, 10, 19, 19, 34, 9, 649, DateTimeKind.Local).AddTicks(4321),
+                            FechaCreacion = new DateTime(2021, 10, 19, 11, 48, 26, 477, DateTimeKind.Local).AddTicks(6840),
                             Orden = 5
                         },
                         new
@@ -500,7 +502,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Terminado ",
-                            FechaCreacion = new DateTime(2021, 10, 19, 19, 34, 9, 649, DateTimeKind.Local).AddTicks(4324),
+                            FechaCreacion = new DateTime(2021, 10, 19, 11, 48, 26, 477, DateTimeKind.Local).AddTicks(6843),
                             Orden = 6
                         });
                 });
@@ -524,6 +526,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<DateTime?>("FechaModificacion")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("IdReceta")
+                        .HasColumnType("int");
+
                     b.Property<string>("ModificadoPor")
                         .HasColumnType("varchar(50)");
 
@@ -536,6 +541,8 @@ namespace Core.Infraestructura.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdReceta");
 
                     b.ToTable("Insumos");
                 });
@@ -976,12 +983,17 @@ namespace Core.Infraestructura.Migrations
                     b.Property<int>("IdArticulo")
                         .HasColumnType("int");
 
+                    b.Property<int>("IdInsumo")
+                        .HasColumnType("int");
+
                     b.Property<string>("ModificadoPor")
                         .HasColumnType("varchar(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("IdArticulo");
+
+                    b.HasIndex("IdInsumo");
 
                     b.ToTable("Recetas");
                 });
@@ -1495,6 +1507,17 @@ namespace Core.Infraestructura.Migrations
                     b.Navigation("Insumo");
                 });
 
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.Insumo", b =>
+                {
+                    b.HasOne("Core.Dominio.AggregatesModel.Receta", "Receta")
+                        .WithMany()
+                        .HasForeignKey("IdReceta")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Receta");
+                });
+
             modelBuilder.Entity("Core.Dominio.AggregatesModel.InsumoStock", b =>
                 {
                     b.HasOne("Core.Dominio.AggregatesModel.Insumo", "Insumo")
@@ -1689,7 +1712,15 @@ namespace Core.Infraestructura.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("Core.Dominio.AggregatesModel.Insumo", "Insumo")
+                        .WithMany()
+                        .HasForeignKey("IdInsumo")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.Navigation("Articulo");
+
+                    b.Navigation("Insumo");
                 });
 
             modelBuilder.Entity("Core.Dominio.AggregatesModel.RecetaDetalle", b =>

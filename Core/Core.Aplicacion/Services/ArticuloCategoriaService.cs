@@ -22,13 +22,13 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<ArticuloCategoria>> GetCategorias()
         {
-            var categoriasList = _db.ArticuloCategorias;
+            var categoriasList = _db.ArticulosCategoria;
             return await Task.FromResult(categoriasList);
         }
 
         public async Task<ArticuloCategoria> BuscarPorId(int IdCategoria)
         {
-            var categoria = await _db.ArticuloCategorias.FindAsync(IdCategoria);
+            var categoria = await _db.ArticulosCategoria.FindAsync(IdCategoria);
             return categoria;
         }
 
@@ -40,7 +40,7 @@ namespace Core.Aplicacion.Services
 
         public async Task EditarCategoria(ArticuloCategoria categoria)
         {
-            var categoriaDb = await _db.ArticuloCategorias.FindAsync(categoria.Id);
+            var categoriaDb = await _db.ArticulosCategoria.FindAsync(categoria.Id);
 
             categoriaDb.Descripcion = categoria.Descripcion;
             categoriaDb.Comentario = categoria.Comentario;
@@ -54,7 +54,7 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var categoriaDb = await _db.ArticuloCategorias.FindAsync(categoria.Id);
+                var categoriaDb = await _db.ArticulosCategoria.FindAsync(categoria.Id);
                 _db.Remove(categoriaDb);
                 await _db.SaveChangesAsync();
 

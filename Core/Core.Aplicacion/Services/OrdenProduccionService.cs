@@ -81,17 +81,14 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<OrdenProduccionEvento>> GetOrdenEventos(int idOrdenProduccion)
         {
-            return await _db.OrdeneProduccionEventos.ToListAsync();
+            return await _db.OrdenesProduccionEventos.ToListAsync();
         }
 
-        public async Task<IEnumerable<EstadoEtapaOrdenProduccion>> GetEstadosEtapaOrden()
-        {
-            return await Task.FromResult(EnumExtensions.GetValues<EstadoEtapaOrdenProduccion>());
-        }
-        public async Task<IEnumerable<EstadoOrdenProduccion>> GetEstadosOrden()
+        public async Task<IEnumerable<EstadoOrdenProduccion>> GetEstadosOrden() 
         {
             return await Task.FromResult(EnumExtensions.GetValues<EstadoOrdenProduccion>());
         }
+
         public async Task<IEnumerable<EtapaOrdenProduccion>> GetEtapasOrden()
         {
             return await _db.EtapasOrdenProduccion.ToListAsync();

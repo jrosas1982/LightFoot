@@ -19,7 +19,7 @@ namespace Core.Dominio.AggregatesModel
         [Required]
         public string Email { get; set; }
 
-        public virtual ICollection<ProvedorCuentaCorriente> ProvedorCuentaCorriente { get; set; } = new HashSet<ProvedorCuentaCorriente>();
+        public virtual ICollection<ProveedorCuentaCorriente> ProvedorCuentaCorriente { get; set; } = new HashSet<ProveedorCuentaCorriente>();
         public virtual ICollection<ProveedorArticulo> ProveedorArticulos { get; set; } = new HashSet<ProveedorArticulo>();
         public virtual ICollection<ProveedorInsumo> ProveedorInsumos { get; set; } = new HashSet<ProveedorInsumo>();
         //Proveedor(Id, Nombre, Direccion, Telefono, CUIT, Email)

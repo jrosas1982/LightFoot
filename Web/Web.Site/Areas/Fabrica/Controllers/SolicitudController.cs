@@ -112,12 +112,6 @@ namespace Web.Site.Areas
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Editar(Solicitud solicitud)
-        {
-            await _solicitudService.EditarSolicitud(solicitud);
-            return RedirectToAction("Index");
-        }
-
         public async Task<IActionResult> Eliminar(Solicitud solicitud)
         {
             //var result = await _solicitudService.EliminarSolicitud(solicitud);
