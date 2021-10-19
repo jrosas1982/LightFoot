@@ -6,14 +6,20 @@ namespace Core.Aplicacion.Interfaces
 {
     public interface IOrdenProduccionService
     {
-        public Task<IEnumerable<OrdenProduccion>> GetOrdenes();
+        public Task<bool> AvanzarEtapa(int idOrdenProduccion);
+        public Task<bool> PausarEtapa(int idOrdenProduccion);
+        public Task<bool> ReanudarEtapa(int idOrdenProduccion);
+        public Task<bool> RetrabajarEtapa(int idOrdenProduccion);
+        public Task<bool> FinalizarOrden(int idOrdenProduccion);
+        public Task<bool> CancelarOrden(int idOrdenProduccion);
+
+
         public Task<OrdenProduccion> BuscarPorId(int idOrdenProduccion);
+        public Task<IEnumerable<OrdenProduccion>> GetOrdenes();
         public Task<IEnumerable<OrdenProduccionEvento>> GetOrdenEventos(int idOrdenProduccion);
         public Task<IEnumerable<EstadoOrdenProduccion>> GetEstadosOrden();
         public Task<IEnumerable<EtapaOrdenProduccion>> GetEtapasOrden();
-        public Task<IEnumerable<EstadoEtapaOrdenProduccion>> GetEstadosEtapaOrden();
-        public Task<bool> SetEtapaOrdenProduccion(int idOrdenProduccion, int idEtapaOrdenProduccion);
-        public Task<bool> SetEtapaOrdenProduccion(int idOrdenProduccion, EtapaOrdenProduccion etapaOrdenProduccion);
-        public Task<bool> SetEstadoEtapaOrdenProduccion(int IdOrdenProduccion, EstadoEtapaOrdenProduccion estadoEtapaOrdenProduccion);
+        public Task<IEnumerable<EstadoEtapaOrdenProduccion>> GetEstadoEtapasOrden();
+        public Task<int> GetProgreso(int IdOrdenProduccion);
     }
 }

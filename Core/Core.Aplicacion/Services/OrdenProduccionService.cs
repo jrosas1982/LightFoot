@@ -22,6 +22,43 @@ namespace Core.Aplicacion.Services
         }
 
 
+        public async Task<bool> AvanzarEtapa(int idOrdenProduccion)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> PausarEtapa(int idOrdenProduccion)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> ReanudarEtapa(int idOrdenProduccion)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> RetrabajarEtapa(int idOrdenProduccion)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> FinalizarOrden(int idOrdenProduccion)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> CancelarOrden(int idOrdenProduccion)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public async Task<OrdenProduccion> BuscarPorId(int idOrdenProduccion)
+        {
+            var orden = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
+            return orden;
+        }
+
         public async Task<IEnumerable<OrdenProduccion>> GetOrdenes()
         {
             var ordenesList = _db.OrdenesProduccion
@@ -38,26 +75,29 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<OrdenProduccionEvento>> GetOrdenEventos(int idOrdenProduccion)
         {
-            return await _db.OrdeneProduccionEventos.ToListAsync();
+            return await _db.OrdenesProduccionEventos.ToListAsync();
         }
 
-        public async Task<IEnumerable<EstadoEtapaOrdenProduccion>> GetEstadosEtapaOrden()
-        {
-            return await Task.FromResult(EnumExtensions.GetValues<EstadoEtapaOrdenProduccion>());
-        }
-        public async Task<IEnumerable<EstadoOrdenProduccion>> GetEstadosOrden()
+        public async Task<IEnumerable<EstadoOrdenProduccion>> GetEstadosOrden() 
         {
             return await Task.FromResult(EnumExtensions.GetValues<EstadoOrdenProduccion>());
         }
+
         public async Task<IEnumerable<EtapaOrdenProduccion>> GetEtapasOrden()
         {
             return await _db.EtapasOrdenProduccion.ToListAsync();
         }
 
-        public Task<OrdenProduccion> BuscarPorId(int idOrdenProduccion) => throw new NotImplementedException();
+        public async Task<IEnumerable<EstadoEtapaOrdenProduccion>> GetEstadoEtapasOrden()
+        {
+            return await Task.FromResult(EnumExtensions.GetValues<EstadoEtapaOrdenProduccion>());
+        }
 
-        public Task<bool> SetEstadoEtapaOrdenProduccion(int IdOrdenProduccion, EstadoEtapaOrdenProduccion estadoEtapaOrdenProduccion) => throw new NotImplementedException();
-        public Task<bool> SetEtapaOrdenProduccion(int idOrdenProduccion, int idEtapaOrdenProduccion) => throw new NotImplementedException();
-        public Task<bool> SetEtapaOrdenProduccion(int idOrdenProduccion, EtapaOrdenProduccion etapaOrdenProduccion) => throw new NotImplementedException();
+        public async Task<int> GetProgreso(int IdOrdenProduccion)
+        {
+            return await Task.FromResult(50);
+        }
+
+        
     }
 }
