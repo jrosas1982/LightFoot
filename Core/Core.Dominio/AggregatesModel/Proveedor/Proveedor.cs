@@ -8,15 +8,20 @@ namespace Core.Dominio.AggregatesModel
     {
         [Key]
         public int Id { get; set; }
+        [Required]
         public string CUIT { get; set; }
+        [Required]
         public string Nombre { get; set; }
+        [Required]
         public string Direccion { get; set; }
+        [Required]
         public string Telefono { get; set; }
+        [Required]
         public string Email { get; set; }
 
-        public virtual ICollection<ProvedorCuentaCorriente> ProvedorCuentaCorriente { get; set; }
-        public virtual ICollection<ProveedorArticulo> ProveedorArticulos { get; set; }
-        public virtual ICollection<ProveedorInsumo> ProveedorInsumos { get; set; }
+        public virtual ICollection<ProvedorCuentaCorriente> ProvedorCuentaCorriente { get; set; } = new HashSet<ProvedorCuentaCorriente>();
+        public virtual ICollection<ProveedorArticulo> ProveedorArticulos { get; set; } = new HashSet<ProveedorArticulo>();
+        public virtual ICollection<ProveedorInsumo> ProveedorInsumos { get; set; } = new HashSet<ProveedorInsumo>();
         //Proveedor(Id, Nombre, Direccion, Telefono, CUIT, Email)
 
     }

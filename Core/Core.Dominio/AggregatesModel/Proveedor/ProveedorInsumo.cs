@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Core.Dominio.SeedWork;
 
 namespace Core.Dominio.AggregatesModel
 {
-    public class ProveedorInsumo
+    public class ProveedorInsumo : EntityBase
     {
         [Key]
         public int Id { get; set; }

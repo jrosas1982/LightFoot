@@ -6,6 +6,7 @@ namespace Core.Dominio.AggregatesModel
 {
     public class Usuario : EntityBase
     {
+        [Key]
         public int Id { get; set; }
         [Required]
         [Display(Name = "Rol")]

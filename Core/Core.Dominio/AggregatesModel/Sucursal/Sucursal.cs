@@ -19,15 +19,16 @@ namespace Core.Dominio.AggregatesModel
         public string Nombre { get; set; }
         [Required]
         public string Descripcion { get; set; }
+        [Required]
         public string Direccion { get; set; }
         public Boolean Activo { get; set; }
 
-        public virtual ICollection<ArticuloStock> ArticulosStock { get; set; }
+        public virtual ICollection<ArticuloStock> ArticulosStock { get; set; } = new HashSet<ArticuloStock>();
         //public virtual ICollection<MovimientoStock> MovimientoStockOrigen { get; set; }
         //public virtual ICollection<MovimientoStock> MovimientoStockDestino { get; set; }
-        public virtual ICollection<Solicitud> Solicitudes { get; set; }
-        public virtual ICollection<CajaSucursal> CajaSucursal { get; set; }
-        public virtual ICollection<Compra> Compras { get; set; }
-        public virtual ICollection<Venta> Ventas { get; set; }
+        public virtual ICollection<Solicitud> Solicitudes { get; set; } = new HashSet<Solicitud>();
+        public virtual ICollection<CajaSucursal> CajaSucursal { get; set; } = new HashSet<CajaSucursal>();
+        public virtual ICollection<Compra> Compras { get; set; } = new HashSet<Compra>();
+        public virtual ICollection<Venta> Ventas { get; set; } = new HashSet<Venta>();
     }
 }

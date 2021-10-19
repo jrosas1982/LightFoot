@@ -14,10 +14,12 @@ namespace Core.Dominio.AggregatesModel
 
         [Key]
         public int Id { get; set; }
+        [Required]
         public string Descripcion { get; set; }
+        [Required]
         public int Orden { get; set; }
         public Boolean Activo { get; set; }
 
-        public virtual ICollection<RecetaDetalle> RecetaDetalle { get; set; }
+        public virtual ICollection<RecetaDetalle> RecetaDetalle { get; set; } = new HashSet<RecetaDetalle>();
     }
 }

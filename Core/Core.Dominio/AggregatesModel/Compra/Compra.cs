@@ -21,8 +21,8 @@ namespace Core.Dominio.AggregatesModel
         [ForeignKey("IdProveedor")]
         public virtual Proveedor Proveedor { get; set; }
 
-        public virtual ICollection<CompraArticulo> CompraArticulos { get; set; }
-        public virtual ICollection<CompraInsumo> CompraInsumos { get; set; }
+        public virtual ICollection<CompraArticulo> CompraArticulos { get; set; } = new HashSet<CompraArticulo>();
+        public virtual ICollection<CompraInsumo> CompraInsumos { get; set; } = new HashSet<CompraInsumo>();
     }
     //Compra(Id, IdSucursal, IdProveedor, MontoTotal)
 }

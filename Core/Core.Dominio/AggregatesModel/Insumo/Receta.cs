@@ -20,6 +20,6 @@ namespace Core.Dominio.AggregatesModel
 
         [ForeignKey("IdInsumo")]
         public virtual Insumo Insumo { get; set; }
-        public virtual ICollection<RecetaDetalle> RecetaDetalles { get; set; }
+        public virtual ICollection<RecetaDetalle> RecetaDetalles { get; set; } = new HashSet<RecetaDetalle>();
     }
 }
