@@ -88,9 +88,16 @@ namespace Core.Aplicacion.Services
                 solicitud.SolicitudDetalles.Add(detalle);
             }
 
+            solicitud.SolicitudEventos.Add(new SolicitudEvento()
+            {
+                Comentario = solicitud.Comentario,
+                EstadoSolicitud = solicitud.EstadoSolicitud
+            });
+
             await _db.SaveChangesAsync();
             _logger.LogInformation($"Solicitud creada: {solicitud.Id}");
-        }
+
+        }       
 
         public async Task EditarSolicitud(Solicitud solicitud)
         {
@@ -152,7 +159,15 @@ namespace Core.Aplicacion.Services
             solicitudDB.EstadoSolicitud = EstadoSolicitud.Aprobada;
             solicitudDB.Comentario = comentario;
 
+            solicitudDB.SolicitudEventos.Add(new SolicitudEvento()
+            {
+                Comentario = solicitudDB.Comentario,
+                EstadoSolicitud = solicitudDB.EstadoSolicitud
+            });
+
             _db.Update(solicitudDB);
+            
+            await _fabricacion.ReservarStockInsumos(insumosNecesarios);
 
             var PrimerEtapaOrdenProduccion = _db.EtapasOrdenProduccion.OrderBy(x => x.Orden).FirstOrDefault();
             if (PrimerEtapaOrdenProduccion == null)
@@ -162,7 +177,7 @@ namespace Core.Aplicacion.Services
 
             foreach (var detalle in solicitudDB.SolicitudDetalles)
             {
-                ordenesProduccion.Add(new OrdenProduccion()
+                var ordenProduccion = new OrdenProduccion()
                 {
                     IdArticulo = detalle.IdArticulo,
                     IdSolicitudDetalle = detalle.Id,
@@ -170,7 +185,18 @@ namespace Core.Aplicacion.Services
                     EstadoOrdenProduccion = EstadoOrdenProduccion.EnProceso,
                     EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Pendiente,
                     CantidadTotal = detalle.CantidadSolicitada,
-                    CantidadTotalFabricada = 0,
+                    CantidadFabricada = 0,
+                };
+
+                ordenesProduccion.Add(ordenProduccion);
+
+                ordenProduccion.OrdenProduccionEventos.Add(new OrdenProduccionEvento()
+                {
+                    IdEtapaOrdenProduccion = ordenProduccion.IdEtapaOrdenProduccion,
+                    EstadoOrdenProduccion = ordenProduccion.EstadoOrdenProduccion,
+                    EstadoEtapaOrdenProduccion = ordenProduccion.EstadoEtapaOrdenProduccion,
+                    CantidadFabricada = ordenProduccion.CantidadFabricada,
+                    Comentario = "Solicitud Aprobada",
                 });
             }
 

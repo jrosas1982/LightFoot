@@ -78,5 +78,15 @@ namespace Core.Aplicacion.Helpers
         }
 
 
+            foreach (var insumo in insumosStock)
+            {
+                insumo.CantidadStockReserva = insumosNecesarios.Single(x => x.IdInsumo == insumo.Id).Cantidad;
+            }
+
+            if (await insumosStock.AnyAsync(x => x.CantidadStockTotal < x.CantidadStockReserva))
+                throw new Exception("No hay suficiente stock disponible para reservar para la orden de produccion");
+
+            _db.InsumosStock.UpdateRange(insumosStock);
+        }
     }
 }
