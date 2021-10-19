@@ -57,7 +57,9 @@ namespace Core.Aplicacion.Services
             if (solicitudDB == null)
                 throw new Exception($"La solicitud {idSolicitud} no existe");
 
-            var insumosVerificados = await GetVerificacionInsumosStock(solicitudDB.Id);
+            var insumosNecesarios = await _fabricacion.ContabilizarInsumosRequeridos(idSolicitud);
+
+            var insumosVerificados = await _fabricacion.VerificarStockInsumos(insumosNecesarios);
 
             if (insumosVerificados.Any(x => x.CantidadDisponible < x.CantidadNecesaria))
                 throw new Exception("No hay suficiente stock disponible para aprobar la solicitud");
@@ -86,6 +88,8 @@ namespace Core.Aplicacion.Services
                     CantidadTotalFabricada = 0,
                 });
             }
+
+            await _fabricacion.ReservarStockInsumos(insumosNecesarios);
 
             _db.AddRange(ordenesProduccion);
 
@@ -152,16 +156,6 @@ namespace Core.Aplicacion.Services
             var hayStock = !insumosVerificados.Any(x => x.CantidadDisponible < x.CantidadNecesaria);
 
             return await Task.FromResult(hayStock);
-        }
-
-
-        private async Task<IList<CantidadInsumoNecesarioStock>> GetVerificacionInsumosStock(int Idsolicitud)
-        {
-            var insumosNecesarios = await _fabricacion.ContabilizarInsumosRequeridos(Idsolicitud);
-
-            var insumosVerificados = await _fabricacion.VerificarStockInsumos(insumosNecesarios);
-
-            return insumosVerificados;
         }
 
     }

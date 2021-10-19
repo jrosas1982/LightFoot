@@ -22,6 +22,7 @@ namespace Core.Aplicacion.Helpers
             _logger = logger;
         }
 
+        // TODO testear
         public async Task<IList<CantidadInsumo>> ContabilizarInsumosRequeridos(int Idsolicitud)
         {
             //Solicitud
@@ -65,6 +66,7 @@ namespace Core.Aplicacion.Helpers
             return ListadoAcumRecetaDetalles;
         }
 
+        // TODO testear
         public async Task<IList<CantidadInsumoNecesarioStock>> VerificarStockInsumos(IList<CantidadInsumo> insumosNecesarios)
         {
             var insumosStock = _db.InsumosStock.Where(x => insumosNecesarios.Select(y => y.IdInsumo).Contains(x.IdInsumo));
@@ -77,6 +79,21 @@ namespace Core.Aplicacion.Helpers
             return await insumosVerificados.ToListAsync();
         }
 
+        // TODO testear
+        public async Task ReservarStockInsumos(IList<CantidadInsumo> insumosNecesarios)
+        {
+            var insumosStock = _db.InsumosStock.Where(x => insumosNecesarios.Select(y => y.IdInsumo).Contains(x.IdInsumo));
 
+            foreach (var insumo in insumosStock)
+            {
+                insumo.CantidadStockReserva = insumosNecesarios.Single(x => x.IdInsumo == insumo.Id).Cantidad;
+            }
+
+            if (insumosStock.Any(x => x.CantidadStockTotal < x.CantidadStockReserva))
+                throw new Exception("No hay suficiente stock disponible para reservar para la orden de produccion");
+
+            _db.InsumosStock.UpdateRange(insumosStock);
+            await _db.SaveChangesAsync();
+        }
     }
 }
