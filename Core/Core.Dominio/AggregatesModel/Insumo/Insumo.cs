@@ -9,15 +9,12 @@ namespace Core.Dominio.AggregatesModel
     {
         [Key]
         public int Id { get; set; }
-        public int IdReceta { get; set; }
         [Required]
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
         [Required]
         public string Unidad { get; set; }
 
-        [ForeignKey("IdReceta")]
-        public virtual Receta Receta { get; set; }
         public virtual ICollection<ProveedorInsumoHistorico> InsumoHistorico { get; set; } = new HashSet<ProveedorInsumoHistorico>();
     }
 }
