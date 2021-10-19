@@ -136,7 +136,9 @@ namespace Core.Aplicacion.Services
 
         public async Task<Solicitud> BuscarPorId(int idSolicitud)
         {
-            var solicitud = await _db.Solicitudes.FindAsync(idSolicitud);
+            var solicitud = await _db.Solicitudes.SingleOrDefaultAsync(x => x.Id == idSolicitud);
+            if (solicitud == null)
+                throw new Exception("La solicitud solicitada no existe");
             return solicitud;
         }
 
