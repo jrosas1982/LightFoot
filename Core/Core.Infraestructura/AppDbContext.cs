@@ -31,6 +31,9 @@ namespace Core.Infraestructura
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Insumo> Insumos { get; set; }
 
+        public DbSet<Receta> Recetas { get; set; }
+        public DbSet<RecetaDetalle> RecetaDetalles { get; set; }
+
         public DbSet<EtapaOrdenProduccion> EtapasOrdenProduccion { get; set; }
         public DbSet<OrdenProduccion> OrdenesProduccion { get; set; }
         public DbSet<OrdenProduccionEvento> OrdeneProduccionEventos { get; set; }

@@ -4,14 +4,16 @@ using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Infraestructura.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211019034215_data annotations entitybase models")]
+    partial class dataannotationsentitybasemodels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,7 +32,6 @@ namespace Core.Infraestructura.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("CodigoArticulo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Color")
@@ -455,7 +456,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Cortado",
-                            FechaCreacion = new DateTime(2021, 10, 19, 0, 43, 27, 699, DateTimeKind.Local).AddTicks(1562),
+                            FechaCreacion = new DateTime(2021, 10, 19, 0, 42, 14, 942, DateTimeKind.Local).AddTicks(9271),
                             Orden = 1
                         },
                         new
@@ -464,7 +465,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Aparado",
-                            FechaCreacion = new DateTime(2021, 10, 19, 0, 43, 27, 699, DateTimeKind.Local).AddTicks(1755),
+                            FechaCreacion = new DateTime(2021, 10, 19, 0, 42, 14, 942, DateTimeKind.Local).AddTicks(9463),
                             Orden = 2
                         },
                         new
@@ -473,7 +474,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Preparacion",
-                            FechaCreacion = new DateTime(2021, 10, 19, 0, 43, 27, 699, DateTimeKind.Local).AddTicks(1763),
+                            FechaCreacion = new DateTime(2021, 10, 19, 0, 42, 14, 942, DateTimeKind.Local).AddTicks(9471),
                             Orden = 3
                         },
                         new
@@ -482,7 +483,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Montado",
-                            FechaCreacion = new DateTime(2021, 10, 19, 0, 43, 27, 699, DateTimeKind.Local).AddTicks(1766),
+                            FechaCreacion = new DateTime(2021, 10, 19, 0, 42, 14, 942, DateTimeKind.Local).AddTicks(9474),
                             Orden = 4
                         },
                         new
@@ -491,7 +492,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Pegado",
-                            FechaCreacion = new DateTime(2021, 10, 19, 0, 43, 27, 699, DateTimeKind.Local).AddTicks(1769),
+                            FechaCreacion = new DateTime(2021, 10, 19, 0, 42, 14, 942, DateTimeKind.Local).AddTicks(9477),
                             Orden = 5
                         },
                         new
@@ -500,7 +501,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Terminado ",
-                            FechaCreacion = new DateTime(2021, 10, 19, 0, 43, 27, 699, DateTimeKind.Local).AddTicks(1772),
+                            FechaCreacion = new DateTime(2021, 10, 19, 0, 42, 14, 942, DateTimeKind.Local).AddTicks(9480),
                             Orden = 6
                         });
                 });
