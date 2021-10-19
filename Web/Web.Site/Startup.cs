@@ -25,7 +25,7 @@ namespace LightFoot.Web.Site
         public void ConfigureServices(IServiceCollection services)
         {
             // DbContext
-            services.AddDbContextPool<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Conexion")));
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Conexion")));
 
             // Core Services
             services.AddCoreServices();

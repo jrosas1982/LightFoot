@@ -31,7 +31,7 @@ namespace Core.Aplicacion.Services
                 if (userDb == null)
                     throw new Exception("Problemas al ingresar al sistema.");
 
-                if (userDb.Contraseña.Equals(userDb.Contraseña))
+                if (usuario.Contraseña.Equals(userDb.Contraseña))
                 {
                     userDb.Contraseña = _PasswordHasher.HashPassword(userDb.Contraseña);
                     _db.Usuarios.Update(userDb);

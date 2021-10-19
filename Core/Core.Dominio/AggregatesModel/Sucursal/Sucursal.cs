@@ -25,7 +25,6 @@ namespace Core.Dominio.AggregatesModel
         public virtual ICollection<ArticuloStock> ArticulosStock { get; set; }
         //public virtual ICollection<MovimientoStock> MovimientoStockOrigen { get; set; }
         //public virtual ICollection<MovimientoStock> MovimientoStockDestino { get; set; }
-        [NotMapped]
         public virtual ICollection<Solicitud> Solicitudes { get; set; }
         public virtual ICollection<CajaSucursal> CajaSucursal { get; set; }
         public virtual ICollection<Compra> Compras { get; set; }

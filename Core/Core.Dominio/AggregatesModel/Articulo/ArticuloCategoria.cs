@@ -12,14 +12,10 @@ namespace Core.Dominio.AggregatesModel
             Activo = true;
         }
         public int Id { get; set; }
-        public int IdArticulo { get; set; }
         public string Descripcion { get; set; }
         public string Comentario { get; set; }
         public Boolean Activo { get; set; }
 
         public virtual ICollection<Articulo> Articulos { get; set; }
-
-        [ForeignKey("IdArticulo")]
-        public virtual Articulo Articulo { get; set; }
     }
 }
