@@ -55,6 +55,8 @@ namespace Core.Aplicacion.Services
 
         }       
 
+
+        //TODO agregar validacion receta
         public async Task AprobarSolicitud(int idSolicitud, string comentario = "")
         {
             var solicitudDB = _db.Solicitudes
@@ -115,7 +117,7 @@ namespace Core.Aplicacion.Services
                 });
             }
 
-            await _fabricacion.ReservarStockInsumos(insumosNecesarios);
+            //await _fabricacion.ReservarStockInsumos(insumosNecesarios);
 
             _db.AddRange(ordenesProduccion);
 
