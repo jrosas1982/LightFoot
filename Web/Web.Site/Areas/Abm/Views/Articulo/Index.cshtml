@@ -8,7 +8,7 @@
 @using Core.Dominio.AggregatesModel
 @model IEnumerable<Articulo>
 
-<div class="row wrapper border-bottom white-bg page-heading">
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
     <div class="col-lg-12">
         <h2>Articulos</h2>
         <ol class="breadcrumb">
@@ -24,7 +24,14 @@
         </ol>
     </div>
     <div class="col-lg-12" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditarArticulo", "Articulo", 0)'"> Crear nuevo Articulos</button>
+        <button type="button" class="btn btn-w-m btn-primary" onclick="window.print()">Imprimir Reporte</button>
+        <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditarArticulo", "Articulo", 0)'">Crear nuevo Articulos</button>
+    </div>
+</div>
+
+<div class="d-none d-print-block">
+    <div class="alert alert-primary" role="alert">
+       Reporte de Articulos @DateTime.Now
     </div>
 </div>
 
@@ -45,7 +52,7 @@
                                 <th>Color</th>
                                 <th>Talle</th>
                                 <th>Estado</th>
-                                <th>Acciones</th>
+                                <th class="d-print-none">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -59,7 +66,7 @@
                                         <td>@item.Color</td>
                                         <td>@item.TalleArticulo</td>
                                         <td>@item.ArticuloEstado.ToString()</td>
-                                        <td>
+                                        <td class="d-print-none">
                                             <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarArticulo('@item.Id')">Borrar</button>
                                             <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarArticulo('@item.Id')">Editar</button>
                                         </td>
@@ -74,7 +81,7 @@
                                 <th>Color</th>
                                 <th>Talle</th>
                                 <th>Estado</th>
-                                <th>Acciones</th>
+                                <th class="d-print-none">Acciones</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -142,22 +149,25 @@
                 pageLength: 25,
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [
-                    { extend: 'copy' },
-                    { extend: 'csv' },
-                    { extend: 'excel', title: 'ExampleFile' },
-                    { extend: 'pdf', title: 'ExampleFile' },
+                    //{ extend: 'copy' },
+                    //{ extend: 'csv' },
+                    //{ extend: 'excel', title: 'ExampleFile' },
+                    //{ extend: 'pdf', title: 'ExampleFile' },
 
-                    {
-                        extend: 'print',
-                        customize: function (win) {
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
+                    //{
+                    //    extend: 'print',
+                    //    title: 'Articulos!',
+                    //    customize: function (win) {
+                    //        $(win.document.body).addClass('white-bg');
+                    //        $(win.document.body).css('font-size', '11px');
 
-                            $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                        }
-                    }
+                    //        $(win.document.body).find('table')
+                    //            .addClass('compact')
+                    //            .css('font-size', 'inherit');
+
+                       
+                    //    }
+                    //}
                 ]
 
             });

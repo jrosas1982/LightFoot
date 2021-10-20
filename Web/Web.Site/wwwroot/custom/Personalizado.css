@@ -3,3 +3,27 @@
     display: table-cell;
     width: 100% !important;
 }
+
+
+@media print {
+    .no-print, .dataTables_info, .dataTables_length, .ibox-title, .pagination, .html5buttons, .navegacion, footer, .no-print * {
+        display: none !important;
+    }
+
+    .gray-bg {
+        background-color: #ffffff !important;
+    }
+}
+
+::-webkit-scrollbar {
+    width: calc(0.15rem + 0.25vh + 0.25vw);
+    height: calc(0.15rem + 0.25vh + 0.25vw);
+}
+
+::-webkit-scrollbar-track {
+    background: #eaeaea;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #a8a8a8;
+}
