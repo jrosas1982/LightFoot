@@ -41,10 +41,10 @@ namespace Web.Site.Areas
             var model = new OrdenProduccionDetalleModel()
             {
                 OrdenProduccion = ordenesList.Where(x => x.Id == idOrdenProduccion).First(),
-                //EstadosOrdenProduccion = await _ordenProduccionService.GetEstadosOrden(),
-                //EtapasOrdenProduccion = await _ordenProduccionService.GetEtapasOrden(),
-                //EstadosEtapaOrdenProduccion = await _ordenProduccionService.GetEstadosEtapaOrden(),
-                //OrdenProduccionEventos = await _ordenProduccionService.GetOrdenEventos(idOrdenProduccion)
+                EstadosOrdenProduccion = await _ordenProduccionService.GetEstadosOrden(),
+                EtapasOrdenProduccion = await _ordenProduccionService.GetEtapasOrden(),
+                EstadosEtapaOrdenProduccion = await _ordenProduccionService.GetEstadoEtapasOrden(),
+                OrdenProduccionEventos = await _ordenProduccionService.GetOrdenEventos(idOrdenProduccion)
             };
 
             return View(model);
