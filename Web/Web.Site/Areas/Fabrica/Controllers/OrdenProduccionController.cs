@@ -36,21 +36,18 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> DetallesOrdenProduccion(int idOrdenProduccion)
         {
-            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
+            var ordenesList = await _ordenProduccionService.GetOrdenes();
 
             var model = new OrdenProduccionDetalleModel()
             {
-                OrdenProduccion = orden,
-
-                //EstadosOrdenProduccion = await _ordenProduccionService.GetEstadosOrden(),
-                //EtapasOrdenProduccion = await _ordenProduccionService.GetEtapasOrden(),
-                //EstadosEtapaOrdenProduccion = await _ordenProduccionService.GetEstadosEtapaOrden(),
-                //OrdenProduccionEventos = await _ordenProduccionService.GetOrdenEventos(idOrdenProduccion)
+                OrdenProduccion = ordenesList.Where(x => x.Id == idOrdenProduccion).First(),
+                EstadosOrdenProduccion = await _ordenProduccionService.GetEstadosOrden(),
+                EtapasOrdenProduccion = await _ordenProduccionService.GetEtapasOrden(),
+                EstadosEtapaOrdenProduccion = await _ordenProduccionService.GetEstadoEtapasOrden(),
+                OrdenProduccionEventos = await _ordenProduccionService.GetOrdenEventos(idOrdenProduccion)
             };
 
             return View(model);
         }
-
-
     }
 }

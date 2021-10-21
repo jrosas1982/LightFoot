@@ -9,7 +9,7 @@
 
 @model IEnumerable<Usuario>
 
-<div class="row wrapper border-bottom white-bg page-heading">
+<div class="row wrapper border-bottom white-bg page-heading d-print-none">
     <div class="col-lg-12">
         <h2>Usuarios</h2>
         <ol class="breadcrumb">
@@ -164,18 +164,28 @@
                     { extend: 'copy' },
                     { extend: 'csv' },
                     { extend: 'excel', title: 'ExampleFile' },
-                    { extend: 'pdf', title: 'ExampleFile' },
+                    {
+                        extend: 'pdf',
+                        exportOptions: {
+                            columns: [0, 1, 2, 5]
+                        },
+                        title: 'Reporte de usuarios'
+                    },
 
                     {
                         extend: 'print',
-                        customize: function (win) {
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
+                        autoPrint: true,
+                        exportOptions: {
+                            columns: [0, 1, 2, 5]
                         }
+                        //customize: function (win) {
+                        //    $(win.document.body).addClass('white-bg');
+                        //    $(win.document.body).css('font-size', '10px');
+
+                        //    $(win.document.body).find('table')
+                        //        .addClass('compact')
+                        //        .css('font-size', 'inherit');
+                        //}
                     }
                 ]
 
