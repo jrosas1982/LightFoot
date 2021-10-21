@@ -10,5 +10,8 @@ namespace Web.Site.Areas
         public IEnumerable<EtapaOrdenProduccion> EtapasOrdenProduccion { get; set; }
         public IEnumerable<EstadoEtapaOrdenProduccion> EstadosEtapaOrdenProduccion { get; set; }
         public IEnumerable<OrdenProduccionEvento> OrdenProduccionEventos { get; set; }
+        public int NumeroDeEtapaActual { get; set; }
+        public int NumeroTotalDeEtapas { get; set; }
+        public int PorcentajeCompletado { get; set; }
     }
 }

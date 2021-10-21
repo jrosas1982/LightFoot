@@ -2,6 +2,10 @@
 @{
     ViewData["Title"] = "DetallesOrdenProduccion";
     Layout = "_Layout";
+    var idEtapaActual = Model.OrdenProduccion.EtapaOrdenProduccion.Id;
+    var idEtapas = Model.EtapasOrdenProduccion.OrderBy(x => x.Orden).Select(x => x.Id).ToList();
+    var progreso = idEtapas.IndexOf(idEtapaActual) + 1;
+    var porcentaje = (int)Math.Round((double)(100 * progreso) / idEtapas.Count());
 }
 
 @model OrdenProduccionDetalleModel
@@ -30,8 +34,8 @@
 
     <h5>Progreso</h5>
     <div class="progress">
-        <div style="width: 60%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" role="progressbar" class="progress-bar  progress-bar-striped  progress-bar-animated bg-primary">
-            <span class="sr-only">60% Complete (success)</span>
+        <div style="width: @porcentaje%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" role="progressbar" class="progress-bar  progress-bar-striped  progress-bar-animated bg-primary">
+            <span class="sr-only">@porcentaje% Completo</span>
         </div>
     </div>
 
@@ -39,7 +43,7 @@
         <div class="col-lg-5">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    Etapa @Model.OrdenProduccion.EtapaOrdenProduccion.Descripcion (2 de 6)
+                    Etapa @Model.OrdenProduccion.EtapaOrdenProduccion.Descripcion (@progreso de @idEtapas.Count())
                 </div>
 
                 <div class="panel-body">
@@ -82,9 +86,34 @@
                 </div>
 
                 <div class="panel-footer">
-                    <button type="button" class="btn btn-danger btn-lg w-100 my-1">Marcar como Retrabajo</button>
-                    <button type="button" class="btn btn-info btn-lg w-100 my-1">Pausar Etapa</button>
-                    <button type="button" class="btn btn-primary btn-lg w-100 my-1">Avanzar Etapa</button>
+
+                    @if (Model.OrdenProduccion.EstadoEtapaOrdenProduccion == EstadoEtapaOrdenProduccion.Pausada)
+                    {
+                        <button type="button" class="btn btn-info btn-lg w-100 my-1">Reanudar Etapa</button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-info btn-lg w-100 my-1">Pausar Etapa</button>
+                    }
+
+                    @if (Model.OrdenProduccion.EstadoEtapaOrdenProduccion == EstadoEtapaOrdenProduccion.Finalizada)
+                    {
+                        <button type="button" class="btn btn-danger btn-lg w-100 my-1" onclick="MarcarComoRetrabajo('@Model.OrdenProduccion.Id')">Marcar como Retrabajo</button>
+                    }
+                    else if (Model.OrdenProduccion.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Finalizada)
+                    {
+                        <button type="button" class="btn btn-info btn-lg w-100 my-1">Avanzar Etapa</button>
+                    }
+
+                    @if (Model.OrdenProduccion.EtapaOrdenProduccion.Id == Model.EtapasOrdenProduccion.OrderBy(x => x.Orden).Last().Id)
+                    {
+                        <button type="button" class="btn btn-info btn-lg w-100 my-1">Finalizar Orden</button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-primary btn-lg w-100 my-1">Cancelar Orden</button>
+                    }
+
                 </div>
             </div>
         </div>
@@ -111,11 +140,12 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (var estado in Model.EstadosEtapaOrdenProduccion)
+                                            @foreach (var evento in Model.OrdenProduccionEventos.Where(x => x.IdEtapaOrdenProduccion == etapa.Id))
                                             {
                                                 <tr>
-                                                    <td class="text-left">@estado</td>
-                                                    <td class="text-center">12:05:16</td>
+                                                    <td class="text-left">@evento.EstadoOrdenProduccion</td>
+                                                    <td class="text-center">@evento.EtapaOrdenProduccion.Descripcion</td>
+                                                    <td class="text-center">@evento.EstadoEtapaOrdenProduccion</td>
                                                 </tr>
                                             }
                                         </tbody>
@@ -158,5 +188,11 @@
 
 
         });
+    </script>
+
+    <script type="text/javascript">
+        function MarcarComoRetrabajo(id) {
+            window.location = '/fabrica/OrdenProduccion/DetallesOrdenProduccion?IdOrdenProduccion=' + id;
+        }
     </script>
 }

@@ -61,7 +61,11 @@ namespace Core.Aplicacion.Services
 
         public async Task<OrdenProduccion> BuscarPorId(int idOrdenProduccion)
         {
-            var orden = await _db.OrdenesProduccion.Include(x => x.OrdenProduccionEventos).SingleOrDefaultAsync(x => x.Id == idOrdenProduccion);
+            var orden = await _db.OrdenesProduccion
+                .Include(x => x.OrdenProduccionEventos)
+                       .ThenInclude(x => x.EtapaOrdenProduccion)
+                .Include(x => x.EtapaOrdenProduccion)         
+                .SingleOrDefaultAsync(x => x.Id == idOrdenProduccion);
             if (orden == null)
                 throw new Exception("La orden de produccion solicitada no existe");
 
