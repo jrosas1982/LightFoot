@@ -27,3 +27,9 @@
 ::-webkit-scrollbar-thumb {
     background: #a8a8a8;
 }
+
+.overflow-100vh {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    max-height: 100vh !important;
+} 

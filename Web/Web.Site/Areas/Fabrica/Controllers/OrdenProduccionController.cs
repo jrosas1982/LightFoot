@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -44,10 +45,60 @@ namespace Web.Site.Areas
                 EstadosOrdenProduccion = await _ordenProduccionService.GetEstadosOrden(),
                 EtapasOrdenProduccion = await _ordenProduccionService.GetEtapasOrden(),
                 EstadosEtapaOrdenProduccion = await _ordenProduccionService.GetEstadoEtapasOrden(),
-                OrdenProduccionEventos = await _ordenProduccionService.GetOrdenEventos(idOrdenProduccion)
+                OrdenProduccionEventos = await _ordenProduccionService.GetOrdenEventos(idOrdenProduccion),
+                PorcentajeCompletado = await _ordenProduccionService.GetProgreso(idOrdenProduccion)
             };
 
             return View(model);
         }
+
+        public async Task<IActionResult> AvanzarEtapa(int idOrdenProduccion)
+        {
+            try
+            {
+                await _ordenProduccionService.AvanzarEtapa(idOrdenProduccion);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        public async Task<IActionResult> PausarEtapa(int idOrdenProduccion)
+        {
+            try
+            {
+                await _ordenProduccionService.PausarEtapa(idOrdenProduccion);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<IActionResult> ReanudarEtapa(int idOrdenProduccion)
+        {
+            await _ordenProduccionService.ReanudarEtapa(idOrdenProduccion);
+            return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> RetrabajarEtapa(int idOrdenProduccion)
+        {
+            await _ordenProduccionService.RetrabajarEtapa(idOrdenProduccion);
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> FinalizarOrden(int idOrdenProduccion)
+        {
+            await _ordenProduccionService.FinalizarOrden(idOrdenProduccion);
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> CancelarOrden(int idOrdenProduccion)
+        {
+            await _ordenProduccionService.CancelarOrden(idOrdenProduccion);
+            return RedirectToAction("Index");
+        }
+
     }
 }
