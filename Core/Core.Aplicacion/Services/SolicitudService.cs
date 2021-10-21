@@ -44,10 +44,19 @@ namespace Core.Aplicacion.Services
                 solicitud.SolicitudDetalles.Add(detalle);
             }
 
+            solicitud.SolicitudEventos.Add(new SolicitudEvento()
+            {
+                Comentario = solicitud.Comentario,
+                EstadoSolicitud = solicitud.EstadoSolicitud
+            });
+
             await _db.SaveChangesAsync();
             _logger.LogInformation($"Solicitud creada: {solicitud.Id}");
-        }
 
+        }       
+
+
+        //TODO agregar validacion receta
         public async Task AprobarSolicitud(int idSolicitud, string comentario = "")
         {
             var solicitudDB = _db.Solicitudes
@@ -67,7 +76,15 @@ namespace Core.Aplicacion.Services
             solicitudDB.EstadoSolicitud = EstadoSolicitud.Aprobada;
             solicitudDB.Comentario = comentario;
 
+            solicitudDB.SolicitudEventos.Add(new SolicitudEvento()
+            {
+                Comentario = solicitudDB.Comentario,
+                EstadoSolicitud = solicitudDB.EstadoSolicitud
+            });
+
             _db.Update(solicitudDB);
+            
+            await _fabricacion.ReservarStockInsumos(insumosNecesarios);
 
             var PrimerEtapaOrdenProduccion = _db.EtapasOrdenProduccion.OrderBy(x => x.Orden).FirstOrDefault();
             if (PrimerEtapaOrdenProduccion == null)
@@ -77,7 +94,7 @@ namespace Core.Aplicacion.Services
 
             foreach (var detalle in solicitudDB.SolicitudDetalles)
             {
-                ordenesProduccion.Add(new OrdenProduccion()
+                var ordenProduccion = new OrdenProduccion()
                 {
                     IdArticulo = detalle.IdArticulo,
                     IdSolicitudDetalle = detalle.Id,
@@ -85,11 +102,22 @@ namespace Core.Aplicacion.Services
                     EstadoOrdenProduccion = EstadoOrdenProduccion.EnProceso,
                     EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Pendiente,
                     CantidadTotal = detalle.CantidadSolicitada,
-                    CantidadTotalFabricada = 0,
+                    CantidadFabricada = 0,
+                };
+
+                ordenesProduccion.Add(ordenProduccion);
+
+                ordenProduccion.OrdenProduccionEventos.Add(new OrdenProduccionEvento()
+                {
+                    IdEtapaOrdenProduccion = ordenProduccion.IdEtapaOrdenProduccion,
+                    EstadoOrdenProduccion = ordenProduccion.EstadoOrdenProduccion,
+                    EstadoEtapaOrdenProduccion = ordenProduccion.EstadoEtapaOrdenProduccion,
+                    CantidadFabricada = ordenProduccion.CantidadFabricada,
+                    Comentario = "Solicitud Aprobada",
                 });
             }
 
-            await _fabricacion.ReservarStockInsumos(insumosNecesarios);
+            //await _fabricacion.ReservarStockInsumos(insumosNecesarios);
 
             _db.AddRange(ordenesProduccion);
 
@@ -110,7 +138,9 @@ namespace Core.Aplicacion.Services
 
         public async Task<Solicitud> BuscarPorId(int idSolicitud)
         {
-            var solicitud = await _db.Solicitudes.FindAsync(idSolicitud);
+            var solicitud = await _db.Solicitudes.SingleOrDefaultAsync(x => x.Id == idSolicitud);
+            if (solicitud == null)
+                throw new Exception("La solicitud solicitada no existe");
             return solicitud;
         }
 

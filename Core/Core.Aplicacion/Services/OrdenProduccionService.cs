@@ -24,38 +24,47 @@ namespace Core.Aplicacion.Services
 
         public async Task<bool> AvanzarEtapa(int idOrdenProduccion)
         {
+            //
             throw new NotImplementedException();
         }
 
         public async Task<bool> PausarEtapa(int idOrdenProduccion)
         {
+            //pausa la etapa si no estaba pausada
             throw new NotImplementedException();
         }
 
         public async Task<bool> ReanudarEtapa(int idOrdenProduccion)
         {
+            //reanuda la etapa si no estaba reanudada
             throw new NotImplementedException();
         }
 
         public async Task<bool> RetrabajarEtapa(int idOrdenProduccion)
         {
+            //marca la orden como retrabajo
             throw new NotImplementedException();
         }
 
         public async Task<bool> FinalizarOrden(int idOrdenProduccion)
         {
+            //marca la orden como finalizada si esta todo bien
             throw new NotImplementedException();
         }
 
         public async Task<bool> CancelarOrden(int idOrdenProduccion)
         {
+            // cancelar orden y liberar todos los insumos que quedaban reservados
             throw new NotImplementedException();
         }
 
 
         public async Task<OrdenProduccion> BuscarPorId(int idOrdenProduccion)
         {
-            var orden = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
+            var orden = await _db.OrdenesProduccion.Include(x => x.OrdenProduccionEventos).SingleOrDefaultAsync(x => x.Id == idOrdenProduccion);
+            if (orden == null)
+                throw new Exception("La orden de produccion solicitada no existe");
+
             return orden;
         }
 
@@ -97,7 +106,11 @@ namespace Core.Aplicacion.Services
         {
             return await Task.FromResult(50);
         }
+        public async Task<int> GetTiempoTranscurrido(int IdOrdenProduccion)
+        {
+            return await Task.FromResult(50);
+        }
 
-        
+
     }
 }

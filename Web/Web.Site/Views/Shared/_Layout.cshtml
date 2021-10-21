@@ -10,18 +10,18 @@
     @if (IsSectionDefined("Styles"))
         @await RenderSectionAsync("Styles", required: false)
 
-    <!-- LightFoot Begin-->
-    <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
-    <link rel="stylesheet" href="~/custom/Personalizado.css" />
-    <!-- LightFoot End -->
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
     <link rel="stylesheet" href="~/css/animate.css" />
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
 
+    <!-- LightFoot Begin-->
+    <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+    <link rel="stylesheet" href="~/custom/Personalizado.css" />
+    <!-- LightFoot End -->
 </head>
-<body>
+<body style="background: white;">
 
     <!-- Skin configuration box -->
     <!-- <partial name="_SkinConfig" /> -->
@@ -32,23 +32,24 @@
         <partial name="_Navigation" />
 
         <!-- Page wraper -->
-        <div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass">
+        @*<div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass">*@
+            <div id="page-wrapper" class="gray-bg">
 
-            <!-- Top Navbar -->
-            <partial name="_TopNavbar" />
+                <!-- Top Navbar -->
+                <partial name="_TopNavbar" />
 
-            <!-- Main view  -->
-            @RenderBody()
+                <!-- Main view  -->
+                @RenderBody()
 
-            <!-- Footer -->
-            <partial name="_Footer" />
+                <!-- Footer -->
+                <partial name="_Footer" />
+
+            </div>
+            <!-- End page wrapper-->
+            <!-- Right Sidebar -->
+            <partial name="_RightSidebar" />
 
         </div>
-        <!-- End page wrapper-->
-        <!-- Right Sidebar -->
-        <partial name="_RightSidebar" />
-
-    </div>
     <!-- End wrapper-->
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -60,7 +61,6 @@
     <script src="~/js/script.js" asp-append-version="true"></script>
 
     <!-- LightFoot Begin-->
-    Object.defineProperty(WebSocket, 'OPEN', { value: 1, });
     <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
     <script src="~/custom/signalr.min.js"></script>
     @*<script src="~/custom/Personalizado.js"></script>*@

@@ -89,11 +89,10 @@ namespace Core.Aplicacion.Helpers
                 insumo.CantidadStockReserva = insumosNecesarios.Single(x => x.IdInsumo == insumo.Id).Cantidad;
             }
 
-            if (insumosStock.Any(x => x.CantidadStockTotal < x.CantidadStockReserva))
+            if (await insumosStock.AnyAsync(x => x.CantidadStockTotal < x.CantidadStockReserva))
                 throw new Exception("No hay suficiente stock disponible para reservar para la orden de produccion");
 
             _db.InsumosStock.UpdateRange(insumosStock);
-            await _db.SaveChangesAsync();
         }
     }
 }

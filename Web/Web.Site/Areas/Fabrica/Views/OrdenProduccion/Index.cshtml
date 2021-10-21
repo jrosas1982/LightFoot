@@ -130,7 +130,7 @@
                                                 <span class="label label-@orden.EstadoEtapaOrdenProduccion.GetGroupName()">@orden.EstadoEtapaOrdenProduccion.GetDisplayName()</span>
                                             </td>
                                             <td>@orden.CantidadTotal</td>
-                                            <td>@orden.CantidadTotalFabricada</td>
+                                            <td>@orden.CantidadFabricada</td>
                                             <th>@((DateTime.Now - orden.FechaCreacion).ToString(@"hh\:mm\:ss"))</th>
                                             <td>
                                                 <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerDetalles('@orden.Id')">Ver Detalles</button>

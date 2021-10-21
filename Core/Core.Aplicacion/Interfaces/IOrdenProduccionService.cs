@@ -23,3 +23,4 @@ namespace Core.Aplicacion.Interfaces
         public Task<int> GetProgreso(int IdOrdenProduccion);
     }
 }
+
