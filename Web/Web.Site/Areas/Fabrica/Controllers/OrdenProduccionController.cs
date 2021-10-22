@@ -56,7 +56,7 @@ namespace Web.Site.Areas
         {
             try
             {
-                await _ordenProduccionService.AvanzarEtapa(idOrdenProduccion);
+                await _ordenProduccionService.AvanzarSiguienteEtapa(idOrdenProduccion);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
