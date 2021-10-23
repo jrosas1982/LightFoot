@@ -40,6 +40,20 @@ namespace Web.Site.Areas
             return View(model);
         }
 
+        public async Task<IActionResult> SolicitudDetalle(int IdSolicitud)
+        {
+            var solicitudes = await _solicitudService.GetSolicitudes();
+
+            var model = new SolicitudDetalleModel()
+            {
+                Solicitudes = solicitudes,
+                Sucursales = await _sucursalService.GetSucursales(),
+                EstadosSolicitud = await _solicitudService.GetEstadosSolicitud()
+            };
+
+            return View(model);
+        }
+
         public async Task<IActionResult> CrearEditarSolicitud(int IdSolicitud)
         {
             Solicitud solicitud;
@@ -62,12 +76,10 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> ColoresPorArticulo(string NumeroTalle) 
         {
-         
                 var articulosList = await _articuloService.GetArticulos();
                 SolicitudModel solicitudModel = new SolicitudModel();
                 solicitudModel.Colores = articulosList.Where(x => x.TalleArticulo == NumeroTalle).Select(c => new SelectListItem() { Text = $"{c.Color}", Value = $"{c.Color}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); ;
                 return Json(solicitudModel.Colores);
-     
         }
         
         public async Task<IActionResult> TallesPorArticulo(string NombreArticulo)
