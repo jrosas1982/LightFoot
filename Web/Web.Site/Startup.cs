@@ -33,6 +33,8 @@ namespace LightFoot.Web.Site
             services.AddHttpContextAccessor();
             services.AddSignalR();
 
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
             services.AddAuthorization(config =>
             {
                 config.AddPolicy(Policies.IsAdmin, Policies.AdminPolicy());
@@ -52,6 +54,7 @@ namespace LightFoot.Web.Site
             });
 
             services.AddMvc(options => options.EnableEndpointRouting = false);
+
 
             services.AddAuthentication(options =>
              {

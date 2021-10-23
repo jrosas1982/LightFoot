@@ -107,13 +107,15 @@ namespace Core.Aplicacion.Services
 
         public async Task<bool> AvanzarSiguienteEtapa(int idOrdenProduccion)
         {
-            var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
+            var ordenDb = await _db.OrdenesProduccion.Include(x => x.EtapaOrdenProduccion).SingleOrDefaultAsync(x => x.Id == idOrdenProduccion);
 
             if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Finalizada)
                 throw new Exception("La etapa de la orden debe encontrarse en estado Finalizada para poder avanzar a la siguiente etapa");
 
             var etapaActual = ordenDb.EtapaOrdenProduccion;
             var siguienteEtapa = _db.EtapasOrdenProduccion.Where(x => x.Orden > etapaActual.Orden).MinBy(x => x.Orden).SingleOrDefault();
+            //var asd = _db.EtapasOrdenProduccion.Where(x => x.Orden > etapaActual.Orden).MinBy(x => x.Orden);
+            //var siguienteEtapa = asd.Take(1).Single();
 
             if (siguienteEtapa == null)
                 throw new Exception("La orden se ya encuentra en la ultima etapa");
@@ -139,6 +141,7 @@ namespace Core.Aplicacion.Services
                 throw new Exception("Aun quedan etapas por realizar");
 
             ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.Finalizada;
+            ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.Finalizada;
 
             _db.OrdenesProduccion.Update(ordenDb);
             await _db.SaveChangesAsync();
@@ -151,6 +154,7 @@ namespace Core.Aplicacion.Services
             // TODO liberar todos los insumos que quedaban reservados
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
             ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.Cancelada;
+            ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Cancelada;
 
             _db.OrdenesProduccion.Update(ordenDb);
             await _db.SaveChangesAsync();
