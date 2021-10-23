@@ -112,6 +112,13 @@ namespace Web.Site.Areas
             return RedirectToAction("Index");
         }
 
+        public async Task<IActionResult> Rechazar(int idSolicitud)
+        {
+            await _solicitudService.RechazarSolicitud(idSolicitud,"comentario");
+            return RedirectToAction("Index");
+        }
+        
+
         public async Task<IActionResult> Eliminar(Solicitud solicitud)
         {
             //var result = await _solicitudService.EliminarSolicitud(solicitud);

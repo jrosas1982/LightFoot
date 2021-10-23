@@ -12,8 +12,11 @@ namespace Core.Dominio.AggregatesModel
         [Key]
         public int Id { get; set; }
         public int IdReceta { get; set; }
+        [Required]
         public int IdInsumo { get; set; }
+        [Required]
         public int IdEtapaOrdenProduccion { get; set; }
+        [Required]
         public int Cantidad { get; set; }
         public string Comentario { get; set; }
 

@@ -1,0 +1,34 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+@using Web.Site.Areas
+@model RecetaDetalle
+@{
+    bool esEditar = (Model.Id != 0);
+    string idTr = esEditar ? Model.Id + "List" : "";
+}
+<tr id="@idTr">
+    @using (Html.BeginCollectionItem("RecetaDetalles"))
+    {
+        {
+            @Html.HiddenFor(x => x.Id)
+            @Html.HiddenFor(x => x.IdInsumo)
+            @Html.HiddenFor(x => x.IdEtapaOrdenProduccion)
+
+            <td>@Html.DisplayFor(x => x.Insumo.Nombre)</td>
+            <td>@Html.DisplayFor(x => x.Cantidad)</td>
+            <td>@Html.DisplayFor(x => x.EtapaOrdenProduccion.Descripcion)</td>
+            <td>@Html.DisplayFor(x => x.Comentario)</td>
+   
+            <td>
+                @if (!esEditar)
+                {
+                    <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick="removeRow(this)">Borrar</button>
+                }
+                else
+                {
+                    <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="">Borrar</button>
+                    @*<button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick="DeletePriceListProduct('@Html.DisplayTextFor(x => x.Id)')">Borrar</button>*@
+                }
+            </td>
+        }
+    }
+</tr>

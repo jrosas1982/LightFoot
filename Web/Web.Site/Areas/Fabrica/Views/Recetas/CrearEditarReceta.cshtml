@@ -1,0 +1,185 @@
+﻿@{
+    ViewData["Title"] = "Crear Receta";
+    bool esEdicion = (Model.Id != 0);
+    Layout = "_Layout";
+    string controlador = "Recetas";
+}
+
+@using Web.Site.Areas.Fabrica.Models
+@model RecetaModel
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>@(esEdicion ? "Modificar" : "Crear")</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Dashboard_1", "Dashboards")">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Fabrica</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <a href="@Url.Action("Index", "Recetas", new { area = "fabrica" })">@controlador</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>@(esEdicion ? "Modificar" : "Nueva") @controlador</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+
+<div class="wrapper wrapper-content animated fadeInRight ecommerce">
+
+    @using (Html.BeginForm(esEdicion ? "Editar" : "CrearEditarReceta", "Recetas", FormMethod.Post, new { id = "formReceta" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Id)
+        <div class="ibox-content m-b-sm border-bottom">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.IdArticulo, "Nombre de Articulo")
+                        @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), new { @class = "form-control m-b", @id = "dropdownArticulos" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="wrapper wrapper-content animated fadeInRight ecommerce">
+            <div class="ibox-content m-b-sm border-bottom">
+                <table id="ListaAriticulo" class="table table-bordered">
+                    <tr>
+                        <th>Nombre de Insumo </th>
+                        <th>Cantidad</th>
+                        <th>Etapa involucrada</th>
+                        <th>Comentario</th>
+                        <th>Borrar</th>
+                    </tr>
+                    <tbody>
+                        @if (Model.RecetaDetalles != null)
+                        {
+                            @foreach (var Adds in Model.RecetaDetalles)
+                            {
+                                if (Adds != null)
+                                {
+                                    @await Html.PartialAsync("_RecetaDetalle", Adds)
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="ibox-content border-0 pt-0 pr-0">
+                    <div class="text-center d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#NewCommentModal">
+                            Agregar @controlador
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align:right">
+            <button id="btnReceta" type="Submit" class="btn btn-w-m btn-primary">@(esEdicion ? "Modificar" : "Crear") @controlador</button>
+        </div>
+        @* MODAL NEW COMMENT *@
+        <div class="modal inmodal fade" id="NewCommentModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header pb-1">
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-center">
+                                <h1 style="font-size:30px;">Nueva @controlador</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-floating">
+                            @Html.LabelFor(m => m.RecetaDetalle.Insumo.Nombre)
+                            @Html.DropDownListFor(m => m.RecetaDetalle.Insumo.Id, new List<SelectListItem>(ViewBag.Insumos), " -- Seleccionar Insumo --", new { @id = "IdInsumo", @class = "form-control required" })
+                            @Html.ValidationMessageFor(model => model.RecetaDetalle.Cantidad, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-floating">
+                            @Html.LabelFor(m => m.RecetaDetalle.Cantidad)
+                            @Html.EditorFor(model => model.RecetaDetalle.Cantidad, new { htmlAttributes = new { @id = "CantidadSolicitada", @class = "form-control required", @placeholder = "" } })
+                            @Html.ValidationMessageFor(model => model.RecetaDetalle.Cantidad, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-floating">
+                            @Html.LabelFor(m => m.RecetaDetalle.EtapaOrdenProduccion)
+                            @Html.DropDownListFor(m => m.RecetaDetalle.EtapaOrdenProduccion.Orden, new List<SelectListItem>(ViewBag.EtapasOrden), " -- Seleccionar Color --", new { @id = "IdEtapaOrdenProduccion", @class = "form-control required" })
+                            @Html.ValidationMessageFor(model => model.RecetaDetalle.Cantidad, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-floating">
+                            @Html.LabelFor(m => m.RecetaDetalle.Comentario)
+                            @Html.EditorFor(model => model.RecetaDetalle.Comentario, new { htmlAttributes = new { @id = "Comentario", @class = "form-control", @placeholder = "" } })
+                            @Html.ValidationMessageFor(model => model.RecetaDetalle.Comentario, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="button" onclick="addInsumo()" class="btn btn-primary" data-dismiss="modal">Agregar Insumos</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Styles {
+    <environment names="Development,Staging,Production">
+
+    </environment>
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/validate/jquery.validate.min.js"></script>
+
+    </environment>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+   
+        });
+
+        function ClearModal() {
+            $("#CantidadSolicitada").val("");
+            $("#Comentario").val("");
+        }
+
+        function addInsumo() {
+            $.ajax({
+                type: "post",
+                url: "/fabrica/@controlador/agregardetalle",
+                data: {
+                    IdInsumo: $("#IdInsumo").val(),
+                    Cantidad: $("#CantidadSolicitada").val(),
+                    IdEtapaOrdenProduccion: $("#IdEtapaOrdenProduccion").val(),
+                    Comentario: $("#Comentario").val(),
+                    EtapaOrdenProduccion: {
+                        Descripcion: $('#IdEtapaOrdenProduccion option:selected').text()
+                    },
+                    Insumo: {
+                        Nombre: $('#IdInsumo option:selected').text()
+                    }
+                }
+            }).done(function (partialView) {
+                $('#ListaAriticulo tbody:last-child').after().append(partialView);
+                ClearModal();
+            });
+        }
+        function removeRow(row) {
+            $(row).parents('tr').first().remove();
+        }
+
+    </script>
+}
+
