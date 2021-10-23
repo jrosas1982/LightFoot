@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "SolicitudDetalle";
+    Layout = "_Layout";
+}
+@model SolicitudDetalleModel
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Detalles Solicitud</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action(" Dashboard_1", "Dashboards" )">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Fabrica</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action(" Index", "Solicitud" , new { area="fabrica" })">Solicitud</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>Detalles</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-primary w-100" onclick="location.href='@Url.Action("Index", "Solicitud", 0)'">Volver</button>
+    </div>
+</div>

@@ -8,7 +8,7 @@
 @model SolicitudIndexModel
 
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-12">
+    <div class="col-lg-6">
         <h2>Solicitudes</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -22,8 +22,8 @@
             </li>
         </ol>
     </div>
-    <div class="col-lg-12" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditarSolicitud", "Solicitud", 0)'">Generar Solicitud Manualmente</button>
+    <div class="col-lg-6 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-primary w-100" onclick="location.href='@Url.Action("CrearEditarSolicitud", "Solicitud", 0)'">Generar Solicitud Manualmente</button>
     </div>
 </div>
 
@@ -45,11 +45,11 @@
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
-                    <label class="font-normal">Estado</label>
-                    <select data-placeholder="Estado de solicitud" class="chosen-select" multiple tabindex="4">
-                        <option value="0" selected> Pendiente de aprobacion   </option>
-                        <option value="1">          Aprobado                  </option>
-                        <option value="2">          Rechazado                 </option>
+                    <label class="col-form-labe" for="solicitud_estado">Estado</label>
+                    <select id="solicitud_estado" data-placeholder="Estado de solicitud" class="chosen-select" multiple tabindex="3">
+                        <option value="@EstadoSolicitud.PendienteAprobacion" > @EstadoSolicitud.PendienteAprobacion.GetDisplayName() </option>
+                        <option value="@EstadoSolicitud.Aprobada." > @EstadoSolicitud.Aprobada.GetDisplayName() </option>
+                        <option value="@EstadoSolicitud.Rechazada" > @EstadoSolicitud.Rechazada.GetDisplayName() </option>
                     </select>
                 </div>
             </div>
@@ -165,16 +165,17 @@
                                                 {
                                                     <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="RechazarSolicitud('@solicitud.Id')">Rechazar</button>
                                                     <button class="btn btn-outline btn-primary  btn-xs" type="button" onclick="AprobarSolicitud('@solicitud.Id')">Aprobar</button>
+                                                    <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerDetalles('@solicitud.Id')">Ver Detalles</button>
                                                 }
                                                 @*else if (solicitud.EstadoSolicitud == EstadoSolicitud.Aprobada)
-                                                    {
-                                                        <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerOrdenesAsociadas('@solicitud.Id')">Ver Ordenes asociadas</button>
-                                                    }*@
+                        {
+                            <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerOrdenesAsociadas('@solicitud.Id')">Ver Ordenes asociadas</button>
+                        }*@
                                             </td>
                                         </tr>
                                     }
                                 }
-
+                            </tbody>
                             <tfoot>
                                 <tr>
                                     <td colspan="6">
@@ -183,7 +184,7 @@
                                 </tr>
                             </tfoot>
 
-                            </tbody>
+                            
                         </table>
                     </div>
                 </div>
@@ -223,7 +224,7 @@
         });
     </script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
             $(document).ready(function () {
                 $('.footable').footable();
             });
@@ -241,6 +242,10 @@
 
         function VerOrdenesAsociadas(Id) {
             window.location = '/fabrica/Solicitud/AprobarSolicitud?idSolicitud=' + Id;
+        }
+
+        function VerDetalles(Id) {
+            window.location = '/fabrica/Solicitud/SolicitudDetalle?IdSolicitud=' + Id;
         }
 
         function alert(Id) {
