@@ -23,6 +23,91 @@
         </ol>
     </div>
     <div class="col-lg-2 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary w-100" onclick="location.href='@Url.Action("Index", "Solicitud", 0)'">Volver</button>
+        <button type="button" class="btn btn-default btn-rounded w-100"
+                onclick="location.href='@Url.Action("Index", "Solicitud", 0)'">
+            <h2 class="m-0"> <i class="fa fa-long-arrow-left mx-1"></i> </h2>
+        </button>
     </div>
 </div>
+
+<div class="wrapper wrapper-content pt-1 animated fadeInRight">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                @Html.LabelFor(m => m.Articulos)
+                @Html.DropDownListFor(m => m.Articulos, new SelectList(Model.Articulos, "Id", "Descripcion", Model.Articulos.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdown" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Receta
+                </div>
+
+                <div class="panel-body">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-action">
+                            <h4 class="mb-0">Articulo:</h4>
+                            <h2 class="text-right mt-0"></h2>
+                        </li>
+                        <li class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <h4>Color:</h4>
+                                <p></p>
+                            </div>
+                        </li>
+                        <li class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <h4>Talle:</h4>
+                                <p></p>
+                            </div>
+                        </li>
+                        <li class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <h4>Cantidad Total a Fabricar:</h4>
+                                <p></p>
+                            </div>
+                        </li>
+                        <li class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <h4>Estado de la etapa:</h4>
+                                <p></p>
+                            </div>
+                        </li>
+                        <li class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <h4>Sucursal Destino:</h4>
+                                <p></p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+@section Styles {
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/iCheck/custom.css" />
+        <link rel="stylesheet" href="~/lib/steps/jquery.steps.css" />
+    </environment>
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/iCheck/icheck.min.js"></script>
+        <script src="~/lib/steps/jquery.steps.min.js"></script>
+        <script src="~/lib/validate/jquery.validate.min.js"></script>
+    </environment>
+}

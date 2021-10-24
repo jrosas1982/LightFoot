@@ -43,10 +43,13 @@ namespace Web.Site.Areas
         public async Task<IActionResult> SolicitudDetalle(int IdSolicitud)
         {
             var solicitudes = await _solicitudService.GetSolicitudes();
+            var solicitud = solicitudes.Where(x => x.Id == IdSolicitud).First();
 
             var model = new SolicitudDetalleModel()
             {
-                Solicitudes = solicitudes,
+                Solicitud = solicitud,
+                Articulos = solicitud.SolicitudDetalles.Select(x => new DesplegableModel() { Id = x.Id, Descripcion = $"{x.Articulo.Id} - {x.Articulo.Nombre}" }),
+
                 Sucursales = await _sucursalService.GetSucursales(),
                 EstadosSolicitud = await _solicitudService.GetEstadosSolicitud()
             };
