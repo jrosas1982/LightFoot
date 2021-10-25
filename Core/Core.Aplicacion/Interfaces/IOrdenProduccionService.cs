@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Dominio.AggregatesModel;
 
@@ -22,7 +23,9 @@ namespace Core.Aplicacion.Interfaces
         public Task<IEnumerable<EstadoOrdenProduccion>> GetEstadosOrden();
         public Task<IEnumerable<EtapaOrdenProduccion>> GetEtapasOrden();
         public Task<IEnumerable<EstadoEtapaOrdenProduccion>> GetEstadoEtapasOrden();
+
         public Task<int> GetProgreso(int IdOrdenProduccion);
+        public Task<TimeSpan> GetTiempoTranscurrido(int IdOrdenProduccion);
     }
 }
 

@@ -211,11 +211,34 @@ namespace Core.Aplicacion.Services
 
         public async Task<int> GetProgreso(int IdOrdenProduccion)
         {
-            return await Task.FromResult(50);
+            var orden = await _db.OrdenesProduccion.FindAsync(IdOrdenProduccion);
+
+            var etapas = _db.EtapasOrdenProduccion.OrderBy(x => x.Orden).Select(x => x.Id).ToList();
+
+            var idEtapaActual = orden.EtapaOrdenProduccion.Id;
+
+            var progresoActual = etapas.IndexOf(idEtapaActual) + 1;
+
+            var porcentaje = Math.DivRem(progresoActual * 100, etapas.Count(), out int rest);
+
+            return await Task.FromResult(porcentaje);
         }
-        public async Task<int> GetTiempoTranscurrido(int IdOrdenProduccion)
+        public async Task<TimeSpan> GetTiempoTranscurrido(int IdOrdenProduccion)
         {
-            return await Task.FromResult(50);
+            var orden = await _db.OrdenesProduccionEventos.FindAsync(IdOrdenProduccion);
+
+            if (orden.EstadoOrdenProduccion != EstadoOrdenProduccion.Finalizada)
+                return DateTime.Now - orden.FechaCreacion;
+
+            var ultimoEvento = await _db.OrdenesProduccionEventos.Where(x => x.IdOrdenProduccion == IdOrdenProduccion).OrderByDescending(x => x.FechaCreacion).FirstOrDefaultAsync();
+
+            return ultimoEvento.FechaCreacion - orden.FechaCreacion;
+        }
+
+
+        private async Task GuardarEvento(OrdenProduccion orden)
+        {
+
         }
 
 
