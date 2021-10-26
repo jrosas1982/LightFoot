@@ -39,7 +39,6 @@ namespace Core.Infraestructura
         public DbSet<CompraInsumoDetalle> CompraInsumoDetalles { get; set; }
 
         public DbSet<Insumo> Insumos { get; set; }
-        public DbSet<InsumoStock> InsumosStock { get; set; }
         public DbSet<Receta> Recetas { get; set; }
         public DbSet<RecetaDetalle> RecetaDetalles { get; set; }
 
