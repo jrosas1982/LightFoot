@@ -26,13 +26,15 @@ namespace Web.Site.Areas
         {
             var ordenesList = await _ordenProduccionService.GetOrdenes();
 
-            //var model = new SolicitudIndexModel()
-            //{
-            //    Solicitudes = solicitudList.ToList(),
-            //    Sucursales = sucursalesList.ToList(),
-            //};
+            var model = new OrdenProduccionIndexModel()
+            {
+                OrdenProducciones = ordenesList,
+                EstadoOrdenProducciones = await _ordenProduccionService.GetEstadosOrden(),
+                EtapaOrdenProducciones = await _ordenProduccionService.GetEtapasOrden(),
+                EstadoEtapaOrdenProducciones = await _ordenProduccionService.GetEstadoEtapasOrden()
+            };
 
-            return View(ordenesList);
+            return View(model);
         }
 
         public async Task<IActionResult> DetallesOrdenProduccion(int idOrdenProduccion)

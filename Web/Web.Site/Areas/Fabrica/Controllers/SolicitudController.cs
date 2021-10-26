@@ -35,6 +35,7 @@ namespace Web.Site.Areas
             {
                 Solicitudes = solicitudList.ToList(),
                 Sucursales = sucursalesList.ToList(),
+                EstadosSolicitud = await _solicitudService.GetEstadosSolicitud()
             };
 
             return View(model);

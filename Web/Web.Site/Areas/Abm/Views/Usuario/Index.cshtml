@@ -25,14 +25,14 @@
         </ol>
     </div>
     <div class="col-lg-12" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-default" onclick="window.print()">Reporte</button>
+        <button type="button" class="btn btn-w-m btn-default" onclick="Reporte()">Reporte</button>
         <button type="button" class="btn btn-w-m btn-default" onclick="location.href='@Url.Action("CrearEditar", "Usuario", 0)'"> Crear nuevo Usuario</button>
     </div>
 </div>
 
-<div class="d-none d-print-block">
+<div class="d-none d-print-block w-100">
     <div class="alert alert-default" role="alert">
-        Reporte de Articulos @DateTime.Now
+        Reporte de Usuarios @DateTime.Now
     </div>
 </div>
 
@@ -90,7 +90,7 @@
                             }
                         </tbody>
                         <tfoot>
-                            <tr>
+                            <tr class="d-print-none">
                                 <th>Usuario</th>
                                 <th>Nombre</th>
                                 <th>DNI</th>
@@ -99,7 +99,7 @@
                                 <th>Telefono</th>
                                 <th>Rol</th>
                                 <th>Activo</th>
-                                <th  class="d-print-none">Acciones</th>
+                                <th>Acciones</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -124,7 +124,6 @@
     </environment>
 
     <script type="text/javascript">
-       
 
         function BorrarUsuario(Id) {
             alert(Id);
@@ -133,6 +132,13 @@
         function EditarUsuario(Id) {
             window.location = '/abm/Usuario/CrearEditar?IdUsuario=' + Id;
         }
+
+        function Reporte() {
+            $('.dataTables_filter').addClass("d-print-none")
+            window.print();
+            $('.dataTables_filter').removeClass("d-print-none")
+        }
+
         function alert(Id) {
             swal({
                 title: "Seguro que desea dar de baja el Usuario?",
