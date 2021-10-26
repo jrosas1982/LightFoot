@@ -165,12 +165,13 @@
                                                 {
                                                     <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="RechazarSolicitud('@solicitud.Id')">Rechazar</button>
                                                     <button class="btn btn-outline btn-primary  btn-xs" type="button" onclick="AprobarSolicitud('@solicitud.Id')">Aprobar</button>
-                                                    <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerDetalles('@solicitud.Id')">Ver Detalles</button>
                                                 }
                                                 @*else if (solicitud.EstadoSolicitud == EstadoSolicitud.Aprobada)
-                        {
-                            <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerOrdenesAsociadas('@solicitud.Id')">Ver Ordenes asociadas</button>
-                        }*@
+                                                {
+                                                    <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerOrdenesAsociadas('@solicitud.Id')">Ver Ordenes asociadas</button>
+                                                }*@
+
+                                                <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerDetalles('@solicitud.Id')">Ver Detalles</button>
                                             </td>
                                         </tr>
                                     }

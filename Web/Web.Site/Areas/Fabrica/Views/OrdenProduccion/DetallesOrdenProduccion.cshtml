@@ -15,7 +15,7 @@
 @model OrdenProduccionDetalleModel
 
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-12">
+    <div class="col-lg-10">
         <h2>Detalles Orden de Produccion @Model.OrdenProduccion.Id</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -32,17 +32,13 @@
             </li>
         </ol>
     </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-12 pt-1 pt-sm-2 ">
-        <button type="button" class="btn btn-default btn-rounded"
+    <div class="col-lg-2 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-default btn-rounded w-100"
                 onclick="location.href='@Url.Action("Index", "OrdenProduccion", 0)'">
             <h2 class="m-0"> <i class="fa fa-long-arrow-left mx-1"></i> </h2>
         </button>
     </div>
 </div>
-
 
 <div class="wrapper wrapper-content pt-1 animated fadeInRight">
 

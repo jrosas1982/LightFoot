@@ -8,7 +8,7 @@
 @using Core.Dominio.AggregatesModel
 @model IEnumerable<Insumo>
 
-<div class="row wrapper border-bottom white-bg page-heading">
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
     <div class="col-lg-12">
         <h2>Insumo</h2>
         <ol class="breadcrumb">
@@ -24,7 +24,14 @@
         </ol>
     </div>
     <div class="col-lg-12" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditarInsumo", "Insumo", 0)'"> Crear nuevo Insumos</button>
+        <button type="button" class="btn btn-w-m btn-default" onclick="window.print()">Reporte</button>
+        <button type="button" class="btn btn-w-m btn-default" onclick="location.href='@Url.Action("CrearEditarInsumo", "Insumo", 0)'"> Crear nuevo Insumos</button>
+    </div>
+</div>
+
+<div class="d-none d-print-block">
+    <div class="alert alert-default" role="alert">
+        Reporte de Articulos @DateTime.Now
     </div>
 </div>
 
@@ -43,6 +50,7 @@
                                 <th>Nombre</th>
                                 <th>Descripcion</th>
                                 <th>Unidad</th>
+                                <th class="d-print-none">Accion</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,7 +62,7 @@
                                         <td>@item.Nombre</td>
                                         <td>@item.Descripcion</td>
                                         <td>@item.Unidad</td>
-                                        <td>
+                                        <td class="d-print-none">
                                             <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarInsumo('@item.Id')">Borrar</button>
                                             <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarInsumo('@item.Id')">Editar</button>
                                         </td>
@@ -134,22 +142,17 @@
                 pageLength: 25,
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [
-                    { extend: 'copy' },
-                    { extend: 'csv' },
-                    { extend: 'excel', title: 'ExampleFile' },
-                    { extend: 'pdf', title: 'ExampleFile' },
-
-                    {
-                        extend: 'print',
-                        customize: function (win) {
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                        }
-                    }
+                //   {
+                //        extend: 'print',
+                //        customize: function (win) {
+                //            $(win.document.body).addClass('white-bg');
+                //            $(win.document.body).css('font-size', '10px');
+                //
+                //            $(win.document.body).find('table')
+                //                .addClass('compact')
+                //                .css('font-size', 'inherit');
+                //        }
+                //    }
                 ]
 
             });
