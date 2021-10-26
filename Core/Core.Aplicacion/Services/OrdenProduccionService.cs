@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Aplicacion.Helpers;
+using Core.Aplicacion.Hubs;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MoreLinq;
@@ -16,11 +18,13 @@ namespace Core.Aplicacion.Services
     {
         private readonly AppDbContext _db;
         private readonly ILogger<OrdenProduccionService> _logger;
+        private readonly IHubContext<NotificationsHub> _hubContext;
 
-        public OrdenProduccionService(ExtendedAppDbContext extendedAppDbContext, ILogger<OrdenProduccionService> logger)
+        public OrdenProduccionService(ExtendedAppDbContext extendedAppDbContext, ILogger<OrdenProduccionService> logger, IHubContext<NotificationsHub> hubContext)
         {
             _db = extendedAppDbContext.context;
             _logger = logger;
+            _hubContext = hubContext;
         }
 
         public async Task<bool> IniciarEtapa(int idOrdenProduccion, string comentario = "")
@@ -37,6 +41,7 @@ namespace Core.Aplicacion.Services
             await _db.SaveChangesAsync();
             await GuardarEventoAsync(ordenDb, comentario);
 
+            await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
             return true;
         }
 
@@ -55,6 +60,7 @@ namespace Core.Aplicacion.Services
             await _db.SaveChangesAsync();
             await GuardarEventoAsync(ordenDb, comentario);
 
+            await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
             return true;
         }
 
@@ -73,6 +79,7 @@ namespace Core.Aplicacion.Services
             await _db.SaveChangesAsync();
             await GuardarEventoAsync(ordenDb, comentario);
 
+            await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
             return true;
         }
 
@@ -90,6 +97,8 @@ namespace Core.Aplicacion.Services
             await _db.SaveChangesAsync();
             await GuardarEventoAsync(ordenDb, comentario);
 
+            
+            await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
             return true;
         }
 
@@ -107,6 +116,7 @@ namespace Core.Aplicacion.Services
             await _db.SaveChangesAsync();
             await GuardarEventoAsync(ordenDb, comentario);
 
+            await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
             return true;
         }
 
@@ -132,13 +142,14 @@ namespace Core.Aplicacion.Services
             await _db.SaveChangesAsync();
             await GuardarEventoAsync(ordenDb, comentario);
 
+            await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
             return true;
         }
 
         public async Task<bool> FinalizarOrden(int idOrdenProduccion, string comentario = "")
         {
             //marca la orden como finalizada si esta todo bien
-            var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
+            var ordenDb = await _db.OrdenesProduccion.Include(x => x.EtapaOrdenProduccion).SingleOrDefaultAsync(x => x.Id == idOrdenProduccion);
 
             var etapaActual = ordenDb.EtapaOrdenProduccion;
             var siguienteEtapa = _db.EtapasOrdenProduccion.Where(x => x.Orden > etapaActual.Orden).MinBy(x => x.Orden).SingleOrDefault();
@@ -153,6 +164,8 @@ namespace Core.Aplicacion.Services
             await _db.SaveChangesAsync();
             await GuardarEventoAsync(ordenDb, comentario);
 
+            await _hubContext.Clients.All.SendAsync("OrdenProduccionFinalizada", $"La Orden {idOrdenProduccion} fue marcada como finalizada", idOrdenProduccion);
+            await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
             return true;
         }
 
@@ -167,6 +180,7 @@ namespace Core.Aplicacion.Services
             await _db.SaveChangesAsync();
             await GuardarEventoAsync(ordenDb, comentario);
 
+            await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
             return true;
         }
 

@@ -44,11 +44,11 @@ namespace Core.Aplicacion.Services
                 solicitud.SolicitudDetalles.Add(detalle);
             }
 
-            solicitud.SolicitudEventos.Add(new SolicitudEvento()
-            {
-                Comentario = solicitud.Comentario,
-                EstadoSolicitud = solicitud.EstadoSolicitud
-            });
+            //solicitud.SolicitudEventos.Add(new SolicitudEvento()
+            //{
+            //    Comentario = solicitud.Comentario,
+            //    EstadoSolicitud = solicitud.EstadoSolicitud
+            //});
 
             GuardarEvento(solicitud, comentario);
             await _db.SaveChangesAsync();
@@ -77,11 +77,11 @@ namespace Core.Aplicacion.Services
             solicitudDB.EstadoSolicitud = EstadoSolicitud.Aprobada;
             solicitudDB.Comentario = comentario;
 
-            solicitudDB.SolicitudEventos.Add(new SolicitudEvento()
-            {
-                Comentario = solicitudDB.Comentario,
-                EstadoSolicitud = solicitudDB.EstadoSolicitud
-            });
+            //solicitudDB.SolicitudEventos.Add(new SolicitudEvento()
+            //{
+            //    Comentario = solicitudDB.Comentario,
+            //    EstadoSolicitud = solicitudDB.EstadoSolicitud
+            //});
 
             _db.Update(solicitudDB);
             

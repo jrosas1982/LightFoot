@@ -34,7 +34,6 @@ namespace LightFoot.Web.Site
             services.AddSignalR();
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
-
             services.AddAuthorization(config =>
             {
                 config.AddPolicy(Policies.IsAdmin, Policies.AdminPolicy());
@@ -122,9 +121,9 @@ namespace LightFoot.Web.Site
 
             app.UseAuthentication();
 
-            app.UseAuthorization();
-
             app.UseRouting();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -135,7 +134,6 @@ namespace LightFoot.Web.Site
             //{
             //    routes.MapHub<NotificationsHub>("/NotificationsHub");
             //});
-
 
             app.UseMvc(routes =>
             {
