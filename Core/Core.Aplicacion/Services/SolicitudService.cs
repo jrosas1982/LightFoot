@@ -24,7 +24,7 @@ namespace Core.Aplicacion.Services
             _fabricacion = fabricacion;
         }
 
-        public async Task CrearSolicitud(Solicitud solicitud, IEnumerable<SolicitudDetalle> solicitudDetalles)
+        public async Task CrearSolicitud(Solicitud solicitud, IEnumerable<SolicitudDetalle> solicitudDetalles, string comentario = "")
         {
             if (!_db.Sucursales.Any(x => x.Id == solicitud.IdSucursal))
                 throw new Exception("No es posible procesar la solicitud. La sucursal especificada no existe");
@@ -50,6 +50,7 @@ namespace Core.Aplicacion.Services
                 EstadoSolicitud = solicitud.EstadoSolicitud
             });
 
+            GuardarEvento(solicitud, comentario);
             await _db.SaveChangesAsync();
             _logger.LogInformation($"Solicitud creada: {solicitud.Id}");
 
@@ -120,7 +121,7 @@ namespace Core.Aplicacion.Services
             //await _fabricacion.ReservarStockInsumos(insumosNecesarios);
 
             _db.AddRange(ordenesProduccion);
-
+            GuardarEvento(solicitudDB, comentario);
             await _db.SaveChangesAsync();
         }
 
@@ -132,7 +133,7 @@ namespace Core.Aplicacion.Services
             solicitudDB.Comentario = comentario;
 
             _db.Update(solicitudDB);
-
+            GuardarEvento(solicitudDB, comentario);
             await _db.SaveChangesAsync();
         }
 
@@ -188,6 +189,18 @@ namespace Core.Aplicacion.Services
             var hayStock = !insumosVerificados.Any(x => x.CantidadDisponible < x.CantidadNecesaria);
 
             return await Task.FromResult(hayStock);
+        }
+
+        private void GuardarEvento(Solicitud solicitud, string comentario)
+        {
+            var evento = new SolicitudEvento()
+            {
+                IdSolicitud = solicitud.Id,
+                EstadoSolicitud = solicitud.EstadoSolicitud,
+                Comentario = comentario
+            };
+
+            _db.SolicitudEventos.Add(evento);
         }
 
     }

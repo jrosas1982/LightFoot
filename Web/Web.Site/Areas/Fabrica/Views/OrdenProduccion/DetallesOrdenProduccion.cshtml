@@ -33,14 +33,17 @@
         </ol>
     </div>
     <div class="col-lg-2 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
-        <button type="button" class="btn btn-default btn-rounded w-100"
-                onclick="location.href='@Url.Action("Index", "OrdenProduccion", 0)'">
-            <h2 class="m-0"> <i class="fa fa-long-arrow-left mx-1"></i> </h2>
-        </button>
+        <button type="button" class="btn btn-w-m btn-primary w-100" onclick="location.href='@Url.Action("Index", "OrdenProduccion", 0)'">Volver</button>
     </div>
 </div>
 
-<div class="wrapper wrapper-content pt-1 animated fadeInRight">
+<div class="align-items-center justify-content-between my-2 mt-3">
+    <a href="index" style="color: #000000;">
+        <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+    </a>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
 
     <h5>Progreso</h5>
     <div class="progress">
@@ -158,6 +161,59 @@
                         </button>
                     }
 
+                    @*@if (@EstadoEtapaOrdenProduccion.Pendiente == estadoEtapaOrden)
+        {
+            <button type="button" class="btn btn-@EstadoEtapaOrdenProduccion.Iniciada.GetGroupName() btn-lg col-lg-6 my-1"
+                    onclick="AvanzarEtapa('@Model.OrdenProduccion.Id')">
+                Iniciar Etapa
+            </button>
+
+            <button type="button" class="btn btn-danger btn-lg col-lg-6 my-1"
+                    onclick="CancelarOrden('@Model.OrdenProduccion.Id')">
+                Cancelar Etapa
+            </button>
+        }
+        @if (EstadoEtapaOrdenProduccion.Iniciada == estadoEtapaOrden)
+        {
+            <button type="button" class="btn btn-@EstadoEtapaOrdenProduccion.Pausada.GetGroupName() btn-lg w-100 my-1"
+                    onclick="PausarEtapa('@Model.OrdenProduccion.Id')">
+                Pausar Etapa
+            </button>
+            <button type="button" class="btn btn-@EstadoEtapaOrdenProduccion.Finalizada.GetGroupName() btn-lg w-100 my-1"
+                    onclick="Finalizar('@Model.OrdenProduccion.Id')">
+                Finalizar Etapa
+            </button>
+            <button type="button" class="btn btn-danger btn-lg w-100 my-1"
+                    onclick="CancelarOrden('@Model.OrdenProduccion.Id')">
+                Cancelar Etapa
+            </button>
+        }
+        @if (EstadoEtapaOrdenProduccion.Pausada == estadoEtapaOrden)
+        {
+            <button type="button" class="btn btn-@EstadoEtapaOrdenProduccion.Iniciada.GetGroupName() btn-lg w-100 my-1"
+                    onclick="ReanudarEtapa('@Model.OrdenProduccion.Id')">
+                Reanudar Etapa
+            </button>
+            <button type="button" class="btn btn-danger btn-lg w-100 my-1"
+                    onclick="CancelarOrden('@Model.OrdenProduccion.Id')">
+                Cancelar Etapa
+            </button>
+        }
+        @if (EstadoEtapaOrdenProduccion.Finalizada == estadoEtapaOrden)
+        {
+            <button type="button" class="btn btn-@EstadoEtapaOrdenProduccion.Retrabajo.GetGroupName() btn-lg w-100 my-1"
+                    onclick="RetrabajarEtapa('@Model.OrdenProduccion.Id')">
+                Retrabajar Retrabajo
+            </button>
+        }
+        @if (EstadoEtapaOrdenProduccion.Retrabajo == estadoEtapaOrden)
+        {
+            <button type="button" class="btn btn-@EstadoEtapaOrdenProduccion.Iniciada.GetGroupName() btn-lg w-100 my-1"
+                    onclick="AvanzarSiguienteEtapa('@Model.OrdenProduccion.Id')">
+                Avanzar Etapa
+            </button>
+        }*@
+
                 </div>
             </div>
         </div>
@@ -180,9 +236,9 @@
                                     <table class="table table-hover">
                                         <thead class="">
                                             <tr>
-                                                <th colspan="1" class="text-left"><h3>Estado</h3></th>
-                                                <th colspan="1" class="text-left"><h3>Descripcion</h3></th>
-                                                <th colspan="1" class="text-left"><h3>Etapa</h3></th>
+                                                <th colspan="1" class="text-left"><h3>Estado Orden</h3></th>
+                                                <th colspan="1" class="text-left"><h3>Etapa Orden</h3></th>
+                                                <th colspan="1" class="text-left"><h3>Descripcion Etapa</h3></th>
                                                 <th colspan="1" class="text-left"><h3>Fecha Evento</h3></th>
                                                 <th colspan="1" class="text-left"><h3>Comentario</h3></th>
                                             </tr>
@@ -193,9 +249,9 @@
                                             <tr>
                                                 <td class="text-left">@evento.EstadoOrdenProduccion.GetDisplayName()</td>
                                                 <td class="text-left">@evento.EtapaOrdenProduccion.Descripcion</td>
-                                                <td class="text-left">@evento.EstadoEtapaOrdenProduccion</td>
+                                                <td class="text-left">@evento.EstadoEtapaOrdenProduccion.GetDisplayName()</td>
                                                 <td class="text-left">@evento.FechaCreacion</td>
-                                                <td class="text-left">@evento.Comentario</td>
+                                                <td class="text-left">@(string.IsNullOrWhiteSpace(evento.Comentario) ? "Sin Comentario" : evento.Comentario)</td>
                                             </tr>
                                             }
                                         </tbody>

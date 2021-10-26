@@ -6,7 +6,7 @@ namespace Core.Aplicacion.Interfaces
 {
     public interface ISolicitudService
     {
-        public Task CrearSolicitud(Solicitud solicitud, IEnumerable<SolicitudDetalle> solicitudDetalles);
+        public Task CrearSolicitud(Solicitud solicitud, IEnumerable<SolicitudDetalle> solicitudDetalles, string comentario = "");
         public Task AprobarSolicitud(int idSolicitud, string comentario = "");
         public Task RechazarSolicitud(int idSolicitud, string comentario);
 
