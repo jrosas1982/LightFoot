@@ -11,13 +11,14 @@ namespace Core.Dominio.AggregatesModel
         [Required]
         public string CUIT { get; set; }
         [Required]
-        public string Nombre { get; set; }
+        public string Nombre { get; set; }        
         [Required]
         public string Direccion { get; set; }
         [Required]
         public string Telefono { get; set; }
         [Required]
         public string Email { get; set; }
+        public int Calificacion { get; set; }
 
         public virtual ICollection<ProveedorCuentaCorriente> ProvedorCuentaCorriente { get; set; } = new HashSet<ProveedorCuentaCorriente>();
         public virtual ICollection<ProveedorArticulo> ProveedorArticulos { get; set; } = new HashSet<ProveedorArticulo>();

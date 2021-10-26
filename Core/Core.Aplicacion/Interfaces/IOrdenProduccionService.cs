@@ -7,14 +7,14 @@ namespace Core.Aplicacion.Interfaces
 {
     public interface IOrdenProduccionService
     {
-        public Task<bool> IniciarEtapa(int idOrdenProduccion);
-        public Task<bool> PausarEtapa(int idOrdenProduccion);
-        public Task<bool> ReanudarEtapa(int idOrdenProduccion);
-        public Task<bool> FinalizarEtapa(int idOrdenProduccion);
-        public Task<bool> RetrabajarEtapa(int idOrdenProduccion);
-        public Task<bool> AvanzarSiguienteEtapa(int idOrdenProduccion);
-        public Task<bool> FinalizarOrden(int idOrdenProduccion);
-        public Task<bool> CancelarOrden(int idOrdenProduccion);
+        public Task<bool> IniciarEtapa(int idOrdenProduccion, string comentario = "");
+        public Task<bool> PausarEtapa(int idOrdenProduccion, string comentario);
+        public Task<bool> ReanudarEtapa(int idOrdenProduccion, string comentario = "");
+        public Task<bool> FinalizarEtapa(int idOrdenProduccion, string comentario = "");
+        public Task<bool> RetrabajarEtapa(int idOrdenProduccion, string comentario);
+        public Task<bool> AvanzarSiguienteEtapa(int idOrdenProduccion, string comentario = "");
+        public Task<bool> FinalizarOrden(int idOrdenProduccion, string comentario = "");
+        public Task<bool> CancelarOrden(int idOrdenProduccion, string comentario);
 
 
         public Task<OrdenProduccion> BuscarPorId(int idOrdenProduccion);

@@ -23,7 +23,7 @@ namespace Core.Aplicacion.Services
             _logger = logger;
         }
 
-        public async Task<bool> IniciarEtapa(int idOrdenProduccion)
+        public async Task<bool> IniciarEtapa(int idOrdenProduccion, string comentario = "")
         {
             //reanuda la etapa si no estaba reanudada
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
@@ -35,11 +35,12 @@ namespace Core.Aplicacion.Services
 
             _db.OrdenesProduccion.Update(ordenDb);
             await _db.SaveChangesAsync();
+            await GuardarEventoAsync(ordenDb, comentario);
 
             return true;
         }
 
-        public async Task<bool> PausarEtapa(int idOrdenProduccion)
+        public async Task<bool> PausarEtapa(int idOrdenProduccion, string comentario)
         {
             //pausa la etapa si no estaba pausada
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
@@ -52,11 +53,12 @@ namespace Core.Aplicacion.Services
 
             _db.OrdenesProduccion.Update(ordenDb);
             await _db.SaveChangesAsync();
+            await GuardarEventoAsync(ordenDb, comentario);
 
             return true;
         }
 
-        public async Task<bool> ReanudarEtapa(int idOrdenProduccion)
+        public async Task<bool> ReanudarEtapa(int idOrdenProduccion, string comentario = "")
         {
             //reanuda la etapa si no estaba reanudada
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
@@ -69,11 +71,12 @@ namespace Core.Aplicacion.Services
 
             _db.OrdenesProduccion.Update(ordenDb);
             await _db.SaveChangesAsync();
+            await GuardarEventoAsync(ordenDb, comentario);
 
             return true;
         }
 
-        public async Task<bool> FinalizarEtapa(int idOrdenProduccion)
+        public async Task<bool> FinalizarEtapa(int idOrdenProduccion, string comentario = "")
         {
             //pausa la etapa si no estaba pausada
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
@@ -85,11 +88,12 @@ namespace Core.Aplicacion.Services
 
             _db.OrdenesProduccion.Update(ordenDb);
             await _db.SaveChangesAsync();
+            await GuardarEventoAsync(ordenDb, comentario);
 
             return true;
         }
 
-        public async Task<bool> RetrabajarEtapa(int idOrdenProduccion)
+        public async Task<bool> RetrabajarEtapa(int idOrdenProduccion, string comentario)
         {
             //marca la orden como retrabajo
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
@@ -101,11 +105,12 @@ namespace Core.Aplicacion.Services
 
             _db.OrdenesProduccion.Update(ordenDb);
             await _db.SaveChangesAsync();
+            await GuardarEventoAsync(ordenDb, comentario);
 
             return true;
         }
 
-        public async Task<bool> AvanzarSiguienteEtapa(int idOrdenProduccion)
+        public async Task<bool> AvanzarSiguienteEtapa(int idOrdenProduccion, string comentario = "")
         {
             var ordenDb = await _db.OrdenesProduccion.Include(x => x.EtapaOrdenProduccion).SingleOrDefaultAsync(x => x.Id == idOrdenProduccion);
 
@@ -125,11 +130,12 @@ namespace Core.Aplicacion.Services
 
             _db.OrdenesProduccion.Update(ordenDb);
             await _db.SaveChangesAsync();
+            await GuardarEventoAsync(ordenDb, comentario);
 
             return true;
         }
 
-        public async Task<bool> FinalizarOrden(int idOrdenProduccion)
+        public async Task<bool> FinalizarOrden(int idOrdenProduccion, string comentario = "")
         {
             //marca la orden como finalizada si esta todo bien
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
@@ -145,11 +151,12 @@ namespace Core.Aplicacion.Services
 
             _db.OrdenesProduccion.Update(ordenDb);
             await _db.SaveChangesAsync();
+            await GuardarEventoAsync(ordenDb, comentario);
 
             return true;
         }
 
-        public async Task<bool> CancelarOrden(int idOrdenProduccion)
+        public async Task<bool> CancelarOrden(int idOrdenProduccion, string comentario)
         {
             // TODO liberar todos los insumos que quedaban reservados
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
@@ -158,6 +165,7 @@ namespace Core.Aplicacion.Services
 
             _db.OrdenesProduccion.Update(ordenDb);
             await _db.SaveChangesAsync();
+            await GuardarEventoAsync(ordenDb, comentario);
 
             return true;
         }
@@ -236,9 +244,20 @@ namespace Core.Aplicacion.Services
         }
 
 
-        private async Task GuardarEvento(OrdenProduccion orden)
+        private async Task GuardarEventoAsync(OrdenProduccion orden, string comentario)
         {
+            var evento = new OrdenProduccionEvento()
+            {
+                IdOrdenProduccion = orden.Id,
+                IdEtapaOrdenProduccion = orden.IdEtapaOrdenProduccion,
+                EstadoEtapaOrdenProduccion = orden.EstadoEtapaOrdenProduccion,
+                EstadoOrdenProduccion = orden.EstadoOrdenProduccion,
+                CantidadFabricada = orden.CantidadFabricada,
+                Comentario = comentario
+            };
 
+            _db.OrdenesProduccionEventos.Add(evento);
+            await _db.SaveChangesAsync();
         }
 
 

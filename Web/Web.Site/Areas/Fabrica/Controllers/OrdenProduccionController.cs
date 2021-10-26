@@ -69,7 +69,7 @@ namespace Web.Site.Areas
         {
             try
             {
-                await _ordenProduccionService.PausarEtapa(idOrdenProduccion);
+                await _ordenProduccionService.PausarEtapa(idOrdenProduccion, "");
 
                 return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
             }
@@ -100,7 +100,7 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> RetrabajarEtapa(int idOrdenProduccion)
         {
-            await _ordenProduccionService.RetrabajarEtapa(idOrdenProduccion);
+            await _ordenProduccionService.RetrabajarEtapa(idOrdenProduccion, "");
             return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
         }
 
@@ -118,7 +118,7 @@ namespace Web.Site.Areas
         
         public async Task<IActionResult> CancelarOrden(int idOrdenProduccion)
         {
-            await _ordenProduccionService.CancelarOrden(idOrdenProduccion);
+            await _ordenProduccionService.CancelarOrden(idOrdenProduccion, "");
             return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
         }
 

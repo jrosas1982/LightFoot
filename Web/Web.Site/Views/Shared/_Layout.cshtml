@@ -18,6 +18,7 @@
 
     <!-- LightFoot Begin-->
     <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+    @*<link rel="stylesheet" href="~/custom/sweetalert2.min.css" />*@
     <link rel="stylesheet" href="~/custom/Personalizado.css" />
     <link type="text/css" href="~/custom/fontawesome-free/css/all.min.css" rel="stylesheet">
     <!-- LightFoot End -->
@@ -34,23 +35,23 @@
 
         <!-- Page wraper -->
         @*<div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass">*@
-            <div id="page-wrapper" class="gray-bg overflow-100vh">
+        <div id="page-wrapper" class="gray-bg overflow-100vh">
 
-                <!-- Top Navbar -->
-                <partial name="_TopNavbar" />
+            <!-- Top Navbar -->
+            <partial name="_TopNavbar" />
 
-                <!-- Main view  -->
-                @RenderBody()
+            <!-- Main view  -->
+            @RenderBody()
 
-                <!-- Footer -->
-                <!-- <partial name="_Footer" /> -->
-
-            </div>
-            <!-- End page wrapper-->
-            <!-- Right Sidebar -->
-            <partial name="_RightSidebar" />
+            <!-- Footer -->
+            <!-- <partial name="_Footer" /> -->
 
         </div>
+        <!-- End page wrapper-->
+        <!-- Right Sidebar -->
+        <partial name="_RightSidebar" />
+
+    </div>
     <!-- End wrapper-->
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -63,8 +64,9 @@
 
     <!-- LightFoot Begin-->
     <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
+    @*<script src="~/custom/sweetalert2.all.min.js"></script>*@
     <script src="~/custom/signalr.min.js"></script>
-    @*<script src="~/custom/Personalizado.js"></script>*@
+    <script src="~/custom/Personalizado.js"></script>
     @*<script type="text/javascript">@Html.Raw(ViewBag.JsFunction);</script>*@
     <!-- LightFoot End -->
     @*<partial name="_JsInteropPartial"/>*@

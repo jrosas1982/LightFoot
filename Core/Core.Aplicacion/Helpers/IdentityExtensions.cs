@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
+using Microsoft.AspNetCore.Http;
 
 namespace Core.Aplicacion.Helpers
 {
@@ -15,6 +16,13 @@ namespace Core.Aplicacion.Helpers
             var claim = ((ClaimsIdentity)user.Identity).FindFirst(ClaimTypes.Name);
             return claim?.Value;
         }
+
+        public static string GetUsername(this IHttpContextAccessor httpContext)
+        {
+            var claim = ((ClaimsIdentity)httpContext.HttpContext.User.Identity).FindFirst(ClaimTypes.Name);
+            return claim?.Value;
+        }
+
 
     }
 }
