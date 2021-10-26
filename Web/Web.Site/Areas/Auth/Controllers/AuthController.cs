@@ -29,16 +29,23 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Index(string returnurl)
         {
-            var sucursalesList = await _sucursalService.GetSucursales();
-
-            var model = new UserLoginModel()
+            try
             {
-                Sucursales = sucursalesList.Select(x => new DesplegableModel() { Id = x.Id, Descripcion = $"{x.Nombre} - {x.Descripcion}" }).ToList(),
-            };
+                var sucursalesList = await _sucursalService.GetSucursales();
 
-            ViewBag.ReturnUrl = returnurl;
+                var model = new UserLoginModel()
+                {
+                    Sucursales = sucursalesList.Select(x => new DesplegableModel() { Id = x.Id, Descripcion = $"{x.Nombre} - {x.Descripcion}" }).ToList(),
+                };
 
-            return View(model);
+                ViewBag.ReturnUrl = returnurl;
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                MensajeError(ex.Message);
+            }
+            return View();
         }
 
         [ValidateAntiForgeryToken]
@@ -72,8 +79,15 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> LogOutUser()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
+            try
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return RedirectToAction("Index", "Auth");
+            }
+            catch (Exception ex)
+            {
+                MensajeError(ex.Message);
+            }
             return RedirectToAction("Index", "Auth");
         }
 
