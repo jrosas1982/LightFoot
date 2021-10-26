@@ -74,7 +74,7 @@ namespace Core.Aplicacion.Helpers
             {
                 Insumo = x.Insumo,
                 CantidadNecesaria = insumosNecesarios.Single(y => y.IdInsumo == x.IdInsumo).Cantidad,
-                CantidadDisponible = x.CantidadStockTotal - x.CantidadStockReserva,
+                CantidadDisponible = x.StockTotal - x.StockReservado,
             });
             return await insumosVerificados.ToListAsync();
         }
@@ -86,10 +86,10 @@ namespace Core.Aplicacion.Helpers
 
             foreach (var insumo in insumosStock)
             {
-                insumo.CantidadStockReserva = insumosNecesarios.Single(x => x.IdInsumo == insumo.Id).Cantidad;
+                insumo.StockReservado = insumosNecesarios.Single(x => x.IdInsumo == insumo.Id).Cantidad;
             }
 
-            if (await insumosStock.AnyAsync(x => x.CantidadStockTotal < x.CantidadStockReserva))
+            if (await insumosStock.AnyAsync(x => x.StockTotal < x.StockReservado))
                 throw new Exception("No hay suficiente stock disponible para reservar para la orden de produccion");
 
             _db.InsumosStock.UpdateRange(insumosStock);

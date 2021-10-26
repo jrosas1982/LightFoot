@@ -240,6 +240,7 @@
                                                 <th colspan="1" class="text-left"><h3>Etapa Orden</h3></th>
                                                 <th colspan="1" class="text-left"><h3>Descripcion Etapa</h3></th>
                                                 <th colspan="1" class="text-left"><h3>Fecha Evento</h3></th>
+                                                <th colspan="1" class="text-left"><h3>Usuario</h3></th>
                                                 <th colspan="1" class="text-left"><h3>Comentario</h3></th>
                                             </tr>
                                         </thead>
@@ -251,6 +252,7 @@
                                                 <td class="text-left">@evento.EtapaOrdenProduccion.Descripcion</td>
                                                 <td class="text-left">@evento.EstadoEtapaOrdenProduccion.GetDisplayName()</td>
                                                 <td class="text-left">@evento.FechaCreacion</td>
+                                                <td class="text-left">@evento.CreadoPor</td>
                                                 <td class="text-left">@(string.IsNullOrWhiteSpace(evento.Comentario) ? "Sin Comentario" : evento.Comentario)</td>
                                             </tr>
                                             }

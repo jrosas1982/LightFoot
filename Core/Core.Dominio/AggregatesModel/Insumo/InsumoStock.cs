@@ -10,8 +10,8 @@ namespace Core.Dominio.AggregatesModel
         public int Id { get; set; }
         public int IdInsumo { get; set; }
         public int? IdProveedorPreferido { get; set; }
-        public int CantidadStockTotal { get; set; }
-        public int CantidadStockReserva { get; set; }
+        public int StockTotal { get; set; }
+        public int StockReservado { get; set; }
 
         [ForeignKey("IdInsumo")]
         public virtual Insumo Insumo { get; set; }

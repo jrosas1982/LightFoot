@@ -36,18 +36,18 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        @Html.LabelFor(m => m.CantidadStockTotal)
-                        @Html.EditorFor(model => model.CantidadStockTotal, new { htmlAttributes = new { @id = "CantidadStockTotal", @class = "form-control", @placeholder = "Cantidad Total de Insumo" } })
-                        @Html.ValidationMessageFor(model => model.CantidadStockTotal, "", new { @class = "text-danger" })
+                        @Html.LabelFor(m => m.StockTotal)
+                        @Html.EditorFor(model => model.StockTotal, new { htmlAttributes = new { @id = "StockTotal", @class = "form-control", @placeholder = "Cantidad Total de Insumo" } })
+                        @Html.ValidationMessageFor(model => model.StockTotal, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        @Html.LabelFor(m => m.CantidadStockReserva)
-                        @Html.EditorFor(model => model.CantidadStockReserva, new { htmlAttributes = new { @id = "CantidadStockReserva", @class = "form-control", @placeholder = "Cantidad en Reserva de Insumo " } })
-                        @Html.ValidationMessageFor(model => model.CantidadStockReserva, "", new { @class = "text-danger" })
+                        @Html.LabelFor(m => m.StockReservado)
+                        @Html.EditorFor(model => model.StockReservado, new { htmlAttributes = new { @id = "StockReservado", @class = "form-control", @placeholder = "Cantidad en Reserva de Insumo " } })
+                        @Html.ValidationMessageFor(model => model.StockReservado, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>

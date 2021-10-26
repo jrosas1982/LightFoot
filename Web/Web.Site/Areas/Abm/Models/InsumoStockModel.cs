@@ -9,8 +9,8 @@ namespace Web.Site.Areas
             Id = insumoStock.Id;
             IdInsumo = insumoStock.IdInsumo;
             IdProveedorPreferido = insumoStock.IdProveedorPreferido;
-            CantidadStockTotal = insumoStock.CantidadStockTotal;
-            CantidadStockReserva = insumoStock.CantidadStockReserva;
+            StockTotal = insumoStock.StockTotal;
+            StockReservado = insumoStock.StockReservado;
         }
     }
 }

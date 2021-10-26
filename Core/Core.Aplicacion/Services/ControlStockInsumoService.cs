@@ -34,8 +34,8 @@ namespace Core.Aplicacion.Services
             var insumoStockDb = await _db.InsumosStock.FindAsync(insumoStock.Id);
 
             insumoStock.IdProveedorPreferido = insumoStock.IdProveedorPreferido;
-            insumoStock.CantidadStockTotal = insumoStock.CantidadStockTotal;
-            insumoStock.CantidadStockReserva = insumoStock.CantidadStockReserva;
+            insumoStock.StockTotal = insumoStock.StockTotal;
+            insumoStock.StockReservado = insumoStock.StockReservado;
 
             _db.Update(insumoStockDb);
             await _db.SaveChangesAsync();
