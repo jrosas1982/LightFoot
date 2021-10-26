@@ -33,17 +33,21 @@
         </ol>
     </div>
     <div class="col-lg-2 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary w-100" onclick="location.href='@Url.Action("Index", "OrdenProduccion", 0)'">Volver</button>
+        <button type="button" class="btn btn-default btn-rounded w-100"
+                onclick="location.href='@Url.Action("Index", "OrdenProduccion", 0)'">
+            <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+        </button>
     </div>
 </div>
-
+<!--
 <div class="align-items-center justify-content-between my-2 mt-3">
     <a href="index" style="color: #000000;">
         <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
     </a>
-</div>
+</div> 
+-->
 
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content pt-1 animated fadeInRight">
 
     <h5>Progreso</h5>
     <div class="progress">

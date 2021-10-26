@@ -27,70 +27,91 @@
     <div class="col-lg-2 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
         <button type="button" class="btn btn-default btn-rounded w-100"
                 onclick="location.href='@Url.Action("Index", "Solicitud", 0)'">
-            <h2 class="m-0"> <i class="fa fa-long-arrow-left mx-1"></i> </h2>
+            <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
         </button>
     </div>
 </div>
 
 <div class="wrapper wrapper-content pt-1 animated fadeInRight">
-
-    <div class="row">
-        <div class="col-sm-10">
-            <div class="form-group">
-                @Html.DropDownListFor(m => m.Articulos, new SelectList(Model.Articulos, "Id", "Descripcion", Model.Articulos.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownArticulo" })
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="form-group">
-                <button type="Submit" class="btn btn-w-m btn-primary w-100" onclick=VerArticulo()> Ver Articulo </button>
-            </div>
-        </div>
-
-    </div>
-
-
-
     <div class="row mt-2">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
+        <div class="col-lg-4">
+            <div class="panel panel-@Model.Solicitud.EstadoSolicitud.GetGroupName()">
                 <div class="panel-heading">
-                    Receta
+                    Sucursal
                 </div>
-
                 <div class="panel-body">
                     <ul class="list-group">
                         <li class="list-group-item list-group-item-action">
-                            <h4 class="mb-0"> </h4>
-                            <h2 class="text-right mt-0"></h2>
-                        </li>
-                        <li class="list-group-item list-group-item-action">
                             <div class="d-flex justify-content-between">
-                                <h4></h4>
-                                <p></p>
+                                <h4>Nombre: </h4>
+                                <p>@Model.Sucursal.Nombre</p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <h4>Cantidad Articulos: </h4>
+                                <p>@Model.SolicitudDetalle.Count()</p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <h4>Fecha Creacion: </h4>
+                                <p>@Model.Solicitud.FechaCreacion.ToLocalTime()</p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <h4>Estado: </h4>
+                                <p><span class="label label-@Model.Solicitud.EstadoSolicitud.GetGroupName()">@Model.Solicitud.EstadoSolicitud.GetDisplayName()</span></p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <h4>Comentario: </h4>
+                                <p>@Model.Solicitud.Comentario</p>
                             </div>
                         </li>
-                        <li class="list-group-item list-group-item-action">
-                            <div class="d-flex justify-content-between">
-                                <h4></h4>
-                                <p></p>
-                            </div>
-                        </li>
-                        <li class="list-group-item list-group-item-action">
-                            <div class="d-flex justify-content-between">
-                                <h4></h4>
-                                <p></p>
-                            </div>
-                        </li>
-                        
                     </ul>
                 </div>
 
             </div>
         </div>
+
+        <div class="col-lg-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    @Model.Sucursal.Nombre - Articulos
+                </div>
+
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
+                            <thead>
+                                <tr>
+                                    <th data-toggle="true">Articulo</th>
+                                    <th>Cantidad</th>
+                                    <th>Color</th>
+                                    <th>Talle</th>
+                                    <th>Descripcion</th>
+                                    <th data-sort-ignore="true">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detalle in Model.SolicitudDetalle)
+                                {
+                                    <tr>
+                                        <td>@detalle.Articulo.Nombre</td>
+                                        <td>@detalle.CantidadSolicitada</td>
+                                        <td>@detalle.Articulo.Color</td>
+                                        <td>@detalle.Articulo.TalleArticulo</td>
+                                        <td>@detalle.Articulo.Descripcion</td>
+                                        <td>
+                                            <button class="btn btn-outline btn-info btn-xs w-100" type="button" onclick="">Ver Receta</button>
+                                        </td>
+                                        
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
-
 </div>
-
 
 
 

@@ -48,10 +48,8 @@ namespace Web.Site.Areas
             var model = new SolicitudDetalleModel()
             {
                 Solicitud = solicitud,
-                Articulos = solicitud.SolicitudDetalles.Select(x => new DesplegableModel() { Id = x.Id, Descripcion = $"{x.Articulo.Id} - {x.Articulo.Nombre}" }),
-
-                Sucursales = await _sucursalService.GetSucursales(),
-                EstadosSolicitud = await _solicitudService.GetEstadosSolicitud()
+                Sucursal = solicitud.Sucursal,
+                SolicitudDetalle = solicitud.SolicitudDetalles
             };
 
             return View(model);
