@@ -8,7 +8,7 @@ namespace Core.Aplicacion.Helpers
     public class CantidadInsumoNecesarioStock
     {
         public Insumo Insumo { get; set; }
-        public int CantidadNecesaria { get; set; }
-        public int CantidadDisponible { get; set; }
+        public double CantidadNecesaria { get; set; }
+        public double CantidadDisponible { get; set; }
     }
 }

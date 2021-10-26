@@ -33,9 +33,10 @@ namespace Core.Infraestructura
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<ClienteCuentaCorriente> ClientesCuentaCorriente { get; set; }
 
-        public DbSet<Compra> Compras { get; set; }
         public DbSet<CompraArticulo> ComprasArticulos { get; set; }
+        public DbSet<CompraArticuloDetalle> CompraArticuloDetalles { get; set; }
         public DbSet<CompraInsumo> ComprasInsumos { get; set; }
+        public DbSet<CompraInsumoDetalle> CompraInsumoDetalles { get; set; }
 
         public DbSet<Insumo> Insumos { get; set; }
         public DbSet<InsumoStock> InsumosStock { get; set; }
@@ -49,7 +50,7 @@ namespace Core.Infraestructura
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<ProveedorArticulo> ProveedoresArticulos { get; set; }
         public DbSet<ProveedorArticuloHistorico> ProveedoresArticulosHistorico { get; set; }
-        public DbSet<ProveedorCuentaCorriente> ProveedoresCuentaCorriente { get; set; }
+        public DbSet<ProveedorArticuloCuentaCorriente> ProveedoresCuentaCorriente { get; set; }
         public DbSet<ProveedorInsumo> ProveedoresInsumos { get; set; }
         public DbSet<ProveedorInsumoHistorico> ProveedoresInsumosHistorico { get; set; }
 

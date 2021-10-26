@@ -14,7 +14,8 @@ namespace Core.Dominio.AggregatesModel
         public int IdReceta { get; set; }
         public int IdInsumo { get; set; }
         public int IdEtapaOrdenProduccion { get; set; }
-        public int Cantidad { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public double Cantidad { get; set; }
         public string Comentario { get; set; }
 
         [ForeignKey("IdReceta")]

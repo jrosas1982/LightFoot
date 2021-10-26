@@ -10,8 +10,10 @@ namespace Core.Dominio.AggregatesModel
         public int Id { get; set; }
         public int IdInsumo { get; set; }
         public int? IdProveedorPreferido { get; set; }
-        public int StockTotal { get; set; }
-        public int StockReservado { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public double StockTotal { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public double StockReservado { get; set; }
 
         [ForeignKey("IdInsumo")]
         public virtual Insumo Insumo { get; set; }
