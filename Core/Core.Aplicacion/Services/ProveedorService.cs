@@ -21,10 +21,49 @@ namespace Core.Aplicacion.Services
         }
 
 
-        public Task<Proveedor> BuscarPorId(int IdProveedor) => throw new NotImplementedException();
-        public Task CrearProveedor(Proveedor proveedor) => throw new NotImplementedException();
-        public Task EditarProveedor(Proveedor proveedor) => throw new NotImplementedException();
-        public Task<bool> EliminarProveedor(Proveedor proveedor) => throw new NotImplementedException();
-        public Task<IEnumerable<Proveedor>> GetProveedores() => throw new NotImplementedException();
+        public async Task<Proveedor> BuscarPorId(int IdProveedor)
+        {
+            var proveedor = await _db.Proveedores.FindAsync(IdProveedor);
+            return proveedor;
+        }
+
+        public async Task CrearProveedor(Proveedor proveedor)
+        {
+            _db.Proveedores.Add(proveedor);
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task EditarProveedor(Proveedor proveedor)
+        {
+            var proveedorDb = await _db.Proveedores.FindAsync(proveedor.Id);
+            proveedorDb.CUIT = proveedor.CUIT;
+            proveedorDb.Nombre = proveedor.Nombre;
+            proveedorDb.Direccion = proveedor.Direccion;
+            proveedorDb.Telefono = proveedor.Telefono;
+            proveedorDb.Email = proveedor.Email;
+            proveedorDb.Calificacion = proveedor.Calificacion;
+
+            _db.Proveedores.Update(proveedorDb);
+            await _db.SaveChangesAsync();
+        }
+        public async Task<bool> EliminarProveedor(Proveedor proveedor)
+        {
+            try
+            {
+                var proveedorDb = await _db.Proveedores.FindAsync(proveedor.Id);
+                _db.Remove(proveedorDb);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public async Task<IEnumerable<Proveedor>> GetProveedores()
+        {
+            var proveedoresList = _db.Proveedores;
+            return await Task.FromResult(proveedoresList);
+        }
     }
 }

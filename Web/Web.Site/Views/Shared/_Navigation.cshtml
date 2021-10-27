@@ -11,41 +11,30 @@
                         <span class="block m-t-xs font-bold">@User.GetUserNombreApellido()</span>
                         <span class="text-muted text-xs block">@User.GetUserRole().ToString() <b class="caret"></b></span>
                     </a>
-
-                    @*<ul class="dropdown-menu animated fadeInRight m-t-xs" style="position: absolute; top: 91px; left: 0px; will-change: top, left;">
-                    <li><a class="dropdown-item" href="@Url.Action("Profile", "AppViews")">Profile</a></li>
-                    <li><a class="dropdown-item" href="@Url.Action("Contacts", "AppViews")">Contacts</a></li>
-                    <li><a class="dropdown-item" href="@Url.Action("Inbox", "Mailbox")">Mailbox</a></li>
-                    <li class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="@Url.Action("Login", "Pages")">Logout</a></li>
-                </ul>*@
-
                 </div>
-                @*<div class="logo-element">
-                IN+
-            </div>*@
             </li>
+
             <li class="@Html.IsSelected(area: "fabrica")">
                 <a href="#"><i class="fa fa-book"></i> <span class="nav-label" data-i18n="nav.graphs"  >Fabrica</span><span class="fa arrow"></span></a>
                 <ul id = "fabrica"class="nav nav-second-level collapse @Html.IsSelected(area: "fabrica", cssClass: "in")">
 
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Dashboard(P)</a></li>
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Dashboard(P)</a></li>
                     <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Solicitudes</a></li>
                     <li class="@Html.IsSelected(controller: "OrdenProduccion")"><a href="@Url.Action("Index", "OrdenProduccion", new { area = "fabrica" })">Ordenes de Produccion</a></li>
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Compras(P)</a></li>
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Control de Stock(P)</a></li>
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Compras(P)</a></li>
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Control de Stock(P)</a></li>
 
                 </ul>
             </li>
 
-            <li class="@Html.IsSelected(area: "fabrica")">
+            <li class="@Html.IsSelected(area: "sucursal")">
                 <a href="#"><i class="fa fa-book"></i> <span class="nav-label" data-i18n="nav.graphs">Sucursal</span><span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level collapse @Html.IsSelected(area: "fabrica", cssClass: "in")">
+                <ul class="nav nav-second-level collapse @Html.IsSelected(area: "sucursal", cssClass: "in")">
 
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Dashboard(P)</a></li>
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Compras(P)</a></li>
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Ventas(P)</a></li>
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Control de Stock(P)</a></li>
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Dashboard(P)</a></li>
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Compras(P)</a></li>
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Ventas(P)</a></li>
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Control de Stock(P)</a></li>
 
                 </ul>
             </li>
@@ -53,30 +42,26 @@
             <li class="@Html.IsSelected(area: "abm")">
                 <a href="#"><i class="fa fa-book"></i> <span class="nav-label" data-i18n="nav.graphs">Gestion</span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse @Html.IsSelected(area: "abm", cssClass: "in")">
-
                     <li class="@Html.IsSelected(controller: "Sucursal")"><a href="@Url.Action("Index", "Sucursal", new { area = "abm" })">Sucursales</a></li>
                     <li class="@Html.IsSelected(controller: "Usuario")"><a href="@Url.Action("Index", "Usuario", new { area = "abm" })">Usuarios</a></li>
                     <li class="@Html.IsSelected(controller: "Articulo")"><a href="@Url.Action("Index", "Articulo", new { area = "abm" })">Articulos</a></li>
                     <li class="@Html.IsSelected(controller: "Insumo")"><a href="@Url.Action("Index", "Insumo", new { area = "abm" })">Insumos</a></li>
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Recetas(P)</a></li>
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Clientes(P)</a></li>
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Proveedores(P)</a></li>
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Produccion(P)</a></li>
-
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Recetas(P)</a></li>
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Clientes(P)</a></li>
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Proveedores(P)</a></li>
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Produccion(P)</a></li>
                 </ul>
             </li>
 
-            <li class="@Html.IsSelected(area: "fabrica")">
+            <li class="@Html.IsSelected(area: "a")">
                 <a href="#"><i class="fa fa-book"></i> <span class="nav-label" data-i18n="nav.graphs">Reportes</span><span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level collapse @Html.IsSelected(area: "fabrica", cssClass: "in")">
-
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Caja Diaria(P)</a></li>
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Articulos con bajo Stock(P)</a></li>
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Articulos con Stock faltante(P)</a></li>
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Ventas por sucursal(P)</a></li>
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Ventas por vendedor(P)</a></li>
-                    <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Auditoria de precios(P)</a></li>
-
+                <ul class="nav nav-second-level collapse @Html.IsSelected(area: "a", cssClass: "in")">
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Caja Diaria(P)</a></li>
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Articulos con bajo Stock(P)</a></li>
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Articulos con Stock faltante(P)</a></li>
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Ventas por sucursal(P)</a></li>
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Ventas por vendedor(P)</a></li>
+                    <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Auditoria de precios(P)</a></li>
                 </ul>
             </li>
 
@@ -95,7 +80,6 @@
                 </ul>
             </li>
 
-
             <li class="@Html.IsSelected(controller: "Layouts")">
                 <a href="@Url.Action("Index", "Layouts")"><i class="fa fa-diamond"></i> <span class="nav-label" data-i18n="nav.layouts">Layouts</span> <span class="label label-primary float-right">NEW</span></a>
             </li>
@@ -112,6 +96,7 @@
                     <li class="@Html.IsSelected(action: "Sparkline")"><a href="@Url.Action("Sparkline", "Graphs")">Sparkline Charts</a></li>
                 </ul>
             </li>
+
             <li class="@Html.IsSelected(controller: "Mailbox")">
                 <a href="#"><i class="fa fa-envelope"></i> <span class="nav-label" data-i18n="nav.mailbox">Mailbox </span><span class="label label-warning float-right">16/24</span></a>
                 <ul class="nav nav-second-level collapse @Html.IsSelected(controller: "Mailbox", cssClass: "in")">

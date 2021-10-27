@@ -25,7 +25,7 @@ namespace Core.Aplicacion.Services
 
         public async Task CrearInsumo(Insumo insumo)
         {
-            _db.Add(insumo);
+            _db.Insumos.Add(insumo);
             await _db.SaveChangesAsync();
             _logger.LogInformation($"Se creo el insumo con nombre: {insumo.Nombre}");
         }
@@ -39,7 +39,7 @@ namespace Core.Aplicacion.Services
             insumoDb.IdProveedorPreferido = insumo.IdProveedorPreferido;
             insumoDb.StockTotal = insumo.StockTotal;
 
-            _db.Update(insumoDb);
+            _db.Insumos.Update(insumoDb);
             await _db.SaveChangesAsync();
         }
 
@@ -47,7 +47,7 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var insumoDb = await _db.Usuarios.FindAsync(insumo.Id);
+                var insumoDb = await _db.Insumos.FindAsync(insumo.Id);
                 _db.Remove(insumoDb);
                 await _db.SaveChangesAsync();
                 return true;

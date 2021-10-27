@@ -6,7 +6,7 @@
 
 
 @media print {
-    .no-print, .dataTables_info, .ibox-title, .pagination, .html5buttons, .navegacion, footer, .no-print *{
+    .no-print, .dataTables_length, .dataTables_info, .ibox-title, .pagination, .html5buttons, .navegacion, footer, .no-print * {
         display: none !important;
     }
 
