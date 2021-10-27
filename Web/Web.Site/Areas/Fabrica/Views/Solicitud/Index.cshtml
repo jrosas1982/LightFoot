@@ -2,9 +2,6 @@
     ViewData["Title"] = "Solicitudes";
     Layout = "_Layout";
 
-    //bool esEdicion = (Model.Id != 0);
-
-    var filtro = new SolicitudFilter();
 }
 
 @model SolicitudIndexModel
@@ -35,8 +32,13 @@
         <div class="row">
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label class="col-form-labe" for="solicitud_name">Sucursal</label>
-                    <input type="text" id="solicitud_name" name="solicitud_name" value="" placeholder="Solicitud" class="form-control">
+                    <label class="col-form-label" for="solicitud_sucursal">Sucursal</label>
+                    <select id="solicitud_sucursal" data-placeholder="Sucursal" class="chosen-select" multiple tabindex="3">
+                        @foreach (var sucursal in Model.Sucursales)
+                        {
+                            <option value="@sucursal.Id"> @sucursal.Nombre </option>
+                        }
+                    </select>
                 </div>
             </div>
             @*<div class="col-sm-3">
@@ -47,11 +49,11 @@
             </div>*@
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label class="col-form-labe" for="solicitud_estado">Estado</label>
+                    <label class="col-form-label" for="solicitud_estado">Estado</label>
                     <select id="solicitud_estado" data-placeholder="Estado de solicitud" class="chosen-select" multiple tabindex="3">
                         @foreach (var estado in Model.EstadosSolicitud)
                         {
-                            <option value="@estado"> @estado.GetDisplayName() </option>
+                            <option value="@((int)estado)"> @estado.GetDisplayName() </option>
                         }
                     </select>
                 </div>
@@ -60,16 +62,16 @@
                 <div class="form-group" id="fechaRango">
                     <label class="col-form-label" for="fecha">Fecha</label>
                     <div class="input-daterange input-group" id="datepicker">
-                        <input type="text" class="form-control-sm form-control" name="start"  value="@filtro.FechaDesde.ToShortDateString()"/>
+                        <input id="fechaDesde" type="text" class="form-control-sm form-control" name="start" value="@Model.SolicitudFilter.FechaDesde.ToShortDateString()"/>
                         <span class="input-group-addon"> <i class="fa fa-long-arrow-right mx-1"></i> </span>
-                        <input type="text" class="form-control-sm form-control" name="end"  value="@filtro.FechaHasta.ToShortDateString()" />
+                        <input id="fechaHasta" type="text" class="form-control-sm form-control" name="end" value="@Model.SolicitudFilter.FechaHasta.ToShortDateString()" />
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-12 d-flex align-items-end justify-content-end">
-                <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="">
+                <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="Filtrar()">
                     <i class="fa fa-search" aria-hidden="true"></i> Buscar
                 </button>
             </div>
@@ -253,6 +255,33 @@
 
         function VerDetalles(Id) {
             window.location = '/fabrica/Solicitud/SolicitudDetalle?IdSolicitud=' + Id;
+        }
+
+        function Filtrar() {
+            sucursalesSeleccionadas = $("#solicitud_sucursal").chosen().val();
+            estadosSeleccionados = $("#solicitud_estado").chosen().val();
+            fechaDesde = $("#fechaDesde").val();
+            fechaHasta = $("#fechaHasta").val();
+
+            $.ajax({
+                type: "post",
+                url: "/fabrica/Solicitud/Filtrar",
+                data: {
+                    solicitudFilter: {
+                        IdSucursalList: sucursalesSeleccionadas,
+                        EstadoSolicitudList: estadosSeleccionados,
+                        FechaDesde: fechaDesde,
+                        FechaHasta: fechaHasta
+                    }
+                },
+                success: function (result) {
+                    if (result == true) {
+                        Model.Solicitudes = result;
+                    } else {
+                        swal("Error", "Ocurrió un error inesperado", "error");
+                    }
+                }
+            });
         }
 
         function alert(Id) {

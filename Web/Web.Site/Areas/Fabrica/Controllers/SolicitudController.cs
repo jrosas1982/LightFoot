@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Aplicacion.FIlters;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Mvc;
@@ -133,10 +134,11 @@ namespace Web.Site.Areas
         }
         
 
-        public async Task<IActionResult> Eliminar(Solicitud solicitud)
+        public async Task<IActionResult> Filtrar(SolicitudFilter solicitudFilter)
         {
-            //var result = await _solicitudService.EliminarSolicitud(solicitud);
-            return Ok(/*result*/);
+            var result = await _solicitudService.GetSolicitudes(solicitudFilter);
+
+            return Ok(result);
         }
 
         public IActionResult AgregarDetalle(SolicitudDetalle data)
