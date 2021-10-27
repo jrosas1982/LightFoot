@@ -41,6 +41,10 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Crear(Insumo insumo)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(insumo);
+            }
             await _insumoService.CrearInsumo(insumo);
             return RedirectToAction("Index");
         }

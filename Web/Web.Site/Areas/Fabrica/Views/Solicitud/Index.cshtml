@@ -268,8 +268,8 @@
             }, function () {
                 $.ajax({
                     type: "post",
-                    url: "/abm/Solicitud/Rechazar",
-                    data: { Id: Id },
+                    url: "/fabrica/Solicitud/Rechazar",
+                    data: { idSolicitud: Id },
                     success: function (result) {
                         if (result == true) {
                             swal("Exito!", "La solicitud ha sido rechazada correctamente", "success");
