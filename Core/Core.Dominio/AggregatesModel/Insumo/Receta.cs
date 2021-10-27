@@ -11,12 +11,15 @@ namespace Core.Dominio.AggregatesModel
     {
         [Key]
         public int Id { get; set; }
+
+        [Display(Name = "Número Articulo")]
+        [Required]
         public int IdArticulo { get; set; }
         public Boolean Activo { get; set; }
 
-        [ForeignKey("IdArticulo")]
+        [ForeignKey("IdArticulo")]        
         public virtual Articulo Articulo { get; set; }
-
+ 
         public virtual ICollection<RecetaDetalle> RecetaDetalles { get; set; } = new HashSet<RecetaDetalle>();
     }
 }

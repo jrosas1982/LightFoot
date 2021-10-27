@@ -7,12 +7,14 @@ using Core.Dominio.SeedWork;
 
 namespace Core.Dominio.AggregatesModel
 {
-   public class RecetaDetalle : EntityBase
+    public class RecetaDetalle : EntityBase
     {
         [Key]
         public int Id { get; set; }
         public int IdReceta { get; set; }
+        [Required]
         public int IdInsumo { get; set; }
+        [Required]
         public int IdEtapaOrdenProduccion { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public double Cantidad { get; set; }
