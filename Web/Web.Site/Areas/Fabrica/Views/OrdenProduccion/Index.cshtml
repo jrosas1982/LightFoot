@@ -5,7 +5,7 @@
     //bool esEdicion = (Model.Id != 0);
 }
 
-@model IEnumerable<OrdenProduccion>
+@model OrdenProduccionIndexModel
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
@@ -37,32 +37,33 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label class="font-normal">Estado</label>
-                    <select data-placeholder="Estado de solicitud" class="chosen-select" multiple name="estado" id="estado">
-                        <option value="0" selected> Pendiente de aprobacion   </option>
-                        <option value="1">          Aprobado                  </option>
-                        <option value="2">          Rechazado                 </option>
+                    <select class="chosen-select" multiple name="estado_orden" id="estado_orden" data-placeholder="@Model.EstadoOrdenProducciones.First().GetDisplayName()">
+                        @foreach (var estado in Model.EstadoOrdenProducciones)
+                        {
+                            <option value="@estado"> @estado.GetDisplayName()</option>
+                        }
                     </select>
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
                     <label class="font-normal">Etapa</label>
-                    <select data-placeholder="Estado de solicitud" class="chosen-select" name="etapa_orden" id="etapa_orden">
-                        <option value="0" selected> Cortado         </option>
-                        <option value="1">          Aparado         </option>
-                        <option value="2">          Preparacion     </option>
-                        <option value="3">          Montado         </option>
-                        <option value="4">          Pegado          </option>
-                        <option value="5">          Finalizado      </option>
+                    <select class="chosen-select" name="etapa_orden" id="etapa_orden">
+                        @foreach( var etapa in Model.EtapaOrdenProducciones)
+                        {
+                            <option value="@etapa.Descripcion"> @etapa.Descripcion </option>
+                        }
                     </select>
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label class="col-form-labe" for="etapa_estado">Etapa del Estado</label>
-                    <select name="etapa_estado" id="etapa_estado" class="form-control">
-                        <option value="0" selected> Pendiente de inicio     </option>
-                        <option value="1">          Iniciada                </option>
+                    <label class="col-form-labe" for="etapa_estado">Estado de Etapa</label>
+                    <select class="chosen-select"  name="etapa_estado" id="etapa_estado">
+                        @foreach (var estadoEtapa in Model.EstadoEtapaOrdenProducciones)
+                        {
+                            <option value="@estadoEtapa"> @estadoEtapa.GetDisplayName() </option>
+                        }
                     </select>
                 </div>
             </div>
@@ -118,9 +119,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (Model != null && Model.Any())
+                                @if (Model != null && Model.OrdenProducciones.Any())
                                 {
-                                    foreach (var orden in Model)
+                                    foreach (var orden in Model.OrdenProducciones)
                                     {
                                         <tr>
                                             <td>@orden.Id</td>
@@ -236,6 +237,7 @@
                 });
             });
         };
+
         $(document).ready(function () {
             $('.dataTables-example').DataTable({
                 pageLength: 25,

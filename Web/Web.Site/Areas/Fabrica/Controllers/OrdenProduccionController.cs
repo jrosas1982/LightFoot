@@ -24,42 +24,34 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Index()
         {
-            try
-            {
-                var ordenesList = await _ordenProduccionService.GetOrdenes();
+            var ordenesList = await _ordenProduccionService.GetOrdenes();
 
-                return View(ordenesList);
-            }
-            catch (Exception ex)
+            var model = new OrdenProduccionIndexModel()
             {
-                MensajeError(ex.Message);
-                return View("index");
-            }
+                OrdenProducciones = ordenesList,
+                EstadoOrdenProducciones = await _ordenProduccionService.GetEstadosOrden(),
+                EtapaOrdenProducciones = await _ordenProduccionService.GetEtapasOrden(),
+                EstadoEtapaOrdenProducciones = await _ordenProduccionService.GetEstadoEtapasOrden()
+            };
+
+            return View(model);
         }
 
         public async Task<IActionResult> DetallesOrdenProduccion(int idOrdenProduccion)
         {
-            try
-            {
-                var ordenesList = await _ordenProduccionService.GetOrdenes();
+            var ordenesList = await _ordenProduccionService.GetOrdenes();
 
-                var model = new OrdenProduccionDetalleModel()
-                {
-                    OrdenProduccion = ordenesList.Where(x => x.Id == idOrdenProduccion).First(),
-                    EstadosOrdenProduccion = await _ordenProduccionService.GetEstadosOrden(),
-                    EtapasOrdenProduccion = await _ordenProduccionService.GetEtapasOrden(),
-                    EstadosEtapaOrdenProduccion = await _ordenProduccionService.GetEstadoEtapasOrden(),
-                    OrdenProduccionEventos = await _ordenProduccionService.GetOrdenEventos(idOrdenProduccion),
-                    PorcentajeCompletado = await _ordenProduccionService.GetProgreso(idOrdenProduccion)
-                };
-
-                return View(model);
-            }
-            catch (Exception ex)
+            var model = new OrdenProduccionDetalleModel()
             {
-                MensajeError(ex.Message);
-                return View("index");
-            }
+                OrdenProduccion = ordenesList.Where(x => x.Id == idOrdenProduccion).First(),
+                EstadosOrdenProduccion = await _ordenProduccionService.GetEstadosOrden(),
+                EtapasOrdenProduccion = await _ordenProduccionService.GetEtapasOrden(),
+                EstadosEtapaOrdenProduccion = await _ordenProduccionService.GetEstadoEtapasOrden(),
+                OrdenProduccionEventos = await _ordenProduccionService.GetOrdenEventos(idOrdenProduccion),
+                PorcentajeCompletado = await _ordenProduccionService.GetProgreso(idOrdenProduccion)
+            };
+
+            return View(model);
         }
 
 
@@ -72,8 +64,7 @@ namespace Web.Site.Areas
             }
             catch (Exception ex)
             {
-                MensajeError(ex.Message);
-                return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
+                throw;
             }
         }
         public async Task<IActionResult> PausarEtapa(int idOrdenProduccion)
@@ -86,8 +77,7 @@ namespace Web.Site.Areas
             }
             catch (Exception ex)
             {
-                MensajeError(ex.Message);
-                return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
+                throw;
             }
         }
 
@@ -100,79 +90,38 @@ namespace Web.Site.Areas
             }
             catch (Exception ex)
             {
-                MensajeError(ex.Message);
-                return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
+                throw;
             }
         }
 
         public async Task<IActionResult> ReanudarEtapa(int idOrdenProduccion)
         {
-            try
-            {
-                await _ordenProduccionService.ReanudarEtapa(idOrdenProduccion);
-                return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
-            }
-            catch (Exception ex)
-            {
-                MensajeError(ex.Message);
-                return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
-            }
+            await _ordenProduccionService.ReanudarEtapa(idOrdenProduccion);
+            return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
         }
 
         public async Task<IActionResult> RetrabajarEtapa(int idOrdenProduccion)
         {
-            try
-            {
-                await _ordenProduccionService.RetrabajarEtapa(idOrdenProduccion, "");
-                return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
-            }
-            catch (Exception ex)
-            {
-                MensajeError(ex.Message);
-                return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
-            }
+            await _ordenProduccionService.RetrabajarEtapa(idOrdenProduccion, "");
+            return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
         }
 
         public async Task<IActionResult> AvanzarSiguienteEtapa(int idOrdenProduccion)
         {
-            try
-            {
-                await _ordenProduccionService.AvanzarSiguienteEtapa(idOrdenProduccion);
-                return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
-            }
-            catch (Exception ex)
-            {
-                MensajeError(ex.Message);
-                return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
-            }
+            await _ordenProduccionService.AvanzarSiguienteEtapa(idOrdenProduccion);
+            return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
         }
 
         public async Task<IActionResult> FinalizarOrden(int idOrdenProduccion)
         {
-            try
-            {
-                await _ordenProduccionService.FinalizarOrden(idOrdenProduccion);
-                return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
-            }
-            catch (Exception ex)
-            {
-                MensajeError(ex.Message);
-                return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
-            }
-        }
-
+            await _ordenProduccionService.FinalizarOrden(idOrdenProduccion);
+            return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
+        }        
+        
         public async Task<IActionResult> CancelarOrden(int idOrdenProduccion)
         {
-            try
-            {
-                await _ordenProduccionService.CancelarOrden(idOrdenProduccion, "");
-                return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
-            }
-            catch (Exception ex)
-            {
-                MensajeError(ex.Message);
-                return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
-            }
+            await _ordenProduccionService.CancelarOrden(idOrdenProduccion, "");
+            return RedirectToAction("DetallesOrdenProduccion", new { idOrdenProduccion = idOrdenProduccion });
         }
 
     }

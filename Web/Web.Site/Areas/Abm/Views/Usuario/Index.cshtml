@@ -9,7 +9,7 @@
 
 @model IEnumerable<Usuario>
 
-<div class="row wrapper border-bottom white-bg page-heading d-print-none">
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
     <div class="col-lg-12">
         <h2>Usuarios</h2>
         <ol class="breadcrumb">
@@ -25,7 +25,14 @@
         </ol>
     </div>
     <div class="col-lg-12" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditar", "Usuario", 0)'"> Crear nuevo Usuario</button>
+        <button type="button" class="btn btn-w-m btn-default" onclick="Reporte()">Reporte</button>
+        <button type="button" class="btn btn-w-m btn-default" onclick="location.href='@Url.Action("CrearEditar", "Usuario", 0)'"> Crear nuevo Usuario</button>
+    </div>
+</div>
+
+<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        Reporte de Usuarios @DateTime.Now
     </div>
 </div>
 
@@ -49,7 +56,7 @@
                                 <th>Telefono</th>
                                 <th>Rol</th>
                                 <th>Activo</th>
-                                <th>Acciones</th>
+                                <th  class="d-print-none">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -74,7 +81,7 @@
                                 {
                                     <td>No </td>
                                 }
-                                <td>
+                                <td  class="d-print-none">
                                     <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarUsuario('@item.Id')">Borrar</button>
                                     <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarUsuario('@item.Id')">Editar</button>
                                 </td>
@@ -83,7 +90,7 @@
                             }
                         </tbody>
                         <tfoot>
-                            <tr>
+                            <tr class="d-print-none">
                                 <th>Usuario</th>
                                 <th>Nombre</th>
                                 <th>DNI</th>
@@ -117,7 +124,6 @@
     </environment>
 
     <script type="text/javascript">
-       
 
         function BorrarUsuario(Id) {
             alert(Id);
@@ -126,6 +132,13 @@
         function EditarUsuario(Id) {
             window.location = '/abm/Usuario/CrearEditar?IdUsuario=' + Id;
         }
+
+        function Reporte() {
+            $('.dataTables_filter').addClass("d-print-none")
+            window.print();
+            $('.dataTables_filter').removeClass("d-print-none")
+        }
+
         function alert(Id) {
             swal({
                 title: "Seguro que desea dar de baja el Usuario?",
@@ -161,23 +174,12 @@
                 pageLength: 25,
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [
-                    { extend: 'copy' },
-                    { extend: 'csv' },
-                    { extend: 'excel', title: 'ExampleFile' },
                     {
-                        extend: 'pdf',
-                        exportOptions: {
-                            columns: [0, 1, 2, 5]
-                        },
-                        title: 'Reporte de usuarios'
-                    },
-
-                    {
-                        extend: 'print',
-                        autoPrint: true,
-                        exportOptions: {
-                            columns: [0, 1, 2, 5]
-                        }
+                        //extend: 'print',
+                        //autoPrint: true,
+                        //exportOptions: {
+                        //    columns: [0, 1, 2, 5]
+                        //}
                         //customize: function (win) {
                         //    $(win.document.body).addClass('white-bg');
                         //    $(win.document.body).css('font-size', '10px');

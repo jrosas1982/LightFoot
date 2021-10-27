@@ -47,9 +47,10 @@
                 <div class="form-group">
                     <label class="col-form-labe" for="solicitud_estado">Estado</label>
                     <select id="solicitud_estado" data-placeholder="Estado de solicitud" class="chosen-select" multiple tabindex="3">
-                        <option value="@EstadoSolicitud.PendienteAprobacion" > @EstadoSolicitud.PendienteAprobacion.GetDisplayName() </option>
-                        <option value="@EstadoSolicitud.Aprobada." > @EstadoSolicitud.Aprobada.GetDisplayName() </option>
-                        <option value="@EstadoSolicitud.Rechazada" > @EstadoSolicitud.Rechazada.GetDisplayName() </option>
+                        @foreach (var estado in Model.EstadosSolicitud)
+                        {
+                            <option value="@estado"> @estado.GetDisplayName() </option>
+                        }
                     </select>
                 </div>
             </div>
@@ -77,7 +78,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h5>Solicitdes</h5>
+                    <h5>Solicitudes</h5>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -161,16 +162,18 @@
                                             </td>
                                             <td>@solicitud.FechaCreacion.ToLocalTime()</td>
                                             <td>
+                                                <button class="btn btn-outline btn-success btn-xs" type="button" onclick="VerDetalles('@solicitud.Id')">Ver Detalles</button>
+                                                
                                                 @if (solicitud.EstadoSolicitud == EstadoSolicitud.PendienteAprobacion)
                                                 {
-                                                    <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="RechazarSolicitud('@solicitud.Id')">Rechazar</button>
-                                                    <button class="btn btn-outline btn-primary  btn-xs" type="button" onclick="AprobarSolicitud('@solicitud.Id')">Aprobar</button>
-                                                    <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerDetalles('@solicitud.Id')">Ver Detalles</button>
+                                                    <button class="btn btn-outline btn-danger btn-xs" type="button" onclick="RechazarSolicitud('@solicitud.Id')">Rechazar</button>
+                                                    <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AprobarSolicitud('@solicitud.Id')">Aprobar</button>
                                                 }
                                                 @*else if (solicitud.EstadoSolicitud == EstadoSolicitud.Aprobada)
-                        {
-                            <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerOrdenesAsociadas('@solicitud.Id')">Ver Ordenes asociadas</button>
-                        }*@
+                                                {
+                                                    <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerOrdenesAsociadas('@solicitud.Id')">Ver Ordenes asociadas</button>
+                                                }*@
+
                                             </td>
                                         </tr>
                                     }
