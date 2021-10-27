@@ -7,7 +7,7 @@ using Core.Dominio.SeedWork;
 
 namespace Core.Dominio.AggregatesModel
 {
-   public class RecetaDetalle : EntityBase
+    public class RecetaDetalle : EntityBase
     {
         [Key]
         public int Id { get; set; }

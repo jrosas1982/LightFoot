@@ -20,6 +20,7 @@ namespace Core.Infraestructura
             serviceCollection.AddScoped<IArticuloCategoriaService, ArticuloCategoriaService>();
             serviceCollection.AddScoped<IFabricacionService, FabricacionService>();
             serviceCollection.AddScoped<IRecetaService, RecetaService>();
+            serviceCollection.AddScoped<IRecetaDetalleService, RecetaDetalleService>();
 
             serviceCollection.AddTransient<UserResolverService>();
             serviceCollection.AddTransient<ExtendedAppDbContext>();

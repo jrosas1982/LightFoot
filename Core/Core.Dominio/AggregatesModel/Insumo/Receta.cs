@@ -17,9 +17,9 @@ namespace Core.Dominio.AggregatesModel
         public int IdArticulo { get; set; }
         public Boolean Activo { get; set; }
 
-        [ForeignKey("IdArticulo")]
+        [ForeignKey("IdArticulo")]        
         public virtual Articulo Articulo { get; set; }
-
-        public virtual IEnumerable<RecetaDetalle> RecetaDetalles { get; set; } = new HashSet<RecetaDetalle>();
+ 
+        public virtual ICollection<RecetaDetalle> RecetaDetalles { get; set; } = new HashSet<RecetaDetalle>();
     }
 }

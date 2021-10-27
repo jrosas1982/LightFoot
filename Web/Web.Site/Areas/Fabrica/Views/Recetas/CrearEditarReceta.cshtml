@@ -1,8 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Crear Receta";
-    bool esEdicion = (Model.Id != 0);
     Layout = "_Layout";
+    bool esEdicion = (Model.Id != 0);
     string controlador = "Recetas";
+    string url_base = "/fabrica/recetas/";
 }
 
 @using Web.Site.Areas.Fabrica.Models
@@ -35,13 +36,19 @@
     @using (Html.BeginForm(esEdicion ? "Editar" : "CrearEditarReceta", "Recetas", FormMethod.Post, new { id = "formReceta" }))
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.Id,  new  { @id = "IdReceta" })
         <div class="ibox-content m-b-sm border-bottom">
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
                         @Html.LabelFor(m => m.IdArticulo, "Nombre de Articulo")
-                        @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), new { @class = "form-control m-b", @id = "dropdownArticulos" })
+                        @if (esEdicion)
+                        {
+                        @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), new { @class = "form-control m-b", @id = "dropdownArticulos", @disabled = "disabled" })
+                        }
+                        else { 
+                        @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), new{ @class = "form-control m-b", @id = "dropdownArticulos" } )
+                        }
                     </div>
                 </div>
             </div>
@@ -49,13 +56,14 @@
         <div class="wrapper wrapper-content animated fadeInRight ecommerce">
             <div class="ibox-content m-b-sm border-bottom">
                 <table id="ListaAriticulo" class="table table-bordered">
-                    <tr>
-                        <th>Nombre de Insumo </th>
-                        <th>Cantidad</th>
-                        <th>Etapa involucrada</th>
-                        <th>Comentario</th>
-                        <th>Borrar</th>
-                    </tr>
+                @*<table id="ListaAriticulo" class="table table-striped table-bordered table-hover dataTables-example">*@
+                        <tr>
+                            <th>Nombre de Insumo </th>
+                            <th>Cantidad</th>
+                            <th>Etapa involucrada</th>
+                            <th>Comentario</th>
+                            <th>Borrar</th>
+                        </tr>
                     <tbody>
                         @if (Model.RecetaDetalles != null)
                         {
@@ -68,18 +76,35 @@
                             }
                         }
                     </tbody>
+                    @*<tfoot>
+                        <tr>
+                            <th>Nombre de Insumo </th>
+                            <th>Cantidad</th>
+                            <th>Etapa involucrada</th>
+                            <th>Comentario</th>
+                            <th>Borrar</th>
+                        </tr>
+                    </tfoot>*@
                 </table>
-                <div class="ibox-content border-0 pt-0 pr-0">
-                    <div class="text-center d-flex justify-content-end">
-                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#NewCommentModal">
-                            Agregar @controlador
-                        </button>
+                    <div class="ibox-content border-0 pt-0 pr-0">
+                        <div class="text-center d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#NewCommentModal">
+                                Agregar @controlador
+                            </button>
+                        </div>
                     </div>
-                </div>
             </div>
         </div>
         <div style="text-align:right">
-            <button id="btnReceta" type="Submit" class="btn btn-w-m btn-primary">@(esEdicion ? "Modificar" : "Crear") @controlador</button>
+            @if (esEdicion)
+            {
+                <a class="btn btn-w-m btn-primary" href="@Url.Action("Index", "Recetas", new { area = "fabrica" })">Volver a Recetas</a>
+            }
+            else
+            {
+                <button id="btnReceta" type="Submit" class="btn btn-w-m btn-primary">Crear Receta</button>
+            }
+
         </div>
         @* MODAL NEW COMMENT *@
         <div class="modal inmodal fade" id="NewCommentModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
@@ -94,9 +119,9 @@
                     </div>
                     <div class="modal-body py-2">
                         <div class="form-floating">
-                            @Html.LabelFor(m => m.RecetaDetalle.Insumo.Nombre)
-                            @Html.DropDownListFor(m => m.RecetaDetalle.Insumo.Id, new List<SelectListItem>(ViewBag.Insumos), " -- Seleccionar Insumo --", new { @id = "IdInsumo", @class = "form-control required" })
-                            @Html.ValidationMessageFor(model => model.RecetaDetalle.Cantidad, "", new { @class = "text-danger" })
+                            @Html.LabelFor(m => m.RecetaDetalle.IdInsumo)
+                            @Html.DropDownListFor(m => m.RecetaDetalle.IdInsumo, new List<SelectListItem>(ViewBag.Insumos), " -- Seleccionar Insumo --", new { @id = "IdInsumo", @class = "form-control required" })
+                            @Html.ValidationMessageFor(model => model.RecetaDetalle.IdInsumo, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="modal-body py-2">
@@ -108,9 +133,9 @@
                     </div>
                     <div class="modal-body py-2">
                         <div class="form-floating">
-                            @Html.LabelFor(m => m.RecetaDetalle.EtapaOrdenProduccion)
-                            @Html.DropDownListFor(m => m.RecetaDetalle.EtapaOrdenProduccion.Orden, new List<SelectListItem>(ViewBag.EtapasOrden), " -- Seleccionar Color --", new { @id = "IdEtapaOrdenProduccion", @class = "form-control required" })
-                            @Html.ValidationMessageFor(model => model.RecetaDetalle.Cantidad, "", new { @class = "text-danger" })
+                            @Html.LabelFor(m => m.RecetaDetalle.IdEtapaOrdenProduccion)
+                            @Html.DropDownListFor(m => m.RecetaDetalle.IdEtapaOrdenProduccion, new List<SelectListItem>(ViewBag.EtapasOrden), " -- Seleccionar Color --", new { @id = "IdEtapaOrdenProduccion", @class = "form-control required" })
+                            @Html.ValidationMessageFor(model => model.RecetaDetalle.IdEtapaOrdenProduccion, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="modal-body py-2">
@@ -133,21 +158,48 @@
 
 @section Styles {
     <environment names="Development,Staging,Production">
+        @*<link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />*@
+        <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
 
     </environment>
 }
 
 @section Scripts {
     <environment names="Development,Staging,Production">
+        @*<script src="~/lib/dataTables/datatables.min.js"></script>*@
+        @*<script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>*@
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/lib/validate/jquery.validate.min.js"></script>
-
+        <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
     </environment>
 
     <script type="text/javascript">
         $(document).ready(function () {
+            //$('.dataTables-example').DataTable({
+            //    pageLength: 10,
+            //    dom: '<"html5buttons"B>lTfgitp',
+            //    buttons: [
+            //        { extend: 'copy' },
+            //        { extend: 'csv' },
+            //        { extend: 'excel', title: 'Insumos de Articulos' },
+            //        {
+            //            extend: 'pdf',
+            //            exportOptions: {
+            //                columns: [0, 1, 2, 3]
+            //            },
+            //            title: 'Insumos de Articulos'
+            //        },
 
-   
+            //        {
+            //            extend: 'print',
+            //            autoPrint: true,
+            //            exportOptions: {
+            //                columns: [0, 1, 2, 3]
+            //            }
+            //       }
+            //    ]
+
+            //});
         });
 
         function ClearModal() {
@@ -158,24 +210,48 @@
         function addInsumo() {
             $.ajax({
                 type: "post",
-                url: "/fabrica/@controlador/agregardetalle",
+                url: '@url_base' + 'agregardetalle/',
                 data: {
+                    IdReceta: $("#IdReceta").val(),
                     IdInsumo: $("#IdInsumo").val(),
                     Cantidad: $("#CantidadSolicitada").val(),
                     IdEtapaOrdenProduccion: $("#IdEtapaOrdenProduccion").val(),
                     Comentario: $("#Comentario").val(),
-                    EtapaOrdenProduccion: {
-                        Descripcion: $('#IdEtapaOrdenProduccion option:selected').text()
-                    },
-                    Insumo: {
-                        Nombre: $('#IdInsumo option:selected').text()
-                    }
+                    NombreEtapaOrdenProduccion: $('#IdEtapaOrdenProduccion option:selected').text(),
+                    NombreInsumo: $('#IdInsumo option:selected').text()
                 }
             }).done(function (partialView) {
                 $('#ListaAriticulo tbody:last-child').after().append(partialView);
                 ClearModal();
             });
         }
+
+        function eliminarDetalleInsumo(row,Id) {
+            swal({
+                title: "Seguro que desea eliminar el insumo?",
+                text: "El insumo será eliminad de la lista de detalle. Esta accion no se puede deshacer",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Si, Eliminar!",
+                cancelButtonText: "Cancelar",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    type: "post",
+                    url: '@url_base' + "EliminarDetalle",
+                    data: { id: Id },
+                    success: function (result) {
+                        if (result == true) {
+                            swal("Exito!", "El Insumo ha sido eliminado correctamente", "success");
+                            $(row).parents('tr').first().remove();
+                        } else {
+                            swal("Error", "Ocurrió un error inesperado", "error");
+                        }
+                    }
+                  })
+            });
+        };
         function removeRow(row) {
             $(row).parents('tr').first().remove();
         }

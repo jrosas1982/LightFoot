@@ -13,7 +13,7 @@ using Web.Site.Helpers;
 
 namespace Web.Site.Areas.Fabrica.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Area("fabrica")]
     [Route("[area]/[controller]/[action]")]
     public class RecetasController : CustomController
@@ -23,21 +23,23 @@ namespace Web.Site.Areas.Fabrica.Controllers
         private IInsumoService _insumoService;
         private IOrdenProduccionService _ordenesProduccionService;
         private IRecetaService _recetaService;
+        private IRecetaDetalleService _recetaDetalleService;
 
 
         public RecetasController(ISolicitudService solicitudService,  IArticuloService articuloService , IInsumoService InsumoService
-            , IOrdenProduccionService ordenProduccionService, IRecetaService recetaService)
+            , IOrdenProduccionService ordenProduccionService, IRecetaService recetaService, IRecetaDetalleService recetaDetalleService)
         {
             _solicitudService = solicitudService;
             _articuloService = articuloService;
             _insumoService = InsumoService;
             _ordenesProduccionService = ordenProduccionService;
             _recetaService = recetaService;
+            _recetaDetalleService = recetaDetalleService;
         }
  
 
         // GET: RecetasController
-        public async Task<ActionResult> IndexAsync()
+        public async Task<IActionResult> IndexAsync()
         {
             var recetas = await _recetaService.GetRecetas();
 
@@ -65,7 +67,8 @@ namespace Web.Site.Areas.Fabrica.Controllers
             {
                 var receta = await _recetaService.BuscarPorId(IdReceta);
                 var detalle = await _recetaService.GetRecetaDetalles(IdReceta);
-                recetamodel = new RecetaModel(receta, detalle);
+                recetamodel = new RecetaModel();
+
             }
             else
             {
@@ -86,10 +89,11 @@ namespace Web.Site.Areas.Fabrica.Controllers
         // POST: RecetasController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CrearEditarReceta(RecetaModel collection)
+        public async Task<IActionResult> CrearEditarReceta(RecetaModel recetaModel)
         {
             try
             {
+                recetaModel.RecetaDetalle = null;
                 if (!ModelState.IsValid)
                 {
                     var articulos = await _articuloService.GetArticulos();
@@ -100,7 +104,26 @@ namespace Web.Site.Areas.Fabrica.Controllers
                     ViewBag.Insumos = insumos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
                     ViewBag.EtapasOrden = ordenes.Select(x => new SelectListItem() { Text = $"{x.Descripcion}", Value = $"{x.Orden}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
 
-                    return View(collection);
+                    return View(recetaModel);
+                }
+                else {
+                    Receta recetaACrear = new Receta() { IdArticulo = recetaModel.IdArticulo, Activo = true };
+
+                    foreach (var item in recetaModel.RecetaDetalles)
+                    {
+                        recetaACrear.RecetaDetalles.Add(new RecetaDetalle() 
+                        { Id = item.Id , 
+                            IdReceta = item.IdReceta,
+                            IdInsumo = item.IdInsumo,
+                            IdEtapaOrdenProduccion = item.IdEtapaOrdenProduccion,
+                            Cantidad = item.Cantidad,
+                            Comentario = item.Comentario
+
+                        });
+                    }
+
+                   await _recetaService.CrearReceta(recetaACrear, recetaACrear.RecetaDetalles );
+                
                 }
 
                 return RedirectToAction(nameof(IndexAsync));
@@ -115,11 +138,10 @@ namespace Web.Site.Areas.Fabrica.Controllers
 
         // GET: RecetasController/Edit/5
         [HttpPost]
-        public ActionResult Desactivar(int id)
+        public ActionResult ActivarDesactivar(int id)
         {
             User.GetUserIdSucursal();
-
-            return RedirectToAction(nameof(IndexAsync));
+            return Ok(_recetaService.ActivarDesactivarReceta(id).Result);
         }
 
         // POST: RecetasController/Edit/5
@@ -145,23 +167,35 @@ namespace Web.Site.Areas.Fabrica.Controllers
             return View();
         }
 
-        // POST: RecetasController/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(IndexAsync));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-        public IActionResult AgregarDetalle(RecetaDetalle data)
+        [HttpPost]
+        public IActionResult EliminarDetalle(int id)
         {
+            return Ok(_recetaDetalleService.EliminarInsumoAReceta(id).Result);
+        }
+
+        public IActionResult AgregarDetalle(RecetaDetalleModel data)
+        {
+            if (data.IdReceta != 0 ) {            
+                //var nuevoLineaReceta = _recetaDetalleService.BuscarInsumoDeRecetaPorId(_recetaDetalleService.AgregarInsumoAReceta(AgregarDetalleAReceta(data)).Result);
+                //nuevoLineaReceta.Insumo = data.Insumo;
+                //nuevoLineaReceta.EtapaOrdenProduccion = data.EtapaOrdenProduccion;
+                //return PartialView("_RecetaDetalle", nuevoLineaReceta);
                 return PartialView("_RecetaDetalle", data);
+            }else
+            return PartialView("_RecetaDetalle", data);
+
+        }
+        private RecetaDetalleModel AgregarDetalleAReceta(RecetaDetalleModel data) 
+        {
+            RecetaDetalleModel nuevoDetalle = new RecetaDetalleModel()
+            {
+                IdReceta = data.IdReceta,
+                IdInsumo = data.IdInsumo,
+                IdEtapaOrdenProduccion = data.IdEtapaOrdenProduccion,
+                Cantidad = data.Cantidad,
+                Comentario = data.Comentario
+            };
+            return nuevoDetalle;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿@using HtmlHelpers.BeginCollectionItemCore
-@using Web.Site.Areas
-@model RecetaDetalle
+@using Web.Site.Areas.Fabrica.Models
+@model RecetaDetalleModel
 @{
     bool esEditar = (Model.Id != 0);
     string idTr = esEditar ? Model.Id + "List" : "";
@@ -10,12 +10,14 @@
     {
         {
             @Html.HiddenFor(x => x.Id)
-            @Html.HiddenFor(x => x.IdInsumo)
             @Html.HiddenFor(x => x.IdEtapaOrdenProduccion)
+            @Html.HiddenFor(m => m.IdInsumo)
+            @Html.HiddenFor(x => x.Cantidad)
+            @Html.HiddenFor(x => x.Comentario)
 
-            <td>@Html.DisplayFor(x => x.Insumo.Nombre)</td>
+            <td>@Html.DisplayFor(x => x.NombreInsumo)</td>
             <td>@Html.DisplayFor(x => x.Cantidad)</td>
-            <td>@Html.DisplayFor(x => x.EtapaOrdenProduccion.Descripcion)</td>
+            <td>@Html.DisplayFor(x => x.NombreEtapaOrdenProduccion)</td>
             <td>@Html.DisplayFor(x => x.Comentario)</td>
    
             <td>
@@ -25,8 +27,7 @@
                 }
                 else
                 {
-                    <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="">Borrar</button>
-                    @*<button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick="DeletePriceListProduct('@Html.DisplayTextFor(x => x.Id)')">Borrar</button>*@
+                    <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="eliminarDetalleInsumo(this, @Model.Id)">Borrar</button>
                 }
             </td>
         }

@@ -2,6 +2,7 @@
     ViewData["Title"] = "Recetas";
     Layout = "_Layout";
     string controlador = "Recetas";
+    string url_base = "/fabrica/Recetas/";
 
 }
 
@@ -29,7 +30,7 @@
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight ecommerce">
-
+   
     <div class="ibox-content m-b-sm border-bottom">
         <div class="row">
             <div class="col-sm-3">
@@ -71,7 +72,6 @@
                         <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
                             <thead>
                                 <tr>
-
                                     <th data-toggle="true"># Receta</th>
                                     <th data-hide="all" data-animation="true"></th>
                                     <th>Nombre de articulo</th>
@@ -80,7 +80,6 @@
                                     <th>Usuario Responsable</th>
                                     <th>Fecha Receta</th>
                                     <th data-sort-ignore="true">Acciones</th>
-
                                 </tr>
                             </thead>
                             <tbody>
@@ -154,7 +153,14 @@
 
                                             <td>
                                                 <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="EditarReceta(@receta.Id)">Editar</button>
-                                                <button class=" btn btn-outline btn-warning  btn-xs " type="button" onclick="accionReceta(@receta.Id , 'desactivar')">Desactivar</button>
+                                                @if (receta.Activo)
+                                                {
+                                                    <button class=" btn btn-outline btn-warning  btn-xs " type="button" onclick="accionReceta(@receta.Id , 'desactivar')">Desactivar</button>
+                                                }
+                                                else
+                                                {
+                                                    <button class=" btn btn-w-m btn-info btn-xs " type="button" onclick="accionReceta(@receta.Id , 'activar')">Activar</button>
+                                                }
                                                 <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick="accionReceta(@receta.Id, 'eliminar')">Eliminar</button>
                                             </td>
                                         </tr>
@@ -162,11 +168,12 @@
                                 }
                             </tbody>
                             <tfoot>
-                                <tr>
-                                    <td colspan="6">
-                                        <ul class="pagination float-right"></ul>
-                                    </td>
-                                </tr>
+                            <tfoot>                
+                            <tr>
+                                <td colspan="7">
+                                    <ul class="pagination float-right"></ul>
+                                </td>
+                            </tr>
                             </tfoot>
                         </table>
                     </div>
@@ -215,20 +222,32 @@
 
     <script type="text/javascript">
         function EditarReceta(Id) {
-            window.location = '/fabrica/@controlador/CrearEditarReceta?IdReceta=' + Id;
+            window.location = '@url_base' + 'CrearEditarReceta?IdReceta=' + Id;
         }
     </script>
 
     <script type="text/javascript">
-        function accionReceta(Id,accion) {
-            alert(Id, accion);
+        function accionReceta(Id, accion) {
+            var titulo;
+            var text;
+            if (accion == "eliminar") {
+                titulo = "Seguro que desea eliminar la receta?";
+                text = "La Receta será eliminada definitivamente. Esta accion no se puede deshacer";
+                ruta = "eliminar" ;
+            }
+            else {
+                titulo = "Seguro que desea " + accion + " la receta?";
+                text = " ";
+                ruta = "activardesactivar";
+            }
+            alert(Id, accion, titulo , text);
         }
-
-        function alert(Id, accion) {
+        
+        function alert(Id, accion, titulo, text) {
 
             swal({
-                title: "Seguro que desea " + accion + " la receta?",
-                text: "La Receta será eliminada definitivamente. Esta accion no se puede deshacer",
+                title: titulo,
+                text: text,
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
@@ -238,11 +257,11 @@
             }, function () {
                 $.ajax({
                     type: "post",
-                    url: "/fabrica/@controlador/" + accion + "/",
+                    url: "@url_base" + ruta + "/",
                     data: { id: Id },
                     success: function (result) {
                         if (result == true) {
-                            swal("Exito!", "La Receta ha sido eliminada correctamente", "success");
+                            swal("Exito!", "La acción ha sido procesada correctamente", "success");
                         } else {
                             swal("Error", "Ocurrió un error inesperado", "error");
                         }
@@ -254,6 +273,7 @@
                 });
             });
         };
+
         $(document).ready(function () {
 
             $('.dataTables-example').DataTable({
