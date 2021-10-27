@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Aplicacion.FIlters;
 using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
@@ -154,6 +155,26 @@ namespace Core.Aplicacion.Services
                     .ThenInclude(x => x.Articulo)
                 .Include(x => x.SolicitudDetalles)
                     .ThenInclude(x => x.OrdenesProduccion);
+
+            var queryString = solicitudesList.ToQueryString();
+
+            _logger.LogInformation("Se buscaron las solicitudes");
+            return await solicitudesList.ToListAsync().ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<Solicitud>> GetSolicitudes(SolicitudFilter filter)
+        {
+            var solicitudesList = _db.Solicitudes
+                .AsNoTracking()
+                .Include(x => x.Sucursal)
+                .Include(x => x.SolicitudDetalles)
+                    .ThenInclude(x => x.Articulo)
+                .Include(x => x.SolicitudDetalles)
+                    .ThenInclude(x => x.OrdenesProduccion)
+                .Where(x => filter.IdSucursalList.Contains(x.IdSucursal)
+                            && filter.EstadoSolicitudList.Contains(x.EstadoSolicitud)
+                            && x.FechaCreacion > filter.FechaDesde
+                            && x.FechaCreacion < filter.FechaHasta);
 
             var queryString = solicitudesList.ToQueryString();
 

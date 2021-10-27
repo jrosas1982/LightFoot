@@ -2,7 +2,6 @@
     ViewData["Title"] = "Solicitudes";
     Layout = "_Layout";
 
-    //bool esEdicion = (Model.Id != 0);
 }
 
 @model SolicitudIndexModel
@@ -31,43 +30,48 @@
 
     <div class="ibox-content m-b-sm border-bottom">
         <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-4">
                 <div class="form-group">
-                    <label class="col-form-labe" for="solicitud_name">Solicitud</label>
-                    <input type="text" id="solicitud_name" name="solicitud_name" value="" placeholder="Solicitud" class="form-control">
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label class="col-form-labe" for="articulo_name">Articulo</label>
-                    <input type="text" id="articulo_name" name="articulo_name" value="" placeholder="Articulo" class="form-control">
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label class="col-form-labe" for="solicitud_estado">Estado</label>
-                    <select id="solicitud_estado" data-placeholder="Estado de solicitud" class="chosen-select" multiple tabindex="3">
-                        @foreach (var estado in Model.EstadosSolicitud)
+                    <label class="col-form-label" for="solicitud_sucursal">Sucursal</label>
+                    <select id="solicitud_sucursal" data-placeholder="Sucursal" class="chosen-select" multiple tabindex="3">
+                        @foreach (var sucursal in Model.Sucursales)
                         {
-                            <option value="@estado"> @estado.GetDisplayName() </option>
+                            <option value="@sucursal.Id"> @sucursal.Nombre </option>
                         }
                     </select>
                 </div>
             </div>
-            <div class="col-sm-3">
+            @*<div class="col-sm-3">
+                <div class="form-group">
+                    <label class="col-form-labe" for="articulo_name">Articulo</label>
+                    <input type="text" id="articulo_name" name="articulo_name" value="" placeholder="Articulo" class="form-control">
+                </div>
+            </div>*@
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="col-form-label" for="solicitud_estado">Estado</label>
+                    <select id="solicitud_estado" data-placeholder="Estado de solicitud" class="chosen-select" multiple tabindex="3">
+                        @foreach (var estado in Model.EstadosSolicitud)
+                        {
+                            <option value="@((int)estado)"> @estado.GetDisplayName() </option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-4">
                 <div class="form-group" id="fechaRango">
-                    <label class="col-form-labe" for="fecha">Fecha</label>
+                    <label class="col-form-label" for="fecha">Fecha</label>
                     <div class="input-daterange input-group" id="datepicker">
-                        <input type="text" class="form-control-sm form-control" name="start" />
+                        <input id="fechaDesde" type="text" class="form-control-sm form-control" name="start" value="@Model.SolicitudFilter.FechaDesde.ToShortDateString()"/>
                         <span class="input-group-addon"> <i class="fa fa-long-arrow-right mx-1"></i> </span>
-                        <input type="text" class="form-control-sm form-control" name="end" />
+                        <input id="fechaHasta" type="text" class="form-control-sm form-control" name="end" value="@Model.SolicitudFilter.FechaHasta.ToShortDateString()" />
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-12 d-flex align-items-end justify-content-end">
-                <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="">
+                <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="Filtrar()">
                     <i class="fa fa-search" aria-hidden="true"></i> Buscar
                 </button>
             </div>
@@ -217,7 +221,9 @@
             forceParse: false,
             autoclose: true,
             endDate: "today",
-            language: "es"
+            language: "es",
+            format: "dd/mm/yyyy",
+            startDate:"12/12/2020"
         });
     </script>
 
@@ -251,6 +257,33 @@
             window.location = '/fabrica/Solicitud/SolicitudDetalle?IdSolicitud=' + Id;
         }
 
+        function Filtrar() {
+            sucursalesSeleccionadas = $("#solicitud_sucursal").chosen().val();
+            estadosSeleccionados = $("#solicitud_estado").chosen().val();
+            fechaDesde = $("#fechaDesde").val();
+            fechaHasta = $("#fechaHasta").val();
+
+            $.ajax({
+                type: "post",
+                url: "/fabrica/Solicitud/Filtrar",
+                data: {
+                    solicitudFilter: {
+                        IdSucursalList: sucursalesSeleccionadas,
+                        EstadoSolicitudList: estadosSeleccionados,
+                        FechaDesde: fechaDesde,
+                        FechaHasta: fechaHasta
+                    }
+                },
+                success: function (result) {
+                    if (result == true) {
+                        Model.Solicitudes = result;
+                    } else {
+                        swal("Error", "Ocurrió un error inesperado", "error");
+                    }
+                }
+            });
+        }
+
         function alert(Id) {
             swal({
                 title: "Seguro que desea rechazar la solicitud?",
@@ -264,8 +297,8 @@
             }, function () {
                 $.ajax({
                     type: "post",
-                    url: "/abm/Solicitud/Rechazar",
-                    data: { Id: Id },
+                    url: "/fabrica/Solicitud/Rechazar",
+                    data: { idSolicitud: Id },
                     success: function (result) {
                         if (result == true) {
                             swal("Exito!", "La solicitud ha sido rechazada correctamente", "success");

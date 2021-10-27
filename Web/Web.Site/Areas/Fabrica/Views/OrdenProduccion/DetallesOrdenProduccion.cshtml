@@ -103,7 +103,7 @@
                 </div>
 
                 <div class="panel-footer">
-                    @if (Model.OrdenProduccion.EstadoOrdenProduccion != EstadoOrdenProduccion.Finalizada || Model.OrdenProduccion.EstadoOrdenProduccion != EstadoOrdenProduccion.Cancelada)
+                    @if (Model.OrdenProduccion.EstadoOrdenProduccion != EstadoOrdenProduccion.Finalizada && Model.OrdenProduccion.EstadoOrdenProduccion != EstadoOrdenProduccion.Cancelada)
                     {
                         @if (@EstadoEtapaOrdenProduccion.Pendiente == estadoEtapaOrden)
                         {
