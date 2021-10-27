@@ -10,8 +10,8 @@ namespace Core.Aplicacion.Services
     public class ControlStockArticuloService : IControlStockArticuloService
     {
         private readonly AppDbContext _db;
-        private readonly ILogger<ControlStockInsumoService> _logger;
-        public ControlStockArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<ControlStockInsumoService> logger)
+        private readonly ILogger<ControlStockArticuloService> _logger;
+        public ControlStockArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<ControlStockArticuloService> logger)
         {
             _logger = logger;
             _db = extendedAppDbContext.context;
@@ -46,7 +46,7 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var articuloStockDb = await _db.InsumosStock.FindAsync(articuloStock.Id);
+                var articuloStockDb = await _db.ArticulosStock.FindAsync(articuloStock.Id);
                 _db.Remove(articuloStockDb);
                 await _db.SaveChangesAsync();
                 return true;

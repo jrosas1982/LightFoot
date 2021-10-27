@@ -1,4 +1,4 @@
-﻿@{
+﻿@*@{
     ViewData["Title"] = "Crear Stock Insumo";
     bool esEdicion = (Model.Id != 0);
     Layout = "_Layout";
@@ -8,7 +8,7 @@
 @model InsumoStockModel
 
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-12">
+    <div class="col-lg-10"">
         <h2>@(esEdicion ? "Modificar" : "Crear")</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -25,6 +25,12 @@
             </li>
         </ol>
     </div>
+    <div class="col-lg-2 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-default btn-rounded w-100"
+                onclick="location.href='@Url.Action("Index", "ControlStockInsumo", 0)'">
+            <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+        </button>
+    </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight ecommerce">
 
@@ -36,18 +42,18 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        @Html.LabelFor(m => m.CantidadStockTotal)
-                        @Html.EditorFor(model => model.CantidadStockTotal, new { htmlAttributes = new { @id = "CantidadStockTotal", @class = "form-control", @placeholder = "Cantidad Total de Insumo" } })
-                        @Html.ValidationMessageFor(model => model.CantidadStockTotal, "", new { @class = "text-danger" })
+                        @Html.LabelFor(m => m.StockTotal)
+                        @Html.EditorFor(model => model.StockTotal, new { htmlAttributes = new { @id = "StockTotal", @class = "form-control", @placeholder = "Cantidad Total de Insumo" } })
+                        @Html.ValidationMessageFor(model => model.StockTotal, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        @Html.LabelFor(m => m.CantidadStockReserva)
-                        @Html.EditorFor(model => model.CantidadStockReserva, new { htmlAttributes = new { @id = "CantidadStockReserva", @class = "form-control", @placeholder = "Cantidad en Reserva de Insumo " } })
-                        @Html.ValidationMessageFor(model => model.CantidadStockReserva, "", new { @class = "text-danger" })
+                        @Html.LabelFor(m => m.StockReservado)
+                        @Html.EditorFor(model => model.StockReservado, new { htmlAttributes = new { @id = "StockReservado", @class = "form-control", @placeholder = "Cantidad en Reserva de Insumo " } })
+                        @Html.ValidationMessageFor(model => model.StockReservado, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
@@ -77,5 +83,5 @@
             var switchery = new Switchery(elem, { color: '#1AB394' });
         });
     </script>
-}
+}*@
 

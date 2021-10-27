@@ -8,7 +8,7 @@
 @model ArticuloModel
 
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-12">
+    <div class="col-lg-10">
         <h2>@(esEdicion ? "Modificar" : "Crear")</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -24,6 +24,12 @@
                 <strong>@(esEdicion ? "Modificar" : "Crear")</strong>
             </li>
         </ol>
+    </div>
+    <div class="col-lg-2 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-default btn-rounded w-100"
+                onclick="location.href='@Url.Action("Index", "Articulo", 0)'">
+            <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+        </button>
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight ecommerce">

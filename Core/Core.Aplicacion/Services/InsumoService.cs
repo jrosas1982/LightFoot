@@ -36,6 +36,8 @@ namespace Core.Aplicacion.Services
             insumoDb.Nombre = insumo.Nombre;
             insumoDb.Descripcion = insumo.Descripcion;
             insumoDb.Unidad = insumo.Unidad;
+            insumoDb.IdProveedorPreferido = insumo.IdProveedorPreferido;
+            insumoDb.StockTotal = insumo.StockTotal;
 
             _db.Update(insumoDb);
             await _db.SaveChangesAsync();

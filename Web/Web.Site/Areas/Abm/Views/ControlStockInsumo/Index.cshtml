@@ -1,4 +1,4 @@
-﻿@{
+﻿@*@{
     ViewData["Title"] = "Stock Insumos";
     Layout = "_Layout";
 
@@ -50,8 +50,8 @@
                                 foreach (var item in Model)
                                 {
                             <tr class="gradeC">
-                                <td>@item.CantidadStockTotal</td>
-                                <td>@item.CantidadStockReserva</td>
+                                <td>@item.StockTotal</td>
+                                <td>@item.StockReservado</td>
                                 <td>
                                     <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarArticulo('@item.Id')">Borrar</button>
                                     <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarArticulo('@item.Id')">Editar</button>
@@ -152,4 +152,4 @@
             });
         });
     </script>
-}
+}*@

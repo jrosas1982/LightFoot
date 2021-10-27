@@ -13,28 +13,7 @@
     connection.start(); 
 </script>
 
-<script type="text/javascript">    
-    connection.on("GetUsuarios", function (message) {
-        toastr.options = {
-            "closeButton": true,
-            "debug": false,
-            "newestOnTop": true,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": true,
-            "onclick": function() { window.location = "@Url.Action("Index", "Articulo", new { area = "abm" })"; },
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "3000",
-            "extendedTimeOut": "1200",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-        };
-        toastr["info"](`<h4>${message}</h4>`);
-    });
-
+<script type="text/javascript">
     connection.on("UsuarioEditado", function (message, id) {
         console.log(id);
         toastr.options = {
@@ -55,6 +34,28 @@
             "hideMethod": "fadeOut"
         };
         toastr["info"](`<h4>${message}</h4>`);
+    });
+
+    connection.on("OrdenProduccionFinalizada", function (message, id) {
+        console.log(id);
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true,
+            "onclick": function () { window.location = '/fabrica/OrdenProduccion/DetallesOrdenProduccion?IdOrdenProduccion=' + id; },
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000",
+            "extendedTimeOut": "1200",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+        toastr["success"](`<h4>${message}</h4>`);
     });
 </script>
 

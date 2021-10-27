@@ -8,7 +8,7 @@
 @using Core.Dominio.AggregatesModel
 @model IEnumerable<Insumo>
 
-<div class="row wrapper border-bottom white-bg page-heading">
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
     <div class="col-lg-12">
         <h2>Insumo</h2>
         <ol class="breadcrumb">
@@ -24,7 +24,14 @@
         </ol>
     </div>
     <div class="col-lg-12" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditarInsumo", controlador , 0)'"> Crear nuevo Insumos</button>
+        <button type="button" class="btn btn-w-m btn-default" onclick="Reporte()">Reporte</button>
+        <button type="button" class="btn btn-w-m btn-default" onclick="location.href='@Url.Action("CrearEditarInsumo", "Insumo", 0)'"> Crear nuevo Insumos</button>
+    </div>
+</div>
+
+<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        Reporte de Insumos @DateTime.Now
     </div>
 </div>
 
@@ -43,7 +50,7 @@
                                 <th>Nombre</th>
                                 <th>Descripcion</th>
                                 <th>Unidad</th>
-                                <th>Acciones</th>
+                                <th class="d-print-none">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -55,7 +62,7 @@
                                         <td>@item.Nombre</td>
                                         <td>@item.Descripcion</td>
                                         <td>@item.Unidad</td>
-                                        <td>
+                                        <td class="d-print-none">
                                             <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarInsumo('@item.Id')">Borrar</button>
                                             <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarInsumo('@item.Id')">Editar</button>
                                         </td>
@@ -64,7 +71,7 @@
                             }
                         </tbody>
                         <tfoot>
-                            <tr>
+                            <tr class="d-print-none">
                                 <th>Nombre</th>
                                 <th>Descripcion</th>
                                 <th>Unidad</th>
@@ -101,6 +108,13 @@
         function EditarInsumo(Id) {
             window.location = '/abm/@controlador/CrearEditarInsumo?IdInsumo=' + Id;
         }
+
+        function Reporte() {
+            $('.dataTables_filter').addClass("d-print-none")
+            window.print();
+            $('.dataTables_filter').removeClass("d-print-none")
+        }
+
         function alert(Id) {
             swal({
                 title: "Seguro que desea dar de baja el Insumo?",
@@ -130,32 +144,24 @@
                 });
             });
         };
+
         $(document).ready(function () {
 
             $('.dataTables-example').DataTable({
                 pageLength: 10,
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [
-               
-                    {
-                        extend: 'pdf',
-                        title: 'Insumos',
-                        exportOptions: {
-                            columns: [0, 1, 2]
-                        }
-                  
-                    },
-                    {
-                        extend: 'print',
-                        customize: function (win) {
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                        }
-                    }
+                //   {
+                //        extend: 'print',
+                //        customize: function (win) {
+                //            $(win.document.body).addClass('white-bg');
+                //            $(win.document.body).css('font-size', '10px');
+                //
+                //            $(win.document.body).find('table')
+                //                .addClass('compact')
+                //                .css('font-size', 'inherit');
+                //        }
+                //    }
                 ]
 
             });

@@ -79,5 +79,10 @@ namespace Core.Aplicacion.Helpers
         {
             return Enum.GetValues(typeof(T)).Cast<T>();
         }
+
+        public static IEnumerable<T> GetValues<T>(this T elEnum) where T : Enum
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>();
+        }
     }
 }

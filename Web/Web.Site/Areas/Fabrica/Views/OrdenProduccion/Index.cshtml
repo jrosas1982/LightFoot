@@ -5,7 +5,7 @@
     //bool esEdicion = (Model.Id != 0);
 }
 
-@model IEnumerable<OrdenProduccion>
+@model OrdenProduccionIndexModel
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
@@ -37,32 +37,33 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label class="font-normal">Estado</label>
-                    <select data-placeholder="Estado de solicitud" class="chosen-select" multiple name="estado" id="estado">
-                        <option value="0" selected> Pendiente de aprobacion   </option>
-                        <option value="1">          Aprobado                  </option>
-                        <option value="2">          Rechazado                 </option>
+                    <select class="chosen-select" multiple name="estado_orden" id="estado_orden" data-placeholder="@Model.EstadoOrdenProducciones.First().GetDisplayName()">
+                        @foreach (var estado in Model.EstadoOrdenProducciones)
+                        {
+                            <option value="@estado"> @estado.GetDisplayName()</option>
+                        }
                     </select>
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
                     <label class="font-normal">Etapa</label>
-                    <select data-placeholder="Estado de solicitud" class="chosen-select" name="etapa_orden" id="etapa_orden">
-                        <option value="0" selected> Cortado         </option>
-                        <option value="1">          Aparado         </option>
-                        <option value="2">          Preparacion     </option>
-                        <option value="3">          Montado         </option>
-                        <option value="4">          Pegado          </option>
-                        <option value="5">          Finalizado      </option>
+                    <select class="chosen-select" name="etapa_orden" id="etapa_orden">
+                        @foreach( var etapa in Model.EtapaOrdenProducciones)
+                        {
+                            <option value="@etapa.Descripcion"> @etapa.Descripcion </option>
+                        }
                     </select>
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label class="col-form-labe" for="etapa_estado">Etapa del Estado</label>
-                    <select name="etapa_estado" id="etapa_estado" class="form-control">
-                        <option value="0" selected> Pendiente de inicio     </option>
-                        <option value="1">          Iniciada                </option>
+                    <label class="col-form-labe" for="etapa_estado">Estado de Etapa</label>
+                    <select class="chosen-select"  name="etapa_estado" id="etapa_estado">
+                        @foreach (var estadoEtapa in Model.EstadoEtapaOrdenProducciones)
+                        {
+                            <option value="@estadoEtapa"> @estadoEtapa.GetDisplayName() </option>
+                        }
                     </select>
                 </div>
             </div>
@@ -103,34 +104,40 @@
                         <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
                             <thead>
                                 <tr>
-
-                                    <th data-toggle="true">Articulo</th>
-                                    <th>Estado</th>
+                                    <th>#</th>
+                                    <th>Estado Orden</th>
+                                    <th>Articulo</th>
+                                    <th>Color</th>
+                                    <th>Talle</th>
+                                    <th>Cantidad a Fabricar</th>
                                     <th>Etapa</th>
                                     <th>Estado de la Etapa</th>
-                                    <th>Cantidad Total</th>
-                                    <th>Cantidad Fabricada</th>
+                                    @*<th>Cantidad Fabricada</th>*@
                                     <th>Tiempo empleado</th>
                                     <th data-sort-ignore="true">Acciones</th>
 
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (Model != null && Model.Any())
+                                @if (Model != null && Model.OrdenProducciones.Any())
                                 {
-                                    foreach (var orden in Model)
+                                    foreach (var orden in Model.OrdenProducciones)
                                     {
                                         <tr>
-                                            <td>@orden.Articulo.Nombre - @orden.Articulo.Color - t(@orden.Articulo.TalleArticulo)</td>
+                                            <td>@orden.Id</td>
                                             <td>
                                                 <span class="label label-@orden.EstadoOrdenProduccion.GetGroupName()">@orden.EstadoOrdenProduccion.GetDisplayName()</span>
                                             </td>
+                                            <td>@orden.Articulo.Nombre</td>
+                                            <td>@orden.Articulo.Color</td>
+                                            <td>@orden.Articulo.TalleArticulo</td>
+                                            <td>@orden.CantidadTotal</td>
                                             <td>@orden.EtapaOrdenProduccion.Descripcion</td>
                                             <td>
                                                 <span class="label label-@orden.EstadoEtapaOrdenProduccion.GetGroupName()">@orden.EstadoEtapaOrdenProduccion.GetDisplayName()</span>
                                             </td>
-                                            <td>@orden.CantidadTotal</td>
-                                            <td>@orden.CantidadFabricada</td>
+
+                                            @*<td>@orden.CantidadFabricada</td>*@
                                             <th>@((DateTime.Now - orden.FechaCreacion).ToString(@"hh\:mm\:ss"))</th>
                                             <td>
                                                 <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerDetalles('@orden.Id')">Ver Detalles</button>
@@ -182,7 +189,7 @@
     <script type="text/javascript">
         $('.chosen-select').chosen({
             no_results_text: "No hay resultados que coincidan con ",
-            
+
         });
     </script>
 
@@ -230,6 +237,7 @@
                 });
             });
         };
+
         $(document).ready(function () {
             $('.dataTables-example').DataTable({
                 pageLength: 25,
@@ -255,6 +263,21 @@
 
             });
         });
+    </script>
+
+    @*Aprtura de WebSocket (no se que hace)*@
+    <script type="text/javascript">
+        Object.defineProperty(WebSocket, 'OPEN', { value: 1, });
+    </script>
+    @*conexion al SignalR*@
+    <script type="text/javascript">
+        var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationsHub").build();
+        connection.start();
+    </script>
+    <script type="text/javascript">
+        connection.on("OrdenProduccionUpdate", function () {
+            location.reload();
+    });
     </script>
 
 }

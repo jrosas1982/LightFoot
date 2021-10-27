@@ -69,12 +69,12 @@ namespace Core.Aplicacion.Helpers
         // TODO testear
         public async Task<IList<CantidadInsumoNecesarioStock>> VerificarStockInsumos(IList<CantidadInsumo> insumosNecesarios)
         {
-            var insumosStock = _db.InsumosStock.Where(x => insumosNecesarios.Select(y => y.IdInsumo).Contains(x.IdInsumo));
-            var insumosVerificados = insumosStock.Select(x => new CantidadInsumoNecesarioStock()
+            var insumos = _db.Insumos;
+            var insumosVerificados = insumos.Select(x => new CantidadInsumoNecesarioStock()
             {
-                Insumo = x.Insumo,
-                CantidadNecesaria = insumosNecesarios.Single(y => y.IdInsumo == x.IdInsumo).Cantidad,
-                CantidadDisponible = x.CantidadStockTotal - x.CantidadStockReserva,
+                Insumo = x,
+                CantidadNecesaria = insumosNecesarios.Single(y => y.IdInsumo == x.Id).Cantidad,
+                CantidadDisponible = x.StockTotal - x.StockReservado,
             });
             return await insumosVerificados.ToListAsync();
         }
@@ -82,17 +82,17 @@ namespace Core.Aplicacion.Helpers
         // TODO testear
         public async Task ReservarStockInsumos(IList<CantidadInsumo> insumosNecesarios)
         {
-            var insumosStock = _db.InsumosStock.Where(x => insumosNecesarios.Select(y => y.IdInsumo).Contains(x.IdInsumo));
+            var insumosStock = _db.Insumos.Where(x => insumosNecesarios.Select(y => y.IdInsumo).Contains(x.Id));
 
             foreach (var insumo in insumosStock)
             {
-                insumo.CantidadStockReserva = insumosNecesarios.Single(x => x.IdInsumo == insumo.Id).Cantidad;
+                insumo.StockReservado = insumosNecesarios.Single(x => x.IdInsumo == insumo.Id).Cantidad;
             }
 
-            if (await insumosStock.AnyAsync(x => x.CantidadStockTotal < x.CantidadStockReserva))
+            if (await insumosStock.AnyAsync(x => x.StockTotal < x.StockReservado))
                 throw new Exception("No hay suficiente stock disponible para reservar para la orden de produccion");
 
-            _db.InsumosStock.UpdateRange(insumosStock);
+            _db.Insumos.UpdateRange(insumosStock);
         }
     }
 }
