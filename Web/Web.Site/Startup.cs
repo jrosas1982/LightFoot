@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,9 +63,9 @@ namespace LightFoot.Web.Site
                  options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
              }).AddCookie(options =>
                             {
-                                options.LoginPath = "/Auth/Auth/Index"; //test
-                                options.LogoutPath = "/Auth/Auth/LogOutUser"; //test
-                                options.AccessDeniedPath = "/Dashboards/Dashboard_3"; //test
+                                options.LoginPath = "/Auth/LogIn"; //test
+                                options.LogoutPath = "/Auth/LogIn"; //test
+                                options.AccessDeniedPath = "/Auth/LogIn"; //test
                             });
 
 
@@ -94,7 +95,7 @@ namespace LightFoot.Web.Site
             }
             else
             {
-                app.UseExceptionHandler("/Dashboards/Dashboard_1");
+                app.UseExceptionHandler("/Auth/LogIn");
                 app.UseHsts();
             }
 
@@ -103,7 +104,7 @@ namespace LightFoot.Web.Site
                 await next();
                 if (context.Response.StatusCode == 401)
                 {
-                    context.Request.Path = "/Auth/Auth/Index";
+                    context.Request.Path = "/Auth/LogIn";
                     await next();
                 }
                 if (context.Response.StatusCode == 404)

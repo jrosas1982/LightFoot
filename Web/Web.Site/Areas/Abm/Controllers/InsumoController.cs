@@ -4,13 +4,14 @@ using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Site.Helpers;
 
 namespace Web.Site.Areas
 {
     [Authorize]
     [Area("abm")]
     [Route("[area]/[controller]/[action]")]
-    public class InsumoController : Controller
+    public class InsumoController : CustomController
     {
         private IInsumoService _insumoService;
 
