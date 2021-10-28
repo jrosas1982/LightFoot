@@ -1,8 +1,8 @@
 ﻿@{
     ViewData["Title"] = "Proveedor";
     Layout = "_Layout";
+    string controlador = "Proveedor";
 
-    //bool esEdicion = (Model.Id != 0);
 }
 
 @using Core.Dominio.AggregatesModel
@@ -112,7 +112,7 @@
         }
 
         function EditarProveedor(Id) {
-            window.location = '/abm/Proveedor/CrearEditarProveedor?IdProveedor=' + Id;
+            window.location = '/abm/@controlador/CrearEditarProveedor?IdProveedor=' + Id;
         }
 
         function Reporte() {
@@ -134,7 +134,7 @@
             }, function () {
                 $.ajax({
                     type: "post",
-                    url: "/abm/Proveedor/Eliminar",
+                    url: "/abm/@controlador/Eliminar",
                     data: { Id: Id },
                     success: function (result) {
                         if (result) {
