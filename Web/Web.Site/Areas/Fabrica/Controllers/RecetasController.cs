@@ -1,4 +1,5 @@
-﻿using Core.Aplicacion.Interfaces;
+﻿using AutoMapper;
+using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -24,10 +25,11 @@ namespace Web.Site.Areas.Fabrica.Controllers
         private IOrdenProduccionService _ordenesProduccionService;
         private IRecetaService _recetaService;
         private IRecetaDetalleService _recetaDetalleService;
+        private IMapper _mapper ;
 
 
         public RecetasController(ISolicitudService solicitudService,  IArticuloService articuloService , IInsumoService InsumoService
-            , IOrdenProduccionService ordenProduccionService, IRecetaService recetaService, IRecetaDetalleService recetaDetalleService)
+            , IOrdenProduccionService ordenProduccionService, IRecetaService recetaService, IRecetaDetalleService recetaDetalleService, IMapper mapper)
         {
             _solicitudService = solicitudService;
             _articuloService = articuloService;
@@ -35,21 +37,27 @@ namespace Web.Site.Areas.Fabrica.Controllers
             _ordenesProduccionService = ordenProduccionService;
             _recetaService = recetaService;
             _recetaDetalleService = recetaDetalleService;
+            _mapper = mapper;
         }
  
-
         // GET: RecetasController
         public async Task<IActionResult> IndexAsync()
-        {
+        { 
             var recetas = await _recetaService.GetRecetas();
+            var insumos = await _insumoService.GetInsumos();
+            var ordenes = await _ordenesProduccionService.GetEtapasOrden();
 
-
-            var recetaModelList = new RecetaModel()
+            var modeloReceta = _mapper.Map<IEnumerable<RecetaModel>>(recetas);
+            foreach (var receta in modeloReceta)
             {
-                Recetas = recetas
-            }; 
+                foreach (var detalle in receta.RecetaDetalles)
+                {
+                    detalle.NombreEtapaOrdenProduccion = ordenes.Where(x => x.Orden == detalle.IdEtapaOrdenProduccion).Select(d => d.Descripcion).FirstOrDefault();
+                    detalle.NombreInsumo = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Nombre).FirstOrDefault();
+                }
+            }
 
-            return View(recetaModelList);
+            return View(modeloReceta);
         }
 
         // GET: RecetasController/Details/5
@@ -62,27 +70,25 @@ namespace Web.Site.Areas.Fabrica.Controllers
         // GET: RecetasController/Create
         public async Task<IActionResult> CrearEditarReceta(int IdReceta)
         {
-            RecetaModel recetamodel;
-            if (IdReceta != 0)
-            {
-                var receta = await _recetaService.BuscarPorId(IdReceta);
-                var detalle = await _recetaService.GetRecetaDetalles(IdReceta);
-                recetamodel = new RecetaModel();
-
-            }
-            else
-            {
-                recetamodel = new RecetaModel();
-            }
-
-            var articulos= await _articuloService.GetArticulos();
+            RecetaModel recetamodel = new RecetaModel();
+            var articulos = await _articuloService.GetArticulos();
             var insumos = await _insumoService.GetInsumos();
             var ordenes = await _ordenesProduccionService.GetEtapasOrden();
 
+            if (IdReceta != 0)
+            {
+                var receta = await _recetaService.BuscarPorId(IdReceta);
+                recetamodel = _mapper.Map<RecetaModel>(receta);
+                foreach (var item in recetamodel.RecetaDetalles)
+                {
+                    item.NombreEtapaOrdenProduccion = ordenes.Where(x => x.Orden == item.IdEtapaOrdenProduccion).Select(d => d.Descripcion).FirstOrDefault();
+                    item.NombreInsumo = insumos.Where(x => x.Id == item.IdInsumo).Select(d => d.Nombre).FirstOrDefault();
+                }
+            }
             ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); 
             ViewBag.Insumos = insumos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); 
             ViewBag.EtapasOrden =  ordenes.Select(x => new SelectListItem() { Text = $"{x.Descripcion}", Value = $"{x.Orden}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
-          
+            
             return View(recetamodel);
         }
 
@@ -93,7 +99,6 @@ namespace Web.Site.Areas.Fabrica.Controllers
         {
             try
             {
-                recetaModel.RecetaDetalle = null;
                 if (!ModelState.IsValid)
                 {
                     var articulos = await _articuloService.GetArticulos();
@@ -107,32 +112,15 @@ namespace Web.Site.Areas.Fabrica.Controllers
                     return View(recetaModel);
                 }
                 else {
-                    Receta recetaACrear = new Receta() { IdArticulo = recetaModel.IdArticulo, Activo = true };
-
-                    foreach (var item in recetaModel.RecetaDetalles)
-                    {
-                        recetaACrear.RecetaDetalles.Add(new RecetaDetalle() 
-                        { Id = item.Id , 
-                            IdReceta = item.IdReceta,
-                            IdInsumo = item.IdInsumo,
-                            IdEtapaOrdenProduccion = item.IdEtapaOrdenProduccion,
-                            Cantidad = item.Cantidad,
-                            Comentario = item.Comentario
-
-                        });
-                    }
-
-                   await _recetaService.CrearReceta(recetaACrear, recetaACrear.RecetaDetalles );
-                
+                    var recetaNueva = _mapper.Map<Receta>(recetaModel);
+                    await _recetaService.CrearReceta(recetaNueva);
+                    return RedirectToAction("Index", "Recetas",new { @area = "fabrica" });
                 }
-
-                return RedirectToAction(nameof(IndexAsync));
-
             }
             catch(Exception ex)
             {
              MensajeError(ex.Message);
-             return RedirectToAction(nameof(CrearEditarReceta));
+                return RedirectToAction("CrearEditarReceta", "Recetas", new { @area = "fabrica" });
             }
         }
 
@@ -158,13 +146,17 @@ namespace Web.Site.Areas.Fabrica.Controllers
                 return View();
             }
         }
-
+        /// <summary>
+        /// Recibe el Ide de receta para eliminar
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // GET: RecetasController/Delete/5
         [HttpPost]
         public ActionResult Eliminar(int id)
         {
-            var i = id;
-            return View();
+            var i = _recetaService.EliminarReceta(id);
+            return Ok(_recetaService.EliminarReceta(id));
         }
 
         [HttpPost]
@@ -175,27 +167,29 @@ namespace Web.Site.Areas.Fabrica.Controllers
 
         public IActionResult AgregarDetalle(RecetaDetalleModel data)
         {
-            if (data.IdReceta != 0 ) {            
-                //var nuevoLineaReceta = _recetaDetalleService.BuscarInsumoDeRecetaPorId(_recetaDetalleService.AgregarInsumoAReceta(AgregarDetalleAReceta(data)).Result);
-                //nuevoLineaReceta.Insumo = data.Insumo;
-                //nuevoLineaReceta.EtapaOrdenProduccion = data.EtapaOrdenProduccion;
-                //return PartialView("_RecetaDetalle", nuevoLineaReceta);
-                return PartialView("_RecetaDetalle", data);
+            if (data.IdReceta != 0 ) {
+                var agregarDetalle = _mapper.Map<RecetaDetalle>(data);
+                var nuevoLineaReceta = _recetaDetalleService.BuscarInsumoDeRecetaPorId(_recetaDetalleService.AgregarInsumoAReceta(agregarDetalle).Result);
+                var recetaDetalleModelo = _mapper.Map<RecetaDetalleModel>(nuevoLineaReceta);
+                recetaDetalleModelo.NombreInsumo = data.NombreInsumo;
+                recetaDetalleModelo.NombreEtapaOrdenProduccion = data.NombreEtapaOrdenProduccion;
+
+                return PartialView("_RecetaDetalle", recetaDetalleModelo);
             }else
             return PartialView("_RecetaDetalle", data);
 
         }
-        private RecetaDetalleModel AgregarDetalleAReceta(RecetaDetalleModel data) 
+
+        //TODO: Idea para refactor 
+        private async Task<RecetaDetalleModel> AgregarDetalleInsumoYOrdenesAsync(RecetaDetalleModel recetaDetalleModel)     
         {
-            RecetaDetalleModel nuevoDetalle = new RecetaDetalleModel()
-            {
-                IdReceta = data.IdReceta,
-                IdInsumo = data.IdInsumo,
-                IdEtapaOrdenProduccion = data.IdEtapaOrdenProduccion,
-                Cantidad = data.Cantidad,
-                Comentario = data.Comentario
-            };
-            return nuevoDetalle;
+            var insumos = await _insumoService.GetInsumos();
+            var ordenes = await _ordenesProduccionService.GetEtapasOrden();
+
+            recetaDetalleModel.NombreEtapaOrdenProduccion = ordenes.Where(x => x.Orden == recetaDetalleModel.IdEtapaOrdenProduccion).Select(d => d.Descripcion).FirstOrDefault();
+            recetaDetalleModel.NombreInsumo = insumos.Where(x => x.Id == recetaDetalleModel.IdInsumo).Select(d => d.Nombre).FirstOrDefault();
+         
+            return recetaDetalleModel;
         }
     }
 }

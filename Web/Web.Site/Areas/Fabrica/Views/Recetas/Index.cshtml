@@ -7,7 +7,7 @@
 }
 
 @using Web.Site.Areas.Fabrica.Models
-@model RecetaModel
+@model IEnumerable<RecetaModel>
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
@@ -75,7 +75,6 @@
                                     <th data-toggle="true"># Receta</th>
                                     <th data-hide="all" data-animation="true"></th>
                                     <th>Nombre de articulo</th>
-                                    <th>Comentarios</th>
                                     <th>Estado</th>
                                     <th>Usuario Responsable</th>
                                     <th>Fecha Receta</th>
@@ -83,9 +82,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (Model.Recetas != null)
+                                @if (Model.Any())
                                 {
-                                    foreach (var receta in Model.Recetas)
+                                    foreach (var receta in Model)
                                     {
                                         <tr>
                                             <td>@receta.Id</td>
@@ -109,11 +108,11 @@
                                                                         @foreach (var detalle in receta.RecetaDetalles)
                                                                         {
                                                                             <tr>
-                                                                                <td>@detalle.Insumo.Nombre</td>
-                                                                                <td>@detalle.Insumo.Descripcion</td>
-                                                                                <td>@detalle.Insumo.Unidad</td>
+                                                                                <td>@detalle.IdInsumo</td>
+                                                                                <td>@detalle.NombreInsumo</td>
+                                                                                <td>@detalle.Id</td>
                                                                                 <td>@detalle.Cantidad</td>
-                                                                                <td>@detalle.EtapaOrdenProduccion.Descripcion</td>
+                                                                                <td>@detalle.NombreEtapaOrdenProduccion</td>
                                                                             </tr>
                                                                         }
                                                                     </tbody>
@@ -125,7 +124,7 @@
                                                 }
                                             </td>
                                             <td>@receta.Articulo.Nombre</td>
-                                            <td>@receta.Articulo.Descripcion</td>
+
                                             @if (receta.Activo)
                                             {
                                                 <td>Activo</td>

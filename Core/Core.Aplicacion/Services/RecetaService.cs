@@ -3,6 +3,8 @@ using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MoreLinq;
+using MoreLinq.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,12 +29,15 @@ namespace Core.Aplicacion.Services
 
         public async Task<Receta> BuscarPorId(int IdReceta)
         {
-            var receta = await _db.Recetas.FindAsync(IdReceta);
+            var receta = await _db.Recetas
+                .Include(x => x.Articulo)
+                .Include(x => x.RecetaDetalles)
+                .ThenInclude(x => x.Insumo)
+                .Include(x => x.RecetaDetalles)
+                .ThenInclude(x => x.EtapaOrdenProduccion).Where(x =>  x.Id == IdReceta).SingleOrDefaultAsync();
+
             return receta;
         }
-
-       
-
 
         public async Task<IEnumerable<Receta>> GetRecetas()
         {
@@ -54,9 +59,20 @@ namespace Core.Aplicacion.Services
             return await detallesSolicitud.ToListAsync();
         }
 
-        public Task<bool> EliminarReceta(int IdReceta)
+        public async Task<bool> EliminarReceta(int IdReceta)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var receta = _db.Recetas.Where(x =>x.Id == IdReceta).Include(x => x.RecetaDetalles).SingleOrDefault();
+                _db.Recetas.Remove(receta);
+               await  _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"  { ex.Message }");
+                return false;
+            }
         }
 
         public async Task<bool> ActivarDesactivarReceta(int IdReceta)
@@ -73,26 +89,19 @@ namespace Core.Aplicacion.Services
             return true;
         }
 
-        public async Task<bool> CrearReceta(Receta receta, IEnumerable<RecetaDetalle> recetaDetalles )
+        public async Task<bool> CrearReceta(Receta receta)
         {
-                try
-                {
-                    _db.Recetas.Add(receta);
-  
-                    foreach (var item in recetaDetalles)
-                    {
-                    receta.RecetaDetalles.Add(item);
-                    }
-                    await _db.SaveChangesAsync();
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogInformation($"  { ex.Message }");
-                    return false;
-                }
-        
-            
+           try
+           {
+               _db.Recetas.Add(receta);
+               await _db.SaveChangesAsync();
+               return true;
+           }
+           catch (Exception ex)
+           {
+               _logger.LogInformation($"  { ex.Message }");
+               return false;
+           }
         }
     }
 }

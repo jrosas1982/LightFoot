@@ -56,7 +56,6 @@
         <div class="wrapper wrapper-content animated fadeInRight ecommerce">
             <div class="ibox-content m-b-sm border-bottom">
                 <table id="ListaAriticulo" class="table table-bordered">
-                @*<table id="ListaAriticulo" class="table table-striped table-bordered table-hover dataTables-example">*@
                         <tr>
                             <th>Nombre de Insumo </th>
                             <th>Cantidad</th>
@@ -76,16 +75,7 @@
                             }
                         }
                     </tbody>
-                    @*<tfoot>
-                        <tr>
-                            <th>Nombre de Insumo </th>
-                            <th>Cantidad</th>
-                            <th>Etapa involucrada</th>
-                            <th>Comentario</th>
-                            <th>Borrar</th>
-                        </tr>
-                    </tfoot>*@
-                </table>
+                   </table>
                     <div class="ibox-content border-0 pt-0 pr-0">
                         <div class="text-center d-flex justify-content-end">
                             <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#NewCommentModal">
@@ -104,8 +94,9 @@
             {
                 <button id="btnReceta" type="Submit" class="btn btn-w-m btn-primary">Crear Receta</button>
             }
-
+    
         </div>
+    }
         @* MODAL NEW COMMENT *@
         <div class="modal inmodal fade" id="NewCommentModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -120,14 +111,14 @@
                     <div class="modal-body py-2">
                         <div class="form-floating">
                             @Html.LabelFor(m => m.RecetaDetalle.IdInsumo)
-                            @Html.DropDownListFor(m => m.RecetaDetalle.IdInsumo, new List<SelectListItem>(ViewBag.Insumos), " -- Seleccionar Insumo --", new { @id = "IdInsumo", @class = "form-control required" })
+                            @Html.DropDownListFor(m => m.RecetaDetalle.IdInsumo, new List<SelectListItem>(ViewBag.Insumos), " -- Seleccionar Insumo --", new { @id = "IdInsumo", @class = "form-control " })
                             @Html.ValidationMessageFor(model => model.RecetaDetalle.IdInsumo, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="modal-body py-2">
                         <div class="form-floating">
                             @Html.LabelFor(m => m.RecetaDetalle.Cantidad)
-                            @Html.EditorFor(model => model.RecetaDetalle.Cantidad, new { htmlAttributes = new { @id = "CantidadSolicitada", @class = "form-control required", @placeholder = "" } })
+                            @Html.EditorFor(model => model.RecetaDetalle.Cantidad, new { htmlAttributes = new { @id = "CantidadSolicitada", @class = "form-control ", @placeholder = "" } })
                             @Html.ValidationMessageFor(model => model.RecetaDetalle.Cantidad, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -153,12 +144,11 @@
                 </div>
             </div>
         </div>
-    }
+
 </div>
 
 @section Styles {
     <environment names="Development,Staging,Production">
-        @*<link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />*@
         <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
 
     </environment>
@@ -166,8 +156,6 @@
 
 @section Scripts {
     <environment names="Development,Staging,Production">
-        @*<script src="~/lib/dataTables/datatables.min.js"></script>*@
-        @*<script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>*@
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/lib/validate/jquery.validate.min.js"></script>
         <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
@@ -175,31 +163,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            //$('.dataTables-example').DataTable({
-            //    pageLength: 10,
-            //    dom: '<"html5buttons"B>lTfgitp',
-            //    buttons: [
-            //        { extend: 'copy' },
-            //        { extend: 'csv' },
-            //        { extend: 'excel', title: 'Insumos de Articulos' },
-            //        {
-            //            extend: 'pdf',
-            //            exportOptions: {
-            //                columns: [0, 1, 2, 3]
-            //            },
-            //            title: 'Insumos de Articulos'
-            //        },
 
-            //        {
-            //            extend: 'print',
-            //            autoPrint: true,
-            //            exportOptions: {
-            //                columns: [0, 1, 2, 3]
-            //            }
-            //       }
-            //    ]
-
-            //});
         });
 
         function ClearModal() {
@@ -218,7 +182,10 @@
                     IdEtapaOrdenProduccion: $("#IdEtapaOrdenProduccion").val(),
                     Comentario: $("#Comentario").val(),
                     NombreEtapaOrdenProduccion: $('#IdEtapaOrdenProduccion option:selected').text(),
-                    NombreInsumo: $('#IdInsumo option:selected').text()
+                    NombreInsumo: $('#IdInsumo option:selected').text(),
+                    RecetaDetalle: {
+                        Cantidad: $("#CantidadSolicitada").val()
+                    }
                 }
             }).done(function (partialView) {
                 $('#ListaAriticulo tbody:last-child').after().append(partialView);

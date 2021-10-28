@@ -14,18 +14,25 @@ namespace Web.Site.Areas.Fabrica.Models
         [Required]
         public int IdArticulo { get; set; }
     
-        public Boolean Activo { get; set; }
-       public  RecetaDetalleModel RecetaDetalle { get; set; }
+        public ArticuloModel Articulo { get; set; }
 
-        public virtual IEnumerable<Receta> Recetas { get; set; }
+        public Boolean Activo { get; set; }
+        public  RecetaDetalleModel RecetaDetalle { get; set; }
+
+       // public virtual IEnumerable<Receta> Recetas { get; set; }
         public virtual IEnumerable<RecetaDetalleModel> RecetaDetalles { get; set; }
-        
+
+        public DateTime FechaCreacion { get; set; }
+        public DateTime? FechaModificacion { get; set; }
+        public string CreadoPor { get; set; }
+        public string ModificadoPor { get; set; }
+
         public RecetaModel()
         {
            // RecetaDetalles = new IEnumerable<RecetaDetalleModel>();
           // Recetas = new List<Receta>();
         }
-        public RecetaModel(Receta receta , ICollection<RecetaDetalleModel> recetaDetalle)
+        public RecetaModel(RecetaModel receta, IEnumerable<RecetaDetalleModel> recetaDetalle)
         {
             Id = receta.Id;
             IdArticulo = receta.IdArticulo;
