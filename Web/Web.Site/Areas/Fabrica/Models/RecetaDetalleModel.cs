@@ -16,6 +16,9 @@ namespace Web.Site.Areas.Fabrica.Models
         public int IdInsumo { get; set; }
         public string NombreInsumo { get; set; }
 
+        [Display(Name = "Nombre Insumo")]
+        public string UnidadDeMedida { get; set; }
+
         [Display(Name = "Nombre Orden")]
         public int IdEtapaOrdenProduccion { get; set; }
         public string NombreEtapaOrdenProduccion { get; set; }

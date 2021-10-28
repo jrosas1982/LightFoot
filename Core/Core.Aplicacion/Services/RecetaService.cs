@@ -63,30 +63,43 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var receta = _db.Recetas.Where(x =>x.Id == IdReceta).Include(x => x.RecetaDetalles).SingleOrDefault();
+                var receta = _db.Recetas.Where(x => x.Id == IdReceta).SingleOrDefault();
+                foreach (var item in receta.RecetaDetalles)
+                {
+                    _db.RecetaDetalles.Remove(item);
+                }
                 _db.Recetas.Remove(receta);
-               await  _db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"  { ex.Message }");
+                _logger.LogInformation($" Error al EliminarReceta { ex.Message }");
                 return false;
             }
         }
 
         public async Task<bool> ActivarDesactivarReceta(int IdReceta)
         {
-            var item = _db.Recetas.SingleOrDefault(x => x.Id == IdReceta); //returns a single item.
 
-            if (item == null)
+            try
             {
-                return false;
+                var item = _db.Recetas.SingleOrDefault(x => x.Id == IdReceta); //returns a single item.
+
+                if (item == null)
+                {
+                    return false;
+                }
+                item.Activo = item.Activo ? false : true;
+                _db.Recetas.Update(item);
+                await _db.SaveChangesAsync();
+                return true;
             }
-            item.Activo = item.Activo ? false : true;
-            _db.Recetas.Update(item);
-            _db.SaveChanges();
-            return true;
+            catch (Exception ex)
+            {
+                _logger.LogInformation($" Error al ActivarDesactivarReceta { ex.Message }");
+                return false;
+            }    
         }
 
         public async Task<bool> CrearReceta(Receta receta)

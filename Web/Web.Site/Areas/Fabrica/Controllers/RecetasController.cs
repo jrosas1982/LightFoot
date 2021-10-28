@@ -14,7 +14,7 @@ using Web.Site.Helpers;
 
 namespace Web.Site.Areas.Fabrica.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Area("fabrica")]
     [Route("[area]/[controller]/[action]")]
     public class RecetasController : CustomController
@@ -54,6 +54,8 @@ namespace Web.Site.Areas.Fabrica.Controllers
                 {
                     detalle.NombreEtapaOrdenProduccion = ordenes.Where(x => x.Orden == detalle.IdEtapaOrdenProduccion).Select(d => d.Descripcion).FirstOrDefault();
                     detalle.NombreInsumo = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Nombre).FirstOrDefault();
+                    detalle.UnidadDeMedida = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Unidad).FirstOrDefault();
+
                 }
             }
 
@@ -113,6 +115,7 @@ namespace Web.Site.Areas.Fabrica.Controllers
                 }
                 else {
                     var recetaNueva = _mapper.Map<Receta>(recetaModel);
+                    recetaNueva.CreadoPor = User.GetUserIdSucursal();
                     await _recetaService.CrearReceta(recetaNueva);
                     return RedirectToAction("Index", "Recetas",new { @area = "fabrica" });
                 }
@@ -128,7 +131,7 @@ namespace Web.Site.Areas.Fabrica.Controllers
         [HttpPost]
         public ActionResult ActivarDesactivar(int id)
         {
-            User.GetUserIdSucursal();
+            //User.GetUserIdSucursal();
             return Ok(_recetaService.ActivarDesactivarReceta(id).Result);
         }
 
@@ -154,9 +157,8 @@ namespace Web.Site.Areas.Fabrica.Controllers
         // GET: RecetasController/Delete/5
         [HttpPost]
         public ActionResult Eliminar(int id)
-        {
-            var i = _recetaService.EliminarReceta(id);
-            return Ok(_recetaService.EliminarReceta(id));
+        { 
+            return Ok(_recetaService.EliminarReceta(id).Result);
         }
 
         [HttpPost]
@@ -169,6 +171,7 @@ namespace Web.Site.Areas.Fabrica.Controllers
         {
             if (data.IdReceta != 0 ) {
                 var agregarDetalle = _mapper.Map<RecetaDetalle>(data);
+                agregarDetalle.ModificadoPor = User.GetUserIdSucursal();
                 var nuevoLineaReceta = _recetaDetalleService.BuscarInsumoDeRecetaPorId(_recetaDetalleService.AgregarInsumoAReceta(agregarDetalle).Result);
                 var recetaDetalleModelo = _mapper.Map<RecetaDetalleModel>(nuevoLineaReceta);
                 recetaDetalleModelo.NombreInsumo = data.NombreInsumo;
