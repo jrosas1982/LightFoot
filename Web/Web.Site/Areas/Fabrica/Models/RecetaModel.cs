@@ -19,7 +19,6 @@ namespace Web.Site.Areas.Fabrica.Models
         public Boolean Activo { get; set; }
         public  RecetaDetalleModel RecetaDetalle { get; set; }
 
-       // public virtual IEnumerable<Receta> Recetas { get; set; }
         public virtual IEnumerable<RecetaDetalleModel> RecetaDetalles { get; set; }
 
         public DateTime FechaCreacion { get; set; }
@@ -29,8 +28,7 @@ namespace Web.Site.Areas.Fabrica.Models
 
         public RecetaModel()
         {
-           // RecetaDetalles = new IEnumerable<RecetaDetalleModel>();
-          // Recetas = new List<Receta>();
+  
         }
         public RecetaModel(RecetaModel receta, IEnumerable<RecetaDetalleModel> recetaDetalle)
         {
