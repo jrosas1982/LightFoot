@@ -8,9 +8,7 @@ using MoreLinq.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Transactions;
 
 namespace Core.Aplicacion.Services
 {
@@ -20,7 +18,8 @@ namespace Core.Aplicacion.Services
         private readonly IRecetaDetalleService _recetaDetalleService;
         private readonly ILogger<SolicitudService> _logger;
 
-        public RecetaService(ExtendedAppDbContext extendedAppDbContext, ILogger<SolicitudService> logger , IRecetaDetalleService recetaDetalleService)
+        public RecetaService(ExtendedAppDbContext extendedAppDbContext, ILogger<SolicitudService> logger ,
+            IRecetaDetalleService recetaDetalleService)
         {
             _db = extendedAppDbContext.context;
             _logger = logger;
