@@ -5,7 +5,7 @@
 }
 
 @using Web.Site.Areas
-@model ProveedorModel
+@model Proveedor
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -85,15 +85,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Calificacion)
-                    @Html.EditorFor(model => model.Calificacion, new { htmlAttributes = new { @id = "Calificacion", @class = "form-control touchspin",@name = "touchspin", @placeholder = "Calificacion" } })
-                    @Html.ValidationMessageFor(model => model.Calificacion, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
+
     </div>
         <div style="text-align:right">
             <button type="Submit" class="btn btn-w-m btn-primary">@(esEdicion ? "Modificar" : "Crear") Proveedor</button>
