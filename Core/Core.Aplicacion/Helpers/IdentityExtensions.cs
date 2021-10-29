@@ -22,6 +22,11 @@ namespace Core.Aplicacion.Helpers
             var claim = ((ClaimsIdentity)httpContext.HttpContext.User.Identity).FindFirst(ClaimTypes.Name);
             return claim?.Value;
         }
+        public static string GetUsername(this IPrincipal user)
+        {
+            var claim = ((ClaimsIdentity)user.Identity).FindFirst(ClaimTypes.Name);
+            return claim?.Value;
+        }
 
 
     }

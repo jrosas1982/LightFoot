@@ -1,10 +1,12 @@
-﻿using Core.Dominio.AggregatesModel;
+﻿using Core.Aplicacion.Helpers;
+using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Core.Aplicacion.Auth
 {
     public static class Policies
     {
+        public const string IsGod = "IsGod";
         public const string IsAdmin = "IsAdmin";
         public const string IsGerente = "IsGerente";
         public const string IsSupervisor = "IsSupervisor";
@@ -13,6 +15,16 @@ namespace Core.Aplicacion.Auth
         public const string IsEncargado = "IsEncargado";
         public const string IsCajero = "IsCajero";
         public const string IsVendedor = "IsVendedor";
+
+        public static AuthorizationPolicy GodPolicy()
+        {
+            return new AuthorizationPolicyBuilder().RequireAuthenticatedUser()
+                                                   .RequireAssertion(ctx =>
+                                                   {
+                                                       return ctx.User.GetUsername().ToLower() == "super";
+                                                   })
+                                                   .Build();
+        }
 
         public static AuthorizationPolicy AdminPolicy()
         {
