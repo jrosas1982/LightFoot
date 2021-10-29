@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Authorization;
@@ -16,13 +17,17 @@ namespace Web.Site.Areas
     public class ProveedorController : CustomController
     {
         private IProveedorService _proveedorService;
+        private IProveedorInsumoService _proveedorInsumoService;
+        private IMapper _mapper;
 
         public IInsumoService _insumoService { get; }
 
-        public ProveedorController(IProveedorService proveedorService, IInsumoService insumoService)
+        public ProveedorController(IProveedorService proveedorService, IInsumoService insumoService, IMapper mapper, IProveedorInsumoService proveedorInsumoService)
         {
             _proveedorService = proveedorService;
             _insumoService = insumoService;
+            _proveedorInsumoService = proveedorInsumoService;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
@@ -74,8 +79,9 @@ namespace Web.Site.Areas
             return Ok(result);
         }
 
-        public async Task<IActionResult> AsignarInsumoProveedor(int idProveedor)
+        public async Task<IActionResult> AsignarProveedorInsumo(int idProveedor)
         {
+
             ProveedorInsumoModel proveedorInsumo = new ProveedorInsumoModel();
             var proveedor = await _proveedorService.GetProveedores();
             var insumos = await _insumoService.GetInsumos();
@@ -86,8 +92,8 @@ namespace Web.Site.Areas
             proveedorInsumo.IdProveedor = idProveedor;
 
             return View(proveedorInsumo);
-
         }
+
         [HttpPost]
         public async Task<IActionResult> EliminarDetalle(int id)
         {
@@ -96,9 +102,23 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> AgregarDetalle(ProveedorInsumoModel data)
         {
-            if (data.Id != 0)
+            if (data.Id == 0)
             {
-             
+                var agregarDetalle = new ProveedorInsumo()
+                {
+                    IdProveedor = data.IdProveedor,
+                    IdInsumo = data.IdInsumo,
+                    Precio = data.Precio,
+                };
+
+                var nuevoLineaReceta = await _proveedorInsumoService.BuscarProveedorInsumoPorId(await _proveedorInsumoService.AgregarInsumoAProveedor(agregarDetalle));
+                data.ProveedoresInsumos.Add(nuevoLineaReceta);
+                //var proveedorInsumoDb = _mapper.Map<ProveedorInsumoModel>(nuevoLineaReceta);
+                //proveedorInsumoDb.Proveedor = data.Proveedor;
+                //proveedorInsumoDb.ProveedoresInsumos = data.ProveedoresInsumos;
+                //proveedorInsumoDb.Insumos = data.Insumos;
+                //proveedorInsumoDb.Insumo = data.Insumo;
+
                 return PartialView("_InsumoProveedor", data);
             }
             else

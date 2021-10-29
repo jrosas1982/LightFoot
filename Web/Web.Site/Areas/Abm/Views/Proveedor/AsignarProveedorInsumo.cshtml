@@ -3,11 +3,11 @@
     Layout = "_Layout";
     bool esEdicion = (Model.Id != 0);
     string Accion = "Insumo a proveedor";
-    string url_base = "/fabrica/recetas/";
+    string url_base = "/abm/Proveedor/";
 }
 
 @using Web.Site.Areas.Fabrica.Models
-@model ProveedorInsumoModel 
+@model ProveedorInsumoModel
 
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -33,62 +33,62 @@
 
 <div class="wrapper wrapper-content animated fadeInRight ecommerce">
 
-    @using (Html.BeginForm("AsignarProveedorInsumo", "Proveedor", FormMethod.Post, new { id = "formInsumoProveedor" }))
-    {
-        @Html.AntiForgeryToken()
-        @Html.HiddenFor(x => x.Id, new { @id = "IdProveedorInsumo" })
-        <div class="ibox-content m-b-sm border-bottom">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.IdProveedor, "Nombre de Proveedor")
-                        @Html.DropDownListFor(m => m.IdProveedor, new List<SelectListItem>(ViewBag.Proveedores), new { @class = "form-control m-b", @id = "dropdownIdProveedor", @disabled = "disabled" })
-                    </div>
+    @*@using (Html.BeginForm("AsignarProveedorInsumo", "Proveedor", FormMethod.Post, new { id = "formInsumoProveedor" }))
+        {
+            @Html.AntiForgeryToken()*@
+    @Html.HiddenFor(x => x.IdProveedor, new { @id = "IdProveedorInsumo" })
+    <div class="ibox-content m-b-sm border-bottom">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.IdProveedor, "Nombre de Proveedor")
+                    @Html.DropDownListFor(m => m.IdProveedor, new List<SelectListItem>(ViewBag.Proveedores), new { @class = "form-control m-b", @id = "dropdownIdProveedor", @disabled = "disabled" })
                 </div>
             </div>
         </div>
-        <div class="wrapper wrapper-content animated fadeInRight ecommerce">
-            <div class="ibox-content m-b-sm border-bottom">
-                <table id="ListaAriticulo" class="table table-bordered">
-                    <tr>
-                        <th>Nombre de Insumo </th>
-                        <th>Precio</th>
-                        <th>Borrar</th>
-                    </tr>
-                    <tbody>
-                        @if (Model.ProveedoresInsumos != null)
+    </div>
+    <div class="wrapper wrapper-content animated fadeInRight ecommerce">
+        <div class="ibox-content m-b-sm border-bottom">
+            <table id="ListaAriticulo" class="table table-bordered">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+                <tbody>
+                    @if (Model.ProveedoresInsumos != null)
+                    {
+                        @foreach (var Adds in Model.ProveedoresInsumos)
                         {
-                            @foreach (var Adds in Model.ProveedoresInsumos)
+                            if (Adds != null)
                             {
-                                if (Adds != null)
-                                {
-                                    @await Html.PartialAsync("ProveedorInsumoModel", Adds)
-                                }
+                                @await Html.PartialAsync("ProveedorInsumoModel", Adds)
                             }
                         }
-                    </tbody>
-                </table>
-                <div class="ibox-content border-0 pt-0 pr-0">
-                    <div class="text-center d-flex justify-content-end">
-                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#NewCommentModal">
-                            Agregar @Accion
-                        </button>
-                    </div>
+                    }
+                </tbody>
+            </table>
+            <div class="ibox-content border-0 pt-0 pr-0">
+                <div class="text-center d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#NewCommentModal">
+                        Asignar @Accion
+                    </button>
                 </div>
             </div>
         </div>
-        <div style="text-align:right">
-            @if (esEdicion)
+    </div>
+    <div style="text-align:right">
+        @*@if (esEdicion)
             {
-                <a class="btn btn-w-m btn-primary" href="@Url.Action("Index", "Proveedor", new { area = "fabrica" })">Volver a Recetas</a>
+                <a class="btn btn-w-m btn-primary" href="@Url.Action("Index", "Proveedor", new { area = "fabrica" })">Volver a Proveedores</a>
             }
             else
             {
-                <button id="btnReceta" type="Submit" class="btn btn-w-m btn-primary">Crear Receta</button>
-            }
+                <button id="btnReceta" type="Submit" class="btn btn-w-m btn-primary"></button>
+            }*@
 
-        </div>
-    }
+    </div>
+    @*}*@
     @* MODAL NEW COMMENT *@
     <div class="modal inmodal fade" id="NewCommentModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -100,6 +100,7 @@
                         </div>
                     </div>
                 </div>
+                @Html.HiddenFor(x => x.IdProveedor)
                 <div class="modal-body py-2">
                     <div class="form-floating">
                         @Html.LabelFor(m => m.IdInsumo)
@@ -121,7 +122,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 @section Styles {
@@ -151,11 +151,11 @@
         function addInsumo() {
             $.ajax({
                 type: "post",
-                url: '@url_base' + 'agregardetalle/',
+                url: '@url_base' + 'AgregarDetalle/',
                 data: {
-                    IdReceta: $("#IdProveedorInsumo").val(),
+                    IdProveedor: $("#IdProveedorInsumo").val(),
                     IdInsumo: $("#IdInsumo").val(),
-                    Cantidad: $("#Precio").val()               
+                    Cantidad: $("#Precio").val()
                 }
             }).done(function (partialView) {
                 $('#ListaAriticulo tbody:last-child').after().append(partialView);

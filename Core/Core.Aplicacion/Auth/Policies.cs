@@ -11,6 +11,7 @@ namespace Core.Aplicacion.Auth
         public const string IsSucursal = "IsSucursal";
 
         public const string IsAdmin = "IsAdmin";
+
         public const string IsGerente = "IsGerente";
         public const string IsSupervisor = "IsSupervisor";
         public const string IsControlador = "IsControlador";

@@ -105,8 +105,9 @@
                                         <td>@proveedor.Email</td>
                                         <td>@proveedor.Calificacion</td>
                                         <td class="d-print-none">
-                                            <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarProveedor('@proveedor.Id')">Borrar</button>
-                                            <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarProveedor('@proveedor.Id')">Editar</button>
+                                            <button class="btn btn-outline btn-danger btn-xs" type="button" onclick="BorrarProveedor('@proveedor.Id')">Borrar</button>
+                                            <button class="btn btn-outline btn-warning btn-xs" type="button" onclick="EditarProveedor('@proveedor.Id')">Editar</button>
+                                            <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AsociarInsumos('@proveedor.Id')">Asociar Insumos</button>
                                         </td>
                                     </tr>
                                         }
@@ -204,6 +205,10 @@
 
         function EditarProveedor(Id) {
             window.location = '/abm/Proveedor/CrearEditarProveedor?idProveedor=' + Id;
+        }
+
+        function AsociarInsumos(Id) {
+            window.location = '/abm/Proveedor/AsignarProveedorInsumo?idProveedor=' + Id;
         }
 
         function Reporte() {

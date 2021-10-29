@@ -11,8 +11,9 @@
         {
             @Html.HiddenFor(x => x.Id)
             @Html.HiddenFor(x => x.IdInsumo)
+            @Html.HiddenFor(x => x.IdProveedor)
             @Html.HiddenFor(m => m.Precio)
-      
+
             <td>@Html.DisplayFor(x => x.Insumo.Nombre)</td>
             <td>@Html.DisplayFor(x => x.Precio)</td>
             <td>
