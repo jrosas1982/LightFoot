@@ -85,7 +85,7 @@
                                     <th>Color</th>
                                     <th>Talle</th>
                                     <th>Descripcion</th>
-                                    <th data-sort-ignore="true">Acciones</th>
+                                    @*<th data-sort-ignore="true">Acciones</th>*@
                                 </tr>
                             </thead>
                             <tbody>
@@ -97,14 +97,22 @@
                                         <td>@detalle.Articulo.Color</td>
                                         <td>@detalle.Articulo.TalleArticulo</td>
                                         <td>@detalle.Articulo.Descripcion</td>
+                                        @*
                                         <td>
                                             <button class="btn btn-outline btn-info btn-xs w-100" type="button" onclick="">Ver Receta</button>
                                         </td>
-                                        
+                                        *@
                                     </tr>
                                 }
                             </tbody>
+                            
                         </table>
+                        <div class="panel-footer d-flex justify-content-end align-items-end">
+                            <button class="btn btn-outline btn-info btn-xs" type="button"
+                                    onclick="location.href='@Url.Action("Index", "Recetas",  new { area = "fabrica" })'">
+                                Ir a Recetas
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
