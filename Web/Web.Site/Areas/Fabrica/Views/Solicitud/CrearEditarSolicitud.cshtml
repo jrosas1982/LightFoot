@@ -47,6 +47,13 @@
                         @Html.DropDownListFor(m => m.IdSucursal, new SelectList(Model.Sucursales, "Id", "Descripcion", Model.Sucursales.First()), new { @class = "form-control m-b", @id = "dropdownSucursales" })
                     </div>
                 </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Comentario)
+                        @Html.EditorFor(model => model.Comentario, new { htmlAttributes = new { @id = "Comentario", @class = "form-control", @placeholder = "" } })
+                        @Html.ValidationMessageFor(model => model.Comentario, "", new { @class = "text-danger" })
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -63,16 +70,7 @@
                         <th>Acciones</th>
                     </tr>
                     <tbody>
-                        @if (Model.SolicitudDetalles != null)
-                        {
-                            @foreach (var Adds in Model.SolicitudDetalles)
-                            {
-                                if (Adds != null)
-                                {
-                                    @await Html.PartialAsync("_SolicitudDetalle", Adds)
-                                }
-                            }
-                        }
+                        @await Html.PartialAsync("_SolicitudDetalle", model: null)
                     </tbody>
                 </table>
                 <div class="ibox-content border-0 pt-0 pr-0">
@@ -87,6 +85,7 @@
         <div style="text-align:right">
             <button type="Submit" class="btn btn-w-m btn-primary">@(esEdicion ? "Modificar" : "Crear") Solicitud </button>
         </div>
+    }
         @* MODAL NEW COMMENT *@
         <div class="modal inmodal fade" id="NewCommentModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -101,19 +100,19 @@
                     <div class="modal-body py-2">
                         <div class="form-floating">
                             @Html.LabelFor(m => m.Articulos)
-                            @Html.DropDownListFor(m => m.Articulos, new List<SelectListItem>( Model.Articulos), " -- Seleccionar Articulo --", new { @id = "dropdownArticulos", @class = "form-control" })
+                            @Html.DropDownListFor(m => m.Articulos, new List<SelectListItem>( Model.Articulos), " -- Seleccionar Articulo -- ", new { @id = "dropdownArticulos", @class = "form-control" })
                         </div>
                     </div>
                     <div class="modal-body py-2">
                         <div class="form-floating">
                             @Html.LabelFor(m => m.Detalle.Articulo.TalleArticulo)
-                            @Html.DropDownListFor(m => m.Detalle.Articulo.TalleArticulo, new List<SelectListItem>(), " -- Seleccionar Talle --", new { @id = "newTalless", @class = "form-control" })
+                            @Html.DropDownListFor(m => m.Detalle.Articulo.TalleArticulo, new List<SelectListItem>(), " -- Seleccionar Talle -- ", new { @id = "newTalless", @class = "form-control" })
                         </div>
                     </div>
                     <div class="modal-body py-2">
                         <div class="form-floating">
                             @Html.LabelFor(m => m.Detalle.Articulo.Color)
-                            @Html.DropDownListFor(m => m.Detalle.Articulo.Color, new List<SelectListItem>(), " -- Seleccionar Color --", new { @id = "newColor", @class = "form-control" })
+                            @Html.DropDownListFor(m => m.Detalle.Articulo.Color, new List<SelectListItem>(), " -- Seleccionar Color -- ", new { @id = "newColor", @class = "form-control" })
                         </div>
                     </div>
 
@@ -139,7 +138,7 @@
                 </div>
             </div>
         </div>
-    }
+  
 </div>
 
 @section Styles {

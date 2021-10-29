@@ -2,39 +2,39 @@
 @using Web.Site.Areas
 @model SolicitudDetalle
 @{
-    bool esEditar = (Model.Id != 0);
-    string idTr = esEditar ? Model.Id + "List" : "";
+    //bool esEditar = (Model.Id != 0);
+    //string idTr = esEditar ? Model.Id + "List" : "";
 }
-<tr id="@idTr">
-    @using (Html.BeginCollectionItem("SolicitudDetalles"))
+@if (Model != null)
+{
+<tr>
+    @using (Html.BeginCollectionItem("SolicitudDetalle"))
     {
-        {
-            @Html.HiddenFor(x => x.Id)
-            @*@Html.HiddenFor(x => x.IdSolicitud)*@
-            @Html.HiddenFor(x => x.IdArticulo)
-            @Html.HiddenFor(x => x.Motivo)
-            @*@Html.HiddenFor(x => x.FechaCreacion)*@
-            <td>@Html.DisplayFor(x => x.Articulo.Nombre)</td>
-            <td>@Html.DisplayFor(x => x.Articulo.Color)</td>
-            <td>@Html.DisplayFor(x => x.Articulo.TalleArticulo)</td>
-            <td>@Html.DisplayFor(x => x.CantidadSolicitada)</td>
-            <td>@Html.DisplayFor(x => x.Motivo)</td>
-            <td>
-                <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick="removeRow(this)">Borrar</button>
-            </td>
-            @*<td>@Html.DisplayFor(x => x.CreadoPor)</td>*@
-            @*<td>@Html.DisplayFor(x => x.FechaCreacion)</td>*@
-            @*<td>
-                    @if (!esEditar)
-                    {
-                        <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick="removeRow(this)">Borrar</button>
-                    }
-                    else
-                    {
-                        <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick="DeletePriceListProduct('@Html.DisplayTextFor(x => x.Id)')">Borrar</button>
-                    }
-                </td>*@
-        }
-
+        @*@Html.HiddenFor(x => x.IdSolicitud)*@
+        @Html.HiddenFor(x => x.IdArticulo)
+        @Html.HiddenFor(x => x.CantidadSolicitada)
+        @Html.HiddenFor(x => x.Motivo)
+        @*@Html.HiddenFor(x => x.FechaCreacion)*@
+        <td>@Html.DisplayFor(x => x.Articulo.Nombre)</td>
+        <td>@Html.DisplayFor(x => x.Articulo.Color)</td>
+        <td>@Html.DisplayFor(x => x.Articulo.TalleArticulo)</td>
+        <td>@Html.DisplayFor(x => x.CantidadSolicitada)</td>
+        <td>@Html.DisplayFor(x => x.Motivo)</td>
+        <td>
+            <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick="removeRow(this)">Borrar</button>
+        </td>
+        @*<td>@Html.DisplayFor(x => x.CreadoPor)</td>*@
+        @*<td>@Html.DisplayFor(x => x.FechaCreacion)</td>*@
+        @*<td>
+                @if (!esEditar)
+                {
+                    <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick="removeRow(this)">Borrar</button>
+                }
+                else
+                {
+                    <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick="DeletePriceListProduct('@Html.DisplayTextFor(x => x.Id)')">Borrar</button>
+                }
+            </td>*@
     }
 </tr>
+}

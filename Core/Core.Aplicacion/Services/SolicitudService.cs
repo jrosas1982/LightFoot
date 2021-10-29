@@ -45,13 +45,13 @@ namespace Core.Aplicacion.Services
                 solicitud.SolicitudDetalles.Add(detalle);
             }
 
-            //solicitud.SolicitudEventos.Add(new SolicitudEvento()
-            //{
-            //    Comentario = solicitud.Comentario,
-            //    EstadoSolicitud = solicitud.EstadoSolicitud
-            //});
+            solicitud.SolicitudEventos.Add(new SolicitudEvento()
+            {
+                Comentario = solicitud.Comentario,
+                EstadoSolicitud = solicitud.EstadoSolicitud
+            });
 
-            GuardarEvento(solicitud, comentario);
+            //GuardarEvento(solicitud, comentario);
             await _db.SaveChangesAsync();
             _logger.LogInformation($"Solicitud creada: {solicitud.Id}");
 
@@ -116,7 +116,7 @@ namespace Core.Aplicacion.Services
             //await _fabricacion.ReservarStockInsumos(insumosNecesarios);
 
             _db.AddRange(ordenesProduccion);
-            GuardarEvento(solicitudDB, comentario);
+            //GuardarEvento(solicitudDB, comentario);
             await _db.SaveChangesAsync();
         }
 
@@ -128,7 +128,7 @@ namespace Core.Aplicacion.Services
             solicitudDB.Comentario = comentario;
 
             _db.Update(solicitudDB);
-            GuardarEvento(solicitudDB, comentario);
+            //GuardarEvento(solicitudDB, comentario);
             await _db.SaveChangesAsync();
         }
 

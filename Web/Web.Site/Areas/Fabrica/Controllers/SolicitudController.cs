@@ -94,31 +94,23 @@ namespace Web.Site.Areas
             return Json(solicitudModel.Talles);
         }
 
-        public async Task<IActionResult> Crear(Solicitud solicitud)
+        public async Task<IActionResult> Crear(SolicitudModel solicitudModel)
         {
-            var detallesSolicitud = new List<SolicitudDetalle>()
+            var solicitud = new Solicitud()
             {
-                new SolicitudDetalle()
-                {
-                    IdArticulo = 11,
-                    CantidadSolicitada = 15,
-                    Motivo = "pq si",
-                },
-                new SolicitudDetalle()
-                {
-                    IdArticulo = 8,
-                    CantidadSolicitada = 15,
-                    Motivo = "pq si 2",
-                },
-                 new SolicitudDetalle()
-                {
-                    IdArticulo = 4,
-                    CantidadSolicitada = 15,
-                    Motivo = "pq si 3",
-                }
+                IdSucursal = solicitudModel.IdSucursal,
+                EstadoSolicitud = solicitudModel.EstadoSolicitud,
+                Comentario = solicitudModel.Comentario
             };
 
-            await _solicitudService.CrearSolicitud(solicitud, detallesSolicitud);
+            var solicitudDetalles = solicitudModel.SolicitudDetalle.Select(x => new SolicitudDetalle()
+            {
+                IdArticulo = x.IdArticulo,
+                CantidadSolicitada = x.CantidadSolicitada,
+                Motivo = x.Motivo
+            });
+
+            await _solicitudService.CrearSolicitud(solicitud, solicitudDetalles);
             return RedirectToAction("Index");
         }
 
@@ -142,9 +134,13 @@ namespace Web.Site.Areas
             return Ok(result);
         }
 
-        public IActionResult AgregarDetalle(SolicitudDetalle data)
+        public async Task<IActionResult> AgregarDetalleAsync(SolicitudDetalle data)
         {
-            return PartialView("_SolicitudDetalle", data);
+            var articulosList = await _articuloService.GetArticulos();
+            var articulo = articulosList.FirstOrDefault(x => x.Nombre == data.Articulo.Nombre && x.Color == data.Articulo.Color && x.TalleArticulo == data.Articulo.TalleArticulo);
+
+            data.IdArticulo = articulo.Id;
+            return PartialView("_SolicitudDetalle", data );
         }
 
     }

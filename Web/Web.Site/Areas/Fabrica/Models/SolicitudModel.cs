@@ -11,6 +11,7 @@ namespace Web.Site.Areas
     {
         public IEnumerable<EstadoSolicitud> EstadoSolicitudes { get; set; }      
         public IEnumerable<DesplegableModel> Sucursales { get; set; }
+        public IEnumerable<SolicitudDetalle> SolicitudDetalle { get; set; } = new List<SolicitudDetalle>();
 
         public IEnumerable<SelectListItem> Articulos { get; set; }
         public IEnumerable<SelectListItem> Talles { get; set; }
