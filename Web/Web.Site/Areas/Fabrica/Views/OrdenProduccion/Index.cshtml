@@ -7,7 +7,7 @@
 
 @model OrdenProduccionIndexModel
 
-<div class="row wrapper border-bottom white-bg page-heading">
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
     <div class="col-lg-12">
         <h2>Ordenes de Produccion</h2>
         <ol class="breadcrumb">
@@ -22,11 +22,21 @@
             </li>
         </ol>
     </div>
+    <div class="col-lg-12 d-print-none" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default" onclick="Reporte()">Reporte</button>
+    </div>
+</div>
+
+<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        Fecha: @DateTime.Now
+        <h4>Reporte Ordenes de produccion</h4>
+    </div>
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight ecommerce">
 
-    <div class="ibox-content m-b-sm border-bottom">
+    <div class="ibox-content m-b-sm border-bottom  d-print-none">
         <div class="row">
             <div class="col-sm-4">
                 <div class="form-group">
@@ -114,7 +124,7 @@
                                     <th>Estado de la Etapa</th>
                                     @*<th>Cantidad Fabricada</th>*@
                                     <th>Tiempo empleado</th>
-                                    <th data-sort-ignore="true">Acciones</th>
+                                    <th data-sort-ignore="true" class="d-print-none">Acciones</th>
 
                                 </tr>
                             </thead>
@@ -139,7 +149,7 @@
 
                                             @*<td>@orden.CantidadFabricada</td>*@
                                             <th>@((DateTime.Now - orden.FechaCreacion).ToString(@"hh\:mm\:ss"))</th>
-                                            <td>
+                                            <td class="d-print-none">
                                                 <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerDetalles('@orden.Id')">Ver Detalles</button>
                                             </td>
                                         </tr>
@@ -206,6 +216,12 @@
 
         function VerDetalles(Id) {
             window.location = '/fabrica/OrdenProduccion/DetallesOrdenProduccion?IdOrdenProduccion=' + Id;
+        }
+
+        function Reporte() {
+            $('.dataTables_filter').addClass("d-print-none")
+            window.print();
+            $('.dataTables_filter').removeClass("d-print-none")
         }
 
         function alert(Id) {
