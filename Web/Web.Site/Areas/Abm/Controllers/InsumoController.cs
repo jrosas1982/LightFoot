@@ -14,16 +14,18 @@ namespace Web.Site.Areas
     public class InsumoController : CustomController
     {
         private IInsumoService _insumoService;
+        private IProveedorService _proveedorService;
 
-        public InsumoController(IInsumoService insumoService)
+        public InsumoController(IInsumoService insumoService, IProveedorService proveedorService)
         {
             _insumoService = insumoService;
+            _proveedorService = proveedorService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var usuariosList = await _insumoService.GetInsumos();
-            return View(usuariosList.ToList());
+            var insumosList = await _insumoService.GetInsumos();
+            return View(insumosList);
         }
 
         public async Task<IActionResult> CrearEditarInsumo(int IdInsumo)
@@ -35,7 +37,13 @@ namespace Web.Site.Areas
             else
                 insumo = new Insumo();
 
-            InsumoModel insumoModel = new InsumoModel(insumo);
+            var proveedores = await _insumoService.GetProveedoresInsumo(IdInsumo);
+
+            InsumoModel insumoModel = new InsumoModel()
+            {
+                 Insumo = insumo,
+                 Proveedores = proveedores
+            };
 
             return View(insumoModel);
         }

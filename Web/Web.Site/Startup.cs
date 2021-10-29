@@ -34,10 +34,13 @@ namespace LightFoot.Web.Site
             services.AddSecurityServices();
             services.AddHttpContextAccessor();
             services.AddSignalR();
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
             services.AddAuthorization(config =>
             {
+                config.AddPolicy(Policies.IsGod, Policies.GodPolicy());
                 config.AddPolicy(Policies.IsAdmin, Policies.AdminPolicy());
                 config.AddPolicy(Policies.IsGerente, Policies.GerentePolicy());
                 config.AddPolicy(Policies.IsSupervisor, Policies.SupervisorPolicy());
@@ -56,7 +59,6 @@ namespace LightFoot.Web.Site
 
             services.AddMvc(options => options.EnableEndpointRouting = false);
 
-
             services.AddAuthentication(options =>
              {
                  options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -66,9 +68,10 @@ namespace LightFoot.Web.Site
                             {
                                 options.LoginPath = "/Auth/LogIn"; //test
                                 options.LogoutPath = "/Auth/LogIn"; //test
-                                options.AccessDeniedPath = "/Auth/LogIn"; //test
+                                options.AccessDeniedPath = "/"; //si no cumplis con authorize te lleva aca
                             });
-            services.AddAutoMapper(typeof(Startup));
+
+
 
 
             //services.ConfigureApplicationCookie(options => {
