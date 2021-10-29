@@ -12,7 +12,7 @@ namespace Web.Site.Areas
         public int IdInsumo { get; set; }
         public decimal Precio { get; set; }
         public Proveedor Proveedor { get; set; }
-        public Ilist<ProveedorInsumo> ProveedoresInsumos { get; set; }
+        public IList<ProveedorInsumo> ProveedoresInsumos { get; set; }
         public IEnumerable<Insumo> Insumos { get; set; }
         public Insumo Insumo { get; set; }
 
