@@ -71,10 +71,11 @@
                 <div class="col-sm-6">
                     @if (Model.Proveedores == null || !Model.Proveedores.Any())
                     {
-                        //TODO corregir onclick
+                        //TODO corregir onclick abm/Proveedor/AsignarProveedorInsumo?idProveedor=1
                         <div class="alert alert-warning" role="alert">
-                            No existen proveedores asociados al insumo
-                            <button type="button" class="mx-2 btn btn-default" onclick="location.href='@Url.Action("Index", "Insumo", 0)'">Asociar Proveedores</button>
+                            Ningun proveedor tiene asociado este insumo
+                            @*No existen proveedores asociados al insumo*@
+                            <button type="button" class="mx-2 btn btn-default" onclick="location.href='@Url.Action("Index", "Proveedor", 0)'">Ir a Proveedores</button>
                         </div>
                     }
                     else
