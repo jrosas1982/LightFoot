@@ -6,8 +6,8 @@
 }
 @model SolicitudDetalleModel
 
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
+    <div class="col-lg-10 ">
         <h2>Detalles Solicitud</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -32,9 +32,18 @@
     </div>
 </div>
 
+<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        Fecha: @DateTime.Now
+        <h4>Sucursal: @Model.Sucursal.Nombre </h4>
+        <h5>Detalle solicitud numero @Model.Solicitud.Id | @Model.Solicitud.EstadoSolicitud.GetDisplayName()</h5>
+        <h6>Comentario: @Model.Solicitud.Comentario</h6>
+    </div>
+</div>
+
 <div class="wrapper wrapper-content pt-1 animated fadeInRight">
     <div class="row mt-2">
-        <div class="col-lg-4">
+        <div class="col-lg-4 d-print-none">
             <div class="panel panel-@Model.Solicitud.EstadoSolicitud.GetGroupName()">
                 <div class="panel-heading">
                     Sucursal
@@ -71,7 +80,7 @@
 
         <div class="col-lg-8">
             <div class="panel panel-default">
-                <div class="panel-heading">
+                <div class="panel-heading d-print-none">
                     @Model.Sucursal.Nombre - Articulos
                 </div>
 
@@ -85,6 +94,7 @@
                                     <th>Color</th>
                                     <th>Talle</th>
                                     <th>Descripcion</th>
+                                    <th>Orden Asociada</th>
                                     @*<th data-sort-ignore="true">Acciones</th>*@
                                 </tr>
                             </thead>
@@ -97,6 +107,12 @@
                                         <td>@detalle.Articulo.Color</td>
                                         <td>@detalle.Articulo.TalleArticulo</td>
                                         <td>@detalle.Articulo.Descripcion</td>
+                                        <td>
+                                            @foreach (var op in detalle.OrdenesProduccion)
+                                            {
+                                                <button class="btn btn-outline btn-@op.EstadoOrdenProduccion.GetGroupName()  btn-xs" type="button" onclick="VerOrdenAsociada('@op.Id')">Orden @op.Id</button>
+                                            }
+                                        </td>
                                         @*
                                         <td>
                                             <button class="btn btn-outline btn-info btn-xs w-100" type="button" onclick="">Ver Receta</button>
@@ -107,11 +123,17 @@
                             </tbody>
                             
                         </table>
-                        <div class="panel-footer d-flex justify-content-end align-items-end">
-                            <button class="btn btn-outline btn-info btn-xs" type="button"
+                        <div class="panel-footer d-flex justify-content-end align-items-end d-print-none">
+                            <button class="btn btn-w-m btn-outline-dark" type="button" 
+                                    onclick="Reporte()">
+                                Reporte
+                            </button>
+                            @*
+                            <button class="btn btn-w-m btn-outline btn-info" type="button"
                                     onclick="location.href='@Url.Action("Index", "Recetas",  new { area = "fabrica" })'">
                                 Ir a Recetas
                             </button>
+                            *@
                         </div>
                     </div>
                 </div>
@@ -138,6 +160,13 @@
     </environment>
 
     <script type="text/javascript">
+
+        function Reporte() {
+            $('.dataTables_filter').addClass("d-print-none")
+            window.print();
+            $('.dataTables_filter').removeClass("d-print-none")
+        }
+
     </script>
 
 }
