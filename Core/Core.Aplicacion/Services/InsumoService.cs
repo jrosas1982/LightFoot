@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Aplicacion.Services
@@ -20,6 +23,10 @@ namespace Core.Aplicacion.Services
         public async Task<Insumo> BuscarPorId(int IdInsumo)
         {
             var insumo = await _db.Insumos.FindAsync(IdInsumo);
+
+            if (insumo == null)
+                throw new Exception("El insumo solicitado no existe");
+            
             return insumo;
         }
 
@@ -60,9 +67,15 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Insumo>> GetInsumos()
         {
-            var insumosList = _db.Insumos;
+            var insumosList = _db.Insumos.Include(x => x.Proveedor);
             _logger.LogInformation("Se buscaron los insumos");
             return await Task.FromResult(insumosList);
+        }
+
+        public async Task<IEnumerable<Proveedor>> GetProveedoresInsumo(int idInsumo)
+        {
+            var proveedoresList = _db.Proveedores.Where(x => x.ProveedorInsumos.Any(x => x.IdInsumo == idInsumo));
+            return await Task.FromResult(proveedoresList);
         }
     }
 }

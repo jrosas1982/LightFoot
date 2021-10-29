@@ -1,9 +1,9 @@
 ﻿function MensajeError(titulo, mensaje) {
-    fire({
+    swal({
         title: titulo,
         text: mensaje,
         type: "warning",
         confirmButtonText: "Ok",
-        closeOnConfirm: falsensaje
+        closeOnConfirm: false
     });
 }

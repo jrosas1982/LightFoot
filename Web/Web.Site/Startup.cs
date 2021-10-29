@@ -1,10 +1,12 @@
-﻿using Core.Aplicacion.Auth;
+﻿using AutoMapper;
+using Core.Aplicacion.Auth;
 using Core.Aplicacion.Hubs;
 using Core.Infraestructura;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,15 +34,22 @@ namespace LightFoot.Web.Site
             services.AddSecurityServices();
             services.AddHttpContextAccessor();
             services.AddSignalR();
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
             services.AddAuthorization(config =>
             {
+                config.AddPolicy(Policies.IsGod, Policies.GodPolicy());
+                config.AddPolicy(Policies.IsFabrica, Policies.FabricaPolicy());
+                config.AddPolicy(Policies.IsSucursal, Policies.SucursalPolicy());
+
                 config.AddPolicy(Policies.IsAdmin, Policies.AdminPolicy());
                 config.AddPolicy(Policies.IsGerente, Policies.GerentePolicy());
                 config.AddPolicy(Policies.IsSupervisor, Policies.SupervisorPolicy());
                 config.AddPolicy(Policies.IsControlador, Policies.ControladorPolicy());
                 config.AddPolicy(Policies.IsOperario, Policies.OperarioPolicy());
+
                 config.AddPolicy(Policies.IsEncargado, Policies.EncargadoPolicy());
                 config.AddPolicy(Policies.IsCajero, Policies.CajeroPolicy());
                 config.AddPolicy(Policies.IsVendedor, Policies.VendedorPolicy());
@@ -54,7 +63,6 @@ namespace LightFoot.Web.Site
 
             services.AddMvc(options => options.EnableEndpointRouting = false);
 
-
             services.AddAuthentication(options =>
              {
                  options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -62,10 +70,11 @@ namespace LightFoot.Web.Site
                  options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
              }).AddCookie(options =>
                             {
-                                options.LoginPath = "/Auth/Auth/Index"; //test
-                                options.LogoutPath = "/Auth/Auth/LogOutUser"; //test
-                                options.AccessDeniedPath = "/Dashboards/Dashboard_3"; //test
+                                options.LoginPath = "/Auth/LogIn"; //test
+                                options.LogoutPath = "/Auth/LogIn"; //test
+                                options.AccessDeniedPath = "/"; //si no cumplis con authorize te lleva aca
                             });
+
 
 
 
@@ -94,7 +103,7 @@ namespace LightFoot.Web.Site
             }
             else
             {
-                app.UseExceptionHandler("/Dashboards/Dashboard_1");
+                app.UseExceptionHandler("/Auth/LogIn");
                 app.UseHsts();
             }
 
@@ -103,7 +112,7 @@ namespace LightFoot.Web.Site
                 await next();
                 if (context.Response.StatusCode == 401)
                 {
-                    context.Request.Path = "/Auth/Auth/Index";
+                    context.Request.Path = "/Auth/LogIn";
                     await next();
                 }
                 if (context.Response.StatusCode == 404)

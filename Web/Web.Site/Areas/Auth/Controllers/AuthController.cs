@@ -15,7 +15,8 @@ namespace Web.Site.Areas
 {
     [AllowAnonymous]
     [Area("Auth")]
-    [Route("[area]/[controller]/[action]")]
+    [Route("[controller]/[action]")]
+
 
     public class AuthController : CustomController
     {
@@ -27,7 +28,7 @@ namespace Web.Site.Areas
             _userLoginService = userLoginService;
         }
 
-        public async Task<IActionResult> Index(string returnurl)
+        public async Task<IActionResult> LogIn(string returnurl)
         {
             try
             {
@@ -66,14 +67,15 @@ namespace Web.Site.Areas
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claims, authenticationProperties);
 
                 if (string.IsNullOrEmpty(returnurl))
-                    return RedirectToAction("Dashboard_1", "Dashboards");
+                    return Redirect("/");
+                    //return RedirectToAction("Index", "Dashboard", new { area = "Fabrica" });
 
                 return Redirect(returnurl);
             }
             catch (Exception ex)
             {
                 MensajeError(ex.Message);
-                return View("Index", userLoginModel);
+                return View("LogIn", userLoginModel);
             }
         }
 
@@ -82,13 +84,13 @@ namespace Web.Site.Areas
             try
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                return RedirectToAction("Index", "Auth");
+                return RedirectToAction("LogIn", "Auth");
             }
             catch (Exception ex)
             {
                 MensajeError(ex.Message);
             }
-            return RedirectToAction("Index", "Auth");
+            return RedirectToAction("LogIn", "Auth");
         }
 
         private async Task<ClaimsPrincipal> GenerarClaimsAsync(Usuario usuario, UserLoginModel userLoginModel)

@@ -13,6 +13,6 @@ namespace Core.Aplicacion.Interfaces
         public Task<IEnumerable<RecetaDetalle>> GetRecetaDetalles(int IdSolicitud);
         public Task<bool> EliminarReceta(int IdReceta);
         public Task<bool> ActivarDesactivarReceta(int IdReceta);
-        public Task<bool> CrearReceta(Receta Receta, IEnumerable<RecetaDetalle> recetaDetalles);
+        public Task<bool> CrearReceta(Receta Receta);
     }
 }

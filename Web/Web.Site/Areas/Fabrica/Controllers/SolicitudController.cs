@@ -7,13 +7,14 @@ using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Web.Site.Dtos;
+using Web.Site.Helpers;
 
 namespace Web.Site.Areas
 {
     //[Authorize (Policy = Policies.IsControlador)]
     [Area("fabrica")]
     [Route("[area]/[controller]/[action]")]
-    public class SolicitudController : Controller
+    public class SolicitudController : CustomController
     {
         private ISolicitudService _solicitudService;
         private ISucursalService _sucursalService;

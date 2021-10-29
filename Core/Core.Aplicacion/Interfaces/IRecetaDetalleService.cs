@@ -9,7 +9,7 @@ namespace Core.Aplicacion.Interfaces
    public interface IRecetaDetalleService
     {
         public Task<int> AgregarInsumoAReceta(RecetaDetalle receta);
-        public RecetaDetalle BuscarInsumoDeRecetaPorId(int IdInsumo);
+        public Task<RecetaDetalle> BuscarInsumoDeRecetaPorId(int idInsumo);
         public Task<bool> EliminarInsumoAReceta(int lineaInsumo);
 
     }

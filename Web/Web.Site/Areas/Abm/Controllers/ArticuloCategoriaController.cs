@@ -4,13 +4,14 @@ using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Site.Helpers;
 
 namespace Web.Site.Areas.Abm.Controllers
 {
     [Authorize]
     [Area("abm")]
     [Route("[area]/[controller]/[action]")]
-    public class ArticuloCategoriaController : Controller
+    public class ArticuloCategoriaController : CustomController
     {
         private IArticuloCategoriaService _articuloCategoriaService;
 

@@ -24,9 +24,9 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                _db.Add(detalle);
+                _db.RecetaDetalles.Add(detalle);
                 _logger.LogInformation($"Insumo creado para receta : {detalle.IdReceta}");
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 return detalle.Id;
             }
             catch (Exception ex)
@@ -37,13 +37,12 @@ namespace Core.Aplicacion.Services
           
         }
 
-        public RecetaDetalle BuscarInsumoDeRecetaPorId(int IdInsumo)
+        public async Task<RecetaDetalle> BuscarInsumoDeRecetaPorId(int idInsumo)
         {
-            var detalle = _db.RecetaDetalles.SingleOrDefault(x => x.Id == IdInsumo);
+            var detalle = await _db.RecetaDetalles.SingleOrDefaultAsync(x => x.Id == idInsumo);
             if (detalle == null)
                 throw new Exception("La solicitud solicitada no existe");
             return detalle;
-
         }
 
         public async Task<bool> EliminarInsumoAReceta(int lineaInsumo)
@@ -57,7 +56,7 @@ namespace Core.Aplicacion.Services
                     return false;
                 }
                 _db.RecetaDetalles.Remove(itemToRemove);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)

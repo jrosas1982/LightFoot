@@ -6,6 +6,7 @@ using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Site.Helpers;
 
 namespace Web.Site.Areas
 {
@@ -13,7 +14,7 @@ namespace Web.Site.Areas
     [Area("abm")]
     [Route("[area]/[controller]/[action]")]
 
-    public class UsuarioController : Controller
+    public class UsuarioController : CustomController
     {
         private IUsuarioService _usuarioService;
         public UsuarioController(IUsuarioService usuarioService)
@@ -48,10 +49,10 @@ namespace Web.Site.Areas
             return View("CrearEditarUsuario", usuarioModel);
         }
 
-        public IActionResult CrearEditarUsuario(UsuarioModel usuarioModel)
-        {
-            return View(usuarioModel);
-        }
+        //public IActionResult CrearEditarUsuario(UsuarioModel usuarioModel)
+        //{
+        //    return View(usuarioModel);
+        //}
 
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear(UsuarioModel usuarioModel)
