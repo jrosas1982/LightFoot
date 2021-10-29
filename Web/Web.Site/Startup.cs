@@ -1,4 +1,5 @@
-﻿using Core.Aplicacion.Auth;
+﻿using AutoMapper;
+using Core.Aplicacion.Auth;
 using Core.Aplicacion.Hubs;
 using Core.Infraestructura;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -67,7 +68,7 @@ namespace LightFoot.Web.Site
                                 options.LogoutPath = "/Auth/LogIn"; //test
                                 options.AccessDeniedPath = "/Auth/LogIn"; //test
                             });
-
+            services.AddAutoMapper(typeof(Startup));
 
 
             //services.ConfigureApplicationCookie(options => {
