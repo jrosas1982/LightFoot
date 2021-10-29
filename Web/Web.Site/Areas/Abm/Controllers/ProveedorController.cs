@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core.Aplicacion.Interfaces;
@@ -81,48 +82,50 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> AsignarProveedorInsumo(int idProveedor)
         {
+            var proveedor = await _proveedorService.BuscarPorId(idProveedor);
+            ViewBag.ProveedorSeleccionado = proveedor;
 
-            ProveedorInsumoModel proveedorInsumo = new ProveedorInsumoModel();
-            var proveedor = await _proveedorService.GetProveedores();
+
             var insumos = await _insumoService.GetInsumos();
+            ViewBag.InsumosDesplegable = insumos.Select(x => new DesplegableModel()
+            {
+                Id = x.Id,
+                Descripcion = x.Descripcion
+            });
 
-            ViewBag.Proveedores = proveedor.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
             ViewBag.Insumos = insumos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
 
-            proveedorInsumo.IdProveedor = idProveedor;
+            //ProveedorInsumoModel proveedorInsumo = new ProveedorInsumoModel();
+            //var proveedor = await _proveedorService.GetProveedores();
+            //var insumos = await _insumoService.GetInsumos();
 
-            return View(proveedorInsumo);
+            //ViewBag.Proveedores = proveedor.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
+
+            //proveedorInsumo.IdProveedor = idProveedor;
+
+            return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> EliminarDetalle(int id)
         {
-            return Ok(await _insumoService.EliminarInsumo(await _insumoService.BuscarPorId(id)));
+            return Ok(await _proveedorInsumoService.EliminarInsumoDeProveedor(id));
         }
 
-        public async Task<IActionResult> AgregarDetalle(ProveedorInsumoModel data)
+        public async Task<IActionResult> AgregarDetalle(ProveedorInsumo data)
         {
-            if (data.Id == 0)
-            {
-                var agregarDetalle = new ProveedorInsumo()
-                {
-                    IdProveedor = data.IdProveedor,
-                    IdInsumo = data.IdInsumo,
-                    Precio = data.Precio,
-                };
+            var nuevoLineaReceta = await _proveedorInsumoService.BuscarProveedorInsumoPorId(await _proveedorInsumoService.AgregarInsumoAProveedor(data));
 
-                var nuevoLineaReceta = await _proveedorInsumoService.BuscarProveedorInsumoPorId(await _proveedorInsumoService.AgregarInsumoAProveedor(agregarDetalle));
-                data.ProveedoresInsumos.Add(nuevoLineaReceta);
-                //var proveedorInsumoDb = _mapper.Map<ProveedorInsumoModel>(nuevoLineaReceta);
-                //proveedorInsumoDb.Proveedor = data.Proveedor;
-                //proveedorInsumoDb.ProveedoresInsumos = data.ProveedoresInsumos;
-                //proveedorInsumoDb.Insumos = data.Insumos;
-                //proveedorInsumoDb.Insumo = data.Insumo;
+            var ret = new List<ProveedorInsumo>();
 
-                return PartialView("_InsumoProveedor", data);
-            }
-            else
-                return PartialView("_InsumoProveedor", data);
+            ret.Add(nuevoLineaReceta);
+            //var proveedorInsumoDb = _mapper.Map<ProveedorInsumoModel>(nuevoLineaReceta);
+            //proveedorInsumoDb.Proveedor = data.Proveedor;
+            //proveedorInsumoDb.ProveedoresInsumos = data.ProveedoresInsumos;
+            //proveedorInsumoDb.Insumos = data.Insumos;
+            //proveedorInsumoDb.Insumo = data.Insumo;
+
+            return PartialView("_InsumoProveedor", nuevoLineaReceta);
         }
 
     }

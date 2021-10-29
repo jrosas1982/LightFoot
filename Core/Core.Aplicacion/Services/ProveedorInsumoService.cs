@@ -26,7 +26,7 @@ namespace Core.Aplicacion.Services
             {
                 _db.ProveedoresInsumos.Add(insumoProveedor);
                 //_logger.LogInformation($"Insumo creado para receta : {insumoProveedor.IdReceta}");
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 return insumoProveedor.Id;
             }
             catch (Exception ex)
@@ -38,9 +38,9 @@ namespace Core.Aplicacion.Services
 
         public async Task<ProveedorInsumo> BuscarProveedorInsumoPorId(int idInsumo) 
         {
-            var detalle = await _db.ProveedoresInsumos.SingleOrDefaultAsync(x => x.Id == idInsumo);
+            var detalle = await _db.ProveedoresInsumos.Include(x => x.Insumo).SingleOrDefaultAsync(x => x.Id == idInsumo);
             if (detalle == null)
-                throw new Exception("La solicitud solicitada no existe");
+                throw new Exception("El ProveedorInsumo solicitado no existe");
             return detalle;
         }        
 
@@ -60,7 +60,7 @@ namespace Core.Aplicacion.Services
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"Error al borrar detalle : {lineaInsumo} - Error: {ex.Message}");
+                _logger.LogInformation($"Error al borrar detalle: {lineaInsumo} - Error: {ex.Message}");
                 return false;
 
             }

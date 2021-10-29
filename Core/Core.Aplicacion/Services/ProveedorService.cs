@@ -24,7 +24,7 @@ namespace Core.Aplicacion.Services
 
         public async Task<Proveedor> BuscarPorId(int IdProveedor)
         {
-            var proveedor = await _db.Proveedores.FindAsync(IdProveedor);
+            var proveedor = await _db.Proveedores.Include(x => x.ProveedorInsumos).ThenInclude(x => x.Insumo).SingleOrDefaultAsync(x => x.Id == IdProveedor);
             return proveedor;
         }
 

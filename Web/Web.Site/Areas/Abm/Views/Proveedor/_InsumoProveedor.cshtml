@@ -1,31 +1,27 @@
 ﻿@using HtmlHelpers.BeginCollectionItemCore
 @using Web.Site.Areas.Fabrica.Models
-@model ProveedorInsumoModel
+@model ProveedorInsumo
 @{
-    bool esEditar = (Model.Id != 0);
-    string idTr = esEditar ? Model.Id + "List" : "";
+    //bool esEditar = (Model.Id != 0);
+    //string idTr = esEditar ? Model.Id + "List" : "";
 }
-<tr id="@idTr">
-    @using (Html.BeginCollectionItem("ProveedoresInsumos"))
-    {
-        {
-            @Html.HiddenFor(x => x.Id)
-            @Html.HiddenFor(x => x.IdInsumo)
-            @Html.HiddenFor(x => x.IdProveedor)
-            @Html.HiddenFor(m => m.Precio)
 
-            <td>@Html.DisplayFor(x => x.Insumo.Nombre)</td>
-            <td>@Html.DisplayFor(x => x.Precio)</td>
-            <td>
-                @if (!esEditar)
+
+@if (Model != null)
+{
+    <tr @*id="@idTr*@>
+        <td>@Model.Insumo.Nombre</td>
+        <td>@Model.Precio</td>
+        <td>
+            <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="eliminarDetalleInsumo(this, @Model.Id)">Borrar</button>
+            @*@if (!esEditar)
                 {
                     <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick="removeRow(this)">Borrar</button>
                 }
                 else
                 {
                     <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="eliminarDetalleInsumo(this, @Model.Id)">Borrar</button>
-                }
-            </td>
-        }
-    }
-</tr>
+                }*@
+        </td>
+    </tr>
+}
