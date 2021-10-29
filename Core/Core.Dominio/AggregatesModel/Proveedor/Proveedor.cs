@@ -12,7 +12,7 @@ namespace Core.Dominio.AggregatesModel
         [Required]
         public string CUIT { get; set; }
         [Required]
-        public string Nombre { get; set; }        
+        public string Nombre { get; set; }
         [Required]
         public string Direccion { get; set; }
         [Required]

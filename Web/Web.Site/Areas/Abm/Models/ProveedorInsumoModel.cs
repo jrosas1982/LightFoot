@@ -4,10 +4,11 @@ using Web.Site.Dtos;
 
 namespace Web.Site.Areas
 {
-    public class ProveedorModel
+    public class ProveedorInsumoModel
     {
         public Proveedor Proveedor { get; set; }
-
+        public IEnumerable<ProveedorInsumo> ProveedoresInsumo { get; set; }
+        public IEnumerable<Insumo> Insumos { get; set; }
 
     }
 }

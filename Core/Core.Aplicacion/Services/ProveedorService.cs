@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Aplicacion.Services
@@ -62,7 +63,9 @@ namespace Core.Aplicacion.Services
         }
         public async Task<IEnumerable<Proveedor>> GetProveedores()
         {
-            var proveedoresList = _db.Proveedores;
+            var proveedoresList = _db.Proveedores
+                .Include(x => x.ProveedorInsumos)
+                    .ThenInclude(x => x.Insumo);
             return await Task.FromResult(proveedoresList);
         }
     }

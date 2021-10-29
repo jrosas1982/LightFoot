@@ -144,25 +144,26 @@ namespace Web.Site.Areas.Fabrica.Controllers
         }
 
         [HttpPost]
-        public IActionResult EliminarDetalle(int id)
+        public async Task<IActionResult> EliminarDetalle(int id)
         {
-            return Ok(_recetaDetalleService.EliminarInsumoAReceta(id).Result);
+            return Ok(await _recetaDetalleService.EliminarInsumoAReceta(id));
         }
 
-        public IActionResult AgregarDetalle(RecetaDetalleModel data)
+        public async Task<IActionResult> AgregarDetalle(RecetaDetalleModel data)
         {
-            if (data.IdReceta != 0 ) {
+            if (data.IdReceta != 0 )
+            {
                 var agregarDetalle = _mapper.Map<RecetaDetalle>(data);
                 agregarDetalle.ModificadoPor = User.GetUserIdSucursal();
-                var nuevoLineaReceta = _recetaDetalleService.BuscarInsumoDeRecetaPorId(_recetaDetalleService.AgregarInsumoAReceta(agregarDetalle).Result);
+                var nuevoLineaReceta = _recetaDetalleService.BuscarInsumoDeRecetaPorId(await _recetaDetalleService.AgregarInsumoAReceta(agregarDetalle));
                 var recetaDetalleModelo = _mapper.Map<RecetaDetalleModel>(nuevoLineaReceta);
                 recetaDetalleModelo.NombreInsumo = data.NombreInsumo;
                 recetaDetalleModelo.NombreEtapaOrdenProduccion = data.NombreEtapaOrdenProduccion;
 
                 return PartialView("_RecetaDetalle", recetaDetalleModelo);
-            }else
-            return PartialView("_RecetaDetalle", data);
-
+            }
+            else
+                return PartialView("_RecetaDetalle", data);
         }
 
         //TODO: Idea para refactor 

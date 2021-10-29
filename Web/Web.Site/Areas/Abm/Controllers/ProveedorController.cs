@@ -14,25 +14,23 @@ namespace Web.Site.Areas
     [Route("[area]/[controller]/[action]")]
     public class ProveedorController : CustomController
     {
-        
+        private IProveedorService _proveedorService;
 
-        public ProveedorController()
+        public ProveedorController(IProveedorService proveedorService)
         {
+            _proveedorService = proveedorService;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View();
+            var proveedores = await _proveedorService.GetProveedores();
+            return View(proveedores);
         }
 
-        public async Task<IActionResult> CrearEditarProveedor(int IdProveedor)
+        public async Task<IActionResult> CrearEditarProveedor(int idProveedor)
         {
-            Proveedor proveedor;
+            var proveedor = await _proveedorService.BuscarPorId(idProveedor);
 
-            ProveedorModel proveedorModel = new ProveedorModel()
-            {
-                
-            };
             return View();
         }
 

@@ -37,13 +37,12 @@ namespace Core.Aplicacion.Services
           
         }
 
-        public RecetaDetalle BuscarInsumoDeRecetaPorId(int IdInsumo)
+        public async Task<RecetaDetalle> BuscarInsumoDeRecetaPorId(int idInsumo)
         {
-            var detalle = _db.RecetaDetalles.SingleOrDefault(x => x.Id == IdInsumo);
+            var detalle = await _db.RecetaDetalles.SingleOrDefaultAsync(x => x.Id == idInsumo);
             if (detalle == null)
                 throw new Exception("La solicitud solicitada no existe");
             return detalle;
-
         }
 
         public async Task<bool> EliminarInsumoAReceta(int lineaInsumo)
