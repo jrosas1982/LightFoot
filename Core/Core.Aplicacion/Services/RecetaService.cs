@@ -29,34 +29,60 @@ namespace Core.Aplicacion.Services
 
         public async Task<Receta> BuscarPorId(int IdReceta)
         {
+            try
+            {
             var receta = await _db.Recetas
                 .Include(x => x.Articulo)
                 .Include(x => x.RecetaDetalles)
                 .ThenInclude(x => x.Insumo)
                 .Include(x => x.RecetaDetalles)
-                .ThenInclude(x => x.EtapaOrdenProduccion).Where(x =>  x.Id == IdReceta).SingleOrDefaultAsync();
+                .ThenInclude(x => x.EtapaOrdenProduccion).Where(x => x.Id == IdReceta).SingleOrDefaultAsync();
 
-            return receta;
+                return receta;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($" Error al BuscarPorId { ex.Message }");
+                throw;
+            }
+
         }
 
         public async Task<IEnumerable<Receta>> GetRecetas()
         {
-            var recetasList = _db.Recetas
-                .Include(x => x.Articulo)
-                .Include(x => x.RecetaDetalles)
-                .ThenInclude(x => x.Insumo)
-                .Include(x => x.RecetaDetalles)
-                .ThenInclude(x => x.EtapaOrdenProduccion);
-           
-            _logger.LogInformation("Se buscaron las solicitudes");
-            return await recetasList.ToListAsync().ConfigureAwait(false);
+            try
+            {
+             var recetasList = _db.Recetas
+                 .Include(x => x.Articulo)
+                 .Include(x => x.RecetaDetalles)
+                 .ThenInclude(x => x.Insumo)
+                 .Include(x => x.RecetaDetalles)
+                 .ThenInclude(x => x.EtapaOrdenProduccion);
+
+                return await recetasList.ToListAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($" Error al GetRecetas { ex.Message }");
+
+                throw;
+            }
+
         }
 
         public async Task<IEnumerable<RecetaDetalle>> GetRecetaDetalles(int Idreceta)
         {
-            var detallesSolicitud = _db.RecetaDetalles.Where(x => x.IdReceta == Idreceta);
-
-            return await detallesSolicitud.ToListAsync();
+            try
+            {
+                var detallesSolicitud = _db.RecetaDetalles.Where(x => x.IdReceta == Idreceta);
+                return await detallesSolicitud.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($" Error al GetRecetaDetalles { ex.Message }");
+                throw;
+            }
+     
         }
 
         public async Task<bool> EliminarReceta(int IdReceta)

@@ -29,7 +29,8 @@ namespace Web.Site.Areas.Fabrica.Controllers
 
 
         public RecetasController(ISolicitudService solicitudService,  IArticuloService articuloService , IInsumoService InsumoService
-            , IOrdenProduccionService ordenProduccionService, IRecetaService recetaService, IRecetaDetalleService recetaDetalleService, IMapper mapper)
+            , IOrdenProduccionService ordenProduccionService, IRecetaService recetaService, IRecetaDetalleService recetaDetalleService, 
+            IMapper mapper)
         {
             _solicitudService = solicitudService;
             _articuloService = articuloService;
@@ -40,7 +41,6 @@ namespace Web.Site.Areas.Fabrica.Controllers
             _mapper = mapper;
         }
  
-        // GET: RecetasController
         public async Task<IActionResult> IndexAsync()
         { 
             var recetas = await _recetaService.GetRecetas();
@@ -52,24 +52,21 @@ namespace Web.Site.Areas.Fabrica.Controllers
             {
                 foreach (var detalle in receta.RecetaDetalles)
                 {
-                    detalle.NombreEtapaOrdenProduccion = ordenes.Where(x => x.Orden == detalle.IdEtapaOrdenProduccion).Select(d => d.Descripcion).FirstOrDefault();
+                    detalle.NombreEtapaOrdenProduccion = ordenes.Where(x => x.Orden == detalle.IdEtapaOrdenProduccion)
+                        .Select(d => d.Descripcion).FirstOrDefault();
                     detalle.NombreInsumo = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Nombre).FirstOrDefault();
                     detalle.UnidadDeMedida = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Unidad).FirstOrDefault();
-
                 }
             }
 
             return View(modeloReceta);
         }
 
-        // GET: RecetasController/Details/5
-        public ActionResult Details(int id)
-        {
-            
-            return View();
-        }
-
-        // GET: RecetasController/Create
+        /// <summary>
+        /// El Id que recibe como parametro define si la receta existe o no 
+        /// </summary>
+        /// <param name="IdReceta"></param>
+        /// <returns></returns>
         public async Task<IActionResult> CrearEditarReceta(int IdReceta)
         {
             RecetaModel recetamodel = new RecetaModel();
@@ -94,7 +91,6 @@ namespace Web.Site.Areas.Fabrica.Controllers
             return View(recetamodel);
         }
 
-        // POST: RecetasController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CrearEditarReceta(RecetaModel recetaModel)
@@ -127,28 +123,14 @@ namespace Web.Site.Areas.Fabrica.Controllers
             }
         }
 
-        // GET: RecetasController/Edit/5
         [HttpPost]
         public ActionResult ActivarDesactivar(int id)
         {
-            //User.GetUserIdSucursal();
+            // TODO: definir si debemos registrar el usuartio que activa desactiva
+            // User.GetUserIdSucursal();
             return Ok(_recetaService.ActivarDesactivarReceta(id).Result);
         }
 
-        // POST: RecetasController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Editar(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(IndexAsync));
-            }
-            catch
-            {
-                return View();
-            }
-        }
         /// <summary>
         /// Recibe el Ide de receta para eliminar
         /// </summary>
@@ -184,15 +166,15 @@ namespace Web.Site.Areas.Fabrica.Controllers
         }
 
         //TODO: Idea para refactor 
-        private async Task<RecetaDetalleModel> AgregarDetalleInsumoYOrdenesAsync(RecetaDetalleModel recetaDetalleModel)     
-        {
-            var insumos = await _insumoService.GetInsumos();
-            var ordenes = await _ordenesProduccionService.GetEtapasOrden();
+        //private async Task<RecetaDetalleModel> AgregarDetalleInsumoYOrdenesAsync(RecetaDetalleModel recetaDetalleModel)     
+        //{
+        //    var insumos = await _insumoService.GetInsumos();
+        //    var ordenes = await _ordenesProduccionService.GetEtapasOrden();
 
-            recetaDetalleModel.NombreEtapaOrdenProduccion = ordenes.Where(x => x.Orden == recetaDetalleModel.IdEtapaOrdenProduccion).Select(d => d.Descripcion).FirstOrDefault();
-            recetaDetalleModel.NombreInsumo = insumos.Where(x => x.Id == recetaDetalleModel.IdInsumo).Select(d => d.Nombre).FirstOrDefault();
+        //    recetaDetalleModel.NombreEtapaOrdenProduccion = ordenes.Where(x => x.Orden == recetaDetalleModel.IdEtapaOrdenProduccion).Select(d => d.Descripcion).FirstOrDefault();
+        //    recetaDetalleModel.NombreInsumo = insumos.Where(x => x.Id == recetaDetalleModel.IdInsumo).Select(d => d.Nombre).FirstOrDefault();
          
-            return recetaDetalleModel;
-        }
+        //    return recetaDetalleModel;
+        //}
     }
 }
