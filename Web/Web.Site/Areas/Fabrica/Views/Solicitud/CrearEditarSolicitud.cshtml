@@ -211,11 +211,11 @@
                 type: "post",
                 url: "/fabrica/solicitud/agregardetalle",
                 data: {
-                    IdArticulo: $("#IdArticulo").val(),
+                    IdArticulo: $("#drdropdownArticulos").val(),
                     CantidadSolicitada: $("#CantidadSolicitada").val(),
                     Motivo: $("#Motivo").val(),
                     Articulo: {
-                        Nombre: $("#dropdownArticulos").val(),
+                        Nombre: $("#dropdownArticulos :selected").text(),
                         Color: $("#newColor").val(),
                         TalleArticulo: $("#newTalless").val()
                     }
