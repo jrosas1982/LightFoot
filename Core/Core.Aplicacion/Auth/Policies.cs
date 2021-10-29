@@ -7,14 +7,29 @@ namespace Core.Aplicacion.Auth
     public static class Policies
     {
         public const string IsGod = "IsGod";
+        public const string IsFabrica = "IsFabrica";
+        public const string IsSucursal = "IsSucursal";
+
         public const string IsAdmin = "IsAdmin";
         public const string IsGerente = "IsGerente";
         public const string IsSupervisor = "IsSupervisor";
         public const string IsControlador = "IsControlador";
         public const string IsOperario = "IsOperario";
+
         public const string IsEncargado = "IsEncargado";
         public const string IsCajero = "IsCajero";
         public const string IsVendedor = "IsVendedor";
+
+
+        public static AuthorizationPolicy FabricaPolicy()
+        {
+            return OperarioPolicy();
+        }
+
+        public static AuthorizationPolicy SucursalPolicy()
+        {
+            return VendedorPolicy();
+        }
 
         public static AuthorizationPolicy GodPolicy()
         {

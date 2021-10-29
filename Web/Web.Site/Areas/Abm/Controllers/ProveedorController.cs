@@ -29,24 +29,45 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> CrearEditarProveedor(int idProveedor)
         {
-            var proveedor = await _proveedorService.BuscarPorId(idProveedor);
+            Proveedor proveedor;
 
-            return View();
+            if (idProveedor != 0) // 0 = crear
+                proveedor = await _proveedorService.BuscarPorId(idProveedor);
+            else
+                proveedor = new Proveedor();
+
+            return View(proveedor);
         }
 
-        public async Task<IActionResult> Crear(Articulo articulo)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Crear(Proveedor proveedor)
         {
+            if (!ModelState.IsValid)
+                return View("CrearEditarProveedor", proveedor);
+
+            await _proveedorService.CrearProveedor(proveedor);
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Editar(Articulo articulo)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Editar(Proveedor proveedor)
         {
+            if (!ModelState.IsValid)
+                return View("CrearEditarProveedor", proveedor);
+
+            await _proveedorService.EditarProveedor(proveedor);
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Eliminar(Articulo articulo)
+
+        public async Task<IActionResult> Eliminar(Proveedor proveedor)
         {
-            return Ok();
+            var result = false;
+            if (ModelState.IsValid)
+            {
+                result = await _proveedorService.EliminarProveedor(proveedor);
+            }
+            return Ok(result);
         }
 
     }

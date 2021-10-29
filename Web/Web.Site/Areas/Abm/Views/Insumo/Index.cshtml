@@ -49,9 +49,8 @@
                             <tr>
                                 <th>Nombre</th>
                                 <th>Descripcion</th>
-                                <th>Unidad</th>
                                 <th>Proveedor Preferido</th>
-                                <th>Stock</th>
+                                <th>Stock Actual</th>
                                 <th class="d-print-none">Acciones</th>
                             </tr>
                         </thead>
@@ -63,9 +62,8 @@
                             <tr class="gradeC">
                                 <td>@item.Nombre</td>
                                 <td>@item.Descripcion</td>
-                                <td>@item.Unidad</td>
-                                <td>@(item.IdProveedorPreferido == null ? "No Posee" : "item.Proveedor")</td>
-                                <td>@item.StockTotal</td>
+                                <td>@(item.IdProveedorPreferido == null ? "No Posee" : item.Proveedor.Nombre)</td>
+                                <td>@(item.StockTotal + item.Unidad)</td>
                                 <td class="d-print-none">
                                     <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarInsumo('@item.Id')">Borrar</button>
                                     <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarInsumo('@item.Id')">Editar</button>
@@ -78,9 +76,8 @@
                             <tr class="d-print-none">
                                 <th>Nombre</th>
                                 <th>Descripcion</th>
-                                <th>Unidad</th>
                                 <th>Proveedor Preferido</th>
-                                <th>Stock</th>
+                                <th>Stock Actual</th>
                                 <th>Acciones</th>
                             </tr>
                         </tfoot>

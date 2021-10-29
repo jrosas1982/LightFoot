@@ -33,4 +33,9 @@
     overflow-y: auto !important;
     overflow-x: hidden !important;
     max-height: 100vh !important;
-} 
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}

@@ -45,7 +45,6 @@ namespace Web.Site.Areas
                 await _sucursalService.CrearSucursal(sucursal);
             }
             return RedirectToAction("Index");
-
         }
 
         public async Task<IActionResult> Editar(Sucursal sucursal)

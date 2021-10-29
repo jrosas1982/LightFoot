@@ -41,11 +41,15 @@ namespace LightFoot.Web.Site
             services.AddAuthorization(config =>
             {
                 config.AddPolicy(Policies.IsGod, Policies.GodPolicy());
+                config.AddPolicy(Policies.IsFabrica, Policies.FabricaPolicy());
+                config.AddPolicy(Policies.IsSucursal, Policies.SucursalPolicy());
+
                 config.AddPolicy(Policies.IsAdmin, Policies.AdminPolicy());
                 config.AddPolicy(Policies.IsGerente, Policies.GerentePolicy());
                 config.AddPolicy(Policies.IsSupervisor, Policies.SupervisorPolicy());
                 config.AddPolicy(Policies.IsControlador, Policies.ControladorPolicy());
                 config.AddPolicy(Policies.IsOperario, Policies.OperarioPolicy());
+
                 config.AddPolicy(Policies.IsEncargado, Policies.EncargadoPolicy());
                 config.AddPolicy(Policies.IsCajero, Policies.CajeroPolicy());
                 config.AddPolicy(Policies.IsVendedor, Policies.VendedorPolicy());

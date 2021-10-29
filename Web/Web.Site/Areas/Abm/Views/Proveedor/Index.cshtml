@@ -53,11 +53,11 @@
 
                                         <th>Proveedor</th>
                                         <th data-hide="all" data-animation="true"></th>
-                                        @*<th>CUIT</th>
+                                        <th>CUIT</th>
                                             <th>Direccion</th>
                                             <th>Email</th>
                                             <th>Calificacion</th>
-                                            <th data-sort-ignore="true" class="d-print-none">Acciones</th>*@
+                                            <th data-sort-ignore="true" class="d-print-none">Acciones</th>
 
                                     </tr>
                                 </thead>
@@ -67,57 +67,48 @@
                                     {
                                         foreach (var proveedor in Model)
                                         {
-                                            <tr>
-                                                <td>@proveedor.Nombre</td>
-                                                <td>
-                                                    @if (proveedor.ProveedorInsumos != null && proveedor.ProveedorInsumos.Any())
-                                                    {
-                                                        <div class="col">
-                                                            <div class="table-responsive">
-                                                                <table class="table table-striped table-hover table-bordered">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th style="background-color: #9ac5ca82;">Articulo</th>
-                                                                            @*<th style="background-color: #9ac5ca82;">Color</th>
-                                                                                <th style="background-color: #9ac5ca82;">Talle</th>
-                                                                                <th style="background-color: #9ac5ca82;">Descripcion</th>
-                                                                                <th style="background-color: #9ac5ca82;">Cantidad Solicitada</th>
-                                                                                <th style="background-color: #9ac5ca82;">Motivo</th>
-                                                                                <th style="background-color: #9ac5ca82;" data-sort-ignore="true">Ordenes de Produccion Asociadas</th>*@
+                                    <tr>
+                                        <td>@proveedor.Nombre</td>
+                                        <td>
+                                            @if (proveedor.ProveedorInsumos != null && proveedor.ProveedorInsumos.Any())
+                                            {
+                                                <div class="col">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-striped table-hover table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th style="background-color: #9ac5ca82;">Insumo</th>
+                                                                    <th style="background-color: #9ac5ca82;">Descripcion</th>
+                                                                    <th style="background-color: #9ac5ca82;">Stock Actual</th>
+                                                                    @*<th style="background-color: #9ac5ca82;" data-sort-ignore="true">Historico</th>*@
 
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        @foreach (var proveedorInsumo in proveedor.ProveedorInsumos)
-                                                                        {
-                                                                            <tr>
-                                                                                <td>@proveedorInsumo.Insumo.Nombre</td>
-                                                                            </tr>
-                                                                        }
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var proveedorInsumo in proveedor.ProveedorInsumos)
+                                                                {
+                                                                    <tr>
+                                                                        <td>@proveedorInsumo.Insumo.Nombre</td>
+                                                                        <td>@proveedorInsumo.Insumo.Descripcion</td>
+                                                                        <td>@(proveedorInsumo.Insumo.StockTotal + proveedorInsumo.Insumo.Unidad)</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
 
-                                                    }
-                                                </td>
-                                                @*<td>@solicitud.SolicitudDetalles.Count()</td>
-                                                    <td>@solicitud.Comentario</td>
-                                                    <td>
-                                                        <span class="label label-@solicitud.EstadoSolicitud.GetGroupName()">@solicitud.EstadoSolicitud.GetDisplayName()</span>
-                                                    </td>
-                                                    <td>@solicitud.FechaCreacion.ToLocalTime()</td>
-                                                    <td>
-                                                        <button class="btn btn-outline btn-success btn-xs" type="button" onclick="VerDetalles('@solicitud.Id')">Ver Detalles</button>
-
-                                                        @if (solicitud.EstadoSolicitud == EstadoSolicitud.PendienteAprobacion)
-                                                        {
-                                                            <button class="btn btn-outline btn-danger btn-xs" type="button" onclick="RechazarSolicitud('@solicitud.Id')">Rechazar</button>
-                                                            <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AprobarSolicitud('@solicitud.Id')">Aprobar</button>
-                                                        }
-
-                                                    </td>*@
-                                            </tr>
+                                            }
+                                        </td>
+                                        <td>@proveedor.CUIT</td>
+                                        <td>@proveedor.Direccion</td>
+                                        <td>@proveedor.Email</td>
+                                        <td>@proveedor.Calificacion</td>
+                                        <td class="d-print-none">
+                                            <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarProveedor('@proveedor.Id')">Borrar</button>
+                                            <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarProveedor('@proveedor.Id')">Editar</button>
+                                        </td>
+                                    </tr>
                                         }
                                     }
                                 </tbody>
@@ -186,6 +177,7 @@
 @section Styles {
     <environment names="Development,Staging,Production">
         <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
+        <link rel="stylesheet" href="~/lib/footable/css/footable.core.min.css" />
         <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
     </environment>
 }
@@ -194,8 +186,15 @@
     <environment names="Development,Staging,Production">
         <script src="~/lib/dataTables/datatables.min.js"></script>
         <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
+        <script src="~/lib/footable/dist/footable.all.min.js"></script>
         <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
     </environment>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.footable').footable();
+        });
+    </script>
 
     <script type="text/javascript">
 

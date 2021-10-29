@@ -26,8 +26,7 @@
         </ol>
     </div>
     <div class="col-lg-2 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
-        <button type="button" class="btn btn-default btn-rounded w-100"
-                onclick="location.href='@Url.Action("Index", "Insumo", 0)'">
+        <button type="button" class="btn btn-default btn-rounded w-100"onclick="location.href='@Url.Action("Index", "Insumo", 0)'">
             <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
         </button>
     </div>
@@ -82,7 +81,7 @@
                     {
                         <div class="form-group">
                             @Html.LabelFor(m => m.Insumo.IdProveedorPreferido)
-                            @Html.DropDownListFor(m => m.Insumo.IdProveedorPreferido, new SelectList(Model.Proveedores, "", "", Model.Proveedores.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownProveedores" })
+                            @Html.DropDownListFor(m => m.Insumo.IdProveedorPreferido, new SelectList(Model.Proveedores, "Id", "Nombre", Model.Proveedores.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownProveedores" })
                         </div>
                     }
                 </div>

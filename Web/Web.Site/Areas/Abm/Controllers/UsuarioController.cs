@@ -49,10 +49,10 @@ namespace Web.Site.Areas
             return View("CrearEditarUsuario", usuarioModel);
         }
 
-        public IActionResult CrearEditarUsuario(UsuarioModel usuarioModel)
-        {
-            return View(usuarioModel);
-        }
+        //public IActionResult CrearEditarUsuario(UsuarioModel usuarioModel)
+        //{
+        //    return View(usuarioModel);
+        //}
 
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear(UsuarioModel usuarioModel)
