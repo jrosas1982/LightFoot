@@ -68,25 +68,19 @@ namespace Core.Aplicacion.Services
             if (solicitudDB == null)
                 throw new Exception($"La solicitud {idSolicitud} no existe");
 
-            var insumosNecesarios = await _fabricacion.ContabilizarInsumosRequeridos(idSolicitud);
+            //var insumosNecesarios = await _fabricacion.ContabilizarInsumosRequeridos(idSolicitud);
 
-            var insumosVerificados = await _fabricacion.VerificarStockInsumos(insumosNecesarios);
+            //var insumosVerificados = await _fabricacion.VerificarStockInsumos(insumosNecesarios);
 
-            if (insumosVerificados.Any(x => x.CantidadDisponible < x.CantidadNecesaria))
-                throw new Exception("No hay suficiente stock disponible para aprobar la solicitud");
+            //if (insumosVerificados.Any(x => x.CantidadDisponible < x.CantidadNecesaria))
+            //    throw new Exception("No hay suficiente stock disponible para aprobar la solicitud");
 
             solicitudDB.EstadoSolicitud = EstadoSolicitud.Aprobada;
             solicitudDB.Comentario = comentario;
 
-            //solicitudDB.SolicitudEventos.Add(new SolicitudEvento()
-            //{
-            //    Comentario = solicitudDB.Comentario,
-            //    EstadoSolicitud = solicitudDB.EstadoSolicitud
-            //});
-
             _db.Update(solicitudDB);
             
-            await _fabricacion.ReservarStockInsumos(insumosNecesarios);
+            //await _fabricacion.ReservarStockInsumos(insumosNecesarios);
 
             var PrimerEtapaOrdenProduccion = _db.EtapasOrdenProduccion.OrderBy(x => x.Orden).FirstOrDefault();
             if (PrimerEtapaOrdenProduccion == null)
