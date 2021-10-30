@@ -88,7 +88,7 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var receta = _db.Recetas.Where(x => x.Id == IdReceta).SingleOrDefault();
+                var receta = _db.Recetas.Include(x => x.RecetaDetalles).Where(x => x.Id == IdReceta).SingleOrDefault();
                 foreach (var item in receta.RecetaDetalles)
                 {
                     _db.RecetaDetalles.Remove(item);
