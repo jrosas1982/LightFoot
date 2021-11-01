@@ -52,7 +52,7 @@ namespace Core.Aplicacion.Services
 
             var articuloDb = await _db.Articulos.FindAsync(articulo.Id);
 
-            articulo.CodigoArticulo = articulo.CodigoArticulo;
+            articuloDb.CodigoArticulo = articulo.CodigoArticulo;
             articuloDb.Nombre = articulo.Nombre;
             articuloDb.ArticuloEstado = articulo.ArticuloEstado;
             articuloDb.TalleArticulo = articulo.TalleArticulo;

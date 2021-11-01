@@ -8,6 +8,7 @@
                 <tr>
                     <th>#</th>
                     <th>Estado Orden</th>
+                    <th>Codigo</th>
                     <th>Articulo</th>
                     <th>Color</th>
                     <th>Talle</th>
@@ -32,6 +33,7 @@
                     <td>
                         <span class="label label-@orden.EstadoOrdenProduccion.GetGroupName()">@orden.EstadoOrdenProduccion.GetDisplayName()</span>
                     </td>
+                    <td>@orden.Articulo.CodigoArticulo</td>
                     <td>@orden.Articulo.Nombre</td>
                     <td>@orden.Articulo.Color</td>
                     <td>@orden.Articulo.TalleArticulo</td>
