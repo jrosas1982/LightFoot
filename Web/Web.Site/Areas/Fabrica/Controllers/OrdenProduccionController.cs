@@ -34,7 +34,10 @@ namespace Web.Site.Areas
             ordenesList = await _ordenProduccionService.GetOrdenes();
 
             if (filter.Articulo != null)
-                ordenesList = ordenesList.Where(x => x.Articulo.Nombre.ToLower().Contains(filter.Articulo.ToLower()));
+                ordenesList = ordenesList.Where(x => x.Articulo.Nombre.ToLower().Contains(filter.Articulo.ToLower())
+                                                  || x.Articulo.CodigoArticulo.ToLower().Contains(filter.Articulo.ToLower())
+                                                  || x.Articulo.Color.ToLower().Contains(filter.Articulo.ToLower())
+                                                  || x.Articulo.TalleArticulo.ToLower().Contains(filter.Articulo.ToLower()));
             if (filter.EstadosOrden != null)
                 ordenesList = ordenesList.Where(x => filter.EstadosOrden.Contains(x.EstadoOrdenProduccion));
             if (filter.IdEtapasOrden != null)
