@@ -2,10 +2,14 @@
     ViewData["Title"] = "Ordenes de Produccion";
     Layout = "_Layout";
 
-    //bool esEdicion = (Model.Id != 0);
+    IEnumerable<EstadoOrdenProduccion> EstadoOrdenProducciones = ViewBag.EstadoOrdenProducciones;
+    IEnumerable<EtapaOrdenProduccion> EtapaOrdenProducciones = ViewBag.EtapaOrdenProducciones;
+    IEnumerable<EstadoEtapaOrdenProduccion> EstadoEtapaOrdenProducciones = ViewBag.EstadoEtapaOrdenProducciones;
+    DateTime FechaDesde = ViewBag.FechaDesde; //DateTime.Today - TimeSpan.FromDays(-30);
+    DateTime FechaHasta = ViewBag.FechaHasta; //DateTime.Today;
 }
 
-@model OrdenProduccionIndexModel
+@model IEnumerable<OrdenProduccion>
 
 <div class="row wrapper border-bottom white-bg page-heading navegacion">
     <div class="col-lg-12">
@@ -40,15 +44,15 @@
         <div class="row">
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label class="col-form-labe" for="articulo_name">Articulo</label>
-                    <input type="text" id="articulo_name" name="articulo_name" value="" placeholder="Articulo" class="form-control">
+                    <label class="col-form-labe" for="articulo">Articulo</label>
+                    <input type="text" id="articulo" name="articulo" value="" placeholder="Articulo" class="form-control">
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
                     <label class="font-normal">Estado</label>
-                    <select class="chosen-select" multiple name="estado_orden" id="estado_orden" data-placeholder="@Model.EstadoOrdenProducciones.First().GetDisplayName()">
-                        @foreach (var estado in Model.EstadoOrdenProducciones)
+                    <select class="chosen-select" multiple name="estados_orden" id="estados_orden" data-placeholder="Seleccione un estado">
+                        @foreach (var estado in EstadoOrdenProducciones)
                         {
                             <option value="@estado"> @estado.GetDisplayName()</option>
                         }
@@ -58,19 +62,19 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label class="font-normal">Etapa</label>
-                    <select class="chosen-select" name="etapa_orden" id="etapa_orden">
-                        @foreach( var etapa in Model.EtapaOrdenProducciones)
+                    <select class="chosen-select" multiple name="etapa_orden" id="etapas_orden" data-placeholder="Seleccione una etapa">
+                        @foreach (var etapa in EtapaOrdenProducciones)
                         {
-                            <option value="@etapa.Descripcion"> @etapa.Descripcion </option>
+                            <option value="@etapa.Id"> @etapa.Descripcion </option>
                         }
                     </select>
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label class="col-form-labe" for="etapa_estado">Estado de Etapa</label>
-                    <select class="chosen-select"  name="etapa_estado" id="etapa_estado">
-                        @foreach (var estadoEtapa in Model.EstadoEtapaOrdenProducciones)
+                    <label class="col-form-labe" for="estados_etapa">Estado de Etapa</label>
+                    <select class="chosen-select" multiple name="estados_etapa" id="estados_etapa" data-placeholder="Seleccione un estado">
+                        @foreach (var estadoEtapa in EstadoEtapaOrdenProducciones)
                         {
                             <option value="@estadoEtapa"> @estadoEtapa.GetDisplayName() </option>
                         }
@@ -81,17 +85,17 @@
                 <div class="form-group" id="fechaRango">
                     <label class="col-form-labe" for="fecha">Fecha</label>
                     <div class="input-daterange input-group" id="datepicker">
-                        <input type="text" class="form-control-sm form-control" name="start" />
+                        <input type="text" class="form-control-sm form-control" name="start" id="fechaDesde" value="@FechaDesde.ToShortDateString()" />
                         <span class="input-group-addon"> <i class="fa fa-long-arrow-right mx-1"></i> </span>
-                        <input type="text" class="form-control-sm form-control" name="end" />
+                        <input type="text" class="form-control-sm form-control" name="end" id="fechaHasta" value="@FechaHasta.ToShortDateString()" />
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-12 d-flex align-items-end justify-content-end">
-                <button class="btn btn-outline-info btn-xl float-right" type="submit" onclick="">
-                    <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                <button class="btn btn-outline-info btn-xl float-right" type="submit" onclick="Filtrar()">
+                    <i class="fa fa-search" aria-hidden="true" ></i> Buscar
                 </button>
             </div>
         </div>
@@ -109,63 +113,10 @@
                     </div>
                 </div>
 
-                <div class="ibox-content">
-                    <div class="table-responsive">
-                        <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Estado Orden</th>
-                                    <th>Articulo</th>
-                                    <th>Color</th>
-                                    <th>Talle</th>
-                                    <th>Cantidad a Fabricar</th>
-                                    <th>Etapa</th>
-                                    <th>Estado de la Etapa</th>
-                                    @*<th>Cantidad Fabricada</th>*@
-                                    <th>Tiempo empleado</th>
-                                    <th data-sort-ignore="true" class="d-print-none">Acciones</th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model != null && Model.OrdenProducciones.Any())
-                                {
-                                    foreach (var orden in Model.OrdenProducciones)
-                                    {
-                                        <tr>
-                                            <td>@orden.Id</td>
-                                            <td>
-                                                <span class="label label-@orden.EstadoOrdenProduccion.GetGroupName()">@orden.EstadoOrdenProduccion.GetDisplayName()</span>
-                                            </td>
-                                            <td>@orden.Articulo.Nombre</td>
-                                            <td>@orden.Articulo.Color</td>
-                                            <td>@orden.Articulo.TalleArticulo</td>
-                                            <td>@orden.CantidadTotal</td>
-                                            <td>@orden.EtapaOrdenProduccion.Descripcion</td>
-                                            <td>
-                                                <span class="label label-@orden.EstadoEtapaOrdenProduccion.GetGroupName()">@orden.EstadoEtapaOrdenProduccion.GetDisplayName()</span>
-                                            </td>
-
-                                            @*<td>@orden.CantidadFabricada</td>*@
-                                            <th>@((DateTime.Now - orden.FechaCreacion).ToString(@"hh\:mm\:ss"))</th>
-                                            <td class="d-print-none">
-                                                <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerDetalles('@orden.Id')">Ver Detalles</button>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                            <tfoot>
-                                <tr>
-                                    <td colspan="12">
-                                        <ul class="pagination float-right"></ul>
-                                    </td>
-                                </tr>
-                            </tfoot>
-
-                        </table>
-                    </div>
+                <div id="tablaContenido">
+                    <partial name="_IndexTable.cshtml" model="Model" />
                 </div>
+
             </div>
         </div>
     </div>
@@ -187,6 +138,8 @@
     <script src="~/lib/chosen/chosen.jquery.js"></script>
 
     <script type="text/javascript">
+        //Filtros
+
         $('#fechaRango .input-daterange').datepicker({
             keyboardNavigation: false,
             forceParse: false,
@@ -194,34 +147,60 @@
             endDate: "today",
             language: "es"
         });
-    </script>
 
-    <script type="text/javascript">
         $('.chosen-select').chosen({
             no_results_text: "No hay resultados que coincidan con ",
 
         });
+
+        function Filtrar() {
+            var articulo = $("#articulo").val();
+            var estadosOrden = $("#estados_orden").chosen().val();
+            var etapasOrden = $("#etapas_orden").chosen().val();
+            var estadosEtapa = $("#estados_etapa").chosen().val();
+            var FechaDesde = $("#fechaDesde").val();
+            var FechaHasta = $("#fechaHasta").val();
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("FiltrarOrdenes", "OrdenProduccion", new { area = "fabrica" })',
+                traditional: true,
+                data: //formData,
+                {
+                    Articulo: articulo,
+                    EstadosOrden: estadosOrden,
+                    IdEtapasOrden: etapasOrden,
+                    EstadosEtapa: estadosEtapa,
+                    FechaDesde: FechaDesde,
+                    FechaHasta: FechaHasta
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#tablaContenido").html(""); //clear the records content
+                    $("#tablaContenido").html(response);  //add the updated content.
+                }
+            });
+        }
     </script>
 
     <script type="text/javascript">
+        //Pagina
+
         $(document).ready(function () {
             $('.footable').footable();
         });
-    </script>
 
-    <script type="text/javascript">
+        function Reporte() {
+            $('.dataTables_filter').addClass("d-print-none")
+            window.print();
+            $('.dataTables_filter').removeClass("d-print-none")
+        }
+
         function RechazarSolicitud(Id) {
             alert(Id);
         }
 
         function VerDetalles(Id) {
             window.location = '/fabrica/OrdenProduccion/DetallesOrdenProduccion?IdOrdenProduccion=' + Id;
-        }
-
-        function Reporte() {
-            $('.dataTables_filter').addClass("d-print-none")
-            window.print();
-            $('.dataTables_filter').removeClass("d-print-none")
         }
 
         function alert(Id) {
@@ -281,19 +260,34 @@
         });
     </script>
 
-    @*Aprtura de WebSocket (no se que hace)*@
     <script type="text/javascript">
+        //Aprtura de WebSockets
         Object.defineProperty(WebSocket, 'OPEN', { value: 1, });
-    </script>
-    @*conexion al SignalR*@
-    <script type="text/javascript">
+
+        //conexion a SignalR
         var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationsHub").build();
         connection.start();
-    </script>
-    <script type="text/javascript">
+
+        //Accion
         connection.on("OrdenProduccionUpdate", function () {
-            location.reload();
-    });
+            Filtrar();
+           @*$.ajax({
+                type: "Get",
+                url: '@Url.Action("FiltrarOrdenes", "OrdenProduccion", new { area = "fabrica" })',
+                //data: //formData,
+                //{
+                //    FromDate: from,
+                //    ToDate: to,
+                //    SearchType: type,
+                //    SearchText: text
+                //},
+                contentType: "application/json",
+                success: function (response) {
+                    $("#tablaContenido").html(""); //clear the records content
+                    $("#tablaContenido").html(response);  //add the updated content.
+                }
+            });*@
+        });
     </script>
 
 }

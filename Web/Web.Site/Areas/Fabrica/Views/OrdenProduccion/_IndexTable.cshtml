@@ -1,0 +1,65 @@
+﻿
+@model IEnumerable<OrdenProduccion>
+
+<div class="ibox-content">
+    <div class="table-responsive">
+        <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Estado Orden</th>
+                    <th>Articulo</th>
+                    <th>Color</th>
+                    <th>Talle</th>
+                    <th>Cantidad a Fabricar</th>
+                    <th>Etapa</th>
+                    <th>Estado de la Etapa</th>
+                    @*
+        <th>Cantidad Fabricada</th>*@
+                    <th>Fecha</th>
+                    <th>Tiempo empleado</th>
+                    <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var orden in Model)
+                    {
+                <tr>
+                    <td>@orden.Id</td>
+                    <td>
+                        <span class="label label-@orden.EstadoOrdenProduccion.GetGroupName()">@orden.EstadoOrdenProduccion.GetDisplayName()</span>
+                    </td>
+                    <td>@orden.Articulo.Nombre</td>
+                    <td>@orden.Articulo.Color</td>
+                    <td>@orden.Articulo.TalleArticulo</td>
+                    <td>@orden.CantidadTotal</td>
+                    <td>@orden.EtapaOrdenProduccion.Descripcion</td>
+                    <td>
+                        <span class="label label-@orden.EstadoEtapaOrdenProduccion.GetGroupName()">@orden.EstadoEtapaOrdenProduccion.GetDisplayName()</span>
+                    </td>
+
+                    @*
+        <td>@orden.CantidadFabricada</td>*@
+                    <th>@orden.FechaCreacion.ToShortDateString()</th>
+                    <th>@((DateTime.Now - orden.FechaCreacion).ToString(@"hh\:mm\:ss"))</th>
+                    <td class="d-print-none">
+                        <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerDetalles('@orden.Id')">Ver Detalles</button>
+                    </td>
+                </tr>
+                    }
+                }
+            <tfoot>
+                <tr>
+                    <td colspan="12">
+                        <ul class="pagination float-right"></ul>
+                    </td>
+                </tr>
+            </tfoot>
+
+        </table>
+    </div>
+</div>
+

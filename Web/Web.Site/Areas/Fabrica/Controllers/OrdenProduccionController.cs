@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
+using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Mvc;
 using Web.Site.Helpers;
 
@@ -22,19 +24,39 @@ namespace Web.Site.Areas
             _articuloService = articuloService;
         }
 
+        public async Task<IActionResult> FiltrarOrdenes(OrdenProduccionFilter filter)
+        {
+            IEnumerable<OrdenProduccion> ordenesList = new List<OrdenProduccion>();
+
+            //if (filter == null)
+            //    ordenesList = await _ordenProduccionService.GetOrdenes();
+
+            ordenesList = await _ordenProduccionService.GetOrdenes();
+
+            if (filter.Articulo != null)
+                ordenesList = ordenesList.Where(x => x.Articulo.Nombre.ToLower().Contains(filter.Articulo.ToLower()));
+            if (filter.EstadosOrden != null)
+                ordenesList = ordenesList.Where(x => filter.EstadosOrden.Contains(x.EstadoOrdenProduccion));
+            if (filter.IdEtapasOrden != null)
+                ordenesList = ordenesList.Where(x => filter.IdEtapasOrden.Contains(x.EtapaOrdenProduccion.Id));
+            if (filter.EstadosEtapa != null)
+                ordenesList = ordenesList.Where(x => filter.EstadosEtapa.Contains(x.EstadoEtapaOrdenProduccion));
+            //ordenesList = ordenesList.Where(x => x.FechaCreacion > filter.FechaDesde && x.FechaCreacion < filter.FechaHasta);
+
+            return PartialView("_IndexTable", ordenesList);
+        }
+
         public async Task<IActionResult> Index()
         {
             var ordenesList = await _ordenProduccionService.GetOrdenes();
 
-            var model = new OrdenProduccionIndexModel()
-            {
-                OrdenProducciones = ordenesList,
-                EstadoOrdenProducciones = await _ordenProduccionService.GetEstadosOrden(),
-                EtapaOrdenProducciones = await _ordenProduccionService.GetEtapasOrden(),
-                EstadoEtapaOrdenProducciones = await _ordenProduccionService.GetEstadoEtapasOrden()
-            };
+            ViewBag.EstadoOrdenProducciones = await _ordenProduccionService.GetEstadosOrden();
+            ViewBag.EtapaOrdenProducciones = await _ordenProduccionService.GetEtapasOrden();
+            ViewBag.EstadoEtapaOrdenProducciones = await _ordenProduccionService.GetEstadoEtapasOrden();
+            ViewBag.FechaDesde = DateTime.Today - TimeSpan.FromDays(30);
+            ViewBag.FechaHasta = DateTime.Today;
 
-            return View(model);
+            return View(ordenesList);
         }
 
         public async Task<IActionResult> DetallesOrdenProduccion(int idOrdenProduccion)
