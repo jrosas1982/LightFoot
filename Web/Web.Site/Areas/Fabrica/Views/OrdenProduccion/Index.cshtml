@@ -83,11 +83,16 @@
             </div>
             <div class="col-sm-4">
                 <div class="form-group" id="fechaRango">
-                    <label class="col-form-labe" for="fecha">Fecha</label>
-                    <div class="input-daterange input-group" id="datepicker">
-                        <input type="text" class="form-control-sm form-control" name="start" id="fechaDesde" value="@FechaDesde.ToShortDateString()" />
+                    <label class="col-form-label">Fecha</label>
+                    @*<div class="input-daterange input-group">
+                            <input type="date" name="start" id="fechaDesde" value="@(DateTime.Today - TimeSpan.FromDays(-30))">
+                            <span class="input-group-addon"> <i class="fa fa-long-arrow-right mx-1"></i> </span>
+                            <input type="date" name="end" id="fechaHasta" value="@FechaDesde.ToString("dd/MM/yyyy")">
+                        </div>*@
+                    <div class="input-daterange input-group">
+                        <input type="text" class="form-control-sm form-control" name="start" id="fechaDesde" value="@FechaDesde.ToString("dd/MM/yyyy")" />
                         <span class="input-group-addon"> <i class="fa fa-long-arrow-right mx-1"></i> </span>
-                        <input type="text" class="form-control-sm form-control" name="end" id="fechaHasta" value="@FechaHasta.ToShortDateString()" />
+                        <input type="text" class="form-control-sm form-control" name="end" id="fechaHasta" value="@FechaHasta.ToString("dd/MM/yyyy")" />
                     </div>
                 </div>
             </div>
@@ -95,7 +100,7 @@
         <div class="row">
             <div class="col-sm-12 d-flex align-items-end justify-content-end">
                 <button class="btn btn-outline-info btn-xl float-right" type="submit" onclick="Filtrar()">
-                    <i class="fa fa-search" aria-hidden="true" ></i> Buscar
+                    <i class="fa fa-search" aria-hidden="true"></i> Buscar
                 </button>
             </div>
         </div>
@@ -136,21 +141,30 @@
     <script src="~/lib/footable/dist/footable.all.min.js"></script>
     <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
     <script src="~/lib/chosen/chosen.jquery.js"></script>
+    <script src="~/custom/bootstrap-datepicker.es.js"></script>
 
     <script type="text/javascript">
         //Filtros
 
         $('#fechaRango .input-daterange').datepicker({
-            keyboardNavigation: false,
-            forceParse: false,
+            locale: 'es',
+            language: 'es',
+            format: 'dd/mm/yyyy',
+            endDate: 'today',
             autoclose: true,
-            endDate: "today",
-            language: "es"
+            todayBtn: true,
+            todayHighlight: true,
         });
+        $("#fechaDesde").on("dp.change", function (e) {
+            $('#fechaHasta').data("DateTimePicker").minDate(e.date);
+        });
+        $("#fechaHasta").on("dp.change", function (e) {
+            $('#fechaDesde').data("DateTimePicker").maxDate(e.date);
+        });
+
 
         $('.chosen-select').chosen({
             no_results_text: "No hay resultados que coincidan con ",
-
         });
 
         function Filtrar() {
@@ -158,8 +172,8 @@
             var estadosOrden = $("#estados_orden").chosen().val();
             var etapasOrden = $("#etapas_orden").chosen().val();
             var estadosEtapa = $("#estados_etapa").chosen().val();
-            var FechaDesde = $("#fechaDesde").val();
-            var FechaHasta = $("#fechaHasta").val();
+            var FechaDesde = $("#fechaDesde").data('datepicker').getFormattedDate('yyyy-mm-dd');
+            var FechaHasta = $("#fechaHasta").data('datepicker').getFormattedDate('yyyy-mm-dd');
             $.ajax({
                 type: "Get",
                 url: '@Url.Action("FiltrarOrdenes", "OrdenProduccion", new { area = "fabrica" })',
@@ -177,6 +191,7 @@
                 success: function (response) {
                     $("#tablaContenido").html(""); //clear the records content
                     $("#tablaContenido").html(response);  //add the updated content.
+                    $('.footable').footable(); //reaplicar formato footable
                 }
             });
         }

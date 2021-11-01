@@ -41,7 +41,9 @@ namespace Web.Site.Areas
                 ordenesList = ordenesList.Where(x => filter.IdEtapasOrden.Contains(x.EtapaOrdenProduccion.Id));
             if (filter.EstadosEtapa != null)
                 ordenesList = ordenesList.Where(x => filter.EstadosEtapa.Contains(x.EstadoEtapaOrdenProduccion));
-            //ordenesList = ordenesList.Where(x => x.FechaCreacion > filter.FechaDesde && x.FechaCreacion < filter.FechaHasta);
+
+            //Filtro por fecha
+            ordenesList = ordenesList.Where(x => x.FechaCreacion > filter.FechaDesde && x.FechaCreacion < filter.FechaHasta);
 
             return PartialView("_IndexTable", ordenesList);
         }

@@ -1,18 +1,8 @@
-﻿function MensajeError(titulo, mensaje) {
-    swal({
-        title: titulo,
-        text: mensaje,
-        type: "warning",
-        confirmButtonText: "Ok",
-        closeOnConfirm: false
-    });
-}
-
-/**
+﻿/**
  * Spanish translation for bootstrap-datepicker
  * Bruno Bonamin <bruno.bonamin@gmail.com>
  */
-function () {
+; (function ($) {
 	$.fn.datepicker.dates['es'] = {
 		days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
 		daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
@@ -25,4 +15,4 @@ function () {
 		weekStart: 1,
 		format: "dd/mm/yyyy"
 	};
-};
+}(jQuery));
