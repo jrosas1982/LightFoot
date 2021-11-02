@@ -2,6 +2,10 @@
     ViewData["Title"] = "Ordenes de Produccion";
     Layout = "_Layout";
 
+    IEnumerable<string> TypeaheadCodArticulo = ViewBag.TypeaheadCodArticulo;
+    IEnumerable<string> TypeaheadArticulo = ViewBag.TypeaheadArticulo;
+    IEnumerable<string> TypeaheadColor = ViewBag.TypeaheadColor;
+    IEnumerable<string> TypeaheadTalle = ViewBag.TypeaheadTalle;
     IEnumerable<EstadoOrdenProduccion> EstadoOrdenProducciones = ViewBag.EstadoOrdenProducciones;
     IEnumerable<EtapaOrdenProduccion> EtapaOrdenProducciones = ViewBag.EtapaOrdenProducciones;
     IEnumerable<EstadoEtapaOrdenProduccion> EstadoEtapaOrdenProducciones = ViewBag.EstadoEtapaOrdenProducciones;
@@ -44,14 +48,21 @@
         <div class="row">
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label class="col-form-labe" for="articulo">Articulo</label>
-                    <input type="text" id="articulo" name="articulo" value="" placeholder="Articulo" class="form-control">
+                    <label class="font-normal">Articulo</label>
+                    @*<input type="text" id="articulo" name="articulo" value="" placeholder="Articulo" class="form-control">*@
+                    <div class="typeahead__container">
+                        <div class="typeahead__field">
+                            <div class="typeahead__query">
+                                <input class="js-typeahead typeaheadCustom" id="articulo" placeholder="Seleccione articulo" autocomplete="on" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
                     <label class="font-normal">Estado</label>
-                    <select class="chosen-select" multiple name="estados_orden" id="estados_orden" data-placeholder="Seleccione un estado">
+                    <select class="chosen-select" multiple name="estados_orden" id="estados_orden" data-placeholder="Seleccione estados">
                         @foreach (var estado in EstadoOrdenProducciones)
                         {
                             <option value="@estado"> @estado.GetDisplayName()</option>
@@ -62,7 +73,7 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label class="font-normal">Etapa</label>
-                    <select class="chosen-select" multiple name="etapa_orden" id="etapas_orden" data-placeholder="Seleccione una etapa">
+                    <select class="chosen-select" multiple name="etapa_orden" id="etapas_orden" data-placeholder="Seleccione etapas">
                         @foreach (var etapa in EtapaOrdenProducciones)
                         {
                             <option value="@etapa.Id"> @etapa.Descripcion </option>
@@ -73,7 +84,7 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label class="col-form-labe" for="estados_etapa">Estado de Etapa</label>
-                    <select class="chosen-select" multiple name="estados_etapa" id="estados_etapa" data-placeholder="Seleccione un estado">
+                    <select class="chosen-select" multiple name="estados_etapa" id="estados_etapa" data-placeholder="Seleccione estados">
                         @foreach (var estadoEtapa in EstadoEtapaOrdenProducciones)
                         {
                             <option value="@estadoEtapa"> @estadoEtapa.GetDisplayName() </option>
@@ -96,12 +107,19 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12 d-flex align-items-end justify-content-end">
-                <button class="btn btn-outline-info btn-xl float-right" type="submit" onclick="Filtrar()">
-                    <i class="fa fa-search" aria-hidden="true"></i> Buscar
-                </button>
+            <div class="col-sm-4" style="display: flex;flex-direction: column;justify-content: flex-end;">
+                <div class="form-group">
+                    @*<div class="col-sm-12 d-flex align-items-end justify-content-end">
+                        <button class="btn btn-outline-info btn-xl float-right" type="submit" onclick="LimpiarFiltros()">
+                            <i class="fas fa-eraser" aria-hidden="true"></i> Limpiar
+                        </button>
+                    </div>*@
+                    <div class="col-sm-12 d-flex align-items-end justify-content-end">
+                        <button class="btn btn-outline-info btn-xl float-right" type="submit" onclick="Filtrar()">
+                            <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -133,6 +151,7 @@
     <link rel="stylesheet" href="~/lib/footable/css/footable.core.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" />
     <link rel="stylesheet" href="~/lib/chosen/bootstrap-chosen.css" />
+    <link rel="stylesheet" href="~/custom/jquery.typeahead.min.css" />
 }
 
 @section Scripts {
@@ -142,9 +161,29 @@
     <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
     <script src="~/lib/chosen/chosen.jquery.js"></script>
     <script src="~/custom/bootstrap-datepicker.es.js"></script>
+    <script src="~/custom/jquery.typeahead.min.js"></script>
 
     <script type="text/javascript">
         //Filtros
+
+        var typeaheadCodArticulo = @Html.Raw(Json.Serialize(TypeaheadCodArticulo));
+        var typeaheadArticulo = @Html.Raw(Json.Serialize(TypeaheadArticulo));
+        var typeaheadColor = @Html.Raw(Json.Serialize(TypeaheadColor));
+        var typeaheadTalle = @Html.Raw(Json.Serialize(TypeaheadTalle));
+
+        $.typeahead({
+            input: '.js-typeahead',
+            order: "desc",
+            template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+            minLength: 1,
+            source: {
+                Codigo: { data: typeaheadCodArticulo },
+                Articulo: { data: typeaheadArticulo },
+                Color: { data: typeaheadColor },
+                Talle: { data: typeaheadTalle }
+            }          
+        });
+
 
         $('#fechaRango .input-daterange').datepicker({
             locale: 'es',
@@ -162,10 +201,17 @@
             $('#fechaDesde').data("DateTimePicker").maxDate(e.date);
         });
 
-
         $('.chosen-select').chosen({
             no_results_text: "No hay resultados que coincidan con ",
         });
+
+        function LimpiarFiltros() {
+            $("#articulo").val("");
+            $("#estados_orden").val("");
+            $("#etapas_orden").val("");
+            $("#estados_etapa").val("");
+        }
+
 
         function Filtrar() {
             var articulo = $("#articulo").val();

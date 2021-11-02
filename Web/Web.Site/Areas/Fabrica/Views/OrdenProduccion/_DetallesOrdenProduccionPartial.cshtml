@@ -1,0 +1,189 @@
+﻿@{
+    IEnumerable<OrdenProduccionEvento> OrdenProduccionEventos = ViewBag.OrdenProduccionEventos;
+    IEnumerable<EtapaOrdenProduccion> EtapasOrdenProduccion = ViewBag.EtapasOrdenProduccion;
+    var PorcentajeCompletado = ViewBag.PorcentajeCompletado;
+
+    var EstadoEtapaOrden = Model.EstadoEtapaOrdenProduccion;
+    var SiguienteEtapa = EtapasOrdenProduccion.Where(x => x.Orden > Model.EtapaOrdenProduccion.Orden).MinBy(x => x.Orden).SingleOrDefault();
+    var EtapasIds = EtapasOrdenProduccion.OrderBy(x => x.Orden).Select(x => x.Id).ToList();
+    var NroEtapaProgresoActual = EtapasIds.IndexOf(Model.EtapaOrdenProduccion.Id) + 1;
+}
+
+@model OrdenProduccion
+
+
+
+<h5>Progreso</h5>
+<div class="progress">
+    <div style="width: @PorcentajeCompletado%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" role="progressbar" class="progress-bar  progress-bar-striped  progress-bar-animated bg-@Model.EstadoEtapaOrdenProduccion.GetGroupName()">
+        <span class="sr-only"> @PorcentajeCompletado% Completo</span>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="col-lg-5">
+        <div class="panel panel-@Model.EstadoEtapaOrdenProduccion.GetGroupName()">
+            <div class="panel-heading">
+                Etapa @Model.EtapaOrdenProduccion.Descripcion (@NroEtapaProgresoActual de @EtapasIds.Count())
+            </div>
+
+            <div class="panel-body">
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-action">
+                        <h4 class="mb-0">Articulo:</h4>
+                        <h2 class="text-right mt-0">@Model.Articulo.Nombre</h2>
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between">
+                            <h4>Codigo Articulo:</h4>
+                            <p>@Model.Articulo.CodigoArticulo</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between">
+                            <h4>Color:</h4>
+                            <p>@Model.Articulo.Color</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between">
+                            <h4>Talle:</h4>
+                            <p>@Model.Articulo.TalleArticulo</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between">
+                            <h4>Cantidad Total a Fabricar:</h4>
+                            <p>@Model.CantidadTotal</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between">
+                            <h4>Estado de la etapa:</h4>
+                            <p>@Model.EstadoEtapaOrdenProduccion.GetDisplayName()</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between">
+                            <h4>Sucursal Destino:</h4>
+                            <p>@Model.SolicitudDetalle.Solicitud.Sucursal.Nombre</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="panel-footer">
+                @if (Model.EstadoOrdenProduccion != EstadoOrdenProduccion.Finalizada && Model.EstadoOrdenProduccion != EstadoOrdenProduccion.Cancelada)
+                {
+                    @if (@EstadoEtapaOrdenProduccion.Pendiente == EstadoEtapaOrden)
+                    {
+                        <button type="button" class="btn btn-primary btn-lg w-100 my-1"
+                                onclick="IniciarEtapa('@Model.Id')">
+                            Iniciar Etapa
+                        </button>
+                    }
+                    @if (EstadoEtapaOrdenProduccion.Iniciada == EstadoEtapaOrden)
+                    {
+                        <button type="button" class="btn btn-warning btn-lg w-100 my-1"
+                                onclick="PausarEtapa('@Model.Id')">
+                            Pausar Etapa
+                        </button>
+                        <button type="button" class="btn btn-primary btn-lg w-100 my-1"
+                                onclick="FinalizarEtapa('@Model.Id')">
+                            Finalizar Etapa
+                        </button>
+                    }
+                    @if (EstadoEtapaOrdenProduccion.Pausada == EstadoEtapaOrden)
+                    {
+                        <button type="button" class="btn btn-success btn-lg w-100 my-1"
+                                onclick="ReanudarEtapa('@Model.Id')">
+                            Reanudar Etapa
+                        </button>
+                    }
+                    @if (EstadoEtapaOrdenProduccion.Finalizada == EstadoEtapaOrden && SiguienteEtapa != null)
+                    {
+                        <button type="button" class="btn btn-warning btn-lg w-100 my-1"
+                                onclick="RetrabajarEtapa('@Model.Id')">
+                            Retrabajar Etapa
+                        </button>
+                        <button type="button" class="btn btn-primary btn-lg w-100 my-1"
+                                onclick="AvanzarSiguienteEtapa('@Model.Id')">
+                            Avanzar a siguiente Etapa (@SiguienteEtapa.Descripcion)
+                        </button>
+                    }
+                    @if (EstadoEtapaOrdenProduccion.Retrabajo == EstadoEtapaOrden)
+                    {
+                        <button type="button" class="btn btn-primary btn-lg w-100 my-1"
+                                onclick="FinalizarEtapa('@Model.Id')">
+                            Finalizar Etapa
+                        </button>
+                    }
+                    @if (EstadoEtapaOrdenProduccion.Finalizada == EstadoEtapaOrden && SiguienteEtapa == null)
+                    {
+                        <button type="button" class="btn btn-primary btn-lg w-100 my-1"
+                                onclick="FinalizarOrden('@Model.Id')">
+                            Finalizar Orden
+                        </button>
+                    }
+                    <button type="button" class="btn btn-danger btn-lg w-100 my-1"
+                            onclick="CancelarOrden('@Model.Id')">
+                        Cancelar Orden
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="ibox">
+            <div class="ibox-title">
+                <h5>Historial de eventos</h5>
+            </div>
+            <div class="ibox-content">
+                <p>
+                    Etapas de produccion
+                </p>
+
+                <div id="wizard">
+                    @foreach (var etapa in EtapasOrdenProduccion)
+                    {
+                        <h1>@etapa.Descripcion</h1>
+                        <div class="step-content w-100">
+                            <div class="">
+                                <table class="table table-hover ">
+                                    <thead class="">
+                                        <tr>
+                                            <th colspan="1" class="text-left"><h3>Estado Orden</h3></th>
+                                            <th colspan="1" class="text-left"><h3>Etapa Orden</h3></th>
+                                            <th colspan="1" class="text-left"><h3>Descripcion Etapa</h3></th>
+                                            <th colspan="1" class="text-left"><h3>Fecha Evento</h3></th>
+                                            <th colspan="1" class="text-left"><h3>Usuario</h3></th>
+                                            <th colspan="1" class="text-left"><h3>Comentario</h3></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var evento in Model.OrdenProduccionEventos.Where(x => x.IdEtapaOrdenProduccion == etapa.Id).OrderByDescending(x => x.FechaCreacion))
+                                        {
+                                            <tr>
+                                                <td class="text-left">@evento.EstadoOrdenProduccion.GetDisplayName()</td>
+                                                <td class="text-left">@evento.EtapaOrdenProduccion.Descripcion</td>
+                                                <td class="text-left">@evento.EstadoEtapaOrdenProduccion.GetDisplayName()</td>
+                                                <td class="text-left">@evento.FechaCreacion</td>
+                                                <td class="text-left">@evento.CreadoPor</td>
+                                                <td class="text-left">@(string.IsNullOrWhiteSpace(evento.Comentario) ? "Sin Comentario" : evento.Comentario)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+

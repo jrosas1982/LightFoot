@@ -41,5 +41,10 @@ namespace Core.Dominio.AggregatesModel
         [ForeignKey("IdReceta")]
         public virtual Receta Receta { get; set; }
 
+        public string ToFullString()
+        {
+            return $"{CodigoArticulo} - {Nombre} - {Color} - {TalleArticulo}";
+        }
     }
+
 }

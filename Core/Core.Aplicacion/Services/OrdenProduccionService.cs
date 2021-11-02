@@ -187,9 +187,14 @@ namespace Core.Aplicacion.Services
         public async Task<OrdenProduccion> BuscarPorId(int idOrdenProduccion)
         {
             var orden = await _db.OrdenesProduccion
-                .Include(x => x.OrdenProduccionEventos)
-                       .ThenInclude(x => x.EtapaOrdenProduccion)
-                .Include(x => x.EtapaOrdenProduccion)         
+                .Include(x => x.Articulo)
+                .Include(x => x.EtapaOrdenProduccion)
+                .Include(x => x.SolicitudDetalle)
+                    .ThenInclude(x => x.Solicitud)
+                    .ThenInclude(x => x.Sucursal)
+                //.Include(x => x.OrdenProduccionEventos)
+                //       .ThenInclude(x => x.EtapaOrdenProduccion)
+                //.Include(x => x.EtapaOrdenProduccion)         
                 .SingleOrDefaultAsync(x => x.Id == idOrdenProduccion);
             if (orden == null)
                 throw new Exception("La orden de produccion solicitada no existe");
@@ -213,7 +218,7 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<OrdenProduccionEvento>> GetOrdenEventos(int idOrdenProduccion)
         {
-            return await _db.OrdenesProduccionEventos.ToListAsync();
+            return await _db.OrdenesProduccionEventos.OrderByDescending(x => x.FechaCreacion).ToListAsync();
         }
 
         public async Task<IEnumerable<EstadoOrdenProduccion>> GetEstadosOrden() 
