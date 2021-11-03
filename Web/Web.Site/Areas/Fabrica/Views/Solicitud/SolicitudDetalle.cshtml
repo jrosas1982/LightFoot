@@ -2,7 +2,6 @@
     ViewData["Title"] = "SolicitudDetalle";
     Layout = "_Layout";
 
-    
 }
 @model Solicitud
 
@@ -77,46 +76,95 @@
         @foreach (var detalle in Model.SolicitudDetalles)
         {
             <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading d-print-none">
-                        @detalle.Articulo.CodigoArticulo
+                <div class="panel panel-primary">
+
+                    <div class="panel-heading">
+                        Articulo
+                    </div>
+                    <div class="panel-body">
+                        <div class="">
+                            <div class="row">
+                                <div class="col-9">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <small class="stats-label">Codigo</small>
+                                            <h4>@detalle.Articulo.CodigoArticulo</h4>
+                                        </div>
+                                        <div class="col-4">
+                                            <small class="stats-label">Nombre</small>
+                                            <h4>@detalle.Articulo.Nombre</h4>
+                                        </div>
+                                        <div class="col-4">
+                                            <small class="stats-label">Cantidad</small>
+                                            <h4>@detalle.CantidadSolicitada</h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <small class="stats-label">Color</small>
+                                            <h4>@detalle.Articulo.Color</h4>
+                                        </div>
+                                        <div class="col-4">
+                                            <small class="stats-label">Talle</small>
+                                            <h4>@detalle.Articulo.TalleArticulo</h4>
+                                        </div>
+                                        <div class="col-4">
+                                            <small class="stats-label">Descripcion</small>
+                                            <h4>@detalle.Articulo.Descripcion</h4>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-3">
+                                    <small class="stats-label">Ordenes Asociadas</small>
+                                    @if (detalle.OrdenesProduccion.Any())
+                                    {
+                                        @foreach (var op in detalle.OrdenesProduccion)
+                                        {
+                                            <h4 class="text-@op.EstadoOrdenProduccion.GetGroupName()"><i class="fa fa-circle "></i> Orden @op.Id</h4>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <h4 class="text-dark"><i class="fa fa-circle "></i> none </h4>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
 
+                    <div class="panel-footer">
+                        Receta
+                    </div>
                     <div class="panel-body">
                         <div class="table-responsive">
+
                             <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
                                 <thead>
                                     <tr>
-                                        <th>Codigo</th>
-                                        <th data-toggle="true">Articulo</th>
+                                        <th data-toggle="true">Id</th>
+                                        <th>Insumo</th>
                                         <th>Cantidad</th>
-                                        <th>Color</th>
-                                        <th>Talle</th>
-                                        <th>Descripcion</th>
-                                        <th>Orden Asociada</th>
-                                        @*<th data-sort-ignore="true">Acciones</th>*@
+                                        <th>Comentario</th>
+                                        <th>Creacion</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>@detalle.Articulo.CodigoArticulo</td>
-                                        <td>@detalle.Articulo.Nombre</td>
-                                        <td>@detalle.CantidadSolicitada</td>
-                                        <td>@detalle.Articulo.Color</td>
-                                        <td>@detalle.Articulo.TalleArticulo</td>
-                                        <td>@detalle.Articulo.Descripcion</td>
-                                        <td>
-                                            @foreach (var op in detalle.OrdenesProduccion)
-                                            {
-                                                <button class="btn btn-outline btn-@op.EstadoOrdenProduccion.GetGroupName() btn-xs"
-                                                        type="button" onclick="VerOrdenAsociada('@op.Id')">
-                                                    Orden @op.Id
-                                                </button>
-                                            }
-                                        </td>
-                                    </tr>
+                                    @if (detalle.Articulo.Receta != null && detalle.Articulo.Receta.Activo)
+                                        @foreach (var detalleReceta in detalle.Articulo.Receta.RecetaDetalles)
+                                        {
+                                            <tr>
+                                                <td>@detalleReceta.Insumo.Id</td>
+                                                <td>@detalleReceta.Insumo.Nombre</td>
+                                                <td>@detalleReceta.Cantidad</td>
+                                                <td>@detalleReceta.Comentario</td>
+                                                <td>@detalleReceta.FechaCreacion</td>
+                                            </tr>
+                                        }
                                 </tbody>
                             </table>
+
                         </div>
                     </div>
 
@@ -131,6 +179,7 @@
 
 @section Styles {
     <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
         <link rel="stylesheet" href="~/lib/iCheck/custom.css" />
         <link rel="stylesheet" href="~/lib/steps/jquery.steps.css" />
     </environment>
@@ -138,6 +187,8 @@
 
 @section Scripts {
     <environment names="Development,Staging,Production">
+        <script src="~/lib/dataTables/datatables.min.js"></script>
+        <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
         <script src="~/lib/iCheck/icheck.min.js"></script>
         <script src="~/lib/steps/jquery.steps.min.js"></script>
         <script src="~/lib/validate/jquery.validate.min.js"></script>
@@ -150,6 +201,7 @@
             window.print();
             $('.dataTables_filter').removeClass("d-print-none")
         }
+
 
     </script>
 
