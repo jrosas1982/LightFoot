@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Aplicacion.FIlters;
@@ -19,8 +19,9 @@ namespace Web.Site.Areas
         private ISolicitudService _solicitudService;
         private ISucursalService _sucursalService;
         private IArticuloService _articuloService;
+        private IRecetaService _recetaService;
 
-        public SolicitudController(ISolicitudService solicitudService, ISucursalService sucursalService, IArticuloService articuloService)
+        public SolicitudController(ISolicitudService solicitudService, ISucursalService sucursalService, IArticuloService articuloService, IRecetaService recetaService)
         {
             _solicitudService = solicitudService;
             _sucursalService = sucursalService;
@@ -31,16 +32,12 @@ namespace Web.Site.Areas
         {
             var solicitudList = await _solicitudService.GetSolicitudes();
 
-            var sucursalesList = await _sucursalService.GetSucursales();
+            ViewBag.Sucursales = await _sucursalService.GetSucursales();
+            ViewBag.EstadosSolicitud = await _solicitudService.GetEstadosSolicitud();
+            ViewBag.FechaDesde = DateTime.Today - TimeSpan.FromDays(30);
+            ViewBag.FechaHasta = DateTime.Today;
 
-            var model = new SolicitudIndexModel()
-            {
-                Solicitudes = solicitudList.ToList(),
-                Sucursales = sucursalesList.ToList(),
-                EstadosSolicitud = await _solicitudService.GetEstadosSolicitud()
-            };
-
-            return View(model);
+            return View(solicitudList);
         }
 
         public async Task<IActionResult> SolicitudDetalle(int IdSolicitud)
@@ -48,14 +45,8 @@ namespace Web.Site.Areas
             var solicitudes = await _solicitudService.GetSolicitudes();
             var solicitud = solicitudes.Where(x => x.Id == IdSolicitud).First();
 
-            var model = new SolicitudDetalleModel()
-            {
-                Solicitud = solicitud,
-                Sucursal = solicitud.Sucursal,
-                SolicitudDetalle = solicitud.SolicitudDetalles
-            };
 
-            return View(model);
+            return View(solicitud);
         }
 
         public async Task<IActionResult> CrearEditarSolicitud(int IdSolicitud)

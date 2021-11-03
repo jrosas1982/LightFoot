@@ -2,9 +2,9 @@
     ViewData["Title"] = "SolicitudDetalle";
     Layout = "_Layout";
 
-    var selected = "";
+    
 }
-@model SolicitudDetalleModel
+@model Solicitud
 
 <div class="row wrapper border-bottom white-bg page-heading navegacion">
     <div class="col-lg-10 ">
@@ -36,72 +36,70 @@
     <div class="alert alert-default" role="alert">
         Fecha: @DateTime.Now
         <h4>Sucursal: @Model.Sucursal.Nombre </h4>
-        <h5>Detalle solicitud numero @Model.Solicitud.Id | @Model.Solicitud.EstadoSolicitud.GetDisplayName()</h5>
-        <h6>Comentario: @Model.Solicitud.Comentario</h6>
+        <h5>Detalle solicitud numero @Model.Id | @Model.EstadoSolicitud.GetDisplayName()</h5>
+        <h6>Comentario: @Model.Comentario</h6>
     </div>
 </div>
 
 <div class="wrapper wrapper-content pt-1 animated fadeInRight">
     <div class="row mt-2">
-        <div class="col-lg-4 d-print-none">
-            <div class="panel panel-@Model.Solicitud.EstadoSolicitud.GetGroupName()">
-                <div class="panel-heading">
-                    Sucursal
-                </div>
-                <div class="panel-body">
-                    <ul class="list-group">
-                        <li class="list-group-item list-group-item-action">
-                            <div class="d-flex justify-content-between">
-                                <h4>Nombre: </h4>
-                                <p>@Model.Sucursal.Nombre</p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <h4>Cantidad Articulos: </h4>
-                                <p>@Model.SolicitudDetalle.Count()</p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <h4>Fecha Creacion: </h4>
-                                <p>@Model.Solicitud.FechaCreacion.ToLocalTime()</p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <h4>Estado: </h4>
-                                <p><span class="label label-@Model.Solicitud.EstadoSolicitud.GetGroupName()">@Model.Solicitud.EstadoSolicitud.GetDisplayName()</span></p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <h4>Comentario: </h4>
-                                <p>@Model.Solicitud.Comentario</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
 
+        <div class="col-lg-7 d-print-none">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <span class="float-right label label-@Model.EstadoSolicitud.GetGroupName()">
+                        @Model.EstadoSolicitud.GetDisplayName()
+                    </span>
+                    <h5>Solicitud @Model.Id</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@Model.Sucursal.Nombre</h1>
+                    <div class="stat-percent font-bold text-@Model.EstadoSolicitud.GetGroupName()">
+                        @Model.FechaCreacion.ToLocalTime() <i class="fa fa-clock-o"></i>
+                    </div>
+                    <small>@Model.Sucursal.Direccion</small>
+                </div>
             </div>
         </div>
 
-        <div class="col-lg-8">
-            <div class="panel panel-default">
-                <div class="panel-heading d-print-none">
-                    @Model.Sucursal.Nombre - Articulos
+        <div class="col-lg-5 d-print-none">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <h5 class="m-b-md">Articulos solicitados</h5>
+                    <h2 class="text-navy">
+                        <i class="fa fa-archive"></i> @Model.SolicitudDetalles.Count()
+                    </h2>
+                    <small>@Model.Comentario</small>
                 </div>
+            </div>
+        </div>
 
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
-                            <thead>
-                                <tr>
-                                    <th data-toggle="true">Articulo</th>
-                                    <th>Cantidad</th>
-                                    <th>Color</th>
-                                    <th>Talle</th>
-                                    <th>Descripcion</th>
-                                    <th>Orden Asociada</th>
-                                    @*<th data-sort-ignore="true">Acciones</th>*@
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var detalle in Model.SolicitudDetalle)
-                                {
+        @foreach (var detalle in Model.SolicitudDetalles)
+        {
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading d-print-none">
+                        @detalle.Articulo.CodigoArticulo
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
+                                <thead>
                                     <tr>
+                                        <th>Codigo</th>
+                                        <th data-toggle="true">Articulo</th>
+                                        <th>Cantidad</th>
+                                        <th>Color</th>
+                                        <th>Talle</th>
+                                        <th>Descripcion</th>
+                                        <th>Orden Asociada</th>
+                                        @*<th data-sort-ignore="true">Acciones</th>*@
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>@detalle.Articulo.CodigoArticulo</td>
                                         <td>@detalle.Articulo.Nombre</td>
                                         <td>@detalle.CantidadSolicitada</td>
                                         <td>@detalle.Articulo.Color</td>
@@ -110,35 +108,21 @@
                                         <td>
                                             @foreach (var op in detalle.OrdenesProduccion)
                                             {
-                                                <button class="btn btn-outline btn-@op.EstadoOrdenProduccion.GetGroupName()  btn-xs" type="button" onclick="VerOrdenAsociada('@op.Id')">Orden @op.Id</button>
+                                                <button class="btn btn-outline btn-@op.EstadoOrdenProduccion.GetGroupName() btn-xs"
+                                                        type="button" onclick="VerOrdenAsociada('@op.Id')">
+                                                    Orden @op.Id
+                                                </button>
                                             }
                                         </td>
-                                        @*
-                                        <td>
-                                            <button class="btn btn-outline btn-info btn-xs w-100" type="button" onclick="">Ver Receta</button>
-                                        </td>
-                                        *@
                                     </tr>
-                                }
-                            </tbody>
-                            
-                        </table>
-                        <div class="panel-footer d-flex justify-content-end align-items-end d-print-none">
-                            <button class="btn btn-w-m btn-outline-dark" type="button" 
-                                    onclick="Reporte()">
-                                Reporte
-                            </button>
-                            @*
-                            <button class="btn btn-w-m btn-outline btn-info" type="button"
-                                    onclick="location.href='@Url.Action("Index", "Recetas",  new { area = "fabrica" })'">
-                                Ir a Recetas
-                            </button>
-                            *@
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+
                 </div>
             </div>
-        </div>
+        }
 
     </div>
 </div>

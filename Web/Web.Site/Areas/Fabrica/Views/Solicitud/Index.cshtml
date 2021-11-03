@@ -2,9 +2,13 @@
     ViewData["Title"] = "Solicitudes";
     Layout = "_Layout";
 
+    IEnumerable<Sucursal> Sucursales = ViewBag.Sucursales;
+    IEnumerable<EstadoSolicitud> EstadosSolicitud = ViewBag.EstadosSolicitud;
+    DateTime FechaDesde = ViewBag.FechaDesde; //DateTime.Today - TimeSpan.FromDays(-30);
+    DateTime FechaHasta = ViewBag.FechaHasta; //DateTime.Today;
 }
 
-@model SolicitudIndexModel
+@model IEnumerable<Solicitud>
 
 <div class="row wrapper border-bottom white-bg page-heading navegacion">
     <div class="col-lg-6">
@@ -42,7 +46,7 @@
                 <div class="form-group">
                     <label class="col-form-label" for="solicitud_sucursal">Sucursal</label>
                     <select id="solicitud_sucursal" data-placeholder="Sucursal" class="chosen-select" multiple tabindex="3">
-                        @foreach (var sucursal in Model.Sucursales)
+                        @foreach (var sucursal in Sucursales)
                         {
                             <option value="@sucursal.Id"> @sucursal.Nombre </option>
                         }
@@ -59,7 +63,7 @@
                 <div class="form-group">
                     <label class="col-form-label" for="solicitud_estado">Estado</label>
                     <select id="solicitud_estado" data-placeholder="Estado de solicitud" class="chosen-select" multiple tabindex="3">
-                        @foreach (var estado in Model.EstadosSolicitud)
+                        @foreach (var estado in EstadosSolicitud)
                         {
                             <option value="@((int)estado)"> @estado.GetDisplayName() </option>
                         }
@@ -70,9 +74,9 @@
                 <div class="form-group" id="fechaRango">
                     <label class="col-form-label" for="fecha">Fecha</label>
                     <div class="input-daterange input-group" id="datepicker">
-                        <input id="fechaDesde" type="text" class="form-control-sm form-control" name="start" value="@Model.SolicitudFilter.FechaDesde.ToShortDateString()" />
+                        <input id="fechaDesde" type="text" class="form-control-sm form-control" name="start" value="@FechaDesde.ToString("dd/MM/yyyy")" />
                         <span class="input-group-addon"> <i class="fa fa-long-arrow-right mx-1"></i> </span>
-                        <input id="fechaHasta" type="text" class="form-control-sm form-control" name="end" value="@Model.SolicitudFilter.FechaHasta.ToShortDateString()" />
+                        <input id="fechaHasta" type="text" class="form-control-sm form-control" name="end" value="@FechaHasta.ToString("dd/MM/yyyy")" />
                     </div>
                 </div>
             </div>
@@ -116,9 +120,9 @@
                             </thead>
                             <tbody>
 
-                                @if (Model.Solicitudes != null)
+                                @if (Model != null)
                                 {
-                                    foreach (var solicitud in Model.Solicitudes)
+                                    foreach (var solicitud in Model)
                                     {
                                         <tr>
                                             <td>@solicitud.Sucursal.Nombre</td>
