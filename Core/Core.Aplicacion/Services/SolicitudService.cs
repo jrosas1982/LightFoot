@@ -59,7 +59,7 @@ namespace Core.Aplicacion.Services
 
 
         //TODO agregar validacion receta
-        public async Task AprobarSolicitud(int idSolicitud, string comentario = "")
+        public async Task AprobarSolicitud(int idSolicitud)
         {
             var solicitudDB = _db.Solicitudes
                 .Include(x => x.SolicitudDetalles)
@@ -76,7 +76,12 @@ namespace Core.Aplicacion.Services
             //    throw new Exception("No hay suficiente stock disponible para aprobar la solicitud");
 
             solicitudDB.EstadoSolicitud = EstadoSolicitud.Aprobada;
-            solicitudDB.Comentario = comentario;
+
+            solicitudDB.SolicitudEventos.Add(new SolicitudEvento()
+            {
+                Comentario = solicitudDB.Comentario,
+                EstadoSolicitud = solicitudDB.EstadoSolicitud
+            });
 
             _db.Update(solicitudDB);
             
@@ -125,7 +130,12 @@ namespace Core.Aplicacion.Services
             var solicitudDB = await _db.Solicitudes.FindAsync(idSolicitud);
 
             solicitudDB.EstadoSolicitud = EstadoSolicitud.Rechazada;
-            solicitudDB.Comentario = comentario;
+
+            solicitudDB.SolicitudEventos.Add(new SolicitudEvento()
+            {
+                Comentario = solicitudDB.Comentario,
+                EstadoSolicitud = solicitudDB.EstadoSolicitud
+            });
 
             _db.Update(solicitudDB);
             //GuardarEvento(solicitudDB, comentario);
@@ -134,7 +144,17 @@ namespace Core.Aplicacion.Services
 
         public async Task<Solicitud> BuscarPorId(int idSolicitud)
         {
-            var solicitud = await _db.Solicitudes.SingleOrDefaultAsync(x => x.Id == idSolicitud);
+            var solicitud = await _db.Solicitudes
+                .AsNoTracking()
+                .Include(x => x.Sucursal)
+                .Include(x => x.SolicitudDetalles)
+                    .ThenInclude(x => x.OrdenesProduccion)
+                .Include(x => x.SolicitudDetalles)
+                    .ThenInclude(x => x.Articulo)
+                        .ThenInclude(x => x.Receta)
+                            .ThenInclude(x => x.RecetaDetalles)
+                                .ThenInclude(x => x.Insumo)
+                .SingleOrDefaultAsync(x => x.Id == idSolicitud);
             if (solicitud == null)
                 throw new Exception("La solicitud solicitada no existe");
             return solicitud;
@@ -204,18 +224,6 @@ namespace Core.Aplicacion.Services
             var hayStock = !insumosVerificados.Any(x => x.CantidadDisponible < x.CantidadNecesaria);
 
             return await Task.FromResult(hayStock);
-        }
-
-        private void GuardarEvento(Solicitud solicitud, string comentario)
-        {
-            var evento = new SolicitudEvento()
-            {
-                IdSolicitud = solicitud.Id,
-                EstadoSolicitud = solicitud.EstadoSolicitud,
-                Comentario = comentario
-            };
-
-            _db.SolicitudEventos.Add(evento);
         }
 
     }

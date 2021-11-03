@@ -1,4 +1,5 @@
 ﻿
+
 .footable-row-detail-value {
     display: table-cell;
     width: 100% !important;
@@ -8,6 +9,10 @@
 @media print {
     .no-print, .dataTables_length, .dataTables_info, .ibox-title, .pagination, .html5buttons, .navegacion, footer, .no-print * {
         display: none !important;
+    }
+
+    .overflow-100vh {
+        max-height: fit-content !important;    
     }
 
     .gray-bg {
@@ -32,13 +37,13 @@
 .overflow-100vh {
     overflow-y: auto !important;
     overflow-x: hidden !important;
-    max-height: 100vh !important;
+    max-height: 100vh;
 }
 
 .overflow-50vh {
     overflow-y: auto !important;
     overflow-x: hidden !important;
-    max-height: 50vh !important;
+    max-height: 50vh;
 }
 
 .disabled {
@@ -58,5 +63,6 @@
 }
 
 .typeaheadCustom::placeholder {
-    opacity: 0.7 !important;
+    opacity: 0.7 !important;
+
 }

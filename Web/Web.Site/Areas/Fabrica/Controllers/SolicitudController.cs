@@ -42,9 +42,8 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> SolicitudDetalle(int IdSolicitud)
         {
-            var solicitudes = await _solicitudService.GetSolicitudes();
-            var solicitud = solicitudes.Where(x => x.Id == IdSolicitud).First();
-
+            var solicitud = await _solicitudService.BuscarPorId(IdSolicitud);
+            //var solicitud = solicitudes.Where(x => x.Id == IdSolicitud).First();
 
             return View(solicitud);
         }
