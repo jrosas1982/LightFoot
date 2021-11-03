@@ -93,7 +93,7 @@ namespace Core.Aplicacion.Helpers
                 throw new Exception("No hay suficiente stock disponible para reservar para la orden de produccion");
 
             _db.Insumos.UpdateRange(insumosStock);
-            await _db.SaveChangesAsync();
+            //await _db.SaveChangesAsync();
         }
     }
 }
