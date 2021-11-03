@@ -115,6 +115,7 @@ namespace Core.Aplicacion.Services
                 {
                     return false;
                 }
+
                 item.Activo = item.Activo ? false : true;
                 _db.Recetas.Update(item);
                 await _db.SaveChangesAsync();
@@ -131,7 +132,15 @@ namespace Core.Aplicacion.Services
         {
            try
            {
-               _db.Recetas.Add(receta);
+                var articulo = await _db.Articulos.FindAsync(receta.IdArticulo);
+
+                //if (articulo.Receta != null)
+                //    throw new Exception("el articulo ya posee una receta asociada");
+
+                articulo.Receta = receta;
+                
+               _db.Articulos.Update(articulo);
+
                await _db.SaveChangesAsync();
                return true;
            }
