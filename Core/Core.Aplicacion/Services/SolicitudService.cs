@@ -151,9 +151,9 @@ namespace Core.Aplicacion.Services
                     .ThenInclude(x => x.OrdenesProduccion)
                 .Include(x => x.SolicitudDetalles)
                     .ThenInclude(x => x.Articulo)
-                        //.ThenInclude(x => x.Receta)
-                        //    .ThenInclude(x => x.RecetaDetalles)
-                        //        .ThenInclude(x => x.Insumo)
+                        .ThenInclude(x => x.Receta)
+                            .ThenInclude(x => x.RecetaDetalles)
+                                .ThenInclude(x => x.Insumo)
                 .SingleOrDefaultAsync(x => x.Id == idSolicitud);
             if (solicitud == null)
                 throw new Exception("La solicitud solicitada no existe");

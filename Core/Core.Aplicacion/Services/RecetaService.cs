@@ -54,9 +54,9 @@ namespace Core.Aplicacion.Services
              var recetasList = _db.Recetas
                  .Include(x => x.Articulo)
                  .Include(x => x.RecetaDetalles)
-                 .ThenInclude(x => x.Insumo)
+                    .ThenInclude(x => x.Insumo)
                  .Include(x => x.RecetaDetalles)
-                 .ThenInclude(x => x.EtapaOrdenProduccion);
+                    .ThenInclude(x => x.EtapaOrdenProduccion);
 
                 return await recetasList.ToListAsync().ConfigureAwait(false);
             }

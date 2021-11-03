@@ -126,7 +126,7 @@
                                     }
                                     else
                                     {
-                                        <h4 class="text-dark"><i class="fa fa-circle "></i> none </h4>
+                                        <h4 class="text-dark"><i class="fa fa-circle "></i> Ninguna </h4>
                                     }
                                 </div>
                             </div>
@@ -140,18 +140,19 @@
                     <div class="panel-body">
                         <div class="table-responsive">
 
-                            <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
-                                <thead>
-                                    <tr>
-                                        <th data-toggle="true">Id</th>
-                                        <th>Insumo</th>
-                                        <th>Cantidad</th>
-                                        <th>Comentario</th>
-                                        <th>Creacion</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (detalle.Articulo.Receta != null && detalle.Articulo.Receta.Activo)
+                            @if (detalle.Articulo.Receta != null && detalle.Articulo.Receta.Activo)
+                            {
+                                <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
+                                    <thead>
+                                        <tr>
+                                            <th data-toggle="true">Id</th>
+                                            <th>Insumo</th>
+                                            <th>Cantidad</th>
+                                            <th>Comentario</th>
+                                            <th>Creacion</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                         @foreach (var detalleReceta in detalle.Articulo.Receta.RecetaDetalles)
                                         {
                                             <tr>
@@ -162,8 +163,15 @@
                                                 <td>@detalleReceta.FechaCreacion</td>
                                             </tr>
                                         }
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <div class="text-center mt-4 mb-4">
+                                    <p class="text m-0 p-0 font-weight-bold">El articulo no posee una receta asociada</p>
+                                </div>
+                            }
 
                         </div>
                     </div>
