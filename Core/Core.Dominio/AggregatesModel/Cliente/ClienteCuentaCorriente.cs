@@ -12,7 +12,7 @@ namespace Core.Dominio.AggregatesModel
         public int IdVenta { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal MontoPercibido { get; set; }
-        public TipoPagoCuentaCorriente TipoPago { get; set; }
+        public TipoPago TipoPago { get; set; }
         public bool PagoAcreditado { get; set; }
 
 

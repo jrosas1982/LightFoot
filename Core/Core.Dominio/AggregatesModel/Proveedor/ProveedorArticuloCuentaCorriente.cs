@@ -12,7 +12,7 @@ namespace Core.Dominio.AggregatesModel
         public int IdCompraArticulo { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal MontoPagado { get; set; }
-        public TipoPagoCuentaCorriente TipoPago { get; set; }
+        public TipoPago TipoPago { get; set; }
 
 
         [ForeignKey("IdProveedor")]

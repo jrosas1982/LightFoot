@@ -17,8 +17,7 @@ namespace Core.Dominio.AggregatesModel
         [Column(TypeName = "decimal(18,2)")]
         public decimal Monto { get; set; }
         [Column(TypeName = "decimal(18,2)")]
-        public decimal Cantidad { get; set; }        
-        public Boolean Recibido { get; set; }
+        public double Cantidad { get; set; }
         public string Comentario { get; set; }
 
 
@@ -27,6 +26,7 @@ namespace Core.Dominio.AggregatesModel
 
         [ForeignKey("IdInsumo")]
         public virtual Insumo Insumo { get; set; }
+
         [ForeignKey("IdProveedorSugerido")]
         public virtual Proveedor Proveedor { get; set; }
 

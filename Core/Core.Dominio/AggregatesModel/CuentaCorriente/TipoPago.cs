@@ -2,7 +2,7 @@
 
 namespace Core.Dominio.AggregatesModel
 {
-    public enum TipoPagoCuentaCorriente
+    public enum TipoPago
     {
         [Display(Description = "Pago por Cheque")]
         Cheque = 1,
