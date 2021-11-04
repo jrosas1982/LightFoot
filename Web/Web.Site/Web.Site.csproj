@@ -1757,6 +1757,7 @@
 
 
   <ItemGroup>
+    <Folder Include="Areas\Fabrica\Views\NewFolder\" />
     <Folder Include="Views\Gestion\Sucursal\" />
   </ItemGroup>
 

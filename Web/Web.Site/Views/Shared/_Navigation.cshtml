@@ -23,7 +23,7 @@
                         <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Dashboard", new { area = "fabrica" })">Dashboard</a></li>
                         <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Solicitudes</a></li>
                         <li class="@Html.IsSelected(controller: "OrdenProduccion")"><a href="@Url.Action("Index", "OrdenProduccion", new { area = "fabrica" })">Ordenes de Produccion</a></li>
-                        <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Compras</a></li>
+                        <li class="@Html.IsSelected(controller: "ComprasInsumo")"><a href="@Url.Action("Index", "ComprasInsumo", new { area = "fabrica" })">Compras</a></li>
                         <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Control de Stock</a></li>
 
                     </ul>

@@ -1,0 +1,180 @@
+﻿@{
+    ViewData["Title"] = "Compras de Insumo";
+    Layout = "_Layout";
+
+    var idSelect = 0;
+
+}
+
+@model IEnumerable<CompraInsumo>
+
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
+    <div class="col-lg-12">
+        <h2>Compras</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Dashboard", new { area = "fabrica" })">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Fabrica</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>Compras</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-12" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-primary" onclick=""><i class="fa fa-shopping-cart"></i> Realizar Compra</button>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Compras</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
+                                <thead>
+                                    <tr>
+                                        <th>#Compra</th>
+                                        <th>Recibido</th>
+                                        <th>Fecha Recibido</th>
+                                        <th>Fecha Pagado</th>
+                                        <th>Monto Total</th>
+                                        <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>436</td>
+                                        <td>Si</td>
+                                        <td>03/11/2021 19:40:00.359</td>
+                                        <td>04/11/2021 12:05:02.040</td>
+                                        <td>3000.00</td>
+                                        <td class="d-print-none">
+                                            <button class="btn btn-outline btn-success btn-xs" type="button" onclick="verDetalle(436)" data-toggle="modal" data-target="#ModalDetalle"> Ver Detalles</button>
+                                            <button class="btn btn-outline btn-warning btn-xs" type="button" onclick="">Marcar Recibido</button>
+                                            <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="">Marcar Pagado</button>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="6">
+                                            <ul class="pagination float-right"></ul>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @*MODAL*@
+    
+    <div class="modal inmodal fade" id="ModalDetalle" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header pb-1">
+                    <div class="row">
+                        <div class="col-sm-12 d-flex justify-content-center">
+                            <h1 style="font-size:30px;">Detalle Compra 365</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body py-2">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Insumo</th>
+                                    <th>Proveedor</th>
+                                    <th>Cantidad</th>
+                                    <th>Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre insumo</td>
+                                    <td>nombre proveedor</td>
+                                    <td>cantidad de insumo</td>
+                                    <td>monto</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+
+</div>
+
+@section Styles {
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
+        <link rel="stylesheet" href="~/lib/footable/css/footable.core.min.css" />
+        <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+    </environment>
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/dataTables/datatables.min.js"></script>
+        <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
+        <script src="~/lib/footable/dist/footable.all.min.js"></script>
+        <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
+    </environment>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.footable').footable();
+        });
+    </script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    //   {
+                    //        extend: 'print',
+                    //        customize: function (win) {
+                    //            $(win.document.body).addClass('white-bg');
+                    //            $(win.document.body).css('font-size', '10px');
+                    //
+                    //            $(win.document.body).find('table')
+                    //                .addClass('compact')
+                    //                .css('font-size', 'inherit');
+                    //        }
+                    //    }
+                ]
+
+            });
+
+
+
+        });
+
+
+    </script>
+}
+
