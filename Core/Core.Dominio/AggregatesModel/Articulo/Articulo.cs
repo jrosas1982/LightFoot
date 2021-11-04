@@ -11,8 +11,6 @@ namespace Core.Dominio.AggregatesModel
         public int Id { get; set; }        
         public ArticuloEstado ArticuloEstado { get; set; }
         [Display(Name = "Receta Artículo")]
-        public int? IdReceta { get; set; }
-        [Display (Name = "Categoria Artículo")]
         public int IdArticuloCategoria { get; set; }
         [Display(Name = "Código Artículo")]
         [Required]
@@ -36,10 +34,9 @@ namespace Core.Dominio.AggregatesModel
         public decimal PrecioMayorista { get; set; }
 
         public virtual ICollection<ProveedorArticuloHistorico> ArticuloHistorico { get; set; } = new HashSet<ProveedorArticuloHistorico>();
+        public virtual ICollection<Receta> Recetas { get; set; } = new HashSet<Receta>();
         [ForeignKey("IdArticuloCategoria")]
         public virtual ArticuloCategoria ArticuloCategoria { get; set; }
-        [ForeignKey("IdReceta")]
-        public virtual Receta Receta { get; set; }
 
         public string ToFullString()
         {

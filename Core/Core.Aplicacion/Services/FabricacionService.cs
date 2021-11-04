@@ -52,7 +52,7 @@ namespace Core.Aplicacion.Helpers
             {
                 //Para cada detalle de la solicitud me traigo la receta para fabricarlo (cada detalle posee un solo articulo)
                 //Una receta posee n detalles de la cantidad necesaria de determinado insumo por etapa
-                var Recetadetalles = _db.Articulos.Find(detalleSolicitud.IdArticulo).Receta.RecetaDetalles;
+                var Recetadetalles = _db.Articulos.Find(detalleSolicitud.IdArticulo).Recetas.Single(x => x.Activo).RecetaDetalles;
                 //Para cada detalle de la receta de un articulo
                 //Si el insumo ya esta registrado en mi acumulador, le sumo la cantidad requerida para fabricar ese detalle
                 //Si el insumo no esta registrado, lo agrego

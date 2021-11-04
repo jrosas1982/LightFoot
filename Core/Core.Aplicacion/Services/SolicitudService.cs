@@ -72,7 +72,7 @@ namespace Core.Aplicacion.Services
             if (solicitudDB.SolicitudDetalles.Any(x => !articulosConReceta.Contains(x.Id)))
                 throw new Exception($"Al menos un articulo perteneciente a la solicitud {idSolicitud} no posee una receta de fabricacion activa asociada");
 
-            if (solicitudDB.SolicitudDetalles.Any(x => x.Articulo.IdReceta == null))
+            if (solicitudDB.SolicitudDetalles.Any(x => !x.Articulo.Recetas.Any(x => x.Activo)))
                 throw new Exception($"Al menos un articulo perteneciente a la solicitud {idSolicitud} no posee una receta de fabricacion activa asociada");
 
             var insumosNecesarios = await _fabricacion.ContabilizarInsumosRequeridos(idSolicitud);
@@ -155,7 +155,7 @@ namespace Core.Aplicacion.Services
                     .ThenInclude(x => x.OrdenesProduccion)
                 .Include(x => x.SolicitudDetalles)
                     .ThenInclude(x => x.Articulo)
-                        .ThenInclude(x => x.Receta)
+                        .ThenInclude(x => x.Recetas.Single(x => x.Activo))
                             .ThenInclude(x => x.RecetaDetalles)
                                 .ThenInclude(x => x.Insumo)
                 .SingleOrDefaultAsync(x => x.Id == idSolicitud);

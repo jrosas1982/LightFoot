@@ -140,7 +140,7 @@
                     <div class="panel-body">
                         <div class="table-responsive">
 
-                            @if (detalle.Articulo.Receta != null && detalle.Articulo.Receta.Activo)
+                            @if (detalle.Articulo.Recetas != null && detalle.Articulo.Recetas.Any(x => x.Activo))
                             {
                                 <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
                                     <thead>
@@ -153,7 +153,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var detalleReceta in detalle.Articulo.Receta.RecetaDetalles)
+                                        @foreach (var detalleReceta in detalle.Articulo.Recetas.Single(x => x.Activo).RecetaDetalles)
                                         {
                                             <tr>
                                                 <td>@detalleReceta.Insumo.Id</td>
