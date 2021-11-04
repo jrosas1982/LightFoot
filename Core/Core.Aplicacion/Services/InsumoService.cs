@@ -67,15 +67,15 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Insumo>> GetInsumos()
         {
-            var insumosList = _db.Insumos.Include(x => x.Proveedor);
+            var insumosList = await _db.Insumos.AsNoTracking().Include(x => x.Proveedor).ToListAsync();
             _logger.LogInformation("Se buscaron los insumos");
-            return await Task.FromResult(insumosList);
+            return insumosList;
         }
 
         public async Task<IEnumerable<Proveedor>> GetProveedoresInsumo(int idInsumo)
         {
-            var proveedoresList = _db.Proveedores.Where(x => x.ProveedorInsumos.Any(x => x.IdInsumo == idInsumo));
-            return await Task.FromResult(proveedoresList);
+            var proveedoresList = await _db.Proveedores.Where(x => x.ProveedorInsumos.Any(x => x.IdInsumo == idInsumo)).ToListAsync();
+            return proveedoresList;
         }
     }
 }

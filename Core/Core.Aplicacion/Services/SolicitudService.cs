@@ -57,15 +57,23 @@ namespace Core.Aplicacion.Services
         }       
 
 
-        //TODO agregar validacion receta
         public async Task AprobarSolicitud(int idSolicitud)
         {
             var solicitudDB = _db.Solicitudes
                 .Include(x => x.SolicitudDetalles)
+                    .ThenInclude(x => x.Articulo)
                 .SingleOrDefault(x => x.Id == idSolicitud);
 
             if (solicitudDB == null)
                 throw new Exception($"La solicitud {idSolicitud} no existe");
+
+            //TODO agregar validacion receta; UPDATE creo que era esto
+            var articulosConReceta = await _db.Recetas.Where(x => x.Activo).Select(x => x.IdArticulo).ToListAsync();
+            if (solicitudDB.SolicitudDetalles.Any(x => !articulosConReceta.Contains(x.Id)))
+                throw new Exception($"Al menos un articulo perteneciente a la solicitud {idSolicitud} no posee una receta de fabricacion activa asociada");
+
+            if (solicitudDB.SolicitudDetalles.Any(x => x.Articulo.IdReceta == null))
+                throw new Exception($"Al menos un articulo perteneciente a la solicitud {idSolicitud} no posee una receta de fabricacion activa asociada");
 
             var insumosNecesarios = await _fabricacion.ContabilizarInsumosRequeridos(idSolicitud);
 
@@ -117,10 +125,8 @@ namespace Core.Aplicacion.Services
                 });
             }
 
-            //await _fabricacion.ReservarStockInsumos(insumosNecesarios);
-
             _db.AddRange(ordenesProduccion);
-            //GuardarEvento(solicitudDB, comentario);
+
             await _db.SaveChangesAsync();
         }
 
@@ -137,7 +143,6 @@ namespace Core.Aplicacion.Services
             });
 
             _db.Update(solicitudDB);
-            //GuardarEvento(solicitudDB, comentario);
             await _db.SaveChangesAsync();
         }
 
@@ -161,23 +166,21 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Solicitud>> GetSolicitudes()
         {
-            var solicitudesList = _db.Solicitudes
+            var solicitudesList = await _db.Solicitudes
                 .AsNoTracking()
                 .Include(x => x.Sucursal)
                 .Include(x => x.SolicitudDetalles)
                     .ThenInclude(x => x.Articulo)
                 .Include(x => x.SolicitudDetalles)
-                    .ThenInclude(x => x.OrdenesProduccion);
-
-            var queryString = solicitudesList.ToQueryString();
+                    .ThenInclude(x => x.OrdenesProduccion).ToListAsync();
 
             _logger.LogInformation("Se buscaron las solicitudes");
-            return await solicitudesList.ToListAsync().ConfigureAwait(false);
+            return solicitudesList;
         }
 
         public async Task<IEnumerable<Solicitud>> GetSolicitudes(SolicitudFilter filter)
         {
-            var solicitudesList = _db.Solicitudes
+            var solicitudesList = await _db.Solicitudes
                 .AsNoTracking()
                 .Include(x => x.Sucursal)
                 .Include(x => x.SolicitudDetalles)
@@ -187,12 +190,11 @@ namespace Core.Aplicacion.Services
                 .Where(x => filter.IdSucursalList.Contains(x.IdSucursal)
                             && filter.EstadoSolicitudList.Contains(x.EstadoSolicitud)
                             && x.FechaCreacion > filter.FechaDesde
-                            && x.FechaCreacion < filter.FechaHasta);
-
-            var queryString = solicitudesList.ToQueryString();
+                            && x.FechaCreacion < filter.FechaHasta)
+                .ToListAsync();
 
             _logger.LogInformation("Se buscaron las solicitudes");
-            return await solicitudesList.ToListAsync().ConfigureAwait(false);
+            return solicitudesList;
         }
 
         public async Task<IEnumerable<SolicitudDetalle>> GetSolicitudDetalles(int idSolicitud)
@@ -206,7 +208,7 @@ namespace Core.Aplicacion.Services
         {
             var eventosSolicitud = _db.SolicitudEventos.Where(x => x.IdSolicitud == idSolicitud);
 
-            return await Task.FromResult(eventosSolicitud);
+            return await eventosSolicitud.ToListAsync();
         }
 
         public async Task<IEnumerable<EstadoSolicitud>> GetEstadosSolicitud()

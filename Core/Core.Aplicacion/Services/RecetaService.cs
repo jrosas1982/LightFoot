@@ -30,12 +30,13 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-            var receta = await _db.Recetas
-                .Include(x => x.Articulo)
-                .Include(x => x.RecetaDetalles)
-                .ThenInclude(x => x.Insumo)
-                .Include(x => x.RecetaDetalles)
-                .ThenInclude(x => x.EtapaOrdenProduccion).Where(x => x.Id == IdReceta).SingleOrDefaultAsync();
+                var receta = await _db.Recetas
+                    .AsNoTracking()
+                    .Include(x => x.Articulo)
+                    .Include(x => x.RecetaDetalles)
+                    .ThenInclude(x => x.Insumo)
+                    .Include(x => x.RecetaDetalles)
+                    .ThenInclude(x => x.EtapaOrdenProduccion).Where(x => x.Id == IdReceta).SingleOrDefaultAsync();
 
                 return receta;
             }
@@ -51,14 +52,15 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-             var recetasList = _db.Recetas
-                 .Include(x => x.Articulo)
-                 .Include(x => x.RecetaDetalles)
-                    .ThenInclude(x => x.Insumo)
-                 .Include(x => x.RecetaDetalles)
-                    .ThenInclude(x => x.EtapaOrdenProduccion);
+                var recetas = await _db.Recetas
+                    .AsNoTracking()
+                    .Include(x => x.Articulo)
+                    .Include(x => x.RecetaDetalles).ToListAsync();
+                    //   .ThenInclude(x => x.Insumo)
+                    //.Include(x => x.RecetaDetalles)
+                    //   .ThenInclude(x => x.EtapaOrdenProduccion);
 
-                return await recetasList.ToListAsync().ConfigureAwait(false);
+                return recetas;
             }
             catch (Exception ex)
             {
@@ -73,28 +75,32 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var detallesSolicitud = _db.RecetaDetalles.Where(x => x.IdReceta == Idreceta);
-                return await detallesSolicitud.ToListAsync();
+                var detallesSolicitud = await _db.RecetaDetalles.Where(x => x.IdReceta == Idreceta).ToListAsync();
+                return detallesSolicitud;
             }
             catch (Exception ex)
             {
                 _logger.LogInformation($" Error al GetRecetaDetalles { ex.Message }");
                 throw;
             }
-     
+
         }
 
         public async Task<bool> EliminarReceta(int IdReceta)
         {
             try
             {
-                var receta = _db.Recetas.Include(x => x.RecetaDetalles).Where(x => x.Id == IdReceta).SingleOrDefault();
+                var receta = _db.Recetas.Include(x => x.RecetaDetalles).Where(x => x.Id == IdReceta).Single();
+
                 foreach (var item in receta.RecetaDetalles)
                 {
                     _db.RecetaDetalles.Remove(item);
                 }
+
                 _db.Recetas.Remove(receta);
+
                 await _db.SaveChangesAsync();
+
                 return true;
             }
             catch (Exception ex)
@@ -106,19 +112,25 @@ namespace Core.Aplicacion.Services
 
         public async Task<bool> ActivarDesactivarReceta(int IdReceta)
         {
-
             try
             {
-                var item = _db.Recetas.SingleOrDefault(x => x.Id == IdReceta); //returns a single item.
+                var item = await _db.Recetas.FindAsync(IdReceta); //returns a single item.
 
-                if (item == null)
-                {
-                    return false;
-                }
+                //if (item == null)
+                //{
+                //    return false;
+                //}
 
-                item.Activo = item.Activo ? false : true;
+                //item.Activo = item.Activo ? false : true;
+                item.Activo = !item.Activo;
+
+                if (_db.Recetas.Any(x => x.IdArticulo == item.IdArticulo && x.Activo && x.Id != item.Id))
+                    throw new Exception("Solo puede haber una receta actva por articulo a la vez");
+
                 _db.Recetas.Update(item);
+
                 await _db.SaveChangesAsync();
+
                 return true;
             }
             catch (Exception ex)
@@ -132,17 +144,15 @@ namespace Core.Aplicacion.Services
         {
            try
            {
-                var articulo = await _db.Articulos.FindAsync(receta.IdArticulo);
+                _db.Recetas.Add(receta);
+                await _db.SaveChangesAsync();
+                return true;
 
-                //if (articulo.Receta != null)
-                //    throw new Exception("el articulo ya posee una receta asociada");
-
-                articulo.Receta = receta;
-                
-               _db.Articulos.Update(articulo);
-
-               await _db.SaveChangesAsync();
-               return true;
+                //var articulo = await _db.Articulos.FindAsync(receta.IdArticulo);
+                ////if (articulo.Receta != null)
+                ////    throw new Exception("el articulo ya posee una receta asociada");
+                //articulo.Receta = receta;
+                //_db.Articulos.Update(articulo);
            }
            catch (Exception ex)
            {

@@ -23,7 +23,7 @@ namespace Core.Aplicacion.Helpers
         }
 
         // TODO testear
-        public async Task<IList<CantidadInsumo>> ContabilizarInsumosRequeridos(int Idsolicitud)
+        public async Task<IEnumerable<CantidadInsumo>> ContabilizarInsumosRequeridos(int Idsolicitud)
         {
             //Solicitud
             //  DetalleSolicitud
@@ -67,20 +67,20 @@ namespace Core.Aplicacion.Helpers
         }
 
         // TODO testear
-        public async Task<IList<CantidadInsumoNecesarioStock>> VerificarStockInsumos(IList<CantidadInsumo> insumosNecesarios)
+        public async Task<IEnumerable<CantidadInsumoNecesarioStock>> VerificarStockInsumos(IEnumerable<CantidadInsumo> insumosNecesarios)
         {
-            var insumos = _db.Insumos;
+            var insumos = await _db.Insumos.ToListAsync();
             var insumosVerificados = insumos.Select(x => new CantidadInsumoNecesarioStock()
             {
                 Insumo = x,
                 CantidadNecesaria = insumosNecesarios.Single(y => y.IdInsumo == x.Id).Cantidad,
                 CantidadDisponible = x.StockTotal - x.StockReservado,
             });
-            return await insumosVerificados.ToListAsync();
+            return insumosVerificados;
         }
 
         // TODO testear
-        public async Task ReservarStockInsumos(IList<CantidadInsumo> insumosNecesarios)
+        public async Task ReservarStockInsumos(IEnumerable<CantidadInsumo> insumosNecesarios)
         {
             var insumosStock = _db.Insumos.Where(x => insumosNecesarios.Select(y => y.IdInsumo).Contains(x.Id));
 

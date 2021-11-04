@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Aplicacion.Services
@@ -22,8 +23,8 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<ArticuloCategoria>> GetCategorias()
         {
-            var categoriasList = _db.ArticulosCategoria;
-            return await Task.FromResult(categoriasList);
+            var categoriasList = await _db.ArticulosCategoria.ToListAsync();
+            return categoriasList;
         }
 
         public async Task<ArticuloCategoria> BuscarPorId(int IdCategoria)

@@ -24,12 +24,12 @@ namespace Core.Infraestructura
             serviceCollection.AddScoped<IProveedorService, ProveedorService>();
             serviceCollection.AddScoped<IProveedorInsumoService, ProveedorInsumoService>();
 
-            serviceCollection.AddTransient<UserResolverService>();
+            serviceCollection.AddScoped<UserResolverService>();
             serviceCollection.AddTransient<ExtendedAppDbContext>();
         }
         public static void AddSecurityServices(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddTransient<PasswordHasher>();
+            serviceCollection.AddScoped<PasswordHasher>();
         }
     }
 }

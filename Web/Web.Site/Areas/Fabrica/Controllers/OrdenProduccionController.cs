@@ -60,11 +60,19 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Index()
         {
-            var ordenesList = await _ordenProduccionService.GetOrdenes();
+            var ordenesListTask = _ordenProduccionService.GetOrdenes();
+            var EstadoOrdenProduccionesTask = _ordenProduccionService.GetEstadosOrden();
+            var EstadoEtapaOrdenProduccionesTask = _ordenProduccionService.GetEstadoEtapasOrden();
 
-            ViewBag.EstadoOrdenProducciones = await _ordenProduccionService.GetEstadosOrden();
+            await Task.WhenAll(ordenesListTask, EstadoOrdenProduccionesTask, EstadoEtapaOrdenProduccionesTask);
+
+            var ordenesList = ordenesListTask.Result;
+
+            ViewBag.EstadoOrdenProducciones = EstadoOrdenProduccionesTask.Result;
+            ViewBag.EstadoEtapaOrdenProducciones = EstadoEtapaOrdenProduccionesTask.Result;
+
             ViewBag.EtapaOrdenProducciones = await _ordenProduccionService.GetEtapasOrden();
-            ViewBag.EstadoEtapaOrdenProducciones = await _ordenProduccionService.GetEstadoEtapasOrden();
+
             ViewBag.FechaDesde = DateTime.Today - TimeSpan.FromDays(30);
             ViewBag.FechaHasta = DateTime.Today;
             ViewBag.TypeaheadCodArticulo = ordenesList.Select(x => x.Articulo.CodigoArticulo).Distinct();

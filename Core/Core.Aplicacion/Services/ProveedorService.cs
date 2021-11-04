@@ -63,10 +63,11 @@ namespace Core.Aplicacion.Services
         }
         public async Task<IEnumerable<Proveedor>> GetProveedores()
         {
-            var proveedoresList = _db.Proveedores
+            var proveedoresList = await _db.Proveedores
                 .Include(x => x.ProveedorInsumos)
-                    .ThenInclude(x => x.Insumo);
-            return await Task.FromResult(proveedoresList);
+                    .ThenInclude(x => x.Insumo).ToListAsync();
+
+            return proveedoresList;
         }
     }
 }

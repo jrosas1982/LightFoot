@@ -27,7 +27,7 @@ namespace LightFoot.Web.Site
         public void ConfigureServices(IServiceCollection services)
         {
             // DbContext
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Conexion")));
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Conexion")), ServiceLifetime.Transient);
 
             // Core Services
             services.AddCoreServices();
