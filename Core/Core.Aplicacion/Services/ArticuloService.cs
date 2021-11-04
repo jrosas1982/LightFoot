@@ -4,6 +4,7 @@ using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Aplicacion.Services
@@ -21,9 +22,9 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Articulo>> GetArticulos()
         {
-            var articulosList = _db.Articulos;
+            var articulosList = await _db.Articulos.ToListAsync();
             _logger.LogInformation("Se buscaron los articulos");
-            return await Task.FromResult(articulosList);
+            return articulosList;
         }
 
         public async Task<Articulo> BuscarPorId(int IdArticulo)

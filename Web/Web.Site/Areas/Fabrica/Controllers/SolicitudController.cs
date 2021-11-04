@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Core.Aplicacion.FIlters;
 using Core.Aplicacion.Interfaces;
@@ -8,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Web.Site.Dtos;
 using Web.Site.Helpers;
+using System;
 
 namespace Web.Site.Areas
 {
@@ -30,10 +30,17 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Index()
         {
-            var solicitudList = await _solicitudService.GetSolicitudes();
+            var solicitudListTask = _solicitudService.GetSolicitudes();
+            var SucursalesTask = _sucursalService.GetSucursales();
+            var EstadosSolicitudTask = _solicitudService.GetEstadosSolicitud();
 
-            ViewBag.Sucursales = await _sucursalService.GetSucursales();
-            ViewBag.EstadosSolicitud = await _solicitudService.GetEstadosSolicitud();
+            await Task.WhenAll(solicitudListTask, SucursalesTask, EstadosSolicitudTask);
+
+            var solicitudList = solicitudListTask.Result;
+
+            ViewBag.Sucursales = SucursalesTask.Result;
+            ViewBag.EstadosSolicitud = EstadosSolicitudTask.Result;
+
             ViewBag.FechaDesde = DateTime.Today - TimeSpan.FromDays(30);
             ViewBag.FechaHasta = DateTime.Today;
 
@@ -51,9 +58,16 @@ namespace Web.Site.Areas
         public async Task<IActionResult> CrearEditarSolicitud(int IdSolicitud)
         {
             Solicitud solicitud;
-            var estadoSolicitudList = await _solicitudService.GetEstadosSolicitud(); 
-            var sucursalesList = await _sucursalService.GetSucursales();
-            var articulosList = await _articuloService.GetArticulos();
+
+            var estadoSolicitudListTask = _solicitudService.GetEstadosSolicitud();
+            var sucursalesListTask = _sucursalService.GetSucursales();
+            var articulosListTask = _articuloService.GetArticulos();
+
+            await Task.WhenAll(estadoSolicitudListTask, sucursalesListTask, articulosListTask);
+
+            var estadoSolicitudList = estadoSolicitudListTask.Result;
+            var sucursalesList = sucursalesListTask.Result;
+            var articulosList = articulosListTask.Result;
 
             if (IdSolicitud != 0) // 0 = crear
                 solicitud = await _solicitudService.BuscarPorId(IdSolicitud);

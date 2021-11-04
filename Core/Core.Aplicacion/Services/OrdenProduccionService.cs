@@ -192,9 +192,9 @@ namespace Core.Aplicacion.Services
                 .Include(x => x.SolicitudDetalle)
                     .ThenInclude(x => x.Solicitud)
                     .ThenInclude(x => x.Sucursal)
-                //.Include(x => x.OrdenProduccionEventos)
-                //       .ThenInclude(x => x.EtapaOrdenProduccion)
-                //.Include(x => x.EtapaOrdenProduccion)         
+                .Include(x => x.OrdenProduccionEventos)
+                       .ThenInclude(x => x.EtapaOrdenProduccion)
+                .Include(x => x.EtapaOrdenProduccion)
                 .SingleOrDefaultAsync(x => x.Id == idOrdenProduccion);
             if (orden == null)
                 throw new Exception("La orden de produccion solicitada no existe");
@@ -228,7 +228,7 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<EtapaOrdenProduccion>> GetEtapasOrden()
         {
-            return await _db.EtapasOrdenProduccion.ToListAsync();
+            return await _db.EtapasOrdenProduccion.AsNoTracking().OrderBy(x => x.Orden).ToListAsync();
         }
 
         public async Task<IEnumerable<EstadoEtapaOrdenProduccion>> GetEstadoEtapasOrden()
@@ -240,7 +240,7 @@ namespace Core.Aplicacion.Services
         {
             var orden = await _db.OrdenesProduccion.FindAsync(IdOrdenProduccion);
 
-            var etapas = _db.EtapasOrdenProduccion.OrderBy(x => x.Orden).Select(x => x.Id).ToList();
+            var etapas = await _db.EtapasOrdenProduccion.OrderBy(x => x.Orden).Select(x => x.Id).ToListAsync();
 
             var idEtapaActual = orden.EtapaOrdenProduccion.Id;
 
@@ -248,7 +248,7 @@ namespace Core.Aplicacion.Services
 
             var porcentaje = Math.DivRem(progresoActual * 100, etapas.Count(), out int rest);
 
-            return await Task.FromResult(porcentaje);
+            return porcentaje;
         }
         public async Task<TimeSpan> GetTiempoTranscurrido(int IdOrdenProduccion)
         {

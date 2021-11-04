@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Aplicacion.Services
@@ -59,9 +60,9 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<ArticuloStock>> GetArticuloStock()
         {
-            var articuloStockList = _db.ArticulosStock;
+            var articuloStockList = await _db.ArticulosStock.ToListAsync();
             _logger.LogInformation("Se buscaron el stock de articulos");
-            return await Task.FromResult(articuloStockList);
+            return articuloStockList;
         }
     }
 }

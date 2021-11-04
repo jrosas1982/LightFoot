@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core.Aplicacion.Services
 {
@@ -17,8 +18,8 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Sucursal>> GetSucursales()
         {
-            var sucursalesList = _db.Sucursales;
-            return await Task.FromResult(sucursalesList);
+            var sucursalesList = await _db.Sucursales.ToListAsync();
+            return sucursalesList;
         }
 
         public async Task<Sucursal> BuscarPorId(int IdSucursal)

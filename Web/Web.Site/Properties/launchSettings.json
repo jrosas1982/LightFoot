@@ -8,14 +8,6 @@
     }
   },
   "profiles": {
-  //  "IIS Express": {
-  //    "commandName": "IISExpress",
-  //    "launchBrowser": true,
-  //    "environmentVariables": {
-  //      "Llave_super_secreta": "mivalor",
-  //      "ASPNETCORE_ENVIRONMENT": "Development"
-  //    }
-  //  },
     "Web.Site": {
       "commandName": "Project",
       "launchBrowser": true,

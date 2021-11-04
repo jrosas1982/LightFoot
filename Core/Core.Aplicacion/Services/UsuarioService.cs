@@ -9,6 +9,7 @@ using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Aplicacion.Services
@@ -29,9 +30,9 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Usuario>> GetUsuarios()
         {
-            var usuariosList = _db.Usuarios;
+            var usuariosList = await _db.Usuarios.ToListAsync();
             await _hubContext.Clients.All.SendAsync($"GetUsuarios", $"Se solicito la lista de usuarios");
-            return await Task.FromResult(usuariosList);
+            return usuariosList;
         }
 
         public async Task<Usuario> BuscarPorId(int IdUsuario)
