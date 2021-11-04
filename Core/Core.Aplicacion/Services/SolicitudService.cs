@@ -155,7 +155,7 @@ namespace Core.Aplicacion.Services
                     .ThenInclude(x => x.OrdenesProduccion)
                 .Include(x => x.SolicitudDetalles)
                     .ThenInclude(x => x.Articulo)
-                        .ThenInclude(x => x.Recetas.Single(x => x.Activo))
+                        .ThenInclude(x => x.Recetas)
                             .ThenInclude(x => x.RecetaDetalles)
                                 .ThenInclude(x => x.Insumo)
                 .SingleOrDefaultAsync(x => x.Id == idSolicitud);
