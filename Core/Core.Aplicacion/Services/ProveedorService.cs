@@ -69,5 +69,10 @@ namespace Core.Aplicacion.Services
 
             return proveedoresList;
         }
+
+        public Task CalificarProveedor(double calificacion)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

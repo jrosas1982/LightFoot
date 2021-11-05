@@ -74,10 +74,6 @@ namespace LightFoot.Web.Site
                                 options.LogoutPath = "/Auth/LogIn"; //test
                                 options.AccessDeniedPath = "/"; //si no cumplis con authorize te lleva aca
                             });
-
-
-
-
             //services.ConfigureApplicationCookie(options => {
 
             //    options.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
@@ -91,9 +87,7 @@ namespace LightFoot.Web.Site
             //    };
 
             //});
-
         }
-
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
