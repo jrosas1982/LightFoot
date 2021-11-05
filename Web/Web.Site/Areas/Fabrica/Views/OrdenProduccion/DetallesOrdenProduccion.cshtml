@@ -10,8 +10,8 @@
 
 @model OrdenProduccion
 
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
+<div class="row wrapper border-bottom white-bg page-heading d-print-none">
+    <div class="col-lg-8">
         <h2>Detalles Orden de Produccion @Model.Id</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -28,8 +28,11 @@
             </li>
         </ol>
     </div>
+    <div class="col-lg-2 p-0 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()">Reporte</button>
+    </div>
     <div class="col-lg-2 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
-        <button type="button" class="btn btn-default btn-rounded w-100"
+        <button type="button" class="btn btn-default w-100"
                 onclick="location.href='@Url.Action("Index", "OrdenProduccion", 0)'">
             <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
         </button>
@@ -38,8 +41,22 @@
 
 <div class="d-none d-print-block w-100">
     <div class="alert alert-default" role="alert">
-        Fecha: @DateTime.Now
-        <h5>Detalle orden de produccion numero @Model.Id</h5>
+        <h5>Fecha de reporte: @DateTime.Now</h5>
+        <div class="row">
+            <div class="col-6">
+                <h2>Orden de produccion numero @Model.Id</h2>
+                <h3>Estado: @Model.EstadoOrdenProduccion.GetDisplayName()</h3>
+                <h3>Etapa de Produccion: @Model.EtapaOrdenProduccion.Descripcion - @Model.EstadoEtapaOrdenProduccion.GetDisplayName()</h3>
+                <h3>Sucursal Destino: @Model.SolicitudDetalle.Solicitud.Sucursal.Nombre</h3>
+                <h3>Cantidad Solicitada: @Model.CantidadTotal</h3>
+            </div>
+            <div class="col-6">
+                <h2>Articulo: @Model.Articulo.Nombre</h2>
+                <h3>Cod: @Model.Articulo.CodigoArticulo</h3>
+                <h3>Color: @Model.Articulo.Color</h3>
+                <h3>Talle: @Model.Articulo.TalleArticulo</h3>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -106,6 +123,11 @@
                     });
                 }
             });
+        }
+
+        function Reporte() {
+            window.print();
+            $('.dataTables_filter').removeClass("d-print-none")
         }
 
         function IniciarEtapa(id) {

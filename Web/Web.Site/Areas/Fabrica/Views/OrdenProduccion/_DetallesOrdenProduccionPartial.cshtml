@@ -13,15 +13,15 @@
 
 
 
-<h5>Progreso</h5>
-<div class="progress">
+<h5 class="d-print-none">Progreso</h5>
+<div class="progress d-print-none">
     <div style="width: @PorcentajeCompletado%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" role="progressbar" class="progress-bar  progress-bar-striped  progress-bar-animated bg-@Model.EstadoEtapaOrdenProduccion.GetGroupName()">
         <span class="sr-only"> @PorcentajeCompletado% Completo</span>
     </div>
 </div>
 
 <div class="row mt-2">
-    <div class="col-lg-5">
+    <div class="col-lg-5 d-print-none">
         <div class="panel panel-@Model.EstadoEtapaOrdenProduccion.GetGroupName()">
             <div class="panel-heading">
                 Etapa @Model.EtapaOrdenProduccion.Descripcion (@NroEtapaProgresoActual de @EtapasIds.Count())
@@ -144,7 +144,7 @@
                     Etapas de produccion
                 </p>
 
-                <div id="wizard" class="d-print-none">
+                <div id="wizard" class="d-print-none ">
                     @foreach (var etapa in EtapasOrdenProduccion)
                     {
                         <h1>@etapa.Descripcion</h1>
@@ -185,16 +185,16 @@
                 <div class="d-none d-print-block">
                     @foreach (var etapa in EtapasOrdenProduccion)
                     {
-                        <h1>@etapa.Descripcion</h1>
+                        <h3>@etapa.Descripcion</h3>
                         <table class="table table-hover ">
                             <thead class="">
                                 <tr>
-                                    <th colspan="1" class="text-left"><h3>Estado Orden</h3></th>
-                                    <th colspan="1" class="text-left"><h3>Etapa Orden</h3></th>
-                                    <th colspan="1" class="text-left"><h3>Descripcion Etapa</h3></th>
-                                    <th colspan="1" class="text-left"><h3>Fecha Evento</h3></th>
-                                    <th colspan="1" class="text-left"><h3>Usuario</h3></th>
-                                    <th colspan="1" class="text-left"><h3>Comentario</h3></th>
+                                    <th colspan="1" class="text-left"><h4>Estado Orden</h4></th>
+                                    <th colspan="1" class="text-left"><h4>Etapa Orden</h4></th>
+                                    <th colspan="1" class="text-left"><h4>Descripcion Etapa</h4></th>
+                                    <th colspan="1" class="text-left"><h4>Fecha Evento</h4></th>
+                                    <th colspan="1" class="text-left"><h4>Usuario</h4></th>
+                                    <th colspan="1" class="text-left"><h4>Comentario</h4></th>
                                 </tr>
                             </thead>
                             <tbody>
