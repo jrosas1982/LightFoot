@@ -16,15 +16,40 @@ namespace Web.Site.Areas
     [Route("[area]/[controller]/[action]")]
     public class ComprasInsumoController : CustomController
     {
-        public ComprasInsumoController()
+        //private ICompraInsumoService _compraInsumoService;
+        private IInsumoService _insumoService;
+
+        public ComprasInsumoController(/*ICompraInsumoService compraInsumoService,*/ IInsumoService insumoService)
         {
-           
+            //_compraInsumoService = compraInsumoService;
+            _insumoService = insumoService;
         }
 
         public async Task<IActionResult> Index()
         {
+            //var comprasList = await _compraInsumoService.GetCompras();
+
+            //return View(comprasList);
             return View();
         }
+
+        public async Task<IActionResult> ComprarInsumos(int idCompraInsumo)
+        {
+            //var compra = await _compraInsumoService.BuscarPorId(idCompraInsumo);
+            //ViewBag.Insumos = await _insumoService.GetInsumos();
+
+            //return View(compra);
+            return View();
+        }
+
+        //public async Task<IActionResult> RealizarCompra(CompraInsumo compra)
+        //{
+        //    await _compraInsumoService.CrearCompra(compra, compra.CompraInsumoDetalles);
+        //    return RedirectToAction("Index");
+
+        //}
+
+        
 
     }
 
