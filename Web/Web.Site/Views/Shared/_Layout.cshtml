@@ -74,12 +74,30 @@
     <!-- _JsInteropPartial Begin-->
     @await Html.PartialAsync("_JsInteropPartial")
     <!-- _JsInteropPartial End-->
-
     <!-- _NotificationsHub Begin-->
     @await Html.PartialAsync("_NotificationsHub")
     <!-- _NotificationsHub End-->
 
     @if (IsSectionDefined("scripts"))
         @await RenderSectionAsync("scripts", required: false)
+
+    <script type="text/javascript">
+        window.onbeforeprint = function () {
+            $('.dataTables_filter').addClass("d-print-none");
+            var numberOfRows = 10000;
+            $('.footable').footable();
+            $('.footable').data('page-size', numberOfRows);
+            $('.footable').trigger('footable_redraw');
+        }
+
+        window.onafterprint = function () {
+            $('.dataTables_filter').removeClass("d-print-none");
+            var numberOfRows = 15;
+            $('.footable').footable();
+            $('.footable').data('page-size', numberOfRows);
+            $('.footable').trigger('footable_redraw');
+        }
+    </script>
+
 </body>
 </html>

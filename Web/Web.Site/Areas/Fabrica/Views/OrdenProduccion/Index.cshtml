@@ -31,7 +31,7 @@
         </ol>
     </div>
     <div class="col-lg-12 d-print-none" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-default" onclick="Reporte()">Reporte</button>
+        <button type="button" class="btn btn-w-m btn-default" onclick="window.print()">Reporte</button>
     </div>
 </div>
 
@@ -250,11 +250,34 @@
             $('.footable').footable();
         });
 
-        function Reporte() {
-            $('.dataTables_filter').addClass("d-print-none")
+        @*function Reporte() {
+            var numberOfRows = @Model.Count();
+
+            $('.footable').footable();
+            $('.footable').data('page-size', numberOfRows);
+            $('.footable').trigger('footable_redraw');
+
             window.print();
-            $('.dataTables_filter').removeClass("d-print-none")
+  
+            $('.footable').data('page-size', 2);
+            $('.footable').trigger('footable_redraw');
+        }*@
+
+        @*window.onbeforeprint = function () {
+            $('.dataTables_filter').addClass("d-print-none");
+            var numberOfRows = @Model.Count();
+            $('.footable').footable();
+            $('.footable').data('page-size', numberOfRows);
+            $('.footable').trigger('footable_redraw');
         }
+
+        window.onafterprint = function () {
+            $('.dataTables_filter').removeClass("d-print-none");
+            var numberOfRows = 15;
+            $('.footable').footable();
+            $('.footable').data('page-size', numberOfRows);
+            $('.footable').trigger('footable_redraw');
+        }*@
 
         function RechazarSolicitud(Id) {
             alert(Id);
