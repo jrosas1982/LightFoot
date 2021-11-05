@@ -44,7 +44,7 @@
                 </div>
                 <div class="ibox-content">
 
-                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                    <table class="table table-striped table-bordered table-hover dataTables">
                         <thead>
                             <tr>
                                 <th>Codigo</th>
@@ -155,31 +155,28 @@
         };
         $(document).ready(function () {
 
-            $('.dataTables-example').DataTable({
-                pageLength: 25,
-                dom: '<"html5buttons"B>lTfgitp',
+            $('.dataTables').DataTable({
+                pageLength: 2,
+                dom: '<"html5buttons"B>gitp',
                 buttons: [
-                    //{ extend: 'copy' },
-                    //{ extend: 'csv' },
-                    //{ extend: 'excel', title: 'ExampleFile' },
-                    //{ extend: 'pdf', title: 'ExampleFile' },
+                    {
+                        extend: 'print',
+                        text: 'Reporte',
+                        autoPrint: 'true',
+                        title: 'Articulos',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '11px');
 
-                    //{
-                    //    extend: 'print',
-                    //    title: 'Articulos',
-                    //    customize: function (win) {
-                    //        $(win.document.body).addClass('white-bg');
-                    //        $(win.document.body).css('font-size', '11px');
-                    //
-                    //        $(win.document.body).find('table')
-                    //            .addClass('compact')
-                    //            .css('font-size', 'inherit');
-                    //
-                    //   
-                    //    }
-                    //}
+                            $(win.document.body).find('table')
+                                .addClass('table table-striped table-bordered')
+                                .css('font-size', 'inherit');                            
+
+                            $(win.document.body).find('tr>th:last-child').hide();
+                            $(win.document.body).find('tr>td:last-child').hide();
+                        }
+                    }
                 ]
-
             });
         });
     </script>
