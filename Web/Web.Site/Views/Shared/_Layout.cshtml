@@ -84,7 +84,7 @@
     <script type="text/javascript">
         window.onbeforeprint = function () {
             $('.dataTables_filter').addClass("d-print-none");
-            var numberOfRows = 10000;
+            var numberOfRows = Number.MAX_SAFE_INTEGER;
             $('.footable').footable();
             $('.footable').data('page-size', numberOfRows);
             $('.footable').trigger('footable_redraw');
