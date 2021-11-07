@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Web.Site.Areas.Fabrica.Models
+namespace Web.Site.Areas.Fabrica
 {
     public class RecetaModel 
     {

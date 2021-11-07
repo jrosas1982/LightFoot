@@ -5,7 +5,6 @@
 
 }
 
-@using Web.Site.Areas.Fabrica.Models
 @model CompraInsumoModel
 
 <div class="row wrapper border-bottom white-bg page-heading navegacion">
@@ -39,25 +38,27 @@
 
     @using (Html.BeginForm("Crear", "CompraInsumo", FormMethod.Post))
     {
+        @Html.AntiForgeryToken()
         <div class="wrapper wrapper-content animated fadeInRight ecommerce">
             <div class="ibox-content m-b-sm border-bottom">
                 <table id="ListaDetalleCompra" class="table table-bordered">
                     <tr>
-                        <th>#</th>
+                        @*<th>#</th>*@
                         <th>Insumo</th>
                         <th>Proveedor</th>
                         <th>Cantidad</th>
-                        <th>Monto</th>
+                        <th>Precio</th>
+                        <th>Comentario</th>
                         <th>Acciones</th>
                     </tr>
                     <tbody>
-                        @if (Model.CompraInsumoDetalles != null)
+                        @if (Model.CompraInsumoDetalleModels != null)
                         {
-                            @foreach (var detalles in Model.CompraInsumoDetalles)
+                            @foreach (var Adds in Model.CompraInsumoDetalleModels)
                             {
-                                if (detalles != null)
+                                if (Adds != null)
                                 {
-                                    @await Html.PartialAsync("_CompraInsumoDetalle", detalles)
+                                    @await Html.PartialAsync("_CompraInsumoDetalle", Adds)
                                 }
                             }
                         }
@@ -65,10 +66,10 @@
                 </table>
                 <div class="ibox-content border-0 pt-0 pr-0">
                     <div class="text-center d-flex justify-content-end">
-                        <button type="button" class="btn btn-outline btn-default btn-lg mr-1" data-toggle="modal" data-target="#NewCommentModal">
+                        <button type="button" class="btn btn-outline btn-default btn-lg mr-1" data-toggle="modal" data-target="#nuevoArticuloModal">
                             Agregar Insumo
                         </button>
-                        <button type="Submit" class="btn btn-primary btn-lg" id="agregarInsumo">
+                        <button type="Submit" class="btn btn-primary btn-lg" id="comprar">
                             Comprar
                         </button>
 
@@ -79,48 +80,57 @@
         </div>
     }
     @* MODAL NEW COMMENT *@
-    <div class="modal inmodal fade" id="NewCommentModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+    <div class="modal inmodal fade" id="nuevoArticuloModal" tabindex="-1" role="dialog" style="display: none;">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header pb-1">
-                    <div class="row">
-                        <div class="col-sm-12 d-flex justify-content-center">
-                            <h1 style="font-size:30px;">Nuevo Articulo</h1>
+                <form class="validateDontSubmit" id="modalForm" name="modalForm">
+                    <div class="modal-header pb-1">
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-center">
+                                <h1 style="font-size:30px;">Nuevo Articulo</h1>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-body py-2">
-                    <div class="form-floating">
-                        @Html.LabelFor(m => m.CompraInsumoDetalle.Insumo)
-                        @Html.DropDownListFor(m => m.CompraInsumoDetalle.Insumo, new List<SelectListItem>(Model.Insumos), " -- Seleccionar Insumo -- ", new { @id = "dropdownInsumo", @class = "form-control" })
+                    <div class="modal-body py-2">
+                        @*<div class="form-floating">*@
+                        <div class="form-group">
+                            <label class="font-normal">Insumo</label>
+                            <select class="form-control" id="dropdownInsumo" data-placeholder="Seleccione Insumo" required>
+                                @foreach (var insumo in Model.Insumos)
+                                {
+                                    <option value="@insumo.Value"> @insumo.Text</option>
+                                }
+                            </select>
+                        </div>
+                        @*</div>*@
                     </div>
-                </div>
-                <div class="modal-body py-2">
-                    <div class="form-floating">
-                        @Html.LabelFor(m => m.CompraInsumoDetalle.Proveedor)
-                        @Html.DropDownListFor(m => m.CompraInsumoDetalle.Proveedor, new List<SelectListItem>(Model.Proveedores), " -- Seleccionar Proveedor -- ", new { @id = "dropdownProveedor", @class = "form-control" })
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Proveedor</label>
+                            <div id="dropdownProveedorPartialView">
+                                <partial name="_CompraInsumoProveedores.cshtml" model="null" />
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="modal-body py-2">
-                    <div class="form-floating">
-                        @Html.LabelFor(m => m.CompraInsumoDetalle.Cantidad)
-                        @Html.EditorFor(model => model.CompraInsumoDetalle.Cantidad, new { htmlAttributes = new { @id = "InsumoCantidad", @class = "form-control", @placeholder = "" }})
-                        @Html.ValidationMessageFor(model => model.CompraInsumoDetalle.Cantidad, "", new { @class = "text-danger" })
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Cantidad</label>
+                            <input class="form-control" type="number" id="InsumoCantidad" placeholder="Cantidad" required oninput="ActualizarPrecio()">
+                        </div>
                     </div>
-                </div>
-                <div class="modal-body py-2">
-                    <div class="form-floating">
-                        @Html.LabelFor(m => m.CompraInsumoDetalle.Monto)
-                        @Html.EditorFor(model => model.CompraInsumoDetalle.Monto, new { htmlAttributes = new { @id = "Monto", @class = "form-control", @placeholder = "", @disabled = "disabled" } })
-                        @Html.ValidationMessageFor(model => model.CompraInsumoDetalle.Monto, "", new { @class = "text-danger" })
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Precio</label>
+                            <input class="form-control" id="Precio" placeholder="" disabled>
+                        </div>
                     </div>
-                </div>
 
-                <div class="modal-footer">
-                    <button type="button" onclick="ClearModal()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                    <button type="button" onclick="addInsumoToCompra()" class="btn btn-primary" data-dismiss="modal">Agregar Insumo</button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="ClearModal()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" onclick="addInsumoToCompra()" class="btn btn-primary">Agregar Insumo</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -141,105 +151,85 @@
 
     <script type="text/javascript">
 
-        function observerModal(){
-            console.log($("#dropdownInsumo :selected").val() + " "+ $("#dropdownInsumo :selected").text());
+        function observerModal() {
+            console.log($("#dropdownInsumo :selected").val() + " " + $("#dropdownInsumo :selected").text());
             console.log($("#dropdownProveedor").val() + " " + $("#dropdownProveedor :selected").text());
             console.log($("#InsumoCantidad").val());
         };
 
+        function ActualizarPrecio() {
+            $.ajax({
+                type: "post",
+                url: "/fabrica/comprainsumo/ActualizarPrecio",
+                data: {
+                    IdInsumo: $("#dropdownInsumo :selected").val(),
+                    IdProveedor: $("#dropdownProveedor :selected").val(),
+                    Cantidad: $("#InsumoCantidad").val(),
+                },
+            }).done(function (precio) {
+                $("#Precio").val(precio);
+            });
+        };
+
+        $(document).on('submit', '.validateDontSubmit', function (e) {
+            //prevent the form from doing a submit
+            e.preventDefault();
+            return false;
+        })
         $(document).ready(function () {
-            $('#InsumoCantidad').change(function () {
-                if ($("#dropdownInsumo").val() != "" && $("#dropdownProveedor").val() != "") {
-                    observerModal()
-                    $.ajax({
-                        type: "post",
-                        url: "/fabrica/comprainsumo/precioCompra",
-                        data: {
-                            IdInsumo: $("#dropdownInsumo").val(),
-                            IdProveedor: $("#dropdownProveedor").val(),
-                            Cantidad: $("#InsumoCantidad").val()
-                        },
-                        datatype: "json",
-                        traditional: true,
-                        success: function (data) {
-                            $("#Monto").val(data);
-                        }
-                    });
-                };
+            $.ajax({
+                type: "post",
+                url: "/fabrica/comprainsumo/FiltrarProveedores",
+                data: {
+                    IdInsumo: $("#dropdownInsumo :selected").val()
+                },
+            }).done(function (partialView) {
+                $("#dropdownProveedorPartialView").html(""); //clear the records content
+                $("#dropdownProveedorPartialView").html(partialView);  //add the updated content.
+                ActualizarPrecio();
             });
             $('#dropdownInsumo').change(function () {
-                if ($("#dropdownProveedor").val() != "" && $("#InsumoCantidad").val() != "") {
-                    observerModal()
-                    $.ajax({
-                        type: "post",
-                        url: "/fabrica/comprainsumo/precioCompra",
-                        data: {
-                            IdInsumo: $("#dropdownInsumo").val(),
-                            IdProveedor: $("#dropdownProveedor").val(),
-                            Cantidad: $("#InsumoCantidad").val()
-                        },
-                        datatype: "json",
-                        traditional: true,
-                        success: function (data) {
-                            $("#Monto").val(data);
-                        }
-                    });
-                };
+                $.ajax({
+                    type: "post",
+                    url: "/fabrica/comprainsumo/FiltrarProveedores",
+                    data: {
+                        IdInsumo: $("#dropdownInsumo :selected").val()
+                    },
+                }).done(function (partialView) {
+                    $("#dropdownProveedorPartialView").html(""); //clear the records content
+                    $("#dropdownProveedorPartialView").html(partialView);  //add the updated content.
+                    ActualizarPrecio();
+                });
             });
-            $('#dropdownProveedor').change(function () {
-                if ($("#dropdownInsumo").val() != "" && $("#InsumoCantidad").val() != "") {
-                    observerModal()
-                    $.ajax({
-                        type: "post",
-                        url: "/fabrica/comprainsumo/precioCompra",
-                        data: {
-                            IdInsumo: $("#dropdownInsumo").val(),
-                            IdProveedor: $("#dropdownProveedor").val(),
-                            Cantidad: $("#InsumoCantidad").val()
-                        },
-                        datatype: "json",
-                        traditional: true,
-                        success: function (data) {
-                            $("#Monto").val(data);
-                        }
-                    });
-                };
-            });
-            
-            // Lo ideal es que se muestre el monto segun lo ingresado, cunado se agrega la cantidad de un insumo y se define el proveedor
-            // se mostraria un campo con el precio que tendria esa compra de insumo (campo no modificable por el usuario - disable)
-            // con ajax 
-
         });
 
         function ClearModal() {
-            $("#dropdownInsumo").val("");
-            $("#dropdownProveedor").val("");
+            $("#dropdownInsumo").prop("selectedIndex", 0);
             $("#InsumoCantidad").val("");
-            $("#Monto").val("");
+            $("#Precio").val("");
         }
 
         function addInsumoToCompra() {
-            $.ajax({
-                type: "post",
-                url: "/fabrica/comprainsumo/agregardetalle",
-                data: {
-                    IdInsumo: $("#dropdownInsumo").val(),
-                    Cantidad: $("#InsumoCantidad").val(),
-                    Insumo: {
-                        Id: $("#dropdownInsumo").val(),
-                        Nombre: $("#dropdownInsumo :selected").text()
-                    },
-                    Proveedor: {
-                        Id: $("#dropdownProveedor").val(),
-                        Nombre: $("#dropdownProveedor :selected").text()
-                    },
-                    Monto: $("#Monto").val()
-                }
-            }).done(function (partialView) {
-                $('#ListaDetalleCompra tbody:last-child').after().append(partialView);
-                ClearModal();
-            });
+            if (modalForm.checkValidity()) {
+                $.ajax({
+                    type: "post",
+                    url: "/fabrica/comprainsumo/agregardetalle",
+                    data: {
+                        IdInsumo: $("#dropdownInsumo :selected").val(),
+                        InsumoNombre: $("#dropdownInsumo :selected").text(),
+                        IdProveedor: $("#dropdownProveedor :selected").val(),
+                        ProveedorNombre: $("#dropdownProveedor :selected").text(),
+                        Cantidad: $("#InsumoCantidad").val(),
+                        Precio: $("#Precio").val(),
+                        Comentario: $("#Comentario").val()
+                    }
+                }).done(function (partialView) {
+                    $('#ListaDetalleCompra tbody:last-child').after().append(partialView);
+                    $("#nuevoArticuloModal").modal('hide');
+                    ClearModal();
+
+                });
+            }
         }
         function removeRow(row) {
             $(row).parents('tr').first().remove();

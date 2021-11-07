@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
+using Core.Dominio.CoreModelHelpers;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -39,22 +40,17 @@ namespace Core.Aplicacion.Services
             return compra;
         }
 
-        public async Task CrearCompra(CompraInsumo compra, IEnumerable<CompraInsumoDetalle> detalles)
+        public Task CrearCompra(IEnumerable<NuevaCompraInsumoModel> detalles)
         {
-            _db.ComprasInsumos.Add(compra);
+            //_db.ComprasInsumos.Add(compra);
 
-            foreach (var detalle in detalles)
-            {
-                compra.CompraInsumoDetalles.Add(detalle);
-            }
+            //foreach (var detalle in detalles)
+            //{
+            //    compra.CompraInsumoDetalles.Add(detalle);
+            //}
 
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task CrearCompra(CompraInsumo compra)
-        {
-            _db.ComprasInsumos.Add(compra);
-            await _db.SaveChangesAsync();
+            //await _db.SaveChangesAsync();
+            throw new System.NotImplementedException();
         }
 
         public async Task<IEnumerable<CompraInsumoDetalle>> GetCompraDetalles(int IdCompra)

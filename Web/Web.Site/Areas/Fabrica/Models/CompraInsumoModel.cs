@@ -5,28 +5,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Web.Site.Dtos;
 
-namespace Web.Site.Areas
+namespace Web.Site.Areas.Fabrica
 {
-    public class CompraInsumoModel : CompraInsumo
+    public class CompraInsumoModel
     {
-        public ICollection<CompraInsumoDetalle> CompraInsumoDetalles { get; set; } = new List<CompraInsumoDetalle>();
+        public IEnumerable<CompraInsumoDetalleModel> CompraInsumoDetalleModels { get; set; }
+        //public CompraInsumo CompraInsumo { get; set; }
         public IEnumerable<SelectListItem> Insumos { get; set; }
         public IEnumerable<SelectListItem> Proveedores { get; set; }
-        public CompraInsumoDetalle CompraInsumoDetalle { get; set; }
+        //public CompraInsumoDetalleModel CompraInsumoDetalleModel { get; set; }
 
-        public CompraInsumoModel()
-        {
-
-        }
-
-        public CompraInsumoModel(CompraInsumo compraInsumo)
-        {
-            Id = compraInsumo.Id;
-            IdProveedor = compraInsumo.IdProveedor;
-            Recibido = compraInsumo.Recibido;
-            Pagado = compraInsumo.Pagado;
-            NroRemito = compraInsumo.NroRemito;
-            MontoTotal = compraInsumo.MontoTotal;
-        }
     }
 }

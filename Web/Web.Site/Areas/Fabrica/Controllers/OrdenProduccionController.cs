@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Mvc;
+using Web.Site.Areas.Fabrica;
 using Web.Site.Helpers;
 
 namespace Web.Site.Areas

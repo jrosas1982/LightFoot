@@ -29,7 +29,5 @@ namespace Core.Dominio.AggregatesModel
 
         [ForeignKey("IdProveedorSugerido")]
         public virtual Proveedor Proveedor { get; set; }
-
-
     }
 }

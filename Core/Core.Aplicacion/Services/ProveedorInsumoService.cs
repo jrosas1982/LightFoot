@@ -36,15 +36,22 @@ namespace Core.Aplicacion.Services
             }
         }
 
-        public async Task<ProveedorInsumo> BuscarProveedorInsumoPorId(int idInsumo) 
+        public async Task<ProveedorInsumo> BuscarProveedorInsumoPorId(int idInsumo)
         {
             var detalle = await _db.ProveedoresInsumos.Include(x => x.Insumo).SingleOrDefaultAsync(x => x.Id == idInsumo);
             if (detalle == null)
                 throw new Exception("El ProveedorInsumo solicitado no existe");
             return detalle;
-        }        
+        }
+        public async Task<ProveedorInsumo> BuscarProveedorInsumo(int idInsumo, int idProveedor)
+        {
+            var detalle = await _db.ProveedoresInsumos.Include(x => x.Insumo).SingleOrDefaultAsync(x => x.IdInsumo == idInsumo && x.IdProveedor == idProveedor);
+            if (detalle == null)
+                throw new Exception("No existe un proveedor que venda el insumo solicitado");
+            return detalle;
+        }
 
-    public async Task<bool> EliminarInsumoDeProveedor(int lineaInsumo)
+        public async Task<bool> EliminarInsumoDeProveedor(int lineaInsumo)
         {
             try
             {
