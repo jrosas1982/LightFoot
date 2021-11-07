@@ -30,6 +30,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Areas\Fabrica\Controllers\CompraInsumoController.cs.BAK" />
+    <None Remove="Areas\Fabrica\Models\CompraInsumoModel.cs.BAK" />
+    <None Remove="Areas\Fabrica\Views\CompraInsumo\ComprarInsumos.cshtml.BAK" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Areas\Abm\Views\Sucursal\Index.cshtml" />
     <None Include="Views\AppViews\ActivityStream.cshtml" />
     <None Include="Views\AppViews\Article.cshtml" />

@@ -1,0 +1,26 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+@using Web.Site.Areas
+@model CompraInsumoDetalle
+@{
+    //bool esEditar = (Model.Id != 0);
+    //string idTr = esEditar ? Model.Id + "List" : "";
+}
+
+@if (Model != null)
+{
+<tr>
+    @using (Html.BeginCollectionItem("CompraInsumoDetalle"))
+    {
+        @Html.HiddenFor(x => x.IdCompraInsumo)
+        <td> </td>
+        <td>@Html.DisplayFor(x => x.Insumo.Nombre)</td>
+        <td>@Html.DisplayFor(x => x.Proveedor.Nombre)</td>
+        <td>@Html.DisplayFor(x => x.Cantidad)</td>
+        <td>@Html.DisplayFor(x => x.Monto)</td>
+        <td>
+            <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick="removeRow(this)">Borrar</button>
+        </td>
+
+    }
+</tr>
+}
