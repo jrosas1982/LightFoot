@@ -37,7 +37,6 @@ namespace Web.Site.Areas
         public async Task<IActionResult> ComprarInsumos()
         {
             CompraInsumo compraInsumo;
-
             
             var proveedoresListTask = _proveedorService.GetProveedores();
             var insumosListTask = _insumosService.GetInsumos();
@@ -51,26 +50,24 @@ namespace Web.Site.Areas
 
             CompraInsumoModel compraInsumoModel = new CompraInsumoModel(compraInsumo);
 
-            compraInsumoModel.Insumos = insumosList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Nombre}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
-            compraInsumoModel.Proveedores = proveedoresList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Nombre}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
+            compraInsumoModel.Insumos = insumosList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
+            compraInsumoModel.Proveedores = proveedoresList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
 
             return View(compraInsumoModel);
         }
 
-        public async Task<IActionResult> ColoresPorArticulo(string NumeroTalle)
+        public async Task<IActionResult> precioCompra(string _IdInsumo, string _IdProveedor, string Cantidad)
         {
             //var articulosList = await _articuloService.GetArticulos();
-            SolicitudModel solicitudModel = new SolicitudModel();
-            //solicitudModel.Colores = articulosList.Where(x => x.TalleArticulo == NumeroTalle).Select(c => new SelectListItem() { Text = $"{c.Color}", Value = $"{c.Color}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); ;
-            return Json(solicitudModel.Colores);
-        }
+            var IdInsumo = int.Parse(_IdInsumo);
+            var IdProveedor = int.Parse(_IdProveedor);
 
-        public async Task<IActionResult> TallesPorArticulo(string NombreArticulo)
-        {
-            //var articulosList = await _articuloService.GetArticulos();
-            SolicitudModel solicitudModel = new SolicitudModel();
-            //solicitudModel.Talles = articulosList.Where(x => x.Nombre == NombreArticulo).Select(c => new SelectListItem() { Text = c.TalleArticulo, Value = c.TalleArticulo }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
-            return Json(solicitudModel.Talles);
+            var proveedor = await _proveedorService.BuscarPorId(IdProveedor);
+
+
+            string precio = "22";
+            //solicitudModel.Colores = articulosList.Where(x => x.TalleArticulo == NumeroTalle).Select(c => new SelectListItem() { Text = $"{c.Color}", Value = $"{c.Color}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); ;
+            return Json(precio);
         }
 
         public async Task<IActionResult> Crear(SolicitudModel solicitudModel)
@@ -105,8 +102,6 @@ namespace Web.Site.Areas
             data.IdInsumo = insumo.Id;
             data.Insumo = insumo;
             data.Proveedor = proveedor;
-
-            data.Monto = 0; //falta 
                         
             return PartialView("_CompraInsumoDetalle", data);
         }

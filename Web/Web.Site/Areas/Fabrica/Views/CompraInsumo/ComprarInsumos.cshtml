@@ -105,21 +105,21 @@
                 <div class="modal-body py-2">
                     <div class="form-floating">
                         @Html.LabelFor(m => m.CompraInsumoDetalle.Cantidad)
-                        @Html.EditorFor(model => model.CompraInsumoDetalle.Cantidad, new { htmlAttributes = new { @id = "InsumoCantidad", @class = "form-control", @placeholder = "" } })
+                        @Html.EditorFor(model => model.CompraInsumoDetalle.Cantidad, new { htmlAttributes = new { @id = "InsumoCantidad", @class = "form-control", @placeholder = "" }})
                         @Html.ValidationMessageFor(model => model.CompraInsumoDetalle.Cantidad, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                @*<div class="modal-body py-2">
+                <div class="modal-body py-2">
                     <div class="form-floating">
                         @Html.LabelFor(m => m.CompraInsumoDetalle.Monto)
-                        @Html.EditorFor(model => model.CompraInsumoDetalle.Monto, new { htmlAttributes = new { @id = "Monto", @class = "form-control", @placeholder = "" } })
+                        @Html.EditorFor(model => model.CompraInsumoDetalle.Monto, new { htmlAttributes = new { @id = "Monto", @class = "form-control", @placeholder = "", @disabled = "disabled" } })
                         @Html.ValidationMessageFor(model => model.CompraInsumoDetalle.Monto, "", new { @class = "text-danger" })
                     </div>
-                </div>*@
+                </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                    <button type="button" onclick="addArticulo()" class="btn btn-primary" data-dismiss="modal">Agregar Articulo</button>
+                    <button type="button" onclick="ClearModal()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                    <button type="button" onclick="addInsumoToCompra()" class="btn btn-primary" data-dismiss="modal">Agregar Insumo</button>
                 </div>
             </div>
         </div>
@@ -140,51 +140,76 @@
     </environment>
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#dropdownInsumoXX').change(function () {
-                $.ajax({
-                    type: "post",
-                    url: "/fabrica/comprainsumo/TallesPorArticulo",
-                    data: { NombreArticulo: $("#dropdownArticulos").val() },
-                    datatype: "json",
-                    traditional: true,
-                    success: function (data) {
-                        var talleArticulo = "<select id='newTalless'>";
-                        talleArticulo = talleArticulo + '<option value="">--Seleccioné--</option>';
-                        for (var i = 0; i < data.length; i++) {
-                            talleArticulo = talleArticulo + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
-                        }
-                        talleArticulo = talleArticulo + '</select>';
-                        $('#newTalless').html(talleArticulo);
-                    }
-                });
-            });
 
-            // 
+        function observerModal(){
+            console.log($("#dropdownInsumo :selected").val() + " "+ $("#dropdownInsumo :selected").text());
+            console.log($("#dropdownProveedor").val() + " " + $("#dropdownProveedor :selected").text());
+            console.log($("#InsumoCantidad").val());
+        };
+
+        $(document).ready(function () {
+            $('#InsumoCantidad').change(function () {
+                if ($("#dropdownInsumo").val() != "" && $("#dropdownProveedor").val() != "") {
+                    observerModal()
+                    $.ajax({
+                        type: "post",
+                        url: "/fabrica/comprainsumo/precioCompra",
+                        data: {
+                            IdInsumo: $("#dropdownInsumo").val(),
+                            IdProveedor: $("#dropdownProveedor").val(),
+                            Cantidad: $("#InsumoCantidad").val()
+                        },
+                        datatype: "json",
+                        traditional: true,
+                        success: function (data) {
+                            $("#Monto").val(data);
+                        }
+                    });
+                };
+            });
+            $('#dropdownInsumo').change(function () {
+                if ($("#dropdownProveedor").val() != "" && $("#InsumoCantidad").val() != "") {
+                    observerModal()
+                    $.ajax({
+                        type: "post",
+                        url: "/fabrica/comprainsumo/precioCompra",
+                        data: {
+                            IdInsumo: $("#dropdownInsumo").val(),
+                            IdProveedor: $("#dropdownProveedor").val(),
+                            Cantidad: $("#InsumoCantidad").val()
+                        },
+                        datatype: "json",
+                        traditional: true,
+                        success: function (data) {
+                            $("#Monto").val(data);
+                        }
+                    });
+                };
+            });
+            $('#dropdownProveedor').change(function () {
+                if ($("#dropdownInsumo").val() != "" && $("#InsumoCantidad").val() != "") {
+                    observerModal()
+                    $.ajax({
+                        type: "post",
+                        url: "/fabrica/comprainsumo/precioCompra",
+                        data: {
+                            IdInsumo: $("#dropdownInsumo").val(),
+                            IdProveedor: $("#dropdownProveedor").val(),
+                            Cantidad: $("#InsumoCantidad").val()
+                        },
+                        datatype: "json",
+                        traditional: true,
+                        success: function (data) {
+                            $("#Monto").val(data);
+                        }
+                    });
+                };
+            });
+            
             // Lo ideal es que se muestre el monto segun lo ingresado, cunado se agrega la cantidad de un insumo y se define el proveedor
             // se mostraria un campo con el precio que tendria esa compra de insumo (campo no modificable por el usuario - disable)
             // con ajax 
 
-            $('#dropdownProveedorXX').change(function () {
-                $.ajax({
-                    type: "post",
-                    url: "/fabrica/comprainsumo/TallesPorArticulo",
-                    data: { NombreArticulo: $("#dropdownArticulos").val() },
-                    datatype: "json",
-                    traditional: true,
-                    success: function (data) {
-                        var talleArticulo = "<select id='newTalless'>";
-                        talleArticulo = talleArticulo + '<option value="">--Seleccioné--</option>';
-                        for (var i = 0; i < data.length; i++) {
-                            talleArticulo = talleArticulo + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
-                        }
-                        talleArticulo = talleArticulo + '</select>';
-                        $('#newTalless').html(talleArticulo);
-                    }
-                });
-            }); 
-
-           
         });
 
         function ClearModal() {
@@ -194,7 +219,7 @@
             $("#Monto").val("");
         }
 
-        function addArticulo() {
+        function addInsumoToCompra() {
             $.ajax({
                 type: "post",
                 url: "/fabrica/comprainsumo/agregardetalle",
@@ -202,11 +227,14 @@
                     IdInsumo: $("#dropdownInsumo").val(),
                     Cantidad: $("#InsumoCantidad").val(),
                     Insumo: {
+                        Id: $("#dropdownInsumo").val(),
                         Nombre: $("#dropdownInsumo :selected").text()
                     },
                     Proveedor: {
+                        Id: $("#dropdownProveedor").val(),
                         Nombre: $("#dropdownProveedor :selected").text()
-                    }
+                    },
+                    Monto: $("#Monto").val()
                 }
             }).done(function (partialView) {
                 $('#ListaDetalleCompra tbody:last-child').after().append(partialView);

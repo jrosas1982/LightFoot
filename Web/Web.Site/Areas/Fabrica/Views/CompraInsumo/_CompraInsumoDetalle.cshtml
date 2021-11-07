@@ -12,13 +12,13 @@
     @using (Html.BeginCollectionItem("CompraInsumoDetalle"))
     {
         @Html.HiddenFor(x => x.IdCompraInsumo)
-        <td> </td>
+        <td></td>
         <td>@Html.DisplayFor(x => x.Insumo.Nombre)</td>
         <td>@Html.DisplayFor(x => x.Proveedor.Nombre)</td>
         <td>@Html.DisplayFor(x => x.Cantidad)</td>
         <td>@Html.DisplayFor(x => x.Monto)</td>
         <td>
-            <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick="removeRow(this)">Borrar</button>
+            <button class=" btn btn-outline btn-danger btn-xs" type="button" onclick="removeRow(this)">Borrar</button>
         </td>
 
     }
