@@ -20,6 +20,7 @@ namespace Core.Aplicacion.Services
         private readonly IInsumoService _insumoService;
         private readonly IProveedorService _proveedorService;
         private readonly IProveedorInsumoService _proveedorInsumoService;
+        private readonly ICompraInsumoService _compraInsumoService;
 
         public CompraInsumoService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraInsumoService> logger)
         {
@@ -29,7 +30,29 @@ namespace Core.Aplicacion.Services
 
         public async Task<bool> AgregarPagoCompra(int idCompra, TipoPago tipoPago, decimal montoPagado)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var compra = await _compraInsumoService.BuscarPorId(idCompra);
+                if (compra == null)
+                    throw new Exception("No existe la compra");
+
+                var proveedorCuentaCorriente = new ProveedorInsumoCuentaCorriente()
+                {
+                    IdProveedor = compra.IdProveedor,
+                    IdCompraInsumo = compra.Id,
+                    TipoPago = tipoPago,
+                    MontoPagado = montoPagado
+                };
+
+                _db.ProveedoresInsumosCuentaCorriente.Add(proveedorCuentaCorriente);
+
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public async Task<CompraInsumo> BuscarPorId(int IdCompra)
@@ -85,6 +108,8 @@ namespace Core.Aplicacion.Services
                 _db.ComprasInsumos.Add(compra);
             }
             await _db.SaveChangesAsync();
+
+            //TODO enviar mail a proveedores
         }
 
         public async Task<IEnumerable<CompraInsumoDetalle>> GetCompraDetalles(int IdCompra)
@@ -105,16 +130,43 @@ namespace Core.Aplicacion.Services
                 .Include(x => x.CompraInsumoDetalles)
                     .ThenInclude(x => x.Insumo)
                         .ThenInclude(x => x.Proveedor)
-                .Include(x => x.Proveedor)                
+                .Include(x => x.Proveedor)
                 .ToListAsync();
 
             _logger.LogInformation("Se buscaron las compras de insumos");
             return comprasList;
         }
 
-        public async Task<bool> RecibirCompra(int idCompra, long nroRemito)
+        public async Task<bool> RecibirCompra(int idCompra, long nroRemito, double calificacionProveedor)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var compra = await _compraInsumoService.BuscarPorId(idCompra);
+                if (compra == null)
+                    throw new Exception("No existe la compra");
+
+                compra.Recibido = true;
+                compra.NroRemito = nroRemito;
+
+                foreach (var detalle in compra.CompraInsumoDetalles)
+                {
+                    var insumo = await _insumoService.BuscarPorId(detalle.IdInsumo);
+                    insumo.StockTotal += detalle.Cantidad;
+                }
+
+                _db.ComprasInsumos.Update(compra);
+
+                var proveedor = await _proveedorService.BuscarPorId(compra.IdProveedor);
+                proveedor.Calificacion = calificacionProveedor;
+                _db.Proveedores.Update(proveedor);
+
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

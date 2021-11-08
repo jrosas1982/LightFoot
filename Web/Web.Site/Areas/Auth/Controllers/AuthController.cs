@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Authentication;
@@ -105,6 +106,7 @@ namespace Web.Site.Areas
             identity.AddClaim(new Claim(ClaimTypes.Name, userLoginModel.UserLoginDTO.NombreUsuario));
             identity.AddClaim(new Claim(ClaimTypes.Email, usuario.Email));
             identity.AddClaim(new Claim(ClaimTypes.Role, usuario.UsuarioRol.ToString()));
+            identity.AddClaim(new Claim("GrupoRol", usuario.UsuarioRol.GetGroupName()));
 
             var principal = new ClaimsPrincipal(identity);
 

@@ -49,9 +49,10 @@ namespace Core.Infraestructura
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<ProveedorArticulo> ProveedoresArticulos { get; set; }
         public DbSet<ProveedorArticuloHistorico> ProveedoresArticulosHistorico { get; set; }
-        public DbSet<ProveedorArticuloCuentaCorriente> ProveedoresCuentaCorriente { get; set; }
+        public DbSet<ProveedorArticuloCuentaCorriente> ProveedoresArticulosCuentaCorriente { get; set; }
         public DbSet<ProveedorInsumo> ProveedoresInsumos { get; set; }
         public DbSet<ProveedorInsumoHistorico> ProveedoresInsumosHistorico { get; set; }
+        public DbSet<ProveedorInsumoCuentaCorriente> ProveedoresInsumosCuentaCorriente { get; set; }
 
         public DbSet<Solicitud> Solicitudes { get; set; }
         public DbSet<SolicitudDetalle> SolicitudDetalles { get; set; }
