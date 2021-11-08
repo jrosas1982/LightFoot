@@ -12,10 +12,13 @@ namespace Core.Dominio.AggregatesModel
         [Key]
         public int Id { get; set; }
         public int IdSucursal { get; set; }
-        public string Clave { get; set; }
+        public int IdParametro { get; set; }
         public string Valor { get; set; }
 
         [ForeignKey("IdSucursal")]
         public virtual Sucursal Sucursal { get; set; }
+
+        [ForeignKey("IdParametro")]
+        public virtual Parametro Parametro { get; set; }
     }
 }
