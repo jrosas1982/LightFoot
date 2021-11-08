@@ -23,9 +23,9 @@
             </li>
         </ol>
     </div>
-    <div class="col-lg-12" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditarStockArticulo", "ArticuloStock", 0)'">Crear nuevo Stock de Articulos</button>
-    </div>
+    @*<div class="col-lg-12" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditarStockArticulo", "ControlStockArticulo", 0 )'">Crear nuevo Stock de Articulos</button>
+    </div>*@
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -78,8 +78,8 @@
                                 }
                                 <td>@item.TamañoLote</td>
                                 <td>
-                                    <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarArticulo('@item.Id')">Borrar</button>
-                                    <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarArticulo('@item.Id')">Editar</button>
+                                    @*<button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarArticulo('@item.Id')">Borrar</button>*@
+                                    <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarStockArticulo('@item.Id')">Editar</button>
                                 </td>
                             </tr>
                                 }
@@ -124,8 +124,8 @@
             alert(Id);
         }
 
-        function EditarArticulo(Id) {
-            window.location = '/ControlStockArticulo/CrearEditarStockArticulo?IdStockArticulo=' + Id;
+        function EditarStockArticulo(Id) {
+            window.location = '/abm/ControlStockArticulo/CrearEditarStockArticulo?IdStockArticulo=' + Id;
         }
         function alert(Id) {
             swal({
@@ -162,10 +162,12 @@
                 pageLength: 25,
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [
-                    { extend: 'copy' },
-                    { extend: 'csv' },
-                    { extend: 'excel', title: 'ExampleFile' },
-                    { extend: 'pdf', title: 'ExampleFile' },
+                    {
+                        extend: 'pdf', title: 'ExampleFile',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        }
+                    },
 
                     {
                         extend: 'print',
@@ -176,6 +178,9 @@
                             $(win.document.body).find('table')
                                 .addClass('compact')
                                 .css('font-size', 'inherit');
+                        },
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
                         }
                     }
                 ]

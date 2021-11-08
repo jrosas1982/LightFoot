@@ -24,17 +24,22 @@ namespace Web.Site.Areas
         public async Task<IActionResult> Index()
         {
             var stockArticuloList = await _controlStockArticuloService.GetArticuloStock();
-            stockArticuloList.Where(x => x.IdSucursal == int.Parse(User.GetUserIdSucursal()));
+            if (User.GetUserRole().ToString() != "Administrador") {
+                return View(stockArticuloList.Where(x => x.IdSucursal == int.Parse(User.GetUserIdSucursal())).ToList());
+            }
             return View(stockArticuloList.ToList());
         }
 
-        public async Task<IActionResult> CrearEditarArticulo(int IdArticuloStock)
+        public async Task<IActionResult> CrearEditarStockArticulo(int IdStockArticulo)
         {
             ArticuloStock articuloStock;
-            User.GetUserIdSucursal();
 
-            if (IdArticuloStock != 0) // 0 = crear
-                articuloStock = await _controlStockArticuloService.BuscarPorId(IdArticuloStock);
+
+            if (IdStockArticulo != 0)
+            {// 0 = crear
+                articuloStock = await _controlStockArticuloService.BuscarPorId(IdStockArticulo);
+                ViewBag.ArticuloNombre = $"{articuloStock.Articulo.Nombre} - {articuloStock.Articulo.Color} - {articuloStock.Articulo.TalleArticulo}";
+            }
             else
                 articuloStock = new ArticuloStock();
 
@@ -45,12 +50,14 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Crear(ArticuloStock articuloStock)
         {
+            articuloStock.IdSucursal = int.Parse(User.GetUserIdSucursal());
             await _controlStockArticuloService.CrearArticuloStock(articuloStock);
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Editar(ArticuloStock articuloStock)
         {
+            articuloStock.IdSucursal = int.Parse(User.GetUserIdSucursal());
             await _controlStockArticuloService.EditarArticuloStock(articuloStock);
             return RedirectToAction("Index");
         }

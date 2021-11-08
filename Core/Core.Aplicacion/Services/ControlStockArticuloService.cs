@@ -19,7 +19,7 @@ namespace Core.Aplicacion.Services
         }
         public async Task<ArticuloStock> BuscarPorId(int IdArticuloStock)
         {
-            var articuloStock = await _db.ArticulosStock.FindAsync(IdArticuloStock);
+            var articuloStock = await _db.ArticulosStock.Include(x => x.Articulo).SingleOrDefaultAsync(s => s.Id == IdArticuloStock);
             return articuloStock;
         }
 
@@ -37,6 +37,7 @@ namespace Core.Aplicacion.Services
             articuloStockDb.StockTotal = articuloStock.StockTotal;
             articuloStockDb.StockMinimo = articuloStock.StockMinimo;
             articuloStockDb.EsReposicionPorLote = articuloStock.EsReposicionPorLote;
+            articuloStockDb.EsReposicionAutomatica = articuloStock.EsReposicionAutomatica;
             articuloStockDb.TamañoLote = articuloStock.TamañoLote;
 
             _db.Update(articuloStockDb);

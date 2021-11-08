@@ -13,6 +13,7 @@ namespace Web.Site.Areas.Abm
             StockTotal = articuloStock.StockTotal;
             StockMinimo = articuloStock.StockMinimo;
             EsReposicionPorLote = articuloStock.EsReposicionPorLote;
+            EsReposicionAutomatica = articuloStock.EsReposicionAutomatica;
             TamañoLote = articuloStock.TamañoLote;
         }
     }
