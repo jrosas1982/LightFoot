@@ -1,0 +1,26 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+@using Web.Site.Areas
+
+@model IEnumerable<SelectListItem>
+
+@{
+    //bool esEditar = (Model.Id != 0);
+    //string idTr = esEditar ? Model.Id + "List" : "";
+}
+
+
+@if (Model != null && Model.Any())
+{
+<select class="form-control" id="dropdownProveedor" data-placeholder="Seleccione Proveedor" required onchange="ActualizarPrecio()">
+    @foreach (var insumo in Model)
+    {
+        <option value="@insumo.Value"> @insumo.Text</option>
+    }
+</select>
+}
+else
+{
+    <select class="form-control" id="dropdownProveedor" data-placeholder="Seleccione Proveedor" required>
+        <option value="">No existe proveedor configurado para el insumo elegido</option>
+    </select>
+}

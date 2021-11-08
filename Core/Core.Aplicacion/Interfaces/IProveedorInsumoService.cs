@@ -9,7 +9,8 @@ namespace Core.Aplicacion.Interfaces
     public interface IProveedorInsumoService
     {
         public Task<int> AgregarInsumoAProveedor(ProveedorInsumo insumoProveedor);
-        public Task<ProveedorInsumo> BuscarProveedorInsumoPorId(int idInsumo);
+        public Task<ProveedorInsumo> BuscarProveedorInsumoPorId(int idProveedorInsumo);
         public Task<bool> EliminarInsumoDeProveedor(int lineaInsumo);
+        public Task<ProveedorInsumo> BuscarProveedorInsumo(int idInsumo, int idProveedor);
     }
 }

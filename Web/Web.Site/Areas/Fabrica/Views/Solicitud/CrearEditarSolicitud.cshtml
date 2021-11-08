@@ -133,7 +133,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                        <button type="button" onclick="addArticulo()" class="btn btn-primary" data-dismiss="modal">Agregar Articulo</button>
+                        <button type="button" onclick="addCompraInsumo()" class="btn btn-primary" data-dismiss="modal">Agregar Insumo</button>
                     </div>
                 </div>
             </div>
@@ -205,7 +205,7 @@
             $("#newTalless").val("");
         }
 
-        function addArticulo() {
+        function addCompraInsumo() {
             $.ajax({
                 type: "post",
                 url: "/fabrica/solicitud/agregardetalle",

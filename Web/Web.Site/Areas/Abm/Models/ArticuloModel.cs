@@ -2,7 +2,7 @@
 using Core.Dominio.AggregatesModel;
 using Web.Site.Dtos;
 
-namespace Web.Site.Areas
+namespace Web.Site.Areas.Abm
 {
     public class ArticuloModel
     {

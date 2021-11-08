@@ -25,11 +25,12 @@ namespace Core.Dominio.AggregatesModel
         [Column(TypeName = "decimal(18,2)")]
         public double StockReservado { get; set; }
 
-
+         
         [ForeignKey("IdProveedorPreferido")]
         public virtual Proveedor Proveedor { get; set; }
+        public virtual ICollection<ProveedorInsumo> ProveedoresInsumo { get; set; } = new HashSet<ProveedorInsumo>();
 
-        public virtual ICollection<ProveedorInsumoHistorico> InsumoHistorico { get; set; } = new HashSet<ProveedorInsumoHistorico>();
+        public virtual ICollection<ProveedorInsumoHistorico> ProveedoresInsumoHistorico { get; set; } = new HashSet<ProveedorInsumoHistorico>();
     }
 }
 

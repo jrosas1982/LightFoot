@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Core.Dominio.AggregatesModel;
 
-namespace Web.Site.Areas
+namespace Web.Site.Areas.Fabrica
 {
     public class OrdenProduccionFilter
     {

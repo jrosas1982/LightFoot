@@ -1,0 +1,20 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+@using Web.Site.Areas
+@model CompraInsumoProveedorModel
+
+
+@if (Model != null)
+{
+    if (Model.ProveedorPreferido != null)
+    {
+        <h1>ProveedorPreferido</h1>//card ProveedorPreferido
+    }
+    else
+    {
+        <h1>no hay ProveedorPreferido</h1>//no hay ProveedorPreferido
+    }
+    if (Model.ProveedorSugerido != null)
+    {
+        <h1>ProveedorSugerido</h1>//card ProveedorSugerido
+    }
+}

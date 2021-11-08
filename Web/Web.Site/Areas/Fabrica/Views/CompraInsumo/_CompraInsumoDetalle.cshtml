@@ -1,0 +1,35 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+@using Web.Site.Areas
+@model CompraInsumoDetalleModel
+@{
+    //bool esEditar = (Model.Id != 0);
+    //string idTr = esEditar ? Model.Id + "List" : "";
+}
+
+@if (Model != null)
+{
+<tr>
+    @using (Html.BeginCollectionItem("CompraInsumoDetalleModels"))
+    {
+        @Html.HiddenFor(x => x.IdInsumo)
+        @Html.HiddenFor(x => x.IdProveedor)
+        @Html.HiddenFor(x => x.Cantidad)
+        <td>@Html.DisplayFor(x => x.InsumoNombre)</td>
+        <td>@Html.DisplayFor(x => x.ProveedorNombre)</td>
+        <td>@Html.DisplayFor(x => x.Cantidad)</td>
+        <td>@Html.DisplayFor(x => x.Precio)</td>
+        @if (string.IsNullOrWhiteSpace(Model.Comentario))
+        {
+            <td>Sin Comentarios</td>
+        }
+        else
+        {
+            @Html.HiddenFor(x => x.Comentario)
+            <td>@Html.DisplayFor(x => x.Comentario)</td>
+        }
+        <td>
+            <button class=" btn btn-outline btn-danger btn-xs" type="button" onclick="removeRow(this)">Borrar</button>
+        </td>
+    }
+</tr>
+}

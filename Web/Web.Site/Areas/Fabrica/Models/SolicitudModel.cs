@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Web.Site.Dtos;
 
-namespace Web.Site.Areas
+namespace Web.Site.Areas.Fabrica
 {
     public class SolicitudModel : Solicitud
     {

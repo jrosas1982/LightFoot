@@ -6,6 +6,7 @@ using Core.Aplicacion.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Site.Helpers;
+using Web.Site.Areas.Fabrica;
 
 namespace Web.Site.Areas.Fabrica.Controllers
 {

@@ -11,7 +11,7 @@
 @model IEnumerable<Solicitud>
 
 <div class="row wrapper border-bottom white-bg page-heading navegacion">
-    <div class="col-lg-6">
+    <div class="col-lg-8">
         <h2>Solicitudes</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -25,9 +25,11 @@
             </li>
         </ol>
     </div>
-    <div class="col-lg-12 d-print-none" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-default" onclick="Reporte()">Reporte</button>
-        <button type="button" class="btn btn-w-m btn-default" onclick="location.href='@Url.Action("CrearEditarSolicitud", "Solicitud", 0)'">Generar Solicitud Manualmente</button>
+    <div class="col-lg-2 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-0" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()">Reporte</button>
+    </div>
+    <div class="col-lg-2 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="location.href='@Url.Action("CrearEditarSolicitud", "Solicitud", 0)'">Generar Solicitud</button>
     </div>
 </div>
 

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
@@ -35,13 +37,13 @@ namespace Core.Aplicacion.Services
 
         public async Task CrearArticulo(Articulo articulo)
         {
-            //if (_db.Usuarios.Any(x => x.NombreUsuario == usuario.NombreUsuario))
-            //    throw new Exception($"El nombre de usuario {usuario.NombreUsuario} ya existe");
+            if (_db.Articulos.Any(x => x.Nombre == articulo.Nombre && x.Color == articulo.Color && x.TalleArticulo == articulo.TalleArticulo))
+                throw new Exception($"El articulo ya existe");
 
             //if (string.IsNullOrEmpty(usuario.Contraseña))
             //    throw new Exception($"La contraeña no puede estar vacia");           
 
-            _db.Add(articulo);
+            _db.Articulos.Add(articulo);
             await _db.SaveChangesAsync();
             _logger.LogInformation($"Se creó el articulo nombre: {articulo.Nombre}");
         }

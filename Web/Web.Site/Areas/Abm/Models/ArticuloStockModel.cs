@@ -1,6 +1,6 @@
 ﻿using Core.Dominio.AggregatesModel;
 
-namespace Web.Site.Areas
+namespace Web.Site.Areas.Abm
 {
     public class ArticuloStockModel : ArticuloStock
     {

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Web.Site.Dtos;
 using Web.Site.Helpers;
 using System;
+using Web.Site.Areas.Fabrica;
 
 namespace Web.Site.Areas
 {
