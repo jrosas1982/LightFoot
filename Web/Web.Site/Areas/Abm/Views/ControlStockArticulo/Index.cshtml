@@ -40,11 +40,14 @@
                     <table class="table table-striped table-bordered table-hover dataTables-example">
                         <thead>
                             <tr>
-                                <th>Proveedor</th>
-                                <th>Stock Total</th>
-                                <th>Stock Minimo</th>
-                                <th>Tamaño Lote</th>
-                                <th>Es Reposicion</th>
+                                <th>Nombre</th>
+                                <th>Código Art.</th>
+                                <th>Cantidad</th>
+                                <th>Punto Reposición</th>
+                                <th>Reposición Lote</th>
+                                <th>Reposición Automática</th>
+                                <th>Tamaño lote</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -53,11 +56,27 @@
                                 foreach (var item in Model)
                                 {
                             <tr class="gradeC">
-                                <td>@item.Proveedor.Nombre</td>
+                                <td>@item.Articulo.Nombre</td>
+                                <td>@item.Articulo.CodigoArticulo</td>
                                 <td>@item.StockTotal</td>
                                 <td>@item.StockMinimo</td>
+                                @if (item.EsReposicionPorLote == true)
+                                {
+                                    <td>SI</td>
+                                }
+                                else
+                                {
+                                    <td>No</td>
+                                }
+                                @if (item.EsReposicionAutomatica == true)
+                                {
+                                    <td>SI</td>
+                                }
+                                else
+                                {
+                                    <td>No</td>
+                                }
                                 <td>@item.TamañoLote</td>
-                                <td>@item.EsReposicionPorLote.ToString()</td>
                                 <td>
                                     <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarArticulo('@item.Id')">Borrar</button>
                                     <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarArticulo('@item.Id')">Editar</button>
@@ -68,11 +87,14 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>Proveedor</th>
-                                <th>Stock Total</th>
-                                <th>Stock Minimo</th>
-                                <th>Tamaño Lote</th>
-                                <th>Es Reposicion</th>
+                                <th>Nombre</th>
+                                <th>Código Art.</th>
+                                <th>Cantidad</th>
+                                <th>Punto Reposición</th>
+                                <th>Reposición Lote</th>
+                                <th>Reposición Automática</th>
+                                <th>Tamaño lote</th>
+                                <th>Acciones</th>
                             </tr>
                         </tfoot>
                     </table>

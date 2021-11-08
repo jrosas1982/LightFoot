@@ -23,12 +23,14 @@ namespace Web.Site.Areas
         public async Task<IActionResult> Index()
         {
             var stockArticuloList = await _controlStockArticuloService.GetArticuloStock();
+            stockArticuloList.Where(x => x.IdSucursal == int.Parse(User.GetUserIdSucursal()));
             return View(stockArticuloList.ToList());
         }
 
         public async Task<IActionResult> CrearEditarArticulo(int IdArticuloStock)
         {
             ArticuloStock articuloStock;
+            User.GetUserIdSucursal();
 
             if (IdArticuloStock != 0) // 0 = crear
                 articuloStock = await _controlStockArticuloService.BuscarPorId(IdArticuloStock);
