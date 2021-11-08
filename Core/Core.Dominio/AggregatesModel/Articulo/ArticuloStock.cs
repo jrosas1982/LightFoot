@@ -15,6 +15,7 @@ namespace Core.Dominio.AggregatesModel
         public int StockTotal { get; set; }
         public int StockMinimo { get; set; }
         public Boolean EsReposicionPorLote { get; set; }
+        public Boolean EsReposicionAutomatica { get; set; }
         public int TamañoLote { get; set; }
 
 
