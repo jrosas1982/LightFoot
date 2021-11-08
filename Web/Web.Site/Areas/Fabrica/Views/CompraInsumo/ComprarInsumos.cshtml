@@ -104,32 +104,35 @@
                         </div>
                         @*</div>*@
                     </div>
-                    <div class="modal-body py-2">
-                        <div class="form-group">
-                            <label class="font-normal">Proveedor</label>
-                            <div id="dropdownProveedorPartialView">
-                                <partial name="_CompraInsumoProveedores.cshtml" model="null" />
+                    <div id="proveedorPreferidoSugeridoPartialView">
+                        <partial name="_CompraInsumoProveedorPreferidoSugerido.cshtml" model="null" />
+                    </div>
+                        <div class="modal-body py-2">
+                            <div class="form-group">
+                                <label class="font-normal">Proveedor</label>
+                                <div id="dropdownProveedorPartialView">
+                                    <partial name="_CompraInsumoProveedores.cshtml" model="null" />
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="modal-body py-2">
-                        <div class="form-group">
-                            <label class="font-normal">Cantidad</label>
-                            <input class="form-control" type="number" id="InsumoCantidad" placeholder="Cantidad" required oninput="ActualizarPrecio()">
+                        <div class="modal-body py-2">
+                            <div class="form-group">
+                                <label class="font-normal">Cantidad</label>
+                                <input class="form-control" type="number" id="InsumoCantidad" placeholder="Cantidad" required oninput="ActualizarPrecio()">
+                            </div>
                         </div>
-                    </div>
-                    <div class="modal-body py-2">
-                        <div class="form-group">
-                            <label class="font-normal">Precio</label>
-                            <input class="form-control" id="Precio" placeholder="" disabled>
+                        <div class="modal-body py-2">
+                            <div class="form-group">
+                                <label class="font-normal">Precio</label>
+                                <input class="form-control" id="Precio" placeholder="" disabled>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="modal-footer">
-                        <button type="button" onclick="ClearModal()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" onclick="addInsumoToCompra()" class="btn btn-primary">Agregar Insumo</button>
-                    </div>
+                        <div class="modal-footer">
+                            <button type="button" onclick="ClearModal()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" onclick="addInsumoToCompra()" class="btn btn-primary">Agregar Insumo</button>
+                        </div>
                 </form>
             </div>
         </div>
@@ -157,6 +160,38 @@
             console.log($("#InsumoCantidad").val());
         };
 
+        function InsumoSeleccionadoOnChange() {
+            FiltrarProveedores();
+            ProveedorPreferidoSugerido();
+            ActualizarPrecio();
+        }
+
+        function FiltrarProveedores() {
+            $.ajax({
+                type: "post",
+                url: "/fabrica/comprainsumo/FiltrarProveedores",
+                data: {
+                    IdInsumo: $("#dropdownInsumo :selected").val()
+                },
+            }).done(function (partialView) {
+                $("#dropdownProveedorPartialView").html(""); //clear the records content
+                $("#dropdownProveedorPartialView").html(partialView);  //add the updated content.
+            });
+        }
+
+        function ProveedorPreferidoSugerido() {
+            $.ajax({
+                type: "post",
+                url: "/fabrica/comprainsumo/ActualizarProveedorPreferidoSugerido",
+                data: {
+                    IdInsumo: $("#dropdownInsumo :selected").val()
+                },
+            }).done(function (partialView) {
+                $("#proveedorPreferidoSugeridoPartialView").html(""); //clear the records content
+                $("#proveedorPreferidoSugeridoPartialView").html(partialView);  //add the updated content.
+            });
+        }
+
         function ActualizarPrecio() {
             $.ajax({
                 type: "post",
@@ -171,35 +206,17 @@
             });
         };
 
+        //prevent the form from doing a submit
         $(document).on('submit', '.validateDontSubmit', function (e) {
-            //prevent the form from doing a submit
+            
             e.preventDefault();
             return false;
         })
+
         $(document).ready(function () {
-            $.ajax({
-                type: "post",
-                url: "/fabrica/comprainsumo/FiltrarProveedores",
-                data: {
-                    IdInsumo: $("#dropdownInsumo :selected").val()
-                },
-            }).done(function (partialView) {
-                $("#dropdownProveedorPartialView").html(""); //clear the records content
-                $("#dropdownProveedorPartialView").html(partialView);  //add the updated content.
-                ActualizarPrecio();
-            });
+            InsumoSeleccionadoOnChange();
             $('#dropdownInsumo').change(function () {
-                $.ajax({
-                    type: "post",
-                    url: "/fabrica/comprainsumo/FiltrarProveedores",
-                    data: {
-                        IdInsumo: $("#dropdownInsumo :selected").val()
-                    },
-                }).done(function (partialView) {
-                    $("#dropdownProveedorPartialView").html(""); //clear the records content
-                    $("#dropdownProveedorPartialView").html(partialView);  //add the updated content.
-                    ActualizarPrecio();
-                });
+                InsumoSeleccionadoOnChange();
             });
         });
 

@@ -9,6 +9,8 @@ using Web.Site.Dtos;
 using Web.Site.Helpers;
 using System;
 using Web.Site.Areas.Fabrica;
+using Core.Dominio.CoreModelHelpers;
+using System.Collections.Generic;
 
 namespace Web.Site.Areas
 {
@@ -80,6 +82,28 @@ namespace Web.Site.Areas
             return PartialView("_CompraInsumoProveedores", proveedoresInsumo);
         }
 
+        public async Task<IActionResult> ActualizarProveedorPreferidoSugerido(int idInsumo)
+        {
+            var insumo = await _insumosService.BuscarPorId(idInsumo);
+            var proveedores = await _proveedorService.GetProveedores();
+            var proveedoresInsumo = proveedores.Where(x => x.ProveedorInsumos.Any(y => y.IdInsumo == idInsumo));
+
+            if (!proveedoresInsumo.Any())
+                return PartialView("_CompraInsumoProveedorPreferidoSugerido", null);
+            
+            CompraInsumoProveedorModel proveedoresModel = new CompraInsumoProveedorModel();
+
+            var proveedorSugerido = proveedoresInsumo.OrderByDescending(x => x.Calificacion).First();
+            proveedoresModel.ProveedorSugerido = proveedorSugerido;
+
+            if (insumo.IdProveedorPreferido == null)
+                return PartialView("_CompraInsumoProveedorPreferidoSugerido", proveedoresModel);
+
+            var proveedorPreferido = proveedoresInsumo.Single(x => x.Id == (int)insumo.IdProveedorPreferido);
+            proveedoresModel.ProveedorPreferido = proveedorPreferido;
+
+            return PartialView("_CompraInsumoProveedorPreferidoSugerido", proveedoresModel);
+        }
 
         public async Task<IActionResult> ActualizarPrecio(int idInsumo, int idProveedor, decimal cantidad)
         {
@@ -110,8 +134,20 @@ namespace Web.Site.Areas
             //    CantidadSolicitada = x.CantidadSolicitada,
             //    Motivo = x.Motivo
             //});
+            IList<NuevaCompraInsumoModel> compra = new List<NuevaCompraInsumoModel>();
 
-            //await _solicitudService.CrearSolicitud(solicitud, solicitudDetalles);
+            foreach (var detalle in comprainsumoModel.CompraInsumoDetalleModels)
+            {
+                compra.Add(new NuevaCompraInsumoModel()
+                {
+                    Cantidad = detalle.Cantidad,
+                    Comentario = detalle.Comentario,
+                    IdInsumo = detalle.IdInsumo,
+                    IdProveedor = detalle.IdProveedor
+                });
+            }
+            await _compraInsumoService.CrearCompra(compra);
+
             return RedirectToAction("Index");
         }
 
