@@ -28,6 +28,12 @@ namespace Core.Aplicacion.Helpers
             return claim?.Value;
         }
 
+        public static string GetGroupName(this AppDbContext db)
+        {
+            var user = db._httpContextAccessor.HttpContext.User;
+            var claim = ((ClaimsIdentity)user.Identity).FindFirst("GrupoRol");
+            return claim?.Value;
+        }
 
     }
 }

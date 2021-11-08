@@ -30,7 +30,29 @@ namespace Core.Aplicacion.Services
 
         public async Task<bool> AgregarPagoCompra(int idCompra, TipoPago tipoPago, decimal montoPagado)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var compra = await _compraInsumoService.BuscarPorId(idCompra);
+                if (compra == null)
+                    throw new Exception("No existe la compra");
+
+                var proveedorCuentaCorriente = new ProveedorInsumoCuentaCorriente()
+                {
+                    IdProveedor = compra.IdProveedor,
+                    IdCompraInsumo = compra.Id,
+                    TipoPago = tipoPago,
+                    MontoPagado = montoPagado
+                };
+
+                _db.ProveedoresInsumosCuentaCorriente.Add(proveedorCuentaCorriente);
+
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public async Task<CompraInsumo> BuscarPorId(int IdCompra)
