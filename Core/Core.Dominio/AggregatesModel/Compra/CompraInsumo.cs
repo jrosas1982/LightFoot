@@ -10,6 +10,12 @@ namespace Core.Dominio.AggregatesModel
 {
     public class CompraInsumo : EntityBase
     {
+       public CompraInsumo()
+        {
+            Recibido = false;
+            Pagado = false;
+        }
+
         [Key]
         public int Id { get; set; }
         public int IdProveedor { get; set; }

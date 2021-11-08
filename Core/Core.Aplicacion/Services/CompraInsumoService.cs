@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Aplicacion.Helpers;
@@ -16,6 +17,9 @@ namespace Core.Aplicacion.Services
 
         private readonly AppDbContext _db;
         private readonly ILogger<CompraInsumoService> _logger;
+        private readonly IInsumoService _insumoService;
+        private readonly IProveedorService _proveedorService;
+        private readonly IProveedorInsumoService _proveedorInsumoService;
 
         public CompraInsumoService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraInsumoService> logger)
         {
@@ -40,17 +44,47 @@ namespace Core.Aplicacion.Services
             return compra;
         }
 
-        public Task CrearCompra(IEnumerable<NuevaCompraInsumoModel> detalles)
+        public async Task CrearCompra(IEnumerable<NuevaCompraInsumoModel> detalles)
         {
-            //_db.ComprasInsumos.Add(compra);
+            var comprasAgrupadas = detalles.GroupBy(x => x.IdProveedor).ToList();
+            var proveedores = await _proveedorService.GetProveedores();
 
-            //foreach (var detalle in detalles)
-            //{
-            //    compra.CompraInsumoDetalles.Add(detalle);
-            //}
+            foreach (var grupo in comprasAgrupadas)
+            {
+                var compra = new CompraInsumo()
+                {
+                    IdProveedor = grupo.Key,
+                };
 
-            //await _db.SaveChangesAsync();
-            throw new System.NotImplementedException();
+                decimal montoTotal = 0;
+                foreach (var item in grupo)
+                {
+                    var proveedorInsumo = await _proveedorInsumoService.BuscarProveedorInsumo(item.IdInsumo, item.IdProveedor);
+                    var proveedoresInsumoList = proveedores.Where(x => x.ProveedorInsumos.Any(y => y.IdInsumo == item.IdInsumo));
+
+                    if (!proveedoresInsumoList.Any() || proveedorInsumo == null)
+                        throw new Exception($"No existe ningun proveedor asignado para el insumo {(await _insumoService.BuscarPorId(item.IdInsumo)).Nombre}");
+
+                    var proveedorSugerido = proveedoresInsumoList.OrderByDescending(x => x.Calificacion).First();
+
+                    var montoDetalle = proveedorInsumo.Precio * item.Cantidad;
+                    montoTotal += montoDetalle;
+
+                    var detalle = new CompraInsumoDetalle()
+                    {
+                        IdInsumo = item.IdInsumo,
+                        IdProveedorSugerido = proveedorSugerido.Id,
+                        Monto = montoDetalle,
+                        Cantidad = item.Cantidad,
+                        Comentario = item.Comentario,
+                    };
+
+                    compra.CompraInsumoDetalles.Add(detalle);
+                }
+                compra.MontoTotal = montoTotal;
+                _db.ComprasInsumos.Add(compra);
+            }
+            await _db.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<CompraInsumoDetalle>> GetCompraDetalles(int IdCompra)
