@@ -115,25 +115,43 @@ namespace Web.Site.Areas
             return Json(proveedorInsumo.Precio * cantidad);
         }
 
+        public async Task<IActionResult> ActualizarComentario(int idProveedor, int idInsumo)
+        {
+            var insumo = await _insumosService.BuscarPorId(idInsumo);
+            var idproveedorPreferido = insumo.IdProveedorPreferido;
+            
+            if (idProveedor == idproveedorPreferido && idproveedorPreferido != null)
+                return Json(true);
+
+            return Json(false);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear(CompraInsumoModel comprainsumoModel)
         {
-            IList<NuevaCompraInsumoModel> compra = new List<NuevaCompraInsumoModel>();
+            try
+            {         
+                IList<NuevaCompraInsumoModel> compra = new List<NuevaCompraInsumoModel>();
 
-            foreach (var detalle in comprainsumoModel.CompraInsumoDetalleModels)
-            {
-                compra.Add(new NuevaCompraInsumoModel()
+                foreach (var detalle in comprainsumoModel.CompraInsumoDetalleModels)
                 {
-                    Cantidad = detalle.Cantidad,
-                    Comentario = detalle.Comentario,
-                    IdInsumo = detalle.IdInsumo,
-                    IdProveedor = detalle.IdProveedor
-                });
-            }
-            await _compraInsumoService.CrearCompra(compra);
+                    compra.Add(new NuevaCompraInsumoModel()
+                    {
+                        Cantidad = detalle.Cantidad,
+                        Comentario = detalle.Comentario,
+                        IdInsumo = detalle.IdInsumo,
+                        IdProveedor = detalle.IdProveedor
+                    });
+                }
+                await _compraInsumoService.CrearCompra(compra);
 
-            return RedirectToAction("Index");
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<IActionResult> ActualizarDetalleCompra(int idCompra)

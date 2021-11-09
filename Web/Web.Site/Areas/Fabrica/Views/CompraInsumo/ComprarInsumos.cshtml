@@ -66,7 +66,7 @@
                 </table>
                 <div class="ibox-content border-0 pt-0 pr-0">
                     <div class="text-center d-flex justify-content-end">
-                        <button type="button" class="btn btn-outline btn-default btn-lg mr-1" data-toggle="modal" data-target="#nuevoArticuloModal">
+                        <button type="button" class="btn btn-outline btn-default btn-lg mr-1" data-toggle="modal" data-target="#agregarInsumoModal">
                             Agregar Insumo
                         </button>
                         <button type="Submit" class="btn btn-primary btn-lg" id="comprar">
@@ -80,7 +80,7 @@
         </div>
     }
     @* MODAL NEW COMMENT *@
-    <div class="modal inmodal fade" id="nuevoArticuloModal" tabindex="-1" role="dialog" style="display: none;">
+    <div class="modal inmodal fade" id="agregarInsumoModal" tabindex="-1" role="dialog" style="display: none;">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form class="validateDontSubmit" id="modalForm" name="modalForm">
@@ -107,32 +107,37 @@
                     <div id="proveedorPreferidoSugeridoPartialView">
                         <partial name="_CompraInsumoProveedorPreferidoSugerido.cshtml" model="null" />
                     </div>
-                        <div class="modal-body py-2">
-                            <div class="form-group">
-                                <label class="font-normal">Proveedor</label>
-                                <div id="dropdownProveedorPartialView">
-                                    <partial name="_CompraInsumoProveedores.cshtml" model="null" />
-                                </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Proveedor</label>
+                            <div id="dropdownProveedorPartialView">
+                                <partial name="_CompraInsumoProveedores.cshtml" model="null" />
                             </div>
                         </div>
+                    </div>
 
-                        <div class="modal-body py-2">
-                            <div class="form-group">
-                                <label class="font-normal">Cantidad</label>
-                                <input class="form-control" type="number" id="InsumoCantidad" placeholder="Cantidad" required oninput="ActualizarPrecio()">
-                            </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Cantidad</label>
+                            <input class="form-control" type="number" id="InsumoCantidad" placeholder="Cantidad" required oninput="ActualizarPrecio()">
                         </div>
-                        <div class="modal-body py-2">
-                            <div class="form-group">
-                                <label class="font-normal">Precio</label>
-                                <input class="form-control" id="Precio" placeholder="" disabled>
-                            </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Precio</label>
+                            <input class="form-control" id="Precio" placeholder="" disabled>
                         </div>
-
-                        <div class="modal-footer">
-                            <button type="button" onclick="ClearModal()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                            <button type="submit" onclick="addInsumoToCompra()" class="btn btn-primary">Agregar Insumo</button>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Comentario</label>
+                            <input class="form-control" type="text" id="Comentario" placeholder="Ingrese un comentario">
                         </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="ClearModal()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" onclick="addInsumoToCompra()" class="btn btn-primary">Agregar Insumo</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -164,6 +169,7 @@
             FiltrarProveedores();
             ProveedorPreferidoSugerido();
             ActualizarPrecio();
+            ComentarioChange();
         }
 
         function FiltrarProveedores() {
@@ -191,7 +197,7 @@
                 $("#proveedorPreferidoSugeridoPartialView").html(partialView);  //add the updated content.
             });
         }
-
+       
         function ActualizarPrecio() {
             $.ajax({
                 type: "post",
@@ -208,7 +214,6 @@
 
         //prevent the form from doing a submit
         $(document).on('submit', '.validateDontSubmit', function (e) {
-            
             e.preventDefault();
             return false;
         })
@@ -218,12 +223,40 @@
             $('#dropdownInsumo').change(function () {
                 InsumoSeleccionadoOnChange();
             });
+            $('#dropdownProveedor').change(function () {
+                ComentarioChange();
+
+            });
         });
+
+        function ComentarioChange() {
+            $.ajax({
+                type: "post",
+                url: "/fabrica/comprainsumo/ActualizarComentario",
+                data: {
+                    IdInsumo: $("#dropdownInsumo :selected").val(),
+                    IdProveedor: $('#dropdownProveedor :selected').val()
+                },
+            }).done(function (bool) {
+                if (bool) {
+                    document.getElementById("Comentario").setAttribute('disabled', 'disabled');
+                    document.getElementById("Comentario").removeAttribute('required');
+                }
+                else {
+                    document.getElementById("Comentario").removeAttribute('disabled');
+                    document.getElementById("Comentario").setAttribute('required', 'required');
+                }
+                    
+
+                //console.log(bool);
+            });
+        }
 
         function ClearModal() {
             $("#dropdownInsumo").prop("selectedIndex", 0);
             $("#InsumoCantidad").val("");
             $("#Precio").val("");
+            $("#Comentario").val("");
         }
 
         function addInsumoToCompra() {
@@ -242,7 +275,7 @@
                     }
                 }).done(function (partialView) {
                     $('#ListaDetalleCompra tbody:last-child').after().append(partialView);
-                    $("#nuevoArticuloModal").modal('hide');
+                    $("#agregarInsumoModal").modal('hide');
                     ClearModal();
 
                 });
