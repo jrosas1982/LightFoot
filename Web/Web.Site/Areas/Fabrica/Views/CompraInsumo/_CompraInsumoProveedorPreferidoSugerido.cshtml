@@ -10,7 +10,7 @@
             @if (Model.ProveedorPreferido != null)
             {
                 //card Proveedor Preferido
-
+                <input id="IdProveedorPreferido" value="@Model.ProveedorPreferido.Id" hidden disabled />
                 <div class="widget-head-color-box black-bg px-3 pt-3 pb-2 text-left">
                     <div class="m-b-xs text-white">
                         <h2 class="font-normal no-margins">
@@ -46,7 +46,7 @@
             @if (Model.ProveedorSugerido != null)
             {
                 //card Proveedor Sugerido
-
+                <input id="IdProveedorSugerido" value="@Model.ProveedorSugerido.Id" hidden disabled />
                 <div class="widget-head-color-box black-bg px-3 pt-3 pb-2 text-left">
                     <div class="m-b-xs text-white">
                         <h2 class="font-normal no-margins">
@@ -59,8 +59,8 @@
                     <h4 class="media-heading">@Model.ProveedorSugerido.Nombre</h4>
                     <p> Direccion: @Model.ProveedorSugerido.Direccion</p>
                     @*<div class="text-right">
-                        <a class="btn btn-xs btn-success" href=""><i class="fa fa-user mr-2"></i>Seleccionar</a>
-                    </div>*@
+                    <a class="btn btn-xs btn-success" href=""><i class="fa fa-user mr-2"></i>Seleccionar</a>
+                </div>*@
                 </div>
 
             }

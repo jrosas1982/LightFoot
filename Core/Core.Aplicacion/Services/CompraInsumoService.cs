@@ -172,7 +172,7 @@ namespace Core.Aplicacion.Services
 
                 _db.ComprasInsumos.Update(compra);
 
-                var proveedor = await _proveedorService.BuscarPorId(compra.IdProveedor);
+                var proveedor = await _db.Proveedores.FindAsync(compra.IdProveedor);
                 proveedor.Calificacion = calificacionProveedor;
                 _db.Proveedores.Update(proveedor);
 

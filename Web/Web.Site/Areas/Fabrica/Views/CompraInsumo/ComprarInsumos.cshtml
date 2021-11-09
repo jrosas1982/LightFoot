@@ -107,32 +107,38 @@
                     <div id="proveedorPreferidoSugeridoPartialView">
                         <partial name="_CompraInsumoProveedorPreferidoSugerido.cshtml" model="null" />
                     </div>
-                        <div class="modal-body py-2">
-                            <div class="form-group">
-                                <label class="font-normal">Proveedor</label>
-                                <div id="dropdownProveedorPartialView">
-                                    <partial name="_CompraInsumoProveedores.cshtml" model="null" />
-                                </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Proveedor</label>
+                            <div id="dropdownProveedorPartialView">
+                                <partial name="_CompraInsumoProveedores.cshtml" model="null" />
                             </div>
                         </div>
+                    </div>
 
-                        <div class="modal-body py-2">
-                            <div class="form-group">
-                                <label class="font-normal">Cantidad</label>
-                                <input class="form-control" type="number" id="InsumoCantidad" placeholder="Cantidad" required oninput="ActualizarPrecio()">
-                            </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Cantidad</label>
+                            <input class="form-control" type="number" id="InsumoCantidad" placeholder="Cantidad" required oninput="ActualizarPrecio()">
                         </div>
-                        <div class="modal-body py-2">
-                            <div class="form-group">
-                                <label class="font-normal">Precio</label>
-                                <input class="form-control" id="Precio" placeholder="" disabled>
-                            </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Precio</label>
+                            <input class="form-control" id="Precio" placeholder="" disabled>
                         </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal" id="ComentarioLabel">Comentario</label>
+                            <input class="form-control" id="Comentario" placeholder="">
+                        </div>
+                    </div>
 
-                        <div class="modal-footer">
-                            <button type="button" onclick="ClearModal()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                            <button type="submit" onclick="addInsumoToCompra()" class="btn btn-primary">Agregar Insumo</button>
-                        </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="ClearModal()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" onclick="addInsumoToCompra()" class="btn btn-primary">Agregar Insumo</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -164,6 +170,25 @@
             FiltrarProveedores();
             ProveedorPreferidoSugerido();
             ActualizarPrecio();
+        }
+
+        function ProveeorOnChange() {
+            ActualizarPrecio();
+            ObligarComentario();
+        }
+
+        function ObligarComentario() {
+            $("#ComentarioLabel").empty();
+            if ($("#IdProveedorSugerido").val() != $("#dropdownProveedor :selected").val())
+            {
+                $("#Comentario").prop('required', true);
+                $("#ComentarioLabel").append("Motivo por el que no se selecciono el proveedor sugerido");
+            }
+            else
+            {
+                $("#Comentario").prop('required', false);
+                $("#ComentarioLabel").append("Comentario");
+            }
         }
 
         function FiltrarProveedores() {
@@ -208,7 +233,6 @@
 
         //prevent the form from doing a submit
         $(document).on('submit', '.validateDontSubmit', function (e) {
-            
             e.preventDefault();
             return false;
         })
