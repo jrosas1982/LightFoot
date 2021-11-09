@@ -172,9 +172,7 @@ namespace Web.Site.Areas
         {
             try
             {
-                await _compraInsumoService.BuscarPorId(1);
-
-                //await _compraInsumoService.RecibirCompra(idCompra, nroRemito, calificacionProveedor);
+                var resp = await _compraInsumoService.RecibirCompra(idCompra, nroRemito, calificacionProveedor);
 
                 return RedirectToAction("Index");
             }
