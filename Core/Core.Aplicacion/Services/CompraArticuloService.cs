@@ -22,10 +22,11 @@ namespace Core.Aplicacion.Services
         private readonly IArticuloService _articuloService;
         private readonly IProveedorService _proveedorService;
         private readonly IProveedorArticuloService _proveedorArticuloService;
+        private readonly ISolicitudService _solicitudService;
         private readonly IConfiguration _Configuration;
         private readonly int IdSucursal;
 
-        public CompraArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraArticuloService> logger, IArticuloService articuloService, IProveedorService proveedorService, IProveedorArticuloService proveedorArticuloService, IConfiguration configuration)
+        public CompraArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraArticuloService> logger, IArticuloService articuloService, IProveedorService proveedorService, IProveedorArticuloService proveedorArticuloService, IConfiguration configuration, ISolicitudService solicitudService)
         {
             _db = extendedAppDbContext.context;
             _logger = logger;
@@ -34,6 +35,7 @@ namespace Core.Aplicacion.Services
             _proveedorArticuloService = proveedorArticuloService;
             _Configuration = configuration;
             IdSucursal = int.Parse(_db.GetSucursalId());
+            _solicitudService = solicitudService;
         }
 
         public async Task<bool> AgregarPagoCompra(int idCompra, TipoPago tipoPago, decimal montoPagado)
@@ -120,9 +122,11 @@ namespace Core.Aplicacion.Services
 
                 await _db.SaveChangesAsync();
 
-
-                //Envio de Email a proveedor
-                await EnviarMailCompra(compra.Id);
+                var proveedorEsFabrica = _db.Proveedores.Single(x => x.Id == compra.IdProveedor).EsFabrica;
+                if (proveedorEsFabrica)                
+                    await GenerarSolicitud(compra);                
+                else                 
+                    await EnviarMailCompra(compra.Id);
             }
         }
 
@@ -222,6 +226,29 @@ namespace Core.Aplicacion.Services
                                            .Replace("@Direccion", "4562 Hazy Panda Limits, Chair Crossing, Kentucky, US, 607898");
 
             await EmailSender.SendEmail($"Nueva Compra Orden #{compraRealizada.Id}", template, compraRealizada.Proveedor.Email);
+        }
+
+        private async Task GenerarSolicitud(CompraArticulo compra)
+        {
+            var solicitud = new Solicitud()
+            {
+                IdSucursal = IdSucursal,
+                Comentario = "Compra manual",
+            };
+
+            IList<SolicitudDetalle> solicitudDetalles = new List<SolicitudDetalle>();
+
+            foreach (var item in compra.CompraArticuloDetalles)
+            {
+                solicitudDetalles.Add(new SolicitudDetalle()
+                {
+                    IdArticulo = item.IdArticulo,
+                    CantidadSolicitada = item.Cantidad,
+                    Motivo = item.Comentario
+                });
+            }
+
+            await _solicitudService.CrearSolicitud(solicitud, solicitudDetalles);
         }
     }
 }
