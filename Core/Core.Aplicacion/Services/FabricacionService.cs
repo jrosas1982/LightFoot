@@ -76,6 +76,7 @@ namespace Core.Aplicacion.Helpers
                 CantidadNecesaria = insumosNecesarios.Single(y => y.IdInsumo == x.Id).Cantidad,
                 CantidadDisponible = x.StockTotal - x.StockReservado,
             });
+
             return insumosVerificados;
         }
 
@@ -86,11 +87,29 @@ namespace Core.Aplicacion.Helpers
 
             foreach (var insumo in insumosStock)
             {
-                insumo.StockReservado = insumosNecesarios.Single(x => x.IdInsumo == insumo.Id).Cantidad;
+                insumo.StockReservado += insumosNecesarios.Single(x => x.IdInsumo == insumo.Id).Cantidad;
+
+                if (insumo.StockTotal < insumo.StockReservado)
+                    throw new Exception("No hay suficiente stock disponible para reservar para la orden de produccion");
             }
 
-            if (await insumosStock.AnyAsync(x => x.StockTotal < x.StockReservado))
-                throw new Exception("No hay suficiente stock disponible para reservar para la orden de produccion");
+            _db.Insumos.UpdateRange(insumosStock);
+            //await _db.SaveChangesAsync();
+        }
+
+        public async Task DescontarStockInsumosReservados(IEnumerable<CantidadInsumo> insumosNecesarios)
+        {
+            var insumosStock = _db.Insumos.Where(x => insumosNecesarios.Select(y => y.IdInsumo).Contains(x.Id));
+
+            foreach (var insumo in insumosStock)
+            {
+                var cantidadAfectada = insumosNecesarios.Single(x => x.IdInsumo == insumo.Id).Cantidad;
+                insumo.StockReservado -= cantidadAfectada;
+                insumo.StockTotal -= cantidadAfectada;
+
+                if (insumo.StockTotal < insumo.StockReservado)
+                    throw new Exception("No hay suficiente stock disponible para descontar para la orden de produccion");
+            }
 
             _db.Insumos.UpdateRange(insumosStock);
             //await _db.SaveChangesAsync();

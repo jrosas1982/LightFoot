@@ -10,6 +10,7 @@ using Web.Site.Helpers;
 using System;
 using Web.Site.Areas.Fabrica;
 
+
 namespace Web.Site.Areas
 {
     //[Authorize (Policy = Policies.IsControlador)]
@@ -134,9 +135,10 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Filtrar(SolicitudFilter solicitudFilter)
         {
-            var result = await _solicitudService.GetSolicitudes(solicitudFilter);
+        
+             var result = await _solicitudService.GetSolicitudes(solicitudFilter);
+            return PartialView("_SolicitudTable", result);
 
-            return Ok(result);
         }
 
         public async Task<IActionResult> AgregarDetalleAsync(SolicitudDetalle data)

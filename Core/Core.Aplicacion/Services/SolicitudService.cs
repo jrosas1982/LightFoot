@@ -180,21 +180,30 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Solicitud>> GetSolicitudes(SolicitudFilter filter)
         {
-            var solicitudesList = await _db.Solicitudes
-                .AsNoTracking()
-                .Include(x => x.Sucursal)
-                .Include(x => x.SolicitudDetalles)
-                    .ThenInclude(x => x.Articulo)
-                .Include(x => x.SolicitudDetalles)
-                    .ThenInclude(x => x.OrdenesProduccion)
-                .Where(x => filter.IdSucursalList.Contains(x.IdSucursal)
-                            && filter.EstadoSolicitudList.Contains(x.EstadoSolicitud)
-                            && x.FechaCreacion > filter.FechaDesde
-                            && x.FechaCreacion < filter.FechaHasta)
-                .ToListAsync();
+            try
+            {
+                var solicitudesList = await _db.Solicitudes
+           .AsNoTracking()
+           .Include(x => x.Sucursal)
+           .Include(x => x.SolicitudDetalles)
+               .ThenInclude(x => x.Articulo)
+           .Include(x => x.SolicitudDetalles)
+               .ThenInclude(x => x.OrdenesProduccion)
+           .Where(x => filter.IdSucursalList.Contains(x.IdSucursal)
+                       && filter.EstadoSolicitudList.Contains(x.EstadoSolicitud)
+                       && x.FechaCreacion > filter.FechaDesde
+                       && x.FechaCreacion < filter.FechaHasta)
+           .ToListAsync();
 
-            _logger.LogInformation("Se buscaron las solicitudes");
-            return solicitudesList;
+                _logger.LogInformation("Se buscaron las solicitudes");
+                return solicitudesList;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error en GetSolicitudes Mensaje: {ex.Message}");
+                throw;
+            }
+       
         }
 
         public async Task<IEnumerable<SolicitudDetalle>> GetSolicitudDetalles(int idSolicitud)
