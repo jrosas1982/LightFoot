@@ -120,8 +120,8 @@ namespace Web.Site.Areas
             var insumo = await _insumosService.BuscarPorId(idInsumo);
             var idproveedorPreferido = insumo.IdProveedorPreferido;
             
-            //if (idProveedor == idproveedorPreferido)
-            //    return Json(true);
+            if (idProveedor == idproveedorPreferido && idproveedorPreferido != null)
+                return Json(true);
 
             return Json(false);
         }

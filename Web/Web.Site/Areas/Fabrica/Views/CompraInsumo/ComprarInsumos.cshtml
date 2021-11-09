@@ -238,9 +238,17 @@
                     IdProveedor: $('#dropdownProveedor :selected').val()
                 },
             }).done(function (bool) {
-                $("Comentario").prop('disabled', bool);
+                if (bool) {
+                    document.getElementById("Comentario").setAttribute('disabled', 'disabled');
+                    document.getElementById("Comentario").removeAttribute('required');
+                }
+                else {
+                    document.getElementById("Comentario").removeAttribute('disabled');
+                    document.getElementById("Comentario").setAttribute('required', 'required');
+                }
+                    
 
-                console.log(bool);
+                //console.log(bool);
             });
         }
 
