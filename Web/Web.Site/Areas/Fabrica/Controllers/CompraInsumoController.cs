@@ -158,9 +158,25 @@ namespace Web.Site.Areas
         {
             try
             {
-                 var compra = await _compraInsumoService.BuscarPorId(idCompra);
+                var compra = await _compraInsumoService.BuscarPorId(idCompra);
 
-                 return PartialView("_CompraInsumoIndexDetalle", compra);
+                return PartialView("_CompraInsumoIndexDetalle", compra);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> RecibirCompra(int idCompra, long nroRemito, double calificacionProveedor)
+        {
+            try
+            {
+                await _compraInsumoService.BuscarPorId(1);
+
+                //await _compraInsumoService.RecibirCompra(idCompra, nroRemito, calificacionProveedor);
+
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -186,6 +202,8 @@ namespace Web.Site.Areas
                         
             return PartialView("_CompraInsumoDetalle", data);
         }
+
+
 
     }
 
