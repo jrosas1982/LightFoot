@@ -110,9 +110,9 @@ namespace Web.Site.Areas
             if (idInsumo == 0 || idProveedor == 0)
                 return Json(0);
 
-            var proveedorInsumo = await _proveedorInsumoService.BuscarProveedorInsumo(idInsumo, idProveedor);            
+            var precioInsumo = await _proveedorInsumoService.GetPrecioInsumo(idInsumo, idProveedor);            
 
-            return Json(proveedorInsumo.Precio * cantidad);
+            return Json(precioInsumo * cantidad);
         }
 
         public async Task<IActionResult> ActualizarComentario(int idProveedor, int idInsumo)

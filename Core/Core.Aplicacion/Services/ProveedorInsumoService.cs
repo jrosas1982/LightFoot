@@ -51,6 +51,14 @@ namespace Core.Aplicacion.Services
             return detalle;
         }
 
+        public async Task<decimal> GetPrecioInsumo(int idInsumo, int idProveedor)
+        {
+            var proveedorInsumo = await _db.ProveedoresInsumos.SingleOrDefaultAsync(x => x.IdInsumo == idInsumo && x.IdProveedor == idProveedor);
+            if (proveedorInsumo == null)
+                return 0;
+            return proveedorInsumo.Precio;
+        }
+
         public async Task<bool> EliminarInsumoDeProveedor(int lineaInsumo)
         {
             try

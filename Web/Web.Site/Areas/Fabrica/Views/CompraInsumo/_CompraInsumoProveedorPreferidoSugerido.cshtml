@@ -10,6 +10,7 @@
             @if (Model.ProveedorPreferido != null)
             {
                 //card Proveedor Preferido
+              <input id="IdProveedorPreferido" value="@Model.ProveedorPreferido.Id" hidden disabled />
                 <h4 class="font-normal no-margins">
                     Proveedor Preferido
                 </h4>
@@ -39,6 +40,7 @@
             @if (Model.ProveedorSugerido != null)
             {
                 //card Proveedor Sugerido
+            <input id="IdProveedorSugerido" value="@Model.ProveedorSugerido.Id" hidden disabled />
                 <h4 class="font-normal no-margins">
                     Proveedor Sugerido
                 </h4>
