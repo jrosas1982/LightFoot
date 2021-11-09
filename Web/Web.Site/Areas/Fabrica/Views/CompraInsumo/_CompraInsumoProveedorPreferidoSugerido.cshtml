@@ -5,16 +5,65 @@
 
 @if (Model != null)
 {
-    if (Model.ProveedorPreferido != null)
-    {
-        <h1>ProveedorPreferido</h1>//card ProveedorPreferido
-    }
-    else
-    {
-        <h1>no hay ProveedorPreferido</h1>//no hay ProveedorPreferido
-    }
-    if (Model.ProveedorSugerido != null)
-    {
-        <h1>ProveedorSugerido</h1>//card ProveedorSugerido
-    }
+    <div class="row m-auto modal-body"> 
+        <div class="col-lg-6 p-0 pr-1">
+            @if (Model.ProveedorPreferido != null)
+            {
+                //card Proveedor Preferido
+
+                <div class="widget-head-color-box black-bg px-3 pt-3 pb-2 text-left">
+                    <div class="m-b-xs text-white">
+                        <h2 class="font-normal no-margins">
+                            Proveedor Preferido
+                        </h2>
+                        <h4>Calificacion: @Model.ProveedorPreferido.Calificacion</h4>
+                    </div>
+                </div>
+                <div class="widget-text-box px-3 pt-3 pb-2">
+                    <h4 class="media-heading">@Model.ProveedorPreferido.Nombre</h4>
+                    <p> Direccion: @Model.ProveedorPreferido.Direccion</p>
+                    @*<div class="text-right">
+                        <a class="btn btn-xs btn-success" href=""><i class="fa fa-user mr-2"></i>Seleccionar</a>
+                    </div>*@
+                </div>
+            }
+            else
+            {
+                //no hay ProveedorPreferido
+                <div class="widget-head-color-box black-bg px-3 pt-3 pb-2 text-left">
+                    <div class="m-b-xs text-white">
+                        <h2 class="font-normal no-margins">
+                            No Hay Proveedor Preferido
+                        </h2>
+                    </div>
+                </div>
+                <div class="widget-text-box px-3 pt-3 pb-2">
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-6 p-0 pl-1">
+            @if (Model.ProveedorSugerido != null)
+            {
+                //card Proveedor Sugerido
+
+                <div class="widget-head-color-box black-bg px-3 pt-3 pb-2 text-left">
+                    <div class="m-b-xs text-white">
+                        <h2 class="font-normal no-margins">
+                            Proveedor Sugerido
+                        </h2>
+                        <h4>Calificacion: @Model.ProveedorSugerido.Calificacion</h4>
+                    </div>
+                </div>
+                <div class="widget-text-box px-3 pt-3 pb-2">
+                    <h4 class="media-heading">@Model.ProveedorSugerido.Nombre</h4>
+                    <p> Direccion: @Model.ProveedorSugerido.Direccion</p>
+                    @*<div class="text-right">
+                        <a class="btn btn-xs btn-success" href=""><i class="fa fa-user mr-2"></i>Seleccionar</a>
+                    </div>*@
+                </div>
+
+            }
+        </div>
+    </div>
 }

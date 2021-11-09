@@ -136,6 +136,20 @@ namespace Web.Site.Areas
             return RedirectToAction("Index");
         }
 
+        public async Task<IActionResult> ActualizarDetalleCompra(int idCompra)
+        {
+            try
+            {
+                 var compra = await _compraInsumoService.BuscarPorId(idCompra);
+
+                 return PartialView("_CompraInsumoDetallePartial", compra);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<IActionResult> AgregarDetalle(CompraInsumoDetalleModel data)
         {
             //var insumosList = await _insumosService.GetInsumos();
