@@ -13,11 +13,10 @@ namespace Core.Dominio.AggregatesModel
         public int Id { get; set; }
         public int IdSucursal { get; set; }
         public int IdProveedor { get; set; }
-        [Column(TypeName = "decimal(18,2)")]
         public bool Recibido { get; set; }
-        public DateTime FechaRecibido { get; set; }
+        public DateTime? FechaRecibido { get; set; }
         public bool Pagado { get; set; }
-        public DateTime FechaPagado { get; set; }
+        public DateTime? FechaPagado { get; set; }
         public long NroRemito { get; set; }
         public decimal MontoTotal { get; set; }
 
