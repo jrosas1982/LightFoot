@@ -19,27 +19,41 @@ namespace Core.Aplicacion.Services
         private readonly AppDbContext _db;
         private readonly ILogger<OrdenProduccionService> _logger;
         private readonly IHubContext<NotificationsHub> _hubContext;
+        private readonly IFabricacionService _fabricacionService;
 
-        public OrdenProduccionService(ExtendedAppDbContext extendedAppDbContext, ILogger<OrdenProduccionService> logger, IHubContext<NotificationsHub> hubContext)
+        public OrdenProduccionService(ExtendedAppDbContext extendedAppDbContext, ILogger<OrdenProduccionService> logger, IHubContext<NotificationsHub> hubContext, IFabricacionService fabricacionService)
         {
             _db = extendedAppDbContext.context;
             _logger = logger;
             _hubContext = hubContext;
+            _fabricacionService = fabricacionService;
         }
 
         public async Task<bool> IniciarEtapa(int idOrdenProduccion, string comentario = "")
         {
             //reanuda la etapa si no estaba reanudada
-            var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
+            var ordenDb = await _db.OrdenesProduccion.Include(x => x.EtapaOrdenProduccion).ThenInclude(x => x.RecetaDetalle).SingleAsync(x => x.Id == idOrdenProduccion);
 
             if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Pendiente)
                 throw new Exception("La etapa de la orden debe encontrarse en estado Pendiente para poder ser Iniciada");
-
+            
+            ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.EnProceso;
             ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Iniciada;
 
             _db.OrdenesProduccion.Update(ordenDb);
-            await _db.SaveChangesAsync();
+
+            var insumosNecesarios = ordenDb.EtapaOrdenProduccion.RecetaDetalle.Select(x => new CantidadInsumo() { Cantidad = x.Cantidad, IdInsumo = x.IdInsumo });
+
+            var insumosVerificados = await _fabricacionService.VerificarStockInsumos(insumosNecesarios);
+
+            if (insumosVerificados.Any(x => x.CantidadDisponible < x.CantidadNecesaria))
+                throw new Exception("No hay suficiente stock disponible para iniciar la etapa");
+
+            await _fabricacionService.DescontarStockInsumosReservados(insumosNecesarios);
+
             await GuardarEventoAsync(ordenDb, comentario);
+            
+            await _db.SaveChangesAsync();
 
             await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
             return true;
@@ -91,6 +105,7 @@ namespace Core.Aplicacion.Services
             if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Iniciada)
                 throw new Exception("La etapa de la orden debe encontrarse en estado Iniciada para poder ser Finalizada");
 
+            ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.EnProceso;
             ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Finalizada;
 
             _db.OrdenesProduccion.Update(ordenDb);
@@ -110,6 +125,7 @@ namespace Core.Aplicacion.Services
             if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Finalizada)
                 throw new Exception("La etapa de la orden debe encontrarse en estado Finalizada para poder ser Retrabajada");
 
+            ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.EnProceso;
             ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Retrabajo;
 
             _db.OrdenesProduccion.Update(ordenDb);
@@ -136,6 +152,7 @@ namespace Core.Aplicacion.Services
                 throw new Exception("La orden se ya encuentra en la ultima etapa");
 
             ordenDb.EtapaOrdenProduccion = siguienteEtapa;
+            ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.EnProceso;
             ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Pendiente;
 
             _db.OrdenesProduccion.Update(ordenDb);
@@ -157,8 +174,11 @@ namespace Core.Aplicacion.Services
             if (siguienteEtapa != null)
                 throw new Exception("Aun quedan etapas por realizar");
 
+            if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Finalizada)
+                throw new Exception("La etapa de la orden debe encontrarse en estado Finalizada para poder ser finalizar la Orden");
+
             ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.Finalizada;
-            ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.Finalizada;
+            ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Finalizada;
 
             _db.OrdenesProduccion.Update(ordenDb);
             await _db.SaveChangesAsync();
@@ -171,7 +191,7 @@ namespace Core.Aplicacion.Services
 
         public async Task<bool> CancelarOrden(int idOrdenProduccion, string comentario)
         {
-            // TODO liberar todos los insumos que quedaban reservados
+            // TODO liberar todos los insumos que quedaban reservados => no se hace
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
             ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.Cancelada;
             ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Cancelada;
@@ -276,7 +296,7 @@ namespace Core.Aplicacion.Services
             };
 
             _db.OrdenesProduccionEventos.Add(evento);
-            await _db.SaveChangesAsync();
+            //await _db.SaveChangesAsync();
         }
 
 
