@@ -38,7 +38,7 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var compra = await BuscarPorId(idCompra);
+                var compra = await _db.ComprasInsumos.SingleOrDefaultAsync(x => x.Id == idCompra);
                 if (compra == null)
                     throw new Exception("No existe la compra");
 
@@ -187,16 +187,16 @@ namespace Core.Aplicacion.Services
                     .Include(x => x.Proveedor)
                     .SingleAsync(x => x.Id == IdCompra);
 
-            byte[] dataRow = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CompraInsumo")["EmailTableRow"]);
+            byte[] dataRow = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CompraItem")["EmailTableRow"]);
             string templateBaseRow = Encoding.UTF8.GetString(dataRow);
 
             string Maildetalles = "";
             foreach (var item in compraRealizada.CompraInsumoDetalles)
             {
-                var row = templateBaseRow.Replace("@NombreInsumo", item.Insumo.Nombre)
-                                         .Replace("@DescripcionInsumo", item.Insumo.Descripcion)
-                                         .Replace("@UnidadesInsumo", item.Cantidad.ToString() + item.Insumo.Unidad)
-                                         .Replace("@PrecioInsumo", item.Insumo.ProveedoresInsumo.Single(x => x.IdProveedor == compraRealizada.IdProveedor).Precio.ToString());
+                var row = templateBaseRow.Replace("@NombreItem", item.Insumo.Nombre)
+                                         .Replace("@DescripcionItem", item.Insumo.Descripcion)
+                                         .Replace("@UnidadesItem", item.Cantidad.ToString() + item.Insumo.Unidad)
+                                         .Replace("@PrecioItem", item.Insumo.ProveedoresInsumo.Single(x => x.IdProveedor == compraRealizada.IdProveedor).Precio.ToString());
                 Maildetalles += row;
             }
 
@@ -205,7 +205,7 @@ namespace Core.Aplicacion.Services
             string templateBaseMail = Encoding.UTF8.GetString(dataMail);
 
             var template = templateBaseMail.Replace("@NombreProveedor", compraRealizada.Proveedor.Nombre)
-                                           .Replace("@CompraInsumo", compraRealizada.Id.ToString())
+                                           .Replace("@IdCompra", compraRealizada.Id.ToString())
                                            .Replace("@Fecha", DateTime.Now.ToLongDateString())
                                            .Replace("@TableRows", Maildetalles)
                                            .Replace("@Cliente", "Fabrica LightFoot")
