@@ -5,39 +5,33 @@
 
 @if (Model != null)
 {
-    <div class="row m-auto modal-body"> 
+    <div class="row modal-body m-auto py-0"> 
         <div class="col-lg-6 p-0 pr-1">
             @if (Model.ProveedorPreferido != null)
             {
                 //card Proveedor Preferido
-                <input id="IdProveedorPreferido" value="@Model.ProveedorPreferido.Id" hidden disabled />
-                <div class="widget-head-color-box black-bg px-3 pt-3 pb-2 text-left">
-                    <div class="m-b-xs text-white">
-                        <h2 class="font-normal no-margins">
-                            Proveedor Preferido
-                        </h2>
-                        <h4>Calificacion: @Model.ProveedorPreferido.Calificacion</h4>
+              <input id="IdProveedorPreferido" value="@Model.ProveedorPreferido.Id" hidden disabled />
+                <h4 class="font-normal no-margins">
+                    Proveedor Preferido
+                </h4>
+                <div class="input-group m-b">
+                    <div class="input-group-prepend">
+                        <span class="input-group-addon bg-success">@Model.ProveedorPreferido.Calificacion</span>
                     </div>
-                </div>
-                <div class="widget-text-box px-3 pt-3 pb-2">
-                    <h4 class="media-heading">@Model.ProveedorPreferido.Nombre</h4>
-                    <p> Direccion: @Model.ProveedorPreferido.Direccion</p>
-                    @*<div class="text-right">
-                        <a class="btn btn-xs btn-success" href=""><i class="fa fa-user mr-2"></i>Seleccionar</a>
-                    </div>*@
+                    <input type="text" placeholder="" value="@Model.ProveedorPreferido.Nombre" class="form-control bg-secondary text-white" disabled>
                 </div>
             }
             else
             {
                 //no hay ProveedorPreferido
-                <div class="widget-head-color-box black-bg px-3 pt-3 pb-2 text-left">
-                    <div class="m-b-xs text-white">
-                        <h2 class="font-normal no-margins">
-                            No Hay Proveedor Preferido
-                        </h2>
+                <h4 class="font-normal no-margins">
+                    No hay Proveedor Preferido
+                </h4>
+                <div class="input-group m-b">
+                    <div class="input-group-prepend">
+                        <span class="input-group-addon bg-secondary text-white">-</span>
                     </div>
-                </div>
-                <div class="widget-text-box px-3 pt-3 pb-2">
+                    <input type="text" placeholder="" value="" class="form-control bg-secondary text-white" disabled>
                 </div>
             }
         </div>
@@ -46,23 +40,16 @@
             @if (Model.ProveedorSugerido != null)
             {
                 //card Proveedor Sugerido
-                <input id="IdProveedorSugerido" value="@Model.ProveedorSugerido.Id" hidden disabled />
-                <div class="widget-head-color-box black-bg px-3 pt-3 pb-2 text-left">
-                    <div class="m-b-xs text-white">
-                        <h2 class="font-normal no-margins">
-                            Proveedor Sugerido
-                        </h2>
-                        <h4>Calificacion: @Model.ProveedorSugerido.Calificacion</h4>
+            <input id="IdProveedorSugerido" value="@Model.ProveedorSugerido.Id" hidden disabled />
+                <h4 class="font-normal no-margins">
+                    Proveedor Sugerido
+                </h4>
+                <div class="input-group m-b">
+                    <div class="input-group-prepend">
+                        <span class="input-group-addon bg-success">@Model.ProveedorSugerido.Calificacion</span>
                     </div>
+                    <input type="text" placeholder="" value="@Model.ProveedorSugerido.Nombre" class="form-control bg-secondary text-white" disabled>
                 </div>
-                <div class="widget-text-box px-3 pt-3 pb-2">
-                    <h4 class="media-heading">@Model.ProveedorSugerido.Nombre</h4>
-                    <p> Direccion: @Model.ProveedorSugerido.Direccion</p>
-                    @*<div class="text-right">
-                    <a class="btn btn-xs btn-success" href=""><i class="fa fa-user mr-2"></i>Seleccionar</a>
-                </div>*@
-                </div>
-
             }
         </div>
     </div>

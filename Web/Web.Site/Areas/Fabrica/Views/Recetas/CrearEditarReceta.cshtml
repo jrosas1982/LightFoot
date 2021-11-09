@@ -130,7 +130,7 @@
                     <div class="modal-body py-2">
                         <div class="form-floating">
                             @Html.LabelFor(m => m.RecetaDetalle.IdEtapaOrdenProduccion)
-                            @Html.DropDownListFor(m => m.RecetaDetalle.IdEtapaOrdenProduccion, new List<SelectListItem>(ViewBag.EtapasOrden), " -- Seleccionar Color --", new { @id = "IdEtapaOrdenProduccion", @class = "form-control required" })
+                            @Html.DropDownListFor(m => m.RecetaDetalle.IdEtapaOrdenProduccion, new List<SelectListItem>(ViewBag.EtapasOrden), " -- Seleccionar Orden de Etapa --", new { @id = "IdEtapaOrdenProduccion", @class = "form-control required" })
                             @Html.ValidationMessageFor(model => model.RecetaDetalle.IdEtapaOrdenProduccion, "", new { @class = "text-danger" })
                         </div>
                     </div>

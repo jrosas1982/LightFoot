@@ -84,11 +84,11 @@ namespace Web.Site.Areas
             return View(solicitudModel);
         }
 
-        public async Task<IActionResult> ColoresPorArticulo(string NumeroTalle) 
+        public async Task<IActionResult> ColoresPorArticulo(string NumeroTalle , string NombreArticulo) 
         {
                 var articulosList = await _articuloService.GetArticulos();
                 SolicitudModel solicitudModel = new SolicitudModel();
-                solicitudModel.Colores = articulosList.Where(x => x.TalleArticulo == NumeroTalle).Select(c => new SelectListItem() { Text = $"{c.Color}", Value = $"{c.Color}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); ;
+                solicitudModel.Colores = articulosList.Where(x => x.TalleArticulo == NumeroTalle && x.Nombre == NombreArticulo).Select(c => new SelectListItem() { Text = $"{c.Color}", Value = $"{c.Color}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); ;
                 return Json(solicitudModel.Colores);
         }
         
