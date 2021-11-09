@@ -86,7 +86,7 @@
                                             <td>No posee remito asociado</td>
                                         }
                                         <td class="d-print-none">
-                                            <button class="btn btn-outline btn-success btn-xs" type="button" 
+                                            <button class="btn btn-outline btn-success btn-xs" type="button"
                                                     onclick="verDetalle(@compra.Id)" 
                                                     data-toggle="modal" 
                                                     data-target="#ModalDetalle"> 
@@ -136,7 +136,7 @@
                 <div class="modal-header pb-1">
                     <div class="row">
                         <div class="col-sm-12 d-flex justify-content-center">
-                            <h1 style="font-size:30px;">Detalle Compra 365</h1>
+                            <h1 style="font-size:30px;">Detalle Compra</h1>
                         </div>
                     </div>
                 </div>
@@ -194,19 +194,20 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-
+            ActualizarDetalleCompra(1);
             $('.dataTables-example').DataTable({
                 pageLength: 25,
                 dom: 'gitp'
 
-            });  
+            });
 
         });
+
         function verDetalle(id) {
             ActualizarDetalleCompra(id);
         }
 
-        function verDetalle(id) {
+        function ActualizarDetalleCompra(id) {
             $.ajax({
                 type: "Get",
                 url: "/fabrica/CompraInsumo/ActualizarDetalleCompra?IdCompra=" + id,
@@ -222,9 +223,50 @@
             });
         }
 
+        function alert(Id) {
+            swal({
+                title: "Aceptar Compra",
+                text: "La compra será marcada como recibida. Esta accion no se puede deshacer",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Aceptar",
+                cancelButtonText: "Atras",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    type: "post",
+                    url: "/fabrica/CompraInsumo/RecibirCompra",
+                    data: { idSolicitud: Id },
+                    success: function (result) {
+                        if (result == true) {
+                            swal("Exito!", "La Compra ha sido recibida correctamente", "success");
+                        } else {
+                            swal("Error", "Ocurrió un error inesperado", "error");
+                        }
+                    }
+                }).done(function () {
+                    window.setTimeout(function () {
+                        location.reload();
+                    }, 600);
+                });
+            });
+        };
+
         function marcarRecibido(Id) {
-
-
+            $.ajax({
+                type: "Get",
+                url: "/fabrica/CompraInsumo/ActualizarDetalleCompra?IdCompra=" + id,
+                traditional: true,
+                data: {
+                    Id: id
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#partialViewEventos").html(""); //clear the records content
+                    $("#partialViewEventos").html(response);  //add the updated content.
+                }
+            });
         }
 
         function marcarPagado(Id) {
