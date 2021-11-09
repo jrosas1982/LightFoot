@@ -30,7 +30,8 @@
     </div>
     <div class="col-lg-2 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
         <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()"> 
-            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte</button>
+            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
+        </button>
     </div>
     <div class="col-lg-2 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
         <button type="button" class="btn btn-w-m btn-default w-100"
@@ -128,7 +129,6 @@
 
         function Reporte() {
             window.print();
-            $('.dataTables_filter').removeClass("d-print-none")
         }
 
         function IniciarEtapa(id) {

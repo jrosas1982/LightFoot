@@ -4,14 +4,16 @@ using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Infraestructura.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211109104609_CompraArticuloDetalle cantidad int")]
+    partial class CompraArticuloDetallecantidadint
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -303,12 +305,6 @@ namespace Core.Infraestructura.Migrations
                     b.Property<DateTime?>("FechaModificacion")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("FechaPagado")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FechaRecibido")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("IdProveedor")
                         .HasColumnType("int");
 
@@ -321,14 +317,14 @@ namespace Core.Infraestructura.Migrations
                     b.Property<decimal>("MontoTotal")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<long?>("NroRemito")
+                    b.Property<long>("NroRemito")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("Pagado")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("Recibido")
-                        .HasColumnType("bit");
+                    b.Property<decimal>("Recibido")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -403,12 +399,6 @@ namespace Core.Infraestructura.Migrations
                     b.Property<DateTime?>("FechaModificacion")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("FechaPagado")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FechaRecibido")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("IdProveedor")
                         .HasColumnType("int");
 
@@ -418,14 +408,14 @@ namespace Core.Infraestructura.Migrations
                     b.Property<decimal>("MontoTotal")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<long?>("NroRemito")
+                    b.Property<long>("NroRemito")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("Pagado")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("Recibido")
-                        .HasColumnType("bit");
+                    b.Property<decimal>("Recibido")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -522,7 +512,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Cortado",
-                            FechaCreacion = new DateTime(2021, 11, 9, 8, 9, 28, 251, DateTimeKind.Local).AddTicks(8953),
+                            FechaCreacion = new DateTime(2021, 11, 9, 7, 46, 8, 409, DateTimeKind.Local).AddTicks(2125),
                             Orden = 1
                         },
                         new
@@ -531,7 +521,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Aparado",
-                            FechaCreacion = new DateTime(2021, 11, 9, 8, 9, 28, 251, DateTimeKind.Local).AddTicks(9167),
+                            FechaCreacion = new DateTime(2021, 11, 9, 7, 46, 8, 409, DateTimeKind.Local).AddTicks(2341),
                             Orden = 2
                         },
                         new
@@ -540,7 +530,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Preparacion",
-                            FechaCreacion = new DateTime(2021, 11, 9, 8, 9, 28, 251, DateTimeKind.Local).AddTicks(9201),
+                            FechaCreacion = new DateTime(2021, 11, 9, 7, 46, 8, 409, DateTimeKind.Local).AddTicks(2350),
                             Orden = 3
                         },
                         new
@@ -549,7 +539,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Montado",
-                            FechaCreacion = new DateTime(2021, 11, 9, 8, 9, 28, 251, DateTimeKind.Local).AddTicks(9204),
+                            FechaCreacion = new DateTime(2021, 11, 9, 7, 46, 8, 409, DateTimeKind.Local).AddTicks(2353),
                             Orden = 4
                         },
                         new
@@ -558,7 +548,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Pegado",
-                            FechaCreacion = new DateTime(2021, 11, 9, 8, 9, 28, 251, DateTimeKind.Local).AddTicks(9207),
+                            FechaCreacion = new DateTime(2021, 11, 9, 7, 46, 8, 409, DateTimeKind.Local).AddTicks(2356),
                             Orden = 5
                         },
                         new
@@ -567,7 +557,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Terminado ",
-                            FechaCreacion = new DateTime(2021, 11, 9, 8, 9, 28, 251, DateTimeKind.Local).AddTicks(9210),
+                            FechaCreacion = new DateTime(2021, 11, 9, 7, 46, 8, 409, DateTimeKind.Local).AddTicks(2359),
                             Orden = 6
                         });
                 });
@@ -819,7 +809,7 @@ namespace Core.Infraestructura.Migrations
                             Direccion = "4562 Hazy Panda Limits, Chair Crossing, Kentucky, US, 607898",
                             Email = "TrifulcaLightFoot@gmail.com",
                             EsFabrica = true,
-                            FechaCreacion = new DateTime(2021, 11, 9, 8, 9, 28, 253, DateTimeKind.Local).AddTicks(755),
+                            FechaCreacion = new DateTime(2021, 11, 9, 7, 46, 8, 410, DateTimeKind.Local).AddTicks(3731),
                             Nombre = "Fabrica LightFoot",
                             Telefono = "+541136558997"
                         });

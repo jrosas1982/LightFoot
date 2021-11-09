@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
@@ -8,6 +9,7 @@ using Core.Dominio.AggregatesModel;
 using Core.Dominio.CoreModelHelpers;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Aplicacion.Services
@@ -20,19 +22,23 @@ namespace Core.Aplicacion.Services
         private readonly IInsumoService _insumoService;
         private readonly IProveedorService _proveedorService;
         private readonly IProveedorInsumoService _proveedorInsumoService;
-        private readonly ICompraInsumoService _compraInsumoService;
+        private readonly IConfiguration _Configuration;
 
-        public CompraInsumoService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraInsumoService> logger)
+        public CompraInsumoService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraInsumoService> logger, IConfiguration configuration, IInsumoService insumoService, IProveedorService proveedorService, IProveedorInsumoService proveedorInsumoService)
         {
             _db = extendedAppDbContext.context;
             _logger = logger;
+            _Configuration = configuration;
+            _insumoService = insumoService;
+            _proveedorService = proveedorService;
+            _proveedorInsumoService = proveedorInsumoService;
         }
 
         public async Task<bool> AgregarPagoCompra(int idCompra, TipoPago tipoPago, decimal montoPagado)
         {
             try
             {
-                var compra = await _compraInsumoService.BuscarPorId(idCompra);
+                var compra = await _db.ComprasInsumos.SingleOrDefaultAsync(x => x.Id == idCompra);
                 if (compra == null)
                     throw new Exception("No existe la compra");
 
@@ -43,6 +49,11 @@ namespace Core.Aplicacion.Services
                     TipoPago = tipoPago,
                     MontoPagado = montoPagado
                 };
+
+                compra.Pagado = true;
+                compra.FechaPagado = DateTime.Now;
+
+                _db.ComprasInsumos.Update(compra);
 
                 _db.ProveedoresInsumosCuentaCorriente.Add(proveedorCuentaCorriente);
 
@@ -106,11 +117,14 @@ namespace Core.Aplicacion.Services
                 }
                 compra.MontoTotal = montoTotal;
                 _db.ComprasInsumos.Add(compra);
-            }
-            await _db.SaveChangesAsync();
 
-            //TODO enviar mail a proveedores
-        }
+                await _db.SaveChangesAsync();
+
+
+                //Envio de Email a proveedor
+                await EnviarMailCompra(compra.Id);
+            }
+        }        
 
         public async Task<IEnumerable<CompraInsumoDetalle>> GetCompraDetalles(int IdCompra)
         {
@@ -141,17 +155,19 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var compra = await _compraInsumoService.BuscarPorId(idCompra);
+                var compra = await BuscarPorId(idCompra);
                 if (compra == null)
                     throw new Exception("No existe la compra");
 
                 compra.Recibido = true;
+                compra.FechaRecibido = DateTime.Now;
                 compra.NroRemito = nroRemito;
 
                 foreach (var detalle in compra.CompraInsumoDetalles)
                 {
                     var insumo = await _insumoService.BuscarPorId(detalle.IdInsumo);
                     insumo.StockTotal += detalle.Cantidad;
+                    _db.Insumos.Update(insumo);
                 }
 
                 _db.ComprasInsumos.Update(compra);
@@ -167,6 +183,43 @@ namespace Core.Aplicacion.Services
             {
                 return false;
             }
+        }
+
+        public async Task EnviarMailCompra(int IdCompra)
+        {
+            var compraRealizada = await _db.ComprasInsumos
+                    .Include(x => x.CompraInsumoDetalles)
+                        .ThenInclude(x => x.Insumo)
+                        .ThenInclude(x => x.ProveedoresInsumo)
+                    .Include(x => x.Proveedor)
+                    .SingleAsync(x => x.Id == IdCompra);
+
+            byte[] dataRow = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CompraItem")["EmailTableRow"]);
+            string templateBaseRow = Encoding.UTF8.GetString(dataRow);
+
+            string Maildetalles = "";
+            foreach (var item in compraRealizada.CompraInsumoDetalles)
+            {
+                var row = templateBaseRow.Replace("@NombreItem", item.Insumo.Nombre)
+                                         .Replace("@DescripcionItem", item.Insumo.Descripcion)
+                                         .Replace("@UnidadesItem", item.Cantidad.ToString() + item.Insumo.Unidad)
+                                         .Replace("@PrecioItem", item.Insumo.ProveedoresInsumo.Single(x => x.IdProveedor == compraRealizada.IdProveedor).Precio.ToString());
+                Maildetalles += row;
+            }
+
+
+            byte[] dataMail = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CompraItem")["EmailBody"]);
+            string templateBaseMail = Encoding.UTF8.GetString(dataMail);
+
+            var template = templateBaseMail.Replace("@NombreProveedor", compraRealizada.Proveedor.Nombre)
+                                           .Replace("@IdCompra", compraRealizada.Id.ToString())
+                                           .Replace("@Fecha", DateTime.Now.ToLongDateString())
+                                           .Replace("@TableRows", Maildetalles)
+                                           .Replace("@Cliente", "Fabrica LightFoot")
+                                           .Replace("@MontoTotal", compraRealizada.MontoTotal.ToString())
+                                           .Replace("@Direccion", "4562 Hazy Panda Limits, Chair Crossing, Kentucky, US, 607898");
+
+            await EmailSender.SendEmail($"Nueva Compra Orden #{compraRealizada.Id}", template, compraRealizada.Proveedor.Email);
         }
     }
 }

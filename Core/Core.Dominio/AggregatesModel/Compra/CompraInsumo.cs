@@ -19,10 +19,11 @@ namespace Core.Dominio.AggregatesModel
         [Key]
         public int Id { get; set; }
         public int IdProveedor { get; set; }
-        [Column(TypeName = "decimal(18,2)")]
         public bool Recibido { get; set; }
+        public DateTime? FechaRecibido { get; set; }
         public bool Pagado { get; set; }
-        public long NroRemito { get; set; }
+        public DateTime? FechaPagado { get; set; }
+        public long? NroRemito { get; set; }
         public decimal MontoTotal { get; set; }
 
 

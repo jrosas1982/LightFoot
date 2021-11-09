@@ -73,6 +73,7 @@ namespace Core.Infraestructura
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new EtapaOrdenProduccionEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new ProveedorEntityTypeConfiguration());
             //modelBuilder.Entity<Sucursal>(x => x.);
 
             foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))

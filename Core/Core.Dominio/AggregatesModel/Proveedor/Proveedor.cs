@@ -21,6 +21,7 @@ namespace Core.Dominio.AggregatesModel
         public string Email { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public double Calificacion { get; set; }
+        public bool EsFabrica { get; set; } = false;
 
         public virtual ICollection<ProveedorArticuloCuentaCorriente> ProvedorCuentaCorriente { get; set; } = new HashSet<ProveedorArticuloCuentaCorriente>();
         public virtual ICollection<ProveedorArticulo> ProveedorArticulos { get; set; } = new HashSet<ProveedorArticulo>();

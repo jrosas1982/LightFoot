@@ -33,6 +33,8 @@ namespace Core.Dominio.AggregatesModel
         [Required]
         public decimal PrecioMayorista { get; set; }
 
+        public virtual ICollection<ArticuloStock> ArticuloStock { get; set; } = new HashSet<ArticuloStock>();
+        public virtual ICollection<ProveedorArticulo> ProveedoresArticulo { get; set; } = new HashSet<ProveedorArticulo>();
         public virtual ICollection<ProveedorArticuloHistorico> ArticuloHistorico { get; set; } = new HashSet<ProveedorArticuloHistorico>();
         public virtual ICollection<Receta> Recetas { get; set; } = new HashSet<Receta>();
         [ForeignKey("IdArticuloCategoria")]

@@ -25,6 +25,10 @@ namespace Core.Aplicacion.Services
         {
             throw new NotImplementedException();
         }
+        public Task<Parametro> BuscarPorNombre(string variable)
+        {
+            throw new NotImplementedException();
+        }
 
         public Task<bool> CrearParametro(Parametro parametro)
         {
@@ -33,7 +37,7 @@ namespace Core.Aplicacion.Services
 
         public async Task<bool> EditarParametro(int idParametro, string valor)
         {
-            if(_db.GetGroupName() == "Fabrica")
+            if(_db.GetGroupName() == Policies.IsFabrica)
                 throw new NotImplementedException();
             throw new NotImplementedException();
         }

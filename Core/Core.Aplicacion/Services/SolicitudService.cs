@@ -25,7 +25,7 @@ namespace Core.Aplicacion.Services
             _fabricacion = fabricacion;
         }
 
-        public async Task CrearSolicitud(Solicitud solicitud, IEnumerable<SolicitudDetalle> solicitudDetalles, string comentario = "")
+        public async Task CrearSolicitud(Solicitud solicitud, IEnumerable<SolicitudDetalle> solicitudDetalles)
         {
             if (!_db.Sucursales.Any(x => x.Id == solicitud.IdSucursal))
                 throw new Exception("No es posible procesar la solicitud. La sucursal especificada no existe");
