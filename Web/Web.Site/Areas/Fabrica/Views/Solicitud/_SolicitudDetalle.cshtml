@@ -11,6 +11,7 @@
     @using (Html.BeginCollectionItem("SolicitudDetalle"))
     {
         @*@Html.HiddenFor(x => x.IdSolicitud)*@
+        @Html.HiddenFor(x => x.Articulo.Id)
         @Html.HiddenFor(x => x.IdArticulo)
         @Html.HiddenFor(x => x.CantidadSolicitada)
         @Html.HiddenFor(x => x.Motivo)
