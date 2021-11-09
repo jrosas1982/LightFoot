@@ -98,6 +98,42 @@
             $('.footable').trigger('footable_redraw');
         }
     </script>
+    <script>
+        @if(ViewBag.CatchError == true){
+
+        <text>
+        swal({
+            title: "Error al procesar",
+            text: '@ViewBag.MensajeError' + ', por favor intente mas tarde'
+        });
+        </text>
+    }
+    </script>
+    <script type="text/javascript">
+        //uncomment to prevent on startup
+        //removeDefaultFunction();
+        /** Prevents the default function such as the help pop-up **/
+        function removeDefaultFunction() {
+            window.onhelp = function () { return false; }
+        }
+        /** use keydown event and trap only the F-key,
+            but not combinations with SHIFT/CTRL/ALT **/
+        $(window).bind('keydown', function (e) {
+            //This is the F1 key code, but NOT with SHIFT/CTRL/ALT
+            var keyCode = e.keyCode || e.which;
+            if ((keyCode == 112 || e.key == 'F1') &&
+                !(event.altKey || event.ctrlKey || event.shiftKey || event.metaKey)) {
+                // prevent code starts here:
+                removeDefaultFunction();
+                e.cancelable = true;
+                e.stopPropagation();
+                e.preventDefault();
+                e.returnValue = false;
+                // Open help window here instead of alert
+                window.open('https://drive.google.com/file/d/1EonC3xc9kWlBf15MLbIW_M2oGkbeQrEi/view');
+            }
+        });
+    </script>
 
 </body>
 </html>

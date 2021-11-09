@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Site.Helpers;
 using Web.Site.Areas.Abm;
+using System;
 
 namespace Web.Site.Areas.Abm.Controllers
 {
@@ -29,14 +30,26 @@ namespace Web.Site.Areas.Abm.Controllers
 
         public async Task<IActionResult> CrearEditarCategoria(int IdCategoria)
         {
-            ArticuloCategoria articuloCategoria;
+            ArticuloCategoria articuloCategoria = new ArticuloCategoria();
+            try
+            {
+                if (IdCategoria != 0) // 0 = crear
+                    articuloCategoria = await _articuloCategoriaService.BuscarPorId(IdCategoria);
+                // solo para test
+                //var mjs = "Error test";
+                //ViewBag.CatchError = true;
+                //ViewBag.MensajeError = $"Error al CrearEditarCategoria Error: {mjs} ";
+                // solo para test
 
-            if (IdCategoria != 0) // 0 = crear
-                articuloCategoria = await _articuloCategoriaService.BuscarPorId(IdCategoria);
-            else
-                articuloCategoria = new ArticuloCategoria();
+                return View(articuloCategoria);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.CatchError = true;
+                ViewBag.MensajeError = $"Error al CrearEditarCategoria Error: {ex.Message}" ;
+                return View(articuloCategoria);
+            }
 
-            return View(articuloCategoria);
         }
 
         public async Task<IActionResult> Crear(ArticuloCategoria articuloCategoria)
