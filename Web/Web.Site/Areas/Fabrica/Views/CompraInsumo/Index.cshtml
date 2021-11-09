@@ -75,7 +75,14 @@
                                             <td>Aun no pagada</td>
                                         }
                                         <td>@compra.MontoTotal</td>
-                                        <td>@compra.NroRemito</td>
+                                        @if (compra.NroRemito != null)
+                                        {
+                                            <td>@compra.NroRemito.Value</td>
+                                        }
+                                        else
+                                        {
+                                            <td>No posee remito asociado</td>
+                                        }
                                         <td class="d-print-none">
                                             <button class="btn btn-outline btn-success btn-xs" type="button" onclick="verDetalle(@compra.Id)" data-toggle="modal" data-target="#ModalDetalle"> Ver Detalles</button>
                                             <button class="btn btn-outline btn-warning btn-xs" type="button" onclick="marcarRecibido(@compra.Id)">Marcar Recibido</button>
