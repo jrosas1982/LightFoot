@@ -131,7 +131,7 @@ namespace Web.Site.Areas
         public async Task<IActionResult> Crear(CompraInsumoModel comprainsumoModel)
         {
             try
-            {         
+            {      
                 IList<NuevaCompraInsumoModel> compra = new List<NuevaCompraInsumoModel>();
 
                 foreach (var detalle in comprainsumoModel.CompraInsumoDetalleModels)
@@ -160,7 +160,7 @@ namespace Web.Site.Areas
             {
                  var compra = await _compraInsumoService.BuscarPorId(idCompra);
 
-                 return PartialView("_CompraInsumoDetallePartial", compra);
+                 return PartialView("_CompraInsumoIndexDetalle", compra);
             }
             catch (Exception ex)
             {
