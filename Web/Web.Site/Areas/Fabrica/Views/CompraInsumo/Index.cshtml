@@ -2,12 +2,13 @@
     ViewData["Title"] = "Compras de Insumo";
     Layout = "_Layout";
 
+    IEnumerable<CompraInsumoDetalle> DetallesCompra = ViewBag.DetallesCompra;
 }
 
 @model IEnumerable<CompraInsumo>
 
 <div class="row wrapper border-bottom white-bg page-heading navegacion">
-    <div class="col-lg-12">
+    <div class="col-lg-10">
         <h2>Compras</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -21,7 +22,7 @@
             </li>
         </ol>
     </div>
-    <div class="col-lg-12" style="text-align:right">
+    <div class="col-lg-2 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
         <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("ComprarInsumos", "CompraInsumo", 0)'">
             <i class="fa fa-shopping-cart"></i> Realizar Compra
         </button>
@@ -84,9 +85,27 @@
                                             <td>No posee remito asociado</td>
                                         }
                                         <td class="d-print-none">
-                                            <button class="btn btn-outline btn-success btn-xs" type="button" onclick="verDetalle(@compra.Id)" data-toggle="modal" data-target="#ModalDetalle"> Ver Detalles</button>
-                                            <button class="btn btn-outline btn-warning btn-xs" type="button" onclick="marcarRecibido(@compra.Id)">Marcar Recibido</button>
-                                            <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="marcarPagado(@compra.Id)">Marcar Pagado</button>
+                                            <button class="btn btn-outline btn-success btn-xs" type="button" 
+                                                    onclick="verDetalle(@compra.Id)" 
+                                                    data-toggle="modal" 
+                                                    data-target="#ModalDetalle"> 
+                                                Ver Detalles
+                                            </button>
+                                            @if (!compra.Recibido)
+                                            {
+                                                <button class="btn btn-outline btn-warning btn-xs" type="button"
+                                                        onclick="marcarRecibido(@compra.Id)">
+                                                    Marcar Recibido
+                                                </button>
+                                            }
+                                            else
+                                                @if(!compra.Pagado)
+                                                {   
+                                                    <button class="btn btn-outline btn-primary btn-xs" type="button"
+                                                            onclick="marcarPagado(@compra.Id)">
+                                                        Marcar Pagado
+                                                    </button>
+                                                }
                                         </td>
                                     </tr>
                                         }
@@ -94,7 +113,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colspan="6">
+                                        <td colspan="7">
                                             <ul class="pagination float-right"></ul>
                                         </td>
                                     </tr>
@@ -129,15 +148,11 @@
                                     <th>Proveedor</th>
                                     <th>Cantidad</th>
                                     <th>Monto</th>
+                                    <th>Comentario</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>nombre insumo</td>
-                                    <td>nombre proveedor</td>
-                                    <td>cantidad de insumo</td>
-                                    <td>monto</td>
-                                </tr>
+                            <tbody id="partialViewEventos">
+                                <partial name="_CompraInsumoDetallePartial.cshtml" model="null"/>
                             </tbody>
                         </table>
                     </div>
@@ -181,28 +196,39 @@
 
             $('.dataTables-example').DataTable({
                 pageLength: 25,
-                dom: '<"html5buttons"B>lTfgitp',
-                buttons: [
-                    //   {
-                    //        extend: 'print',
-                    //        customize: function (win) {
-                    //            $(win.document.body).addClass('white-bg');
-                    //            $(win.document.body).css('font-size', '10px');
-                    //
-                    //            $(win.document.body).find('table')
-                    //                .addClass('compact')
-                    //                .css('font-size', 'inherit');
-                    //        }
-                    //    }
-                ]
+                dom: 'gitp'
 
-            });
-
-
+            });  
 
         });
+        function verDetalle(id) {
+            ActualizarDetalleCompra(id);
+        }
+
+        function verDetalle(id) {
+            $.ajax({
+                type: "Get",
+                url: "/fabrica/CompraInsumo/ActualizarDetalleCompra?IdCompra=" + id,
+                traditional: true,
+                data: {
+                    Id: id
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#partialViewEventos").html(""); //clear the records content
+                    $("#partialViewEventos").html(response);  //add the updated content.
+                }
+            });
+        }
+
+        function marcarRecibido(Id) {
 
 
+        }
+
+        function marcarPagado(Id) {
+
+        }
     </script>
 }
 
