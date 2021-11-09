@@ -35,5 +35,12 @@ namespace Core.Aplicacion.Helpers
             return claim?.Value;
         }
 
+        public static string GetSucursalId(this AppDbContext db)
+        {
+            var user = db._httpContextAccessor.HttpContext.User;
+            var claim = ((ClaimsIdentity)user.Identity).FindFirst("IdSucursal");
+            return claim?.Value;
+        }
+
     }
 }

@@ -12,45 +12,47 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
+
 namespace Core.Aplicacion.Services
 {
-    public class CompraInsumoService : ICompraInsumoService
+    public class CompraArticuloService : ICompraArticuloService
     {
-
         private readonly AppDbContext _db;
-        private readonly ILogger<CompraInsumoService> _logger;
-        private readonly IInsumoService _insumoService;
+        private readonly ILogger<CompraArticuloService> _logger;
+        private readonly IArticuloService _articuloService;
         private readonly IProveedorService _proveedorService;
-        private readonly IProveedorInsumoService _proveedorInsumoService;
+        private readonly IProveedorArticuloService _proveedorArticuloService;
         private readonly IConfiguration _Configuration;
+        private readonly int IdSucursal;
 
-        public CompraInsumoService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraInsumoService> logger, IConfiguration configuration, IInsumoService insumoService, IProveedorService proveedorService, IProveedorInsumoService proveedorInsumoService)
+        public CompraArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraArticuloService> logger, IArticuloService articuloService, IProveedorService proveedorService, IProveedorArticuloService proveedorArticuloService, IConfiguration configuration)
         {
             _db = extendedAppDbContext.context;
             _logger = logger;
-            _Configuration = configuration;
-            _insumoService = insumoService;
+            _articuloService = articuloService;
             _proveedorService = proveedorService;
-            _proveedorInsumoService = proveedorInsumoService;
+            _proveedorArticuloService = proveedorArticuloService;
+            _Configuration = configuration;
+            IdSucursal = int.Parse(_db.GetSucursalId());
         }
 
         public async Task<bool> AgregarPagoCompra(int idCompra, TipoPago tipoPago, decimal montoPagado)
         {
             try
             {
-                var compra = await _db.ComprasInsumos.SingleOrDefaultAsync(x => x.Id == idCompra);
+                var compra = await _db.ComprasArticulos.Where(x => x.IdSucursal == IdSucursal).SingleOrDefaultAsync(x => x.Id == idCompra);
                 if (compra == null)
                     throw new Exception("No existe la compra");
 
-                var proveedorCuentaCorriente = new ProveedorInsumoCuentaCorriente()
+                var proveedorCuentaCorriente = new ProveedorArticuloCuentaCorriente()
                 {
                     IdProveedor = compra.IdProveedor,
-                    IdCompraInsumo = compra.Id,
+                    IdCompraArticulo = compra.Id,
                     TipoPago = tipoPago,
                     MontoPagado = montoPagado
                 };
 
-                _db.ProveedoresInsumosCuentaCorriente.Add(proveedorCuentaCorriente);
+                _db.ProveedoresArticulosCuentaCorriente.Add(proveedorCuentaCorriente);
 
                 await _db.SaveChangesAsync();
                 return true;
@@ -61,57 +63,60 @@ namespace Core.Aplicacion.Services
             }
         }
 
-        public async Task<CompraInsumo> BuscarPorId(int IdCompra)
+        public async Task<CompraArticulo> BuscarPorId(int IdCompra)
         {
-            var compra = await _db.ComprasInsumos
+            var compra = await _db.ComprasArticulos
                 .AsNoTracking()
-                .Include(x => x.CompraInsumoDetalles)
-                    .ThenInclude(x => x.Insumo)
-                        .ThenInclude(x => x.Proveedor)
+                .Include(x => x.CompraArticuloDetalles)
+                    .ThenInclude(x => x.Articulo)
+                        //.ThenInclude(x => x.) TODO completar
                 .Include(x => x.Proveedor)
-                .SingleAsync(x => x.Id ==IdCompra);
+                .Where(x => x.IdSucursal == IdSucursal)
+                .SingleAsync(x => x.Id == IdCompra);
             return compra;
         }
 
-        public async Task CrearCompra(IEnumerable<NuevaCompraInsumoModel> detalles)
+        public async Task CrearCompra(IEnumerable<NuevaCompraArticuloModel> detalles)
         {
             var comprasAgrupadas = detalles.GroupBy(x => x.IdProveedor).ToList();
             var proveedores = await _proveedorService.GetProveedores();
 
             foreach (var grupo in comprasAgrupadas)
             {
-                var compra = new CompraInsumo()
+                var compra = new CompraArticulo()
                 {
                     IdProveedor = grupo.Key,
+                    IdSucursal = IdSucursal
                 };
 
                 decimal montoTotal = 0;
                 foreach (var item in grupo)
                 {
-                    var proveedorInsumo = await _proveedorInsumoService.BuscarProveedorInsumo(item.IdInsumo, item.IdProveedor);
-                    var proveedoresInsumoList = proveedores.Where(x => x.ProveedorInsumos.Any(y => y.IdInsumo == item.IdInsumo));
+                    var proveedorArticulo = await _proveedorArticuloService.BuscarProveedorArticulo(item.IdArticulo, item.IdProveedor);
+                    var proveedoresArticuloList = proveedores.Where(x => x.ProveedorArticulos.Any(y => y.IdArticulo == item.IdArticulo));
 
-                    if (!proveedoresInsumoList.Any() || proveedorInsumo == null)
-                        throw new Exception($"No existe ningun proveedor asignado para el insumo {(await _insumoService.BuscarPorId(item.IdInsumo)).Nombre}");
+                    if (!proveedoresArticuloList.Any() || proveedorArticulo == null)
+                        throw new Exception($"No existe ningun proveedor asignado para el articulo {(await _articuloService.BuscarPorId(item.IdArticulo)).Nombre}");
 
-                    var proveedorSugerido = proveedoresInsumoList.OrderByDescending(x => x.Calificacion).First();
+                    var proveedorSugerido = proveedoresArticuloList.OrderByDescending(x => x.Calificacion).First();
 
-                    var montoDetalle = proveedorInsumo.Precio * item.Cantidad;
+                    var montoDetalle = proveedorArticulo.Precio * item.Cantidad;
                     montoTotal += montoDetalle;
 
-                    var detalle = new CompraInsumoDetalle()
+                    var detalle = new CompraArticuloDetalle()
                     {
-                        IdInsumo = item.IdInsumo,
+
+                        IdArticulo = item.IdArticulo,
                         IdProveedorSugerido = proveedorSugerido.Id,
                         Monto = montoDetalle,
                         Cantidad = item.Cantidad,
                         Comentario = item.Comentario,
                     };
 
-                    compra.CompraInsumoDetalles.Add(detalle);
+                    compra.CompraArticuloDetalles.Add(detalle);
                 }
                 compra.MontoTotal = montoTotal;
-                _db.ComprasInsumos.Add(compra);
+                _db.ComprasArticulos.Add(compra);
 
                 await _db.SaveChangesAsync();
 
@@ -119,27 +124,30 @@ namespace Core.Aplicacion.Services
                 //Envio de Email a proveedor
                 await EnviarMailCompra(compra.Id);
             }
-        }        
+        }
 
-        public async Task<IEnumerable<CompraInsumoDetalle>> GetCompraDetalles(int IdCompra)
+        public async Task<IEnumerable<CompraArticuloDetalle>> GetCompraDetalles(int IdCompra)
         {
-            var compraDetalles = await _db.CompraInsumoDetalles
+            var compraDetalles = await _db.CompraArticuloDetalles
                 .AsNoTracking()
-                .Include(x => x.Insumo)
-                .ThenInclude(x => x.Proveedor)
-                .Where(x => x.IdCompraInsumo == IdCompra)
+                .Include(x => x.Articulo)
+                    //.ThenInclude(x => x.ArticuloStock)
+                    //    .ThenInclude(x => x.Proveedor)
+                .Where(x => x.IdCompraArticulo == IdCompra && x.CompraArticulo.IdSucursal == IdSucursal)
                 .ToListAsync();
             return compraDetalles;
         }
 
-        public async Task<IEnumerable<CompraInsumo>> GetCompras()
+        public async Task<IEnumerable<CompraArticulo>> GetCompras()
         {
-            var comprasList = await _db.ComprasInsumos
+            var comprasList = await _db.ComprasArticulos
                 .AsNoTracking()
-                .Include(x => x.CompraInsumoDetalles)
-                    .ThenInclude(x => x.Insumo)
-                        .ThenInclude(x => x.Proveedor)
+                .Include(x => x.CompraArticuloDetalles)
+                    .ThenInclude(x => x.Articulo)
+                        //.ThenInclude(x => x.ArticuloStock)
+                        //    .ThenInclude(x => x.Proveedor)
                 .Include(x => x.Proveedor)
+                .Where(x => x.IdSucursal == IdSucursal)
                 .ToListAsync();
 
             _logger.LogInformation("Se buscaron las compras de insumos");
@@ -150,21 +158,21 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var compra = await BuscarPorId(idCompra);
+                var compra = await _db.ComprasArticulos.Where(x => x.IdSucursal == IdSucursal).SingleOrDefaultAsync(x => x.Id == idCompra);
                 if (compra == null)
                     throw new Exception("No existe la compra");
 
                 compra.Recibido = true;
                 compra.NroRemito = nroRemito;
 
-                foreach (var detalle in compra.CompraInsumoDetalles)
+                foreach (var detalle in compra.CompraArticuloDetalles)
                 {
-                    var insumo = await _insumoService.BuscarPorId(detalle.IdInsumo);
-                    insumo.StockTotal += detalle.Cantidad;
-                    _db.Insumos.Update(insumo);
+                    var articulo = await _db.ArticulosStock.SingleOrDefaultAsync(x => x.Id == detalle.IdArticulo && x.IdSucursal == IdSucursal);
+                    articulo.StockTotal += detalle.Cantidad;
+                    _db.ArticulosStock.Update(articulo);
                 }
 
-                _db.ComprasInsumos.Update(compra);
+                _db.ComprasArticulos.Update(compra);
 
                 var proveedor = await _proveedorService.BuscarPorId(compra.IdProveedor);
                 proveedor.Calificacion = calificacionProveedor;
@@ -181,10 +189,10 @@ namespace Core.Aplicacion.Services
 
         public async Task EnviarMailCompra(int IdCompra)
         {
-            var compraRealizada = await _db.ComprasInsumos
-                    .Include(x => x.CompraInsumoDetalles)
-                        .ThenInclude(x => x.Insumo)
-                        .ThenInclude(x => x.ProveedoresInsumo)
+            var compraRealizada = await _db.ComprasArticulos
+                    .Include(x => x.CompraArticuloDetalles)
+                        .ThenInclude(x => x.Articulo)
+                        .ThenInclude(x => x.ProveedoresArticulo)
                     .Include(x => x.Proveedor)
                     .SingleAsync(x => x.Id == IdCompra);
 
@@ -192,12 +200,12 @@ namespace Core.Aplicacion.Services
             string templateBaseRow = Encoding.UTF8.GetString(dataRow);
 
             string Maildetalles = "";
-            foreach (var item in compraRealizada.CompraInsumoDetalles)
+            foreach (var item in compraRealizada.CompraArticuloDetalles)
             {
-                var row = templateBaseRow.Replace("@NombreItem", item.Insumo.Nombre)
-                                         .Replace("@DescripcionItem", item.Insumo.Descripcion)
-                                         .Replace("@UnidadesItem", item.Cantidad.ToString() + item.Insumo.Unidad)
-                                         .Replace("@PrecioItem", item.Insumo.ProveedoresInsumo.Single(x => x.IdProveedor == compraRealizada.IdProveedor).Precio.ToString());
+                var row = templateBaseRow.Replace("@NombreItem", item.Articulo.Nombre)
+                                         .Replace("@DescripcionItem", item.Articulo.Descripcion)
+                                         .Replace("@UnidadesItem", item.Cantidad.ToString() + "u")
+                                         .Replace("@PrecioItem", item.Articulo.ProveedoresArticulo.Single(x => x.IdProveedor == compraRealizada.IdProveedor).Precio.ToString());
                 Maildetalles += row;
             }
 
