@@ -16,7 +16,6 @@ namespace Core.Dominio.AggregatesModel
         public int IdProveedorSugerido { get; set; }
         [Column(TypeName = "decimal(18,2)")]        
         public decimal Monto { get; set; }
-        [Column(TypeName = "decimal(18,2)")]
         public int Cantidad { get; set; }
         public string Comentario { get; set; }
 
