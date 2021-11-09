@@ -11,14 +11,15 @@ namespace Core.Infraestructura.EntityConfiguration
             Proveedor.HasData(
                 new Proveedor
                 {
-                    Id = 1,
+                    Id = 100,
                     Nombre = "Fabrica LightFoot",
                     Direccion = "4562 Hazy Panda Limits, Chair Crossing, Kentucky, US, 607898",
                     Telefono = "+541136558997",
                     CUIT = "30709834904",
                     Email = "TrifulcaLightFoot@gmail.com",
                     Calificacion = 0,
-                    EsFabrica = true
+                    EsFabrica = true,
+                    CreadoPor = "Initial"
                 }
             );
         }
