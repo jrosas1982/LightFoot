@@ -220,16 +220,18 @@ namespace Core.Aplicacion.Services
             }
 
 
-            byte[] dataMail = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CompraInsumo")["EmailBody"]);
+            byte[] dataMail = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CompraItem")["EmailBody"]);
             string templateBaseMail = Encoding.UTF8.GetString(dataMail);
+
+            var sucursalCompra = await _db.Sucursales.FindAsync(IdSucursal);
 
             var template = templateBaseMail.Replace("@NombreProveedor", compraRealizada.Proveedor.Nombre)
                                            .Replace("@IdCompra", compraRealizada.Id.ToString())
                                            .Replace("@Fecha", DateTime.Now.ToLongDateString())
                                            .Replace("@TableRows", Maildetalles)
-                                           .Replace("@Cliente", "Fabrica LightFoot")
+                                           .Replace("@Cliente", sucursalCompra.Nombre)
                                            .Replace("@MontoTotal", compraRealizada.MontoTotal.ToString())
-                                           .Replace("@Direccion", "4562 Hazy Panda Limits, Chair Crossing, Kentucky, US, 607898");
+                                           .Replace("@Direccion", sucursalCompra.Direccion);
 
             await EmailSender.SendEmail($"Nueva Compra Orden #{compraRealizada.Id}", template, compraRealizada.Proveedor.Email);
         }

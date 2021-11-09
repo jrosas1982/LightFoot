@@ -208,7 +208,7 @@ namespace Core.Aplicacion.Services
             }
 
 
-            byte[] dataMail = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CompraInsumo")["EmailBody"]);
+            byte[] dataMail = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CompraItem")["EmailBody"]);
             string templateBaseMail = Encoding.UTF8.GetString(dataMail);
 
             var template = templateBaseMail.Replace("@NombreProveedor", compraRealizada.Proveedor.Nombre)
