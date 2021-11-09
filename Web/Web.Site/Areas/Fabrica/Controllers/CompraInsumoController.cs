@@ -119,21 +119,6 @@ namespace Web.Site.Areas
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear(CompraInsumoModel comprainsumoModel)
         {
-            //var comprainsumo = new CompraInsumoModel();
-
-            //var solicitud = new Solicitud()
-            //{
-            //    IdSucursal = solicitudModel.IdSucursal,
-            //    EstadoSolicitud = solicitudModel.EstadoSolicitud,
-            //    Comentario = solicitudModel.Comentario
-            //};
-
-            //var solicitudDetalles = solicitudModel.SolicitudDetalle.Select(x => new SolicitudDetalle()
-            //{
-            //    IdArticulo = x.IdArticulo,
-            //    CantidadSolicitada = x.CantidadSolicitada,
-            //    Motivo = x.Motivo
-            //});
             IList<NuevaCompraInsumoModel> compra = new List<NuevaCompraInsumoModel>();
 
             foreach (var detalle in comprainsumoModel.CompraInsumoDetalleModels)
@@ -151,7 +136,7 @@ namespace Web.Site.Areas
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> AgregarDetalleAsync(CompraInsumoDetalleModel data)
+        public async Task<IActionResult> AgregarDetalle(CompraInsumoDetalleModel data)
         {
             //var insumosList = await _insumosService.GetInsumos();
             //var insumo = insumosList.FirstOrDefault(x => x.Nombre == data.Insumo.Nombre);
