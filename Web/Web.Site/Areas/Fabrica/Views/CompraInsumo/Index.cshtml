@@ -42,27 +42,34 @@
                                 <thead>
                                     <tr>
                                         <th>#Compra</th>
-                                        <th>Recibido</th>
+                                        <th>Proveedor</th>
                                         <th>Fecha Recibido</th>
-                                        <th>Fecha Pagado</th>
+                                        <th>Fecha Ultimo Pago</th>
                                         <th>Monto Total</th>
+                                        <th>Remito Asociado</th>
                                         <th data-sort-ignore="true" class="d-print-none">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>436</td>
-                                        <td>Si</td>
-                                        <td>03/11/2021 19:40:00.359</td>
-                                        <td>04/11/2021 12:05:02.040</td>
-                                        <td>3000.00</td>
-                                        <td class="d-print-none">
-                                            <button class="btn btn-outline btn-success btn-xs" type="button" onclick="verDetalle(436)" data-toggle="modal" data-target="#ModalDetalle"> Ver Detalles</button>
-                                            <button class="btn btn-outline btn-warning btn-xs" type="button" onclick="">Marcar Recibido</button>
-                                            <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="">Marcar Pagado</button>
-                                        </td>
-                                    </tr>
-
+                                    @if (Model != null)
+                                    {
+                                        foreach (var compra in Model)
+                                        {
+                                            <tr>
+                                                <td>@compra.Id</td>
+                                                <td>@compra.Proveedor.Nombre</td>
+                                                <td>@compra.FechaRecibido.ToLongDateString()</td>
+                                                <td>@compra.FechaPagado.ToLongDateString()</td>
+                                                <td>@compra.MontoTotal</td>
+                                                <td>@compra.NroRemito</td>
+                                                <td class="d-print-none">
+                                                    <button class="btn btn-outline btn-success btn-xs" type="button" onclick="verDetalle(@compra.Id)" data-toggle="modal" data-target="#ModalDetalle"> Ver Detalles</button>
+                                                    <button class="btn btn-outline btn-warning btn-xs" type="button" onclick="marcarRecibido(@compra.Id)">Marcar Recibido</button>
+                                                    <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="marcarPagado(@compra.Id)">Marcar Pagado</button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
                                 </tbody>
                                 <tfoot>
                                     <tr>

@@ -54,6 +54,11 @@ namespace Core.Aplicacion.Services
                     MontoPagado = montoPagado
                 };
 
+                compra.Pagado = true;
+                compra.FechaPagado = DateTime.Now;
+
+                _db.ComprasArticulos.Update(compra);
+
                 _db.ProveedoresArticulosCuentaCorriente.Add(proveedorCuentaCorriente);
 
                 await _db.SaveChangesAsync();
@@ -167,6 +172,7 @@ namespace Core.Aplicacion.Services
                     throw new Exception("No existe la compra");
 
                 compra.Recibido = true;
+                compra.FechaRecibido = DateTime.Now;
                 compra.NroRemito = nroRemito;
 
                 foreach (var detalle in compra.CompraArticuloDetalles)
