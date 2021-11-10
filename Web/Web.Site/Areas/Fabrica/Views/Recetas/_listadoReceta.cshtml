@@ -1,119 +1,122 @@
 ﻿@using Web.Site.Areas.Fabrica
 @model IEnumerable<RecetaModel>
 
-<div class="table-responsive">
-    <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
-        <thead>
-            <tr>
-                <th data-toggle="true"># Receta</th>
-                <th data-hide="all" data-animation="true"></th>
-                <th>Nombre</th>
-                <th>Color</th>
-                <th>Talle</th>
-                <th>Estado</th>
-                <th>Usuario Modificacion</th>
-                <th>Fecha Modificacion</th>
-                <th data-sort-ignore="true">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model.Any())
-            {
-                foreach (var receta in Model)
-                {
-            <tr>
-                <td>@receta.Id</td>
-                <td>
-                    @if (receta.RecetaDetalles != null && receta.RecetaDetalles.Any())
+    <div class="ibox-content">
+        <div class="table-responsive">
+            <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
+                <thead>
+                    <tr>
+                        <th data-toggle="true"># Receta</th>
+                        <th data-hide="all" data-animation="true" class="d-print-none"></th>
+                        <th>Codigo</th>
+                        <th>Articulo</th>
+                        <th>Color</th>
+                        <th>Talle</th>
+                        <th>Estado</th>
+                        <th>Usuario Modificacion</th>
+                        <th>Fecha Modificacion</th>
+                        <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
                     {
-                        <div class="">
-                            <div class="col">
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-hover table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th style="background-color: #9ac5ca82;">Insumo</th>
-                                                <th style="background-color: #9ac5ca82;">Descripción</th>
-                                                <th style="background-color: #9ac5ca82;">Cantidad</th>
-                                                <th style="background-color: #9ac5ca82;">Etapa Asociada</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (var detalle in receta.RecetaDetalles)
-                                            {
-                                                <tr>
-                                                    <td>@detalle.IdInsumo</td>
-                                                    <td>@detalle.NombreInsumo</td>
-                                                    <td>@(detalle.Cantidad + detalle.UnidadDeMedida)</td>
-                                                    <td>@detalle.NombreEtapaOrdenProduccion</td>
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
+                        foreach (var receta in Model)
+                        {
+                    <tr>
+                        <td>@receta.Id</td>
+                        <td class="d-print-none">
+                            @if (receta.RecetaDetalles != null && receta.RecetaDetalles.Any())
+                            {
+                                <div class="d-print-none">
+                                    <div class="col">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="background-color: #9ac5ca82;">Insumo</th>
+                                                        <th style="background-color: #9ac5ca82;">Descripción</th>
+                                                        <th style="background-color: #9ac5ca82;">Cantidad</th>
+                                                        <th style="background-color: #9ac5ca82;">Etapa Asociada</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var detalle in receta.RecetaDetalles)
+                                                    {
+                                                        <tr>
+                                                            <td>@detalle.IdInsumo</td>
+                                                            <td>@detalle.NombreInsumo</td>
+                                                            <td>@(detalle.Cantidad + detalle.UnidadDeMedida)</td>
+                                                            <td>@detalle.NombreEtapaOrdenProduccion</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
 
-                    }
-                </td>
-                <td>@receta.Articulo.Nombre</td>
-                <td>@receta.Articulo.Color</td>
-                <td>@receta.Articulo.TalleArticulo</td>
+                            }
+                        </td>
+                        <td>@receta.Articulo.CodigoArticulo</td>
+                        <td>@receta.Articulo.Nombre</td>
+                        <td>@receta.Articulo.Color</td>
+                        <td>@receta.Articulo.TalleArticulo</td>
 
-                @if (receta.Activo)
-                {
-                    <td>
-                        <span class="label label-primary">Activa</span>
-                    </td>
-                    @*<td>Activo</td>*@
-                }
-                else
-                {
-                    <td>
-                        <span class="label label-danger">Inactiva</span>
-                    </td>
-                    @*<td>Desactivado</td>*@
-                }
-                @if (receta.ModificadoPor != null)
-                {
-                    <td>@receta.ModificadoPor</td>
-                }
-                else
-                {
-                    <td>@receta.CreadoPor</td>
-                }
-                @if (receta.FechaModificacion != null)
-                {
-                    <td>@receta.FechaModificacion</td>
-                }
-                else
-                {
-                    <td>@receta.FechaCreacion</td>
-                }
+                        @if (receta.Activo)
+                        {
+                            <td>
+                                <span class="label label-primary">Activa</span>
+                            </td>
+                            @*<td>Activo</td>*@
+                        }
+                        else
+                        {
+                            <td>
+                                <span class="label label-danger">Inactiva</span>
+                            </td>
+                            @*<td>Desactivado</td>*@
+                        }
+                        @if (receta.ModificadoPor != null)
+                        {
+                            <td>@receta.ModificadoPor</td>
+                        }
+                        else
+                        {
+                            <td>@receta.CreadoPor</td>
+                        }
+                        @if (receta.FechaModificacion != null)
+                        {
+                            <td>@receta.FechaModificacion</td>
+                        }
+                        else
+                        {
+                            <td>@receta.FechaCreacion</td>
+                        }
 
-                <td>
-                    <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="EditarReceta(@receta.Id)">Editar</button>
-                    @if (receta.Activo)
-                    {
-                        <button class=" btn btn-outline btn-warning btn-xs " type="button" onclick='accionReceta(@receta.Id , "desactivar")'>Desactivar</button>
+                        <td class="d-print-none">
+                            <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="EditarReceta(@receta.Id)">Editar</button>
+                            @if (receta.Activo)
+                            {
+                                <button class=" btn btn-outline btn-warning btn-xs " type="button" onclick='accionReceta(@receta.Id , "desactivar")'>Desactivar</button>
+                            }
+                            else
+                            {
+                                <button class=" btn btn-outline btn-info btn-xs " type="button" onclick='accionReceta(@receta.Id , "activar")'>Activar</button>
+                            }
+                            <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick='accionReceta(@receta.Id, "eliminar")'>Eliminar</button>
+                        </td>
+                    </tr>
+                        }
                     }
-                    else
-                    {
-                        <button class=" btn btn-outline btn-info btn-xs " type="button" onclick='accionReceta(@receta.Id , "activar")'>Activar</button>
-                    }
-                    <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick='accionReceta(@receta.Id, "eliminar")'>Eliminar</button>
-                </td>
-            </tr>
-                }
-            }
-        </tbody>
-        <tfoot>
-        <tfoot>
-            <tr>
-                <td colspan="7">
-                    <ul class="pagination float-right"></ul>
-                </td>
-            </tr>
-        </tfoot>
-    </table>
-</div>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="12">
+                            <ul class="pagination float-right"></ul>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>

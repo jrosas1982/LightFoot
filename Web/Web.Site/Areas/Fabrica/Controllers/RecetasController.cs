@@ -46,7 +46,10 @@ namespace Web.Site.Areas.Fabrica.Controllers
             var recetas = await _recetaService.GetRecetas();
             var insumos = await _insumoService.GetInsumos();
             var ordenes = await _ordenesProduccionService.GetEtapasOrden();
-            ViewBag.ListadoRecetaType = recetas.Select(x => x.Articulo.Nombre).Distinct(); 
+            ViewBag.TypeaheadCodArticulo = recetas.Select(x => x.Articulo.CodigoArticulo).Distinct();
+            ViewBag.TypeaheadArticulo = recetas.Select(x => x.Articulo.Nombre).Distinct();
+            ViewBag.TypeaheadColor = recetas.Select(x => x.Articulo.Color).Distinct();
+            ViewBag.TypeaheadTalle = recetas.Select(x => x.Articulo.TalleArticulo).Distinct();
             var recetasTask = _recetaService.GetRecetas();
             var insumosTask = _insumoService.GetInsumos();
             var ordenesTask = _ordenesProduccionService.GetEtapasOrden();
@@ -88,8 +91,9 @@ namespace Web.Site.Areas.Fabrica.Controllers
                     item.NombreEtapaOrdenProduccion = ordenes.Where(x => x.Orden == item.IdEtapaOrdenProduccion).Select(d => d.Descripcion).FirstOrDefault();
                     item.NombreInsumo = insumos.Where(x => x.Id == item.IdInsumo).Select(d => d.Nombre).FirstOrDefault();
                 }
+                ViewBag.Articulos = articulos.Where(x => x.Id == receta.IdArticulo).Select(x => new SelectListItem() { Text = $"{x.Nombre} - {x.Color} - Talle {x.TalleArticulo} ", Value = $"{x.Id}" });
             }
-            ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.Nombre} - {x.Color} - {x.TalleArticulo} ", Value = $"{x.Id}" });
+            ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.Nombre} - {x.Color} - Talle {x.TalleArticulo} ", Value = $"{x.Id}" });
 
             //ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); 
             ViewBag.Insumos = insumos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); 

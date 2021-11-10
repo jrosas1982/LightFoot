@@ -46,13 +46,14 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        @Html.LabelFor(m => m.IdArticulo, "Nombre de Articulo")
+                        @Html.LabelFor(m => m.IdArticulo, "Articulo")
                         @if (esEdicion)
                         {
-                        @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), new { @class = "form-control m-b", @id = "dropdownArticulos", @disabled = "disabled" })
+                            @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), new { @class = "chosen-select", @id = "dropdownArticulos", @disabled = "disabled" })
                         }
-                        else { 
-                        @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), new{ @class = "form-control m-b", @id = "dropdownArticulos" } )
+                        else
+                        {
+                            @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), new { @class = "chosen-select", @id = "dropdownArticulos" })
                         }
                     </div>
                 </div>
@@ -84,7 +85,7 @@
                     <div class="ibox-content border-0 pt-0 pr-0">
                         <div class="text-center d-flex justify-content-end">
                             <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#NewCommentModal">
-                                Agregar @controlador
+                                Agregar Insumo
                             </button>
                         </div>
                     </div>
@@ -115,7 +116,7 @@
                     </div>
                     <div class="modal-body py-2">
                         <div class="form-floating">
-                            @Html.LabelFor(m => m.RecetaDetalle.IdInsumo)
+                            @Html.LabelFor(m => m.RecetaDetalle.IdInsumo, "Insumo")
                             @Html.DropDownListFor(m => m.RecetaDetalle.IdInsumo, new List<SelectListItem>(ViewBag.Insumos), " -- Seleccionar Insumo --", new { @id = "IdInsumo", @class = "form-control " })
                             @Html.ValidationMessageFor(model => model.RecetaDetalle.IdInsumo, "", new { @class = "text-danger" })
                         </div>
@@ -129,7 +130,7 @@
                     </div>
                     <div class="modal-body py-2">
                         <div class="form-floating">
-                            @Html.LabelFor(m => m.RecetaDetalle.IdEtapaOrdenProduccion)
+                            @Html.LabelFor(m => m.RecetaDetalle.IdEtapaOrdenProduccion, "Etapa Asignada")
                             @Html.DropDownListFor(m => m.RecetaDetalle.IdEtapaOrdenProduccion, new List<SelectListItem>(ViewBag.EtapasOrden), " -- Seleccionar Orden de Etapa --", new { @id = "IdEtapaOrdenProduccion", @class = "form-control required" })
                             @Html.ValidationMessageFor(model => model.RecetaDetalle.IdEtapaOrdenProduccion, "", new { @class = "text-danger" })
                         </div>
@@ -144,7 +145,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                        <button type="button" onclick="addInsumo()" class="btn btn-primary" data-dismiss="modal">Agregar Insumos</button>
+                        <button type="button" onclick="addInsumo()" class="btn btn-primary" data-dismiss="modal">Agregar Insumo</button>
                     </div>
                 </div>
             </div>
@@ -155,7 +156,7 @@
 @section Styles {
     <environment names="Development,Staging,Production">
         <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
-
+        <link rel="stylesheet" href="~/lib/chosen/bootstrap-chosen.css" />
     </environment>
 }
 
@@ -165,11 +166,16 @@
         <script src="~/lib/validate/jquery.validate.min.js"></script>
         <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
         <script src="~/js/apphelpers.js"></script>
+        <script src="~/lib/chosen/chosen.jquery.js"></script>
     </environment>
 
     <script type="text/javascript">
         $(document).ready(function () {
 
+        });
+
+        $('.chosen-select').chosen({
+            no_results_text: "No hay resultados que coincidan con ",
         });
 
         function ClearModal() {
