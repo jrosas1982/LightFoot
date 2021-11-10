@@ -228,50 +228,55 @@
             recibir(id);
         }
 
-        function recibir(id) {
-            var remitoExt = "";
+        function recibir (id){
             swal({
-                title: "Recibir Compra",
+                icon: 'warning',
+                title: "Recibir Compra " + id,
                 text: "Escribe numero de remito",
                 type: "input",
-                input: "int",
-                animation: "slide-from-top",
+                input: "text",
                 inputPlaceholder: "Numero de remito",
-                confirmButtonColor: "#1ab394",
-                confirmButtonText: "Ok",
-                closeOnConfirm: true,
-                preConfirm: (remitoInput) => {
+                animation: "slide-from-top",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                confirmButtonText: "Recibir",
+                cancelButtonText: "Cancelar"
+            }, function (response) {
+                if (response === false) {
+                    //cancel
+                    console.log(false)
+                } else {
+                    //confirm
+                    if ((/^\d{10}$/).test(response)) {    // ************************** REGEX
+                        //falta validaciones
+                        AjaxRecibir(id, response, 0);
 
-                    remitoExt = remitoInput
-
-                }
-            }, function (remitoExt) {
-                $.ajax({
-                    type: "post",
-                    url: "/fabrica/CompraInsumo/RecibirCompra",
-                    traditional: true,
-                    data: {
-                        idCompra: id,
-                        remito: remitoExt,
-                        calificacionProveedor: 0
-                    },
-                    contentType: "application/json",
-                    success: function (response) {
-                        console.log(remitoExt)
-                        if (remitoExt == "") {
-                            swal('Formato no permitido', '', 'error')
-                        }
-                        else {
-                            swal(
-                                'Compra recibida',
-                                'Remito: ' + remitoExt,
-                                'success'
-                            )
-                        }
-                        
+                    } else {
+                        swal('Formato no permitido', '', 'error')
                     }
-                })
-            })
+                }
+            }); //end swal
+        }
+
+        function AjaxRecibir(id, nroRemito, calificacion) {
+            $.ajax({
+                type: "post",
+                url: "/fabrica/CompraInsumo/RecibirCompra",
+                data: {
+                    idCompra: id,
+                    nroRemito: nroRemito,
+                    calificacion: calificacion
+                },
+                success: function (response) {
+                    if (response) {
+                        swal(
+                            'Compra recibida',
+                            'Remito: ' + nroRemito,
+                            'success'
+                        );
+                    }
+                }
+            });
         }
 
         function marcarPagado(Id) {
