@@ -52,10 +52,8 @@
                                         <th data-sort-ignore="true" class="d-print-none">Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <div id="ComprasPartialView">
-                                        <partial name="_CompraInsumoIndexTable.cshtml" model="Model" />
-                                    </div>
+                                <tbody id="ComprasPartialView">
+                                    <partial name="_CompraInsumoIndexTable.cshtml" model="Model" />
                                 </tbody>
                                 <tfoot>
                                     <tr>
@@ -150,7 +148,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" onclick="ClearModalrecibirCompra()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" onclick="BootonRecibirCompra()" class="btn btn-primary">Aceptar</button>
+                        <button type="submit" onclick="BootonRecibirCompra()" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
                     </div>
                 </form>
             </div>
@@ -279,7 +277,9 @@
                             );
                         }
                     }
-                }).done(function (precio) {
+                }).done(function (response) {
+                    $("#ComprasPartialView").html(""); //clear the records content
+                    $("#ComprasPartialView").html(response);  //add the updated content.
                     //window.setTimeout(function () {
                     //    location.reload();
                     //}, 600);
