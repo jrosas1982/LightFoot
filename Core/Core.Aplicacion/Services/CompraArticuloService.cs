@@ -112,7 +112,6 @@ namespace Core.Aplicacion.Services
 
                     var detalle = new CompraArticuloDetalle()
                     {
-
                         IdArticulo = item.IdArticulo,
                         IdProveedorSugerido = proveedorSugerido.Id,
                         Monto = montoDetalle,
@@ -184,7 +183,7 @@ namespace Core.Aplicacion.Services
 
                 _db.ComprasArticulos.Update(compra);
 
-                var proveedor = await _proveedorService.BuscarPorId(compra.IdProveedor);
+                var proveedor = await _db.Proveedores.FindAsync(compra.IdProveedor);
                 proveedor.Calificacion = calificacionProveedor;
                 _db.Proveedores.Update(proveedor);
 

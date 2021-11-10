@@ -130,8 +130,8 @@
                     </div>
                     <div class="modal-body py-2">
                         <div class="form-group">
-                            <label class="font-normal">Comentario</label>
-                            <input class="form-control" type="text" id="Comentario" placeholder="Ingrese un comentario">
+                            <label class="font-normal" id="ComentarioLabel">Comentario</label>
+                            <input class="form-control" id="Comentario" placeholder="Ingrese un comentario">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -169,7 +169,26 @@
             FiltrarProveedores();
             ProveedorPreferidoSugerido();
             ActualizarPrecio();
-            ComentarioChange();
+            //ComentarioChange();
+        }
+
+        function ProveeorOnChange() {
+            ActualizarPrecio();
+            ObligarComentario();
+        }
+
+        function ObligarComentario() {
+            $("#ComentarioLabel").empty();
+            if ($("#IdProveedorSugerido").val() != $("#dropdownProveedor :selected").val())
+            {
+                $("#Comentario").prop('required', true);
+                $("#ComentarioLabel").append("Motivo por el que no se selecciono el proveedor sugerido");
+            }
+            else
+            {
+                $("#Comentario").prop('required', false);
+                $("#ComentarioLabel").append("Comentario");
+            }
         }
 
         function FiltrarProveedores() {
@@ -220,13 +239,13 @@
 
         $(document).ready(function () {
             InsumoSeleccionadoOnChange();
+            ObligarComentario();
             $('#dropdownInsumo').change(function () {
                 InsumoSeleccionadoOnChange();
             });
-            $('#dropdownProveedor').change(function () {
-                ComentarioChange();
-
-            });
+            //$('#dropdownProveedor').change(function () {
+            //    ComentarioChange();
+            //});
         });
 
         function ComentarioChange() {

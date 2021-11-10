@@ -110,9 +110,9 @@ namespace Web.Site.Areas
             if (idInsumo == 0 || idProveedor == 0)
                 return Json(0);
 
-            var proveedorInsumo = await _proveedorInsumoService.BuscarProveedorInsumo(idInsumo, idProveedor);            
+            var precioInsumo = await _proveedorInsumoService.GetPrecioInsumo(idInsumo, idProveedor);            
 
-            return Json(proveedorInsumo.Precio * cantidad);
+            return Json(precioInsumo * cantidad);
         }
 
         public async Task<IActionResult> ActualizarComentario(int idProveedor, int idInsumo)
@@ -131,7 +131,7 @@ namespace Web.Site.Areas
         public async Task<IActionResult> Crear(CompraInsumoModel comprainsumoModel)
         {
             try
-            {         
+            {      
                 IList<NuevaCompraInsumoModel> compra = new List<NuevaCompraInsumoModel>();
 
                 foreach (var detalle in comprainsumoModel.CompraInsumoDetalleModels)
@@ -158,9 +158,25 @@ namespace Web.Site.Areas
         {
             try
             {
-                 var compra = await _compraInsumoService.BuscarPorId(idCompra);
+                var compra = await _compraInsumoService.BuscarPorId(idCompra);
 
-                 return PartialView("_CompraInsumoDetallePartial", compra);
+                return PartialView("_CompraInsumoIndexDetalle", compra);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> RecibirCompra(int idCompra, long nroRemito, double calificacionProveedor)
+        {
+            try
+            {
+                await _compraInsumoService.BuscarPorId(1);
+
+                //await _compraInsumoService.RecibirCompra(idCompra, nroRemito, calificacionProveedor);
+
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -186,6 +202,8 @@ namespace Web.Site.Areas
                         
             return PartialView("_CompraInsumoDetalle", data);
         }
+
+
 
     }
 
