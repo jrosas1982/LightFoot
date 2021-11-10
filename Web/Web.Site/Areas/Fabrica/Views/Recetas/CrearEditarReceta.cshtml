@@ -49,11 +49,11 @@
                         @Html.LabelFor(m => m.IdArticulo, "Articulo")
                         @if (esEdicion)
                         {
-                            @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), new { @class = "chosen-select", @id = "dropdownArticulos", @disabled = "disabled" })
+                            @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), new { @class = "form-control chosen-select", @id = "dropdownArticulos", @disabled = "disabled" })
                         }
                         else
                         {
-                            @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), new { @class = "chosen-select", @id = "dropdownArticulos" })
+                            @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), new { @class = "form-control chosen-select", @id = "dropdownArticulos" })
                         }
                     </div>
                 </div>
