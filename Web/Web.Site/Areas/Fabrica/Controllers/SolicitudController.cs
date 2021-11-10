@@ -128,8 +128,16 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Rechazar(int idSolicitud)
         {
-            await _solicitudService.RechazarSolicitud(idSolicitud,"comentario");
-            return RedirectToAction("Index");
+            try
+            {
+
+                return Ok(await _solicitudService.RechazarSolicitud(idSolicitud));
+            }
+            catch (Exception ex)
+            {
+                 
+                return RedirectToAction("Index");
+            }
         }
         
 

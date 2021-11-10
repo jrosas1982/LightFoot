@@ -156,7 +156,7 @@
 
     <script type="text/javascript">
         function RechazarSolicitud(Id) {
-            alert(Id);
+            alerta(Id);
         }
 
         function AprobarSolicitud(Id) {
@@ -205,7 +205,7 @@
             });
         }
 
-        function alert(Id) {
+        function alerta(Id) {
             swal({
                 title: "Seguro que desea rechazar la solicitud?",
                 text: "La Solicitud será rechazada definitivamente. Esta accion no se puede deshacer",
@@ -224,8 +224,11 @@
                         if (result == true) {
                             swal("Exito!", "La solicitud ha sido rechazada correctamente", "success");
                         } else {
-                            swal("Error", "Ocurrió un error inesperado", "error");
+                            swal("Warning", "Ocurrió un error al rechazar la solicitud, intente mas tarde", "Warning");
                         }
+                    },
+                    error: function () {
+                        swal("Error", "Ocurrió un error inesperado", "error");
                     }
                 }).done(function () {
                     window.setTimeout(function () {
