@@ -57,60 +57,60 @@
                                     {
                                         foreach (var compra in Model)
                                         {
-                                    <tr>
-                                        <td>@compra.Id</td>
-                                        <td>@compra.Proveedor.Nombre</td>
-                                        @if (compra.FechaRecibido != null)
-                                        {
-                                            <td>@compra.FechaRecibido.Value.ToLongDateString()</td>
-                                        }
-                                        else
-                                        {
-                                            <td>Aun no recibida</td>
-                                        }
-                                        @if (compra.FechaPagado != null)
-                                        {
-                                            <td>@compra.FechaPagado.Value.ToLongDateString()</td>
-                                        }
-                                        else
-                                        {
-                                            <td>Aun no pagada</td>
-                                        }
-                                        <td>@compra.MontoTotal</td>
-                                        @if (compra.NroRemito != null)
-                                        {
-                                            <td>@compra.NroRemito.Value</td>
-                                        }
-                                        else
-                                        {
-                                            <td>No posee remito asociado</td>
-                                        }
-                                        <td class="d-print-none">
-                                            <button class="btn btn-outline btn-success btn-xs" type="button"
-                                                    onclick="verDetalle(@compra.Id)" 
-                                                    data-toggle="modal" 
-                                                    data-target="#ModalDetalle"> 
-                                                Ver Detalles
-                                            </button>
-                                            @if (!compra.Recibido)
-                                            {
-                                                <button class="btn btn-outline btn-warning btn-xs" type="button"
-                                                        onclick="marcarRecibido(@compra.Id)">
-                                                    Marcar Recibido
-                                                </button>
-                                            }
-                                            else
-                                                @if(!compra.Pagado)
-                                                {   
-                                                    <button class="btn btn-outline btn-primary btn-xs" type="button"
-                                                            onclick="marcarPagado(@compra.Id)">
-                                                        Marcar Pagado
-                                                    </button>
+                                            <tr>
+                                                <td>@compra.Id</td>
+                                                <td>@compra.Proveedor.Nombre</td>
+                                                @if (compra.FechaRecibido != null)
+                                                {
+                                                    <td>@compra.FechaRecibido.Value.ToLongDateString()</td>
                                                 }
-                                        </td>
-                                    </tr>
+                                                else
+                                                {
+                                                    <td>Aun no recibida</td>
+                                                }
+                                                @if (compra.FechaPagado != null)
+                                                {
+                                                    <td>@compra.FechaPagado.Value.ToLongDateString()</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>Aun no pagada</td>
+                                                }
+                                                <td>@compra.MontoTotal</td>
+                                                @if (compra.NroRemito != null)
+                                                {
+                                                    <td>@compra.NroRemito.Value</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>No posee remito asociado</td>
+                                                }
+                                                <td class="d-print-none">
+                                                    <button class="btn btn-outline btn-success btn-xs" type="button"
+                                                            onclick="verDetalle(@compra.Id)"
+                                                            data-toggle="modal"
+                                                            data-target="#ModalDetalle">
+                                                        Ver Detalles
+                                                    </button>
+                                                    @if (!compra.Recibido)
+                                                    {
+                                                        <button class="btn btn-outline btn-warning btn-xs" type="button"
+                                                                onclick="marcarRecibido(@compra.Id)">
+                                                            Marcar Recibido
+                                                        </button>
+                                                    }
+                                                    else
+                                                        @if (!compra.Pagado)
+                                                    {
+                                                        <button class="btn btn-outline btn-primary btn-xs" type="button"
+                                                                onclick="marcarPagado(@compra.Id)">
+                                                            Marcar Pagado
+                                                        </button>
+                                                    }
+                                                    </td>
+                                                </tr>
+                                            }
                                         }
-                                    }
                                 </tbody>
                                 <tfoot>
                                     <tr>
@@ -153,7 +153,7 @@
                                 </tr>
                             </thead>
                             <tbody id="partialViewEventos">
-                                <partial name="_CompraInsumoIndexDetalle.cshtml" model="null"/>
+                                <partial name="_CompraInsumoIndexDetalle.cshtml" model="null" />
                             </tbody>
                         </table>
                     </div>
@@ -164,6 +164,7 @@
             </div>
         </div>
     </div>
+    
 
 
 
@@ -194,7 +195,6 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-            ActualizarDetalleCompra(1);
             $('.dataTables-example').DataTable({
                 pageLength: 25,
                 dom: 'gitp'
@@ -221,50 +221,60 @@
                     $("#partialViewEventos").html(response);  //add the updated content.
                 }
             });
+        }        
+
+
+        function marcarRecibido(id) {
+            recibir(id);
         }
 
-        function alert(Id) {
+        function recibir (id){
             swal({
-                title: "Aceptar Compra",
-                text: "La compra será marcada como recibida. Esta accion no se puede deshacer",
-                type: "warning",
+                icon: 'warning',
+                title: "Recibir Compra " + id,
+                text: "Escribe numero de remito",
+                type: "input",
+                input: "text",
+                inputPlaceholder: "Numero de remito",
+                animation: "slide-from-top",
                 showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Aceptar",
-                cancelButtonText: "Atras",
-                closeOnConfirm: false
-            }, function () {
-                $.ajax({
-                    type: "post",
-                    url: "/fabrica/CompraInsumo/RecibirCompra",
-                    data: { idSolicitud: Id },
-                    success: function (result) {
-                        if (result == true) {
-                            swal("Exito!", "La Compra ha sido recibida correctamente", "success");
-                        } else {
-                            swal("Error", "Ocurrió un error inesperado", "error");
-                        }
-                    }
-                }).done(function () {
-                    window.setTimeout(function () {
-                        location.reload();
-                    }, 600);
-                });
-            });
-        };
+                closeOnConfirm: false,
+                confirmButtonText: "Recibir",
+                cancelButtonText: "Cancelar"
+            }, function (response) {
+                if (response === false) {
+                    //cancel
+                    console.log(false)
+                } else {
+                    //confirm
+                    if ((/^\d{10}$/).test(response)) {    // ************************** REGEX
+                        //falta validaciones
+                        AjaxRecibir(id, response, 0);
 
-        function marcarRecibido(Id) {
+                    } else {
+                        swal('Formato no permitido', '', 'error')
+                    }
+                }
+            }); //end swal
+        }
+
+        function AjaxRecibir(id, nroRemito, calificacion) {
             $.ajax({
-                type: "Get",
-                url: "/fabrica/CompraInsumo/ActualizarDetalleCompra?IdCompra=" + id,
-                traditional: true,
+                type: "post",
+                url: "/fabrica/CompraInsumo/RecibirCompra",
                 data: {
-                    Id: id
+                    idCompra: id,
+                    nroRemito: nroRemito,
+                    calificacion: calificacion
                 },
-                contentType: "application/json",
                 success: function (response) {
-                    $("#partialViewEventos").html(""); //clear the records content
-                    $("#partialViewEventos").html(response);  //add the updated content.
+                    if (response) {
+                        swal(
+                            'Compra recibida',
+                            'Remito: ' + nroRemito,
+                            'success'
+                        );
+                    }
                 }
             });
         }
@@ -272,6 +282,7 @@
         function marcarPagado(Id) {
 
         }
+
     </script>
 }
 

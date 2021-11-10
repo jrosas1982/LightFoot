@@ -168,15 +168,21 @@ namespace Web.Site.Areas
             }
         }
 
-        public async Task<IActionResult> RecibirCompra(int idCompra, long nroRemito, double calificacionProveedor)
+        public async Task<IActionResult> RecibirCompra(string idCompra, string nroRemito, double calificacionProveedor)
         {
             try
             {
-                await _compraInsumoService.BuscarPorId(1);
-
-                //await _compraInsumoService.RecibirCompra(idCompra, nroRemito, calificacionProveedor);
+                if(nroRemito.Length == 0)
+                {
+                    return null;
+                }
+                var resp = await _compraInsumoService.RecibirCompra(int.Parse(idCompra), long.Parse(nroRemito), calificacionProveedor);
+                
+                if(resp)
+                    return RedirectToAction("Index");
 
                 return RedirectToAction("Index");
+
             }
             catch (Exception ex)
             {
