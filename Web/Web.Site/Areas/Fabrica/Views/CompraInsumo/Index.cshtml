@@ -53,66 +53,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (Model != null)
-                                    {
-                                        foreach (var compra in Model)
-                                        {
-                                            <tr>
-                                                <td>@compra.Id</td>
-                                                <td>@compra.Proveedor.Nombre</td>
-                                                @if (compra.FechaRecibido != null)
-                                                {
-                                                    <td>@compra.FechaRecibido.Value.ToLongDateString()</td>
-                                                }
-                                                else
-                                                {
-                                                    <td>Aun no recibida</td>
-                                                }
-                                                @if (compra.FechaPagado != null)
-                                                {
-                                                    <td>@compra.FechaPagado.Value.ToLongDateString()</td>
-                                                }
-                                                else
-                                                {
-                                                    <td>Aun no pagada</td>
-                                                }
-                                                <td>@compra.MontoTotal</td>
-                                                @if (compra.NroRemito != null)
-                                                {
-                                                    <td>@compra.NroRemito.Value</td>
-                                                }
-                                                else
-                                                {
-                                                    <td>No posee remito asociado</td>
-                                                }
-                                                <td class="d-print-none">
-                                                    <button class="btn btn-outline btn-success btn-xs" type="button"
-                                                            onclick="verDetalle(@compra.Id)"
-                                                            data-toggle="modal"
-                                                            data-target="#ModalDetalle">
-                                                        Ver Detalles
-                                                    </button>
-                                                    @if (!compra.Recibido)
-                                                    {
-                                                        <button class="btn btn-outline btn-warning btn-xs" type="button"
-                                                                onclick="ModalRecibirCompra(@compra.Id)"
-                                                                data-toggle="modal"
-                                                                data-target="#ModalrecibirCompra">
-                                                            Marcar Recibido
-                                                        </button>
-                                                    }
-                                                    else
-                                                        @if (!compra.Pagado)
-                                                    {
-                                                        <button class="btn btn-outline btn-primary btn-xs" type="button"
-                                                                onclick="marcarPagado(@compra.Id)">
-                                                            Marcar Pagado
-                                                        </button>
-                                                    }
-                                                    </td>
-                                                </tr>
-                                            }
-                                        }
+                                    <div id="ComprasPartialView">
+                                        <partial name="_CompraInsumoIndexTable.cshtml" model="Model" />
+                                    </div>
                                 </tbody>
                                 <tfoot>
                                     <tr>
@@ -179,22 +122,30 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-body py-2">
+
+                    <div class="modal-body py-2 border-bottom">
+                        <h3>Califique su entrega</h3>
                         <div class="form-group">
-                            <label class="font-normal">Calificacion1</label>
-                            <select class="form-control" id="dropdownCalificacion1" required>
-                                <option value="2">2</option>
-                                @*@foreach (var valor in ViewBag.CalificacionValores)
-        {
-            <option value="@valor.Value"> @valor.Text</option>
-        }*@
-                            </select>
+                            <label class="font-normal">Tiempo de entrega</label>
+                            <input id="tiempoCalificacion" class="form-control limitar10" type="number" value=""  placeholder="" max="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-normal">Distancia</label>
+                            <input id="distanciaCalificacion" class="form-control limitar10" type="number" value=""  placeholder="" max="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-normal">Precio</label>
+                            <input id="precioCalificacion" class="form-control limitar10" type="number" value=""  placeholder="" max="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-normal">Calidad de entrega</label>
+                            <input id="calidadCalificacion" class="form-control limitar10" type="number" value="" placeholder="" max="10" required>
                         </div>
                     </div>
                     <div class="modal-body py-2">
                         <div class="form-group">
                             <label class="font-normal">Remito</label>
-                            <input class="form-control" type="number" id="NroRemito" placeholder="Remito" required maxlength="12">
+                            <input class="form-control limitarLength" type="number" id="NroRemito" placeholder="Remito" minLength="12" maxlength="12" required >
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -216,6 +167,7 @@
         <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
         <link rel="stylesheet" href="~/lib/footable/css/footable.core.min.css" />
         <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css" />
     </environment>
 }
 
@@ -225,11 +177,17 @@
         <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
         <script src="~/lib/footable/dist/footable.all.min.js"></script>
         <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="~/lib/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js"></script>
     </environment>
 
     <script type="text/javascript">
         $(document).ready(function () {
             $('.footable').footable();
+
+            $(".touchspin").TouchSpin({
+                buttondown_class: 'btn btn-white',
+                buttonup_class: 'btn btn-white'
+            });
         });
     </script>
 
@@ -238,8 +196,7 @@
         $(document).on('submit', '.validateDontSubmit', function (e) {
             e.preventDefault();
             return false;
-        })
-
+        });
 
         $(document).ready(function () {
             $('.dataTables-example').DataTable({
@@ -247,6 +204,21 @@
                 dom: 'gitp'
             });
         });
+
+        $(document).on('input', ".limitar10", function () {
+            if (this.value / 10 == this.max ||this.value == 10)
+                this.value = this.value.slice(0, 2);
+
+            if (this.value > this.max || this.value.length > 1 && this.value != 10)
+                this.value = this.value.slice(0, 1);
+        });
+
+        $(document).on('input', ".limitarLength", function () {
+            if (this.value.length > this.maxLength)
+                this.value = this.value.slice(0, this.maxLength);
+            
+        });
+
 
         function verDetalle(id) {
             ActualizarDetalleCompra(id);
@@ -268,44 +240,6 @@
             });
         }
 
-        //function recibir(id) {
-        //    swal({
-        //        icon: 'warning',
-        //        title: "Recibir Compra " + id,
-        //        text: "Escribe numero de remito",
-        //        type: "input",
-        //        input: "text",
-        //        inputPlaceholder: "Numero de remito",
-        //        animation: "slide-from-top",
-        //        showCancelButton: true,
-        //        closeOnConfirm: false,
-        //        confirmButtonText: "Recibir",
-        //        cancelButtonText: "Cancelar"
-        //    }, function (response) {
-        //        if (response === false) {
-        //            //cancel
-        //            console.log(false)
-        //        } else {
-        //            //confirm
-        //            if ((/^\d{10}$/).test(response)) {    // ************************** REGEX
-        //                //falta validaciones
-        //                AjaxRecibir(id, response, 0);
-
-        //            } else {
-        //                swal('Formato no permitido', '', 'error')
-        //            }
-        //        }
-        //    }); //end swal
-        //}
-
-        ////triggered when modal is about to be shown
-        //$('#ModalrecibirCompra').on('show.bs.modal', function (e) {
-        //    //get data-id attribute of the clicked element
-        //    var compraId = $(e.relatedTarget).data('compra-id');
-        //    //popular modal
-        //    $(e.currentTarget).find('#tituloModalrecibirCompra').val('Recibir Compra #' + compraId);
-        //});
-
         function ModalRecibirCompra(id) {
             console.log("recibirCompra con id");
             $('#tituloModalrecibirCompra').text('Recibir Compra #' + id);
@@ -316,8 +250,13 @@
             console.log("recibirCompra");
             var compraId = $('#hiddenModalrecibirCompra').val();
             var nroRemito = $("#NroRemito").val();
-            var dropdownCalificacion1 = $("#dropdownCalificacion1 :selected").val();
-            RecibirCompra(compraId, nroRemito, dropdownCalificacion1);
+            var promedio = ($("#tiempoCalificacion").val() + $("#distanciaCalificacion").val() + $("#precioCalificacion").val() + $("#calidadCalificacion").val() ) / 4;
+            RecibirCompra(compraId, nroRemito, promedio);
+        }
+
+        function ClearModalrecibirCompra() {
+            $('.limitar10').val("");
+            $('limitarLength').val("");
         }
 
         function RecibirCompra(id, nroRemito, calificacion1) {

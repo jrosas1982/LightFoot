@@ -172,16 +172,12 @@ namespace Web.Site.Areas
         {
             try
             {
-                if(nroRemito.Length == 0)
-                {
-                    return null;
-                }
-                var resp = await _compraInsumoService.RecibirCompra(int.Parse(idCompra), long.Parse(nroRemito), calificacion1);
-                
-                if(resp)
-                    return RedirectToAction("Index");
 
-                return RedirectToAction("Index");
+                var resp = await _compraInsumoService.RecibirCompra(int.Parse(idCompra), long.Parse(nroRemito), calificacion1);
+
+                var compraInsumoList = await _compraInsumoService.GetCompras();
+
+                return PartialView("_CompraInsumoIndexTable", compraInsumoList);
 
             }
             catch (Exception ex)
