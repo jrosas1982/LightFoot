@@ -30,7 +30,7 @@ namespace Web.Site.Areas
             _articuloService = articuloService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool error, string msj)
         {
             var solicitudListTask = _solicitudService.GetSolicitudes();
             var SucursalesTask = _sucursalService.GetSucursales();
@@ -45,7 +45,11 @@ namespace Web.Site.Areas
 
             ViewBag.FechaDesde = DateTime.Today - TimeSpan.FromDays(30);
             ViewBag.FechaHasta = DateTime.Today;
-
+            if (error)
+            {
+                ViewBag.CatchError = true;
+                ViewBag.MensajeError = "Error inesperado con Mensaje: " + msj;
+            }
             return View(solicitudList);
         }
 
@@ -59,29 +63,39 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> CrearEditarSolicitud(int IdSolicitud)
         {
+            SolicitudModel solicitudModel = new SolicitudModel();
             Solicitud solicitud;
+            try
+            {
+                var estadoSolicitudListTask = _solicitudService.GetEstadosSolicitud();
+                var sucursalesListTask = _sucursalService.GetSucursales();
+                var articulosListTask = _articuloService.GetArticulos();
 
-            var estadoSolicitudListTask = _solicitudService.GetEstadosSolicitud();
-            var sucursalesListTask = _sucursalService.GetSucursales();
-            var articulosListTask = _articuloService.GetArticulos();
+                await Task.WhenAll(estadoSolicitudListTask, sucursalesListTask, articulosListTask);
 
-            await Task.WhenAll(estadoSolicitudListTask, sucursalesListTask, articulosListTask);
+                var estadoSolicitudList = estadoSolicitudListTask.Result;
+                var sucursalesList = sucursalesListTask.Result;
+                var articulosList = articulosListTask.Result;
 
-            var estadoSolicitudList = estadoSolicitudListTask.Result;
-            var sucursalesList = sucursalesListTask.Result;
-            var articulosList = articulosListTask.Result;
+                if (IdSolicitud != 0) // 0 = crear
+                    solicitud = await _solicitudService.BuscarPorId(IdSolicitud);
+                else
+                    solicitud = new Solicitud();
+                solicitudModel = new SolicitudModel(solicitud, estadoSolicitudList);
 
-            if (IdSolicitud != 0) // 0 = crear
-                solicitud = await _solicitudService.BuscarPorId(IdSolicitud);
-            else
-            solicitud = new Solicitud();
-            SolicitudModel solicitudModel = new SolicitudModel(solicitud, estadoSolicitudList);
-           
-            solicitudModel.Sucursales = sucursalesList.Select(x => new DesplegableModel() { Id = x.Id, Descripcion = $"{x.Nombre} - {x.Descripcion}" });
-            solicitudModel.Articulos = articulosList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Nombre}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
-            solicitudModel.Colores = articulosList.Select(x => new SelectListItem() { Text = $"{x.Color}" , Value = $"{x.Color}" });
-            solicitudModel.Talles = articulosList.Select(x => new SelectListItem() { Text = $"{x.TalleArticulo}" , Value = $"{x.TalleArticulo}" } );
-            return View(solicitudModel);
+                solicitudModel.Sucursales = sucursalesList.Select(x => new DesplegableModel() { Id = x.Id, Descripcion = $"{x.Nombre} - {x.Descripcion}" });
+                solicitudModel.Articulos = articulosList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Nombre}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
+                solicitudModel.Colores = articulosList.Select(x => new SelectListItem() { Text = $"{x.Color}", Value = $"{x.Color}" });
+                solicitudModel.Talles = articulosList.Select(x => new SelectListItem() { Text = $"{x.TalleArticulo}", Value = $"{x.TalleArticulo}" });
+                return View(solicitudModel);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.CatchError = true;
+                ViewBag.MensajeError = $"Error al CrearEditarSolicitud Error: {ex.Message}";
+                return View(solicitudModel);
+            }
+       
         }
 
         public async Task<IActionResult> ColoresPorArticulo(string NumeroTalle , string NombreArticulo) 
@@ -102,41 +116,56 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Crear(SolicitudModel solicitudModel)
         {
-            var solicitud = new Solicitud()
+            try
             {
-                IdSucursal = solicitudModel.IdSucursal,
-                EstadoSolicitud = solicitudModel.EstadoSolicitud,
-                Comentario = solicitudModel.Comentario
-            };
+                var solicitud = new Solicitud()
+                {
+                    IdSucursal = solicitudModel.IdSucursal,
+                    EstadoSolicitud = solicitudModel.EstadoSolicitud,
+                    Comentario = solicitudModel.Comentario
+                };
 
-            var solicitudDetalles = solicitudModel.SolicitudDetalle.Select(x => new SolicitudDetalle()
+                var solicitudDetalles = solicitudModel.SolicitudDetalle.Select(x => new SolicitudDetalle()
+                {
+                    IdArticulo = x.IdArticulo,
+                    CantidadSolicitada = x.CantidadSolicitada,
+                    Motivo = x.Motivo
+                });
+
+                await _solicitudService.CrearSolicitud(solicitud, solicitudDetalles);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
             {
-                IdArticulo = x.IdArticulo,
-                CantidadSolicitada = x.CantidadSolicitada,
-                Motivo = x.Motivo
-            });
+                return Redirect($"/fabrica/Solicitud/Index?error=true&msj= {ex.Message}");
+            }
 
-            await _solicitudService.CrearSolicitud(solicitud, solicitudDetalles);
-            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> AprobarSolicitud(int idSolicitud)
         {
-            await _solicitudService.AprobarSolicitud(idSolicitud);
-            return RedirectToAction("Index");
+            try
+            {
+                await _solicitudService.AprobarSolicitud(idSolicitud);
+                return RedirectToAction("Index");
+            }
+             catch (Exception ex)
+            {
+                return Redirect($"/fabrica/Solicitud/Index?error=true&msj= {ex.Message}");
+            }
         }
 
         public async Task<IActionResult> Rechazar(int idSolicitud)
         {
             try
             {
-
-                return Ok(await _solicitudService.RechazarSolicitud(idSolicitud));
+                await _solicitudService.RechazarSolicitud(idSolicitud);
+                var result = await _solicitudService.GetSolicitudes();
+                return PartialView("_SolicitudTable", result);
             }
             catch (Exception ex)
             {
-                 
-                return RedirectToAction("Index");
+                return Redirect($"/fabrica/Solicitud/Index?error=true&msj= {ex.Message}");
             }
         }
         

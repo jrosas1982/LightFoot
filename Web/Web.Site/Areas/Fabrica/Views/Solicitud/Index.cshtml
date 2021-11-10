@@ -221,20 +221,15 @@
                     url: "/fabrica/Solicitud/Rechazar",
                     data: { idSolicitud: Id },
                     success: function (result) {
-                        if (result == true) {
-                            swal("Exito!", "La solicitud ha sido rechazada correctamente", "success");
-                        } else {
-                            swal("Warning", "Ocurrió un error al rechazar la solicitud, intente mas tarde", "Warning");
-                        }
+                        $("#tablaContenido").html(""); //clear the records content
+                        $("#tablaContenido").html(result);  //add the updated content.
+                        $('.footable').footable(); //reaplicar formato footable
+                        swal("Exito!", "La solicitud ha sido rechazada correctamente", "success");           
                     },
                     error: function () {
                         swal("Error", "Ocurrió un error inesperado", "error");
                     }
-                }).done(function () {
-                    window.setTimeout(function () {
-                        location.reload();
-                    }, 600);
-                });
+                })
             });
         };
         $(document).ready(function () {

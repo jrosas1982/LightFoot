@@ -22,8 +22,13 @@ namespace Web.Site.Areas.Abm.Controllers
             _articuloCategoriaService = articuloCategoriaService;
         }
 
-        public async Task<IActionResult> Index()
+
+        public async Task<IActionResult> Index(bool error, string msj)
         {
+            if (error) {
+                ViewBag.CatchError = true;
+                ViewBag.MensajeError = "Error inesperado con Mensaje: " + msj;
+            }
             var articuloCategoriasList = await _articuloCategoriaService.GetCategorias();
             return View(articuloCategoriasList.ToList());
         }
@@ -36,11 +41,11 @@ namespace Web.Site.Areas.Abm.Controllers
                 if (IdCategoria != 0) // 0 = crear
                     articuloCategoria = await _articuloCategoriaService.BuscarPorId(IdCategoria);
                 // solo para test
-                //var mjs = "Error test";
+                //var msj = "Error test";
                 //ViewBag.CatchError = true;
                 //ViewBag.MensajeError = $"Error al CrearEditarCategoria Error: {mjs} ";
                 // solo para test
-
+                //return Redirect("/abm/ArticuloCategoria/Index?error=true");
                 return View(articuloCategoria);
             }
             catch (Exception ex)
@@ -54,14 +59,30 @@ namespace Web.Site.Areas.Abm.Controllers
 
         public async Task<IActionResult> Crear(ArticuloCategoria articuloCategoria)
         {
-            await _articuloCategoriaService.CrearCategoria(articuloCategoria);
-            return RedirectToAction("Index");
+            try
+            {
+                await _articuloCategoriaService.CrearCategoria(articuloCategoria);
+                return RedirectToAction("Index");
+            }
+            catch(Exception ex)
+            {
+                return Redirect($"/abm/ArticuloCategoria/Index?error=true&msj= {ex.Message}");
+            }
+
         }
 
         public async Task<IActionResult> Editar(ArticuloCategoria articuloCategoria)
         {
-            await _articuloCategoriaService.EditarCategoria(articuloCategoria);
-            return RedirectToAction("Index");
+            try
+            {
+                await _articuloCategoriaService.EditarCategoria(articuloCategoria);
+                return RedirectToAction("Index");
+
+            }
+            catch (Exception ex)
+            {
+                return Redirect($"/abm/ArticuloCategoria/Index?error=true&msj= {ex.Message}");
+            }
         }
 
         public async Task<IActionResult> Eliminar(ArticuloCategoria articuloCategoria)
