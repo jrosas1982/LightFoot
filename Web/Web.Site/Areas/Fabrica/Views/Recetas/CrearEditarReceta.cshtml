@@ -123,7 +123,7 @@
                     <div class="modal-body py-2">
                         <div class="form-floating">
                             @Html.LabelFor(m => m.RecetaDetalle.Cantidad)
-                            @Html.EditorFor(model => model.RecetaDetalle.Cantidad, new { htmlAttributes = new { @id = "CantidadSolicitada", @class = "form-control ", @placeholder = "" } })
+                            @Html.EditorFor(model => model.RecetaDetalle.Cantidad, new { htmlAttributes = new { @id = "CantidadSolicitada", @class = "form-control ", @placeholder = "Cantidad", @onkeypress = "return valideKey(event);", @maxlength = "8" , @type ="text" } })
                             @Html.ValidationMessageFor(model => model.RecetaDetalle.Cantidad, "", new { @class = "text-danger" })
                         </div>
                     </div>

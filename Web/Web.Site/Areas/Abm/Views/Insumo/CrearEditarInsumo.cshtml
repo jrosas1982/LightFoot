@@ -92,7 +92,7 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Insumo.StockTotal)
-                    @Html.EditorFor(model => model.Insumo.StockTotal, new { htmlAttributes = new { @id = "Unidad", @class = "form-control", @placeholder = "Stock" } })
+                    @Html.EditorFor(model => model.Insumo.StockTotal, new { htmlAttributes = new { @id = "Unidad", @class = "form-control", @placeholder = "Stock", @onkeypress = "return valideKey(event);", @maxlength = "8" } })
                     @Html.ValidationMessageFor(model => model.Insumo.StockTotal, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -114,7 +114,7 @@
             @section Scripts {
                 <environment names="Development,Staging,Production">
                     <script src="~/lib/switchery/switchery.js"></script>
-
+                    <script src="~/js/apphelpers.js"></script>
                 </environment>
 
                 <script type="text/javascript">

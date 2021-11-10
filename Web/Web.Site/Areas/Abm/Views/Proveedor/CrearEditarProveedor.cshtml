@@ -44,7 +44,7 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     @Html.LabelFor(m => m.CUIT)
-                    @Html.EditorFor(model => model.CUIT, new { htmlAttributes = new { @id = "CUIT", @class = "form-control", @placeholder = "CUIT de Proveedor" } })
+                    @Html.EditorFor(model => model.CUIT, new { htmlAttributes = new { @id = "CUIT", @class = "form-control", @placeholder = "CUIT de Proveedor", @onkeypress = "return valideKey(event);", @maxlength = "11" } })
                     @Html.ValidationMessageFor(model => model.CUIT, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -107,6 +107,7 @@
         <script src="~/lib/switchery/switchery.js"></script>
         <script src="~/lib/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js"></script>
         <script src="~/lib/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+        <script src="~/js/apphelpers.js"></script>
     </environment>
 
     <script type="text/javascript">
