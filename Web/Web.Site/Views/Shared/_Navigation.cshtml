@@ -17,7 +17,7 @@
             @if ((await authorizationService.AuthorizeAsync(User, Policies.IsFabrica)).Succeeded)
             {
                 <li class="@Html.IsSelected(area: "fabrica")">
-                    <a href="#"><i class="fa fa-book"></i> <span class="nav-label" data-i18n="nav.graphs">Fabrica</span><span class="fa arrow"></span></a>
+                    <a href="#"><i class="fa fa-building"></i> <span class="nav-label" data-i18n="nav.graphs">Fabrica</span><span class="fa arrow"></span></a>
                     <ul id="fabrica" class="nav nav-second-level collapse @Html.IsSelected(area: "fabrica", cssClass: "in")">
 
                         <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Dashboard", new { area = "fabrica" })">Dashboard</a></li>
@@ -33,7 +33,7 @@
             @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSucursal)).Succeeded)
             {
                 <li class="@Html.IsSelected(area: "sucursal")">
-                    <a href="#"><i class="fa fa-book"></i> <span class="nav-label" data-i18n="nav.graphs">Sucursal</span><span class="fa arrow"></span></a>
+                    <a href="#"><i class="fa fa-sitemap"></i> <span class="nav-label" data-i18n="nav.graphs">Sucursal</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse @Html.IsSelected(area: "sucursal", cssClass: "in")">
 
                         <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Dashboard</a></li>
@@ -46,7 +46,7 @@
             }
 
             <li class="@Html.IsSelected(area: "abm")">
-                <a href="#"><i class="fa fa-book"></i> <span class="nav-label" data-i18n="nav.graphs">Gestion</span><span class="fa arrow"></span></a>
+                <a href="#"><i class="fa fa-sliders"></i> <span class="nav-label" data-i18n="nav.graphs">Gestion</span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse @Html.IsSelected(area: "abm", cssClass: "in")">
                     <li class="@Html.IsSelected(controller: "Usuario")"><a href="@Url.Action("Index", "Usuario", new { area = "abm" })">Usuarios</a></li>
                     <li class="@Html.IsSelected(controller: "Sucursal")"><a href="@Url.Action("Index", "Sucursal", new { area = "abm" })">Sucursales</a></li>
@@ -63,7 +63,7 @@
             @if ((await authorizationService.AuthorizeAsync(User, Policies.IsGod)).Succeeded)
             {
                 <li class="@Html.IsSelected(area: "Reporte")">
-                    <a href="#"><i class="fa fa-book"></i> <span class="nav-label" data-i18n="nav.graphs">Reportes</span><span class="fa arrow"></span></a>
+                    <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label" data-i18n="nav.graphs">Reportes</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse @Html.IsSelected(area: "a", cssClass: "in")">
                         <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Caja Diaria</a></li>
                         <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Articulos con bajo Stock</a></li>
@@ -72,6 +72,15 @@
                         <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Ventas por vendedor</a></li>
                         <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Auditoria de precios</a></li>
                     </ul>
+                </li>
+            }
+            @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+            {
+                <li class="@Html.IsSelected(area: "Configs")">
+                    <a href="#"><i class="fa fa-gears"></i> <span class="nav-label" data-i18n="nav.graphs">Parametrizables</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse @Html.IsSelected(area: "a", cssClass: "in")">
+                        <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Valorar proveedor</a></li>
+                     </ul>
                 </li>
             }
 
