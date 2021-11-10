@@ -98,7 +98,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         @Html.LabelFor(m => m.Usuario.DNI)
-                        @Html.EditorFor(model => model.Usuario.DNI, new { htmlAttributes = new { @id = "DNI", @class = "form-control", @placeholder = "DNI", @type = "text" } })
+                        @Html.EditorFor(model => model.Usuario.DNI, new { htmlAttributes = new { @id = "DNI", @class = "form-control", @placeholder = "DNI", @type = "text", @onkeypress = "return valideKey(event);", @maxlength = "8" } })
                         @Html.ValidationMessageFor(model => model.Usuario.DNI, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -155,7 +155,7 @@
 @section Scripts {
     <environment names="Development,Staging,Production">
         <script src="~/lib/switchery/switchery.js"></script>
-
+        <script src="~/js/apphelpers.js"></script>
     </environment>
 
     <script type="text/javascript">
