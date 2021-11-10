@@ -146,6 +146,33 @@ namespace Core.Aplicacion.Services
             await _db.SaveChangesAsync();
         }
 
+
+        public async Task<bool> RechazarSolicitud(int idSolicitud)
+        {
+            try
+            {
+            var solicitudDB = await _db.Solicitudes.FindAsync(idSolicitud);
+
+            solicitudDB.EstadoSolicitud = EstadoSolicitud.Rechazada;
+
+            solicitudDB.SolicitudEventos.Add(new SolicitudEvento()
+            {
+                Comentario = solicitudDB.Comentario,
+                EstadoSolicitud = solicitudDB.EstadoSolicitud
+            });
+
+            _db.Update(solicitudDB);
+            await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error en RechazarSolicitud Mensaje: {ex.Message}");
+                return false;
+            
+            }
+
+        }
         public async Task<Solicitud> BuscarPorId(int idSolicitud)
         {
             var solicitud = await _db.Solicitudes
