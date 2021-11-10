@@ -41,7 +41,7 @@
     @using (Html.BeginForm(esEdicion ? "Editar" : "CrearEditarReceta", "Recetas", FormMethod.Post, new { id = "formReceta" }))
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(x => x.Id,  new  { @id = "IdReceta" })
+        @Html.HiddenFor(x => x.Id, new { @id = "IdReceta" })
         <div class="ibox-content m-b-sm border-bottom">
             <div class="row">
                 <div class="col-sm-12">
@@ -62,13 +62,13 @@
         <div class="wrapper wrapper-content animated fadeInRight ecommerce">
             <div class="ibox-content m-b-sm border-bottom">
                 <table id="ListaAriticulo" class="table table-bordered">
-                        <tr>
-                            <th>Nombre de Insumo </th>
-                            <th>Cantidad</th>
-                            <th>Etapa involucrada</th>
-                            <th>Comentario</th>
-                            <th>Borrar</th>
-                        </tr>
+                    <tr>
+                        <th>Nombre de Insumo </th>
+                        <th>Cantidad</th>
+                        <th>Etapa involucrada</th>
+                        <th>Comentario</th>
+                        <th>Borrar</th>
+                    </tr>
                     <tbody>
                         @if (Model.RecetaDetalles != null)
                         {
@@ -81,14 +81,14 @@
                             }
                         }
                     </tbody>
-                   </table>
-                    <div class="ibox-content border-0 pt-0 pr-0">
-                        <div class="text-center d-flex justify-content-end">
-                            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#NewCommentModal">
-                                Agregar Insumo
-                            </button>
-                        </div>
+                </table>
+                <div class="ibox-content border-0 pt-0 pr-0">
+                    <div class="text-center d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#agregarInsumoModal">
+                            Agregar Insumo
+                        </button>
                     </div>
+                </div>
             </div>
         </div>
         <div style="text-align:right">
@@ -100,13 +100,14 @@
             {
                 <button id="btnReceta" type="Submit" class="btn btn-w-m btn-primary">Crear Receta</button>
             }
-    
+
         </div>
     }
-        @* MODAL NEW COMMENT *@
-        <div class="modal inmodal fade" id="NewCommentModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
+    @* MODAL NEW COMMENT *@
+    <div class="modal inmodal fade" id="agregarInsumoModal" tabindex="-1" role="dialog" style="display: none;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form class="validateDontSubmit" id="modalForm" name="modalForm">
                     <div class="modal-header pb-1">
                         <div class="row">
                             <div class="col-sm-12 d-flex justify-content-center">
@@ -115,41 +116,68 @@
                         </div>
                     </div>
                     <div class="modal-body py-2">
-                        <div class="form-floating">
-                            @Html.LabelFor(m => m.RecetaDetalle.IdInsumo, "Insumo")
-                            @Html.DropDownListFor(m => m.RecetaDetalle.IdInsumo, new List<SelectListItem>(ViewBag.Insumos), " -- Seleccionar Insumo --", new { @id = "IdInsumo", @class = "form-control " })
-                            @Html.ValidationMessageFor(model => model.RecetaDetalle.IdInsumo, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            <label class="font-normal">Insumo</label>
+                            <select class="form-control  chosen-select " id="IdInsumo" data-placeholder="Seleccione Insumo" required>
+                                <option value=""> -- Seleccionar Insumo --</option>
+                                @foreach (var insumo in ViewBag.Insumos)
+                                {
+                                    <option value="@insumo.Value"> @insumo.Text</option>
+                                }
+                            </select>
                         </div>
                     </div>
+                        @*<div class="form-floating">
+                                @Html.LabelFor(m => m.RecetaDetalle.IdInsumo, "Insumo")
+                                @Html.DropDownListFor(m => m.RecetaDetalle.IdInsumo, new List<SelectListItem>(ViewBag.Insumos), " -- Seleccionar Insumo --", new { @id = "IdInsumo", @class = "form-control  chosen-select  ", required = default(string) })
+                                @Html.ValidationMessageFor(model => model.RecetaDetalle.IdInsumo, "", new { @class = "text-danger" })
+                            </div>*@
                     <div class="modal-body py-2">
-                        <div class="form-floating">
+                        <div class="form-group">
+                            <label class="font-normal">Cantidad</label>
+                            <input class="form-control" type="number" id="CantidadSolicitada" placeholder="Cantidad" required maxlength="8">
+                        </div>
+                    </div>
+                    @*<div class="form-floating">
                             @Html.LabelFor(m => m.RecetaDetalle.Cantidad)
-                            @Html.EditorFor(model => model.RecetaDetalle.Cantidad, new { htmlAttributes = new { @id = "CantidadSolicitada", @class = "form-control ", @placeholder = "Cantidad", @onkeypress = "return valideKey(event);", @maxlength = "8" , @type ="text" } })
+                            @Html.EditorFor(model => model.RecetaDetalle.Cantidad, new { htmlAttributes = new { @id = "CantidadSolicitada", @class = "form-control ", @placeholder = "Cantidad", @onkeypress = "return valideKey(event);", @maxlength = "8", @type = "text", required = default(string) } })
                             @Html.ValidationMessageFor(model => model.RecetaDetalle.Cantidad, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
+                        </div>*@
                     <div class="modal-body py-2">
-                        <div class="form-floating">
+                        <label class="font-normal">Etapa Asignada</label>
+                        <select class="form-control  chosen-select " id="IdEtapaOrdenProduccion" data-placeholder="Etapa Asignada" required>
+                            <option value=""> -- Seleccionar Orden de Etapa --</option>
+                            @foreach (var insumo in ViewBag.EtapasOrden)
+                            {
+                                <option value="@insumo.Value"> @insumo.Text</option>
+                            }
+                        </select>
+                    </div>
+                    @*<div class="form-floating">
                             @Html.LabelFor(m => m.RecetaDetalle.IdEtapaOrdenProduccion, "Etapa Asignada")
-                            @Html.DropDownListFor(m => m.RecetaDetalle.IdEtapaOrdenProduccion, new List<SelectListItem>(ViewBag.EtapasOrden), " -- Seleccionar Orden de Etapa --", new { @id = "IdEtapaOrdenProduccion", @class = "form-control required" })
+                            @Html.DropDownListFor(m => m.RecetaDetalle.IdEtapaOrdenProduccion, new List<SelectListItem>(ViewBag.EtapasOrden), " -- Seleccionar Orden de Etapa --", new { @id = "IdEtapaOrdenProduccion", @class = "form-control chosen-select", required = default(string) })
                             @Html.ValidationMessageFor(model => model.RecetaDetalle.IdEtapaOrdenProduccion, "", new { @class = "text-danger" })
+                        </div>*@
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Comentario</label>
+                            <input class="form-control" type="text" id="Comentario" placeholder="Comentario">
                         </div>
                     </div>
-                    <div class="modal-body py-2">
-                        <div class="form-floating">
+                    @*<div class="form-floating">
                             @Html.LabelFor(m => m.RecetaDetalle.Comentario)
                             @Html.EditorFor(model => model.RecetaDetalle.Comentario, new { htmlAttributes = new { @id = "Comentario", @class = "form-control", @placeholder = "" } })
                             @Html.ValidationMessageFor(model => model.RecetaDetalle.Comentario, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
+                        </div>*@
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                        <button type="button" onclick="addInsumo()" class="btn btn-primary" data-dismiss="modal">Agregar Insumo</button>
+                        <button type="button" onclick="ClearModal()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" onclick="addInsumo()" class="btn btn-primary" >Agregar Insumo</button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
+    </div>
 
 </div>
 
@@ -165,44 +193,58 @@
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/lib/validate/jquery.validate.min.js"></script>
         <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
-        <script src="~/js/apphelpers.js"></script>
+        <script src="~/js/apphelpers.js"></script>        
         <script src="~/lib/chosen/chosen.jquery.js"></script>
+        <script src="~/custom/chosen-patch.js"></script>
     </environment>
 
     <script type="text/javascript">
-        $(document).ready(function () {
-
-        });
+        //prevent the form from doing a submit
+        $(document).on('submit', '.validateDontSubmit', function (e) {
+            e.preventDefault();
+            return false;
+        })
 
         $('.chosen-select').chosen({
             no_results_text: "No hay resultados que coincidan con ",
         });
 
+        $('#agregarInsumoModal').on('shown.bs.modal', function () {
+            $('.chosen-select', this).chosen('destroy').chosen({
+                no_results_text: "No hay resultados que coincidan con ",
+            });
+        });
+
         function ClearModal() {
+            $("#IdInsumo").prop("selectedIndex", 0);
+            $("#IdEtapaOrdenProduccion").prop("selectedIndex", 0);
             $("#CantidadSolicitada").val("");
             $("#Comentario").val("");
         }
 
         function addInsumo() {
-            $.ajax({
-                type: "post",
-                url: '@url_base' + 'agregardetalle/',
-                data: {
-                    IdReceta: $("#IdReceta").val(),
-                    IdInsumo: $("#IdInsumo").val(),
-                    Cantidad: $("#CantidadSolicitada").val(),
-                    IdEtapaOrdenProduccion: $("#IdEtapaOrdenProduccion").val(),
-                    Comentario: $("#Comentario").val(),
-                    NombreEtapaOrdenProduccion: $('#IdEtapaOrdenProduccion option:selected').text(),
-                    NombreInsumo: $('#IdInsumo option:selected').text(),
-                    RecetaDetalle: {
-                        Cantidad: $("#CantidadSolicitada").val()
+            if (modalForm.checkValidity()) {
+                $.ajax({
+                    type: "post",
+                    url: '@url_base' + 'agregardetalle/',
+                    data: {
+                        IdReceta: $("#IdReceta").val(),
+                        IdInsumo: $("#IdInsumo  :selected").val(),
+                        Cantidad: $("#CantidadSolicitada").val(),
+                        IdEtapaOrdenProduccion: $("#IdEtapaOrdenProduccion  :selected").val(),
+                        Comentario: $("#Comentario").val(),
+                        NombreEtapaOrdenProduccion: $('#IdEtapaOrdenProduccion option:selected').text(),
+                        NombreInsumo: $('#IdInsumo option:selected').text(),
+                        RecetaDetalle: {
+                            Cantidad: $("#CantidadSolicitada").val()
+                        }
                     }
-                }
-            }).done(function (partialView) {
-                $('#ListaAriticulo tbody:last-child').after().append(partialView);
-                ClearModal();
-            });
+                }).done(function (partialView) {
+                    $('#ListaAriticulo tbody:last-child').after().append(partialView);
+                    $("#agregarInsumoModal").modal('hide');
+                    ClearModal();
+                });
+            }
         }
 
         function eliminarDetalleInsumo(row,Id) {

@@ -11,7 +11,7 @@
 
 @if (Model != null && Model.Any())
 {
-<select class="form-control" id="dropdownProveedor" data-placeholder="Seleccione Proveedor" required onchange="ProveeorOnChange()">
+<select class="form-control chosen-select" id="dropdownProveedor" data-placeholder="Seleccione Proveedor" required onchange="ProveeorOnChange()">
     @foreach (var insumo in Model)
     {
         <option value="@insumo.Value"> @insumo.Text</option>
@@ -20,7 +20,7 @@
 }
 else
 {
-    <select class="form-control" id="dropdownProveedor" data-placeholder="Seleccione Proveedor" required>
+    <select class="form-control chosen-select" id="dropdownProveedor" data-placeholder="Seleccione Proveedor" required>
         <option value="">No existe proveedor configurado para el insumo elegido</option>
     </select>
 }

@@ -95,7 +95,8 @@
                         @*<div class="form-floating">*@
                         <div class="form-group">
                             <label class="font-normal">Insumo</label>
-                            <select class="form-control" id="dropdownInsumo" data-placeholder="Seleccione Insumo" required>
+                            <select class="form-control  chosen-select " id="dropdownInsumo" data-placeholder="Seleccione Insumo" required>
+                                <option value=""> -- Seleccionar Insumo --</option>
                                 @foreach (var insumo in Model.Insumos)
                                 {
                                     <option value="@insumo.Value"> @insumo.Text</option>
@@ -147,17 +148,28 @@
 
 @section Styles {
     <environment names="Development,Staging,Production">
-
+        <link rel="stylesheet" href="~/lib/chosen/bootstrap-chosen.css" />
     </environment>
 }
 
 @section Scripts {
     <environment names="Development,Staging,Production">
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-
+        <script src="~/lib/chosen/chosen.jquery.js"></script>
+        <script src="~/custom/chosen-patch.js"></script>
     </environment>
 
     <script type="text/javascript">
+
+        $('.chosen-select').chosen({
+            no_results_text: "No hay resultados que coincidan con ",
+        });
+
+        $('#agregarInsumoModal').on('shown.bs.modal', function () {
+            $('.chosen-select', this).chosen('destroy').chosen({
+                no_results_text: "No hay resultados que coincidan con ",
+            });
+        });
 
         function observerModal() {
             console.log($("#dropdownInsumo :selected").val() + " " + $("#dropdownInsumo :selected").text());
@@ -201,6 +213,7 @@
             }).done(function (partialView) {
                 $("#dropdownProveedorPartialView").html(""); //clear the records content
                 $("#dropdownProveedorPartialView").html(partialView);  //add the updated content.
+                $('#dropdownProveedor').chosen();
             });
         }
 
