@@ -134,7 +134,6 @@
 
     <script type="text/javascript">
         function accionReceta(Id, accion) {
-            console.log(accion + " Accion")
             var titulo;
             var text;
             if (accion == "eliminar") {
@@ -147,11 +146,10 @@
                 text = " ";
                 ruta = "activardesactivar";
             }
-            alert(Id, accion, titulo , text);
+            alerta(Id, accion, titulo , text);
         }
 
-        function alert(Id, accion, titulo, text) {
-
+        function alerta(Id, accion, titulo, text) {
             swal({
                 title: " " + titulo + " ",
                 text: text,
