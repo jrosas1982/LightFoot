@@ -95,7 +95,9 @@
                                                     @if (!compra.Recibido)
                                                     {
                                                         <button class="btn btn-outline btn-warning btn-xs" type="button"
-                                                                onclick="marcarRecibido(@compra.Id)">
+                                                                onclick="ModalRecibirCompra(@compra.Id)"
+                                                                data-toggle="modal"
+                                                                data-target="#ModalrecibirCompra">
                                                             Marcar Recibido
                                                         </button>
                                                     }
@@ -164,7 +166,46 @@
             </div>
         </div>
     </div>
-    
+
+    <div class="modal inmodal fade" id="ModalrecibirCompra" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form class="validateDontSubmit" id="modalForm" name="modalForm">
+                    <input type="text" id="hiddenModalrecibirCompra" hidden>
+                    <div class="modal-header pb-1">
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-center">
+                                <h1 id="tituloModalrecibirCompra" style="font-size:30px;">Recibir Compra </h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Calificacion1</label>
+                            <select class="form-control" id="dropdownCalificacion1" required>
+                                <option value="2">2</option>
+                                @*@foreach (var valor in ViewBag.CalificacionValores)
+        {
+            <option value="@valor.Value"> @valor.Text</option>
+        }*@
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Remito</label>
+                            <input class="form-control" type="number" id="NroRemito" placeholder="Remito" required maxlength="12">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="ClearModalrecibirCompra()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" onclick="BootonRecibirCompra()" class="btn btn-primary">Aceptar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
 
 
@@ -193,14 +234,18 @@
     </script>
 
     <script type="text/javascript">
+        //prevent the form from doing a submit
+        $(document).on('submit', '.validateDontSubmit', function (e) {
+            e.preventDefault();
+            return false;
+        })
+
 
         $(document).ready(function () {
             $('.dataTables-example').DataTable({
                 pageLength: 25,
                 dom: 'gitp'
-
             });
-
         });
 
         function verDetalle(id) {
@@ -221,66 +266,86 @@
                     $("#partialViewEventos").html(response);  //add the updated content.
                 }
             });
-        }        
-
-
-        function marcarRecibido(id) {
-            recibir(id);
         }
 
-        function recibir (id){
-            swal({
-                icon: 'warning',
-                title: "Recibir Compra " + id,
-                text: "Escribe numero de remito",
-                type: "input",
-                input: "text",
-                inputPlaceholder: "Numero de remito",
-                animation: "slide-from-top",
-                showCancelButton: true,
-                closeOnConfirm: false,
-                confirmButtonText: "Recibir",
-                cancelButtonText: "Cancelar"
-            }, function (response) {
-                if (response === false) {
-                    //cancel
-                    console.log(false)
-                } else {
-                    //confirm
-                    if ((/^\d{10}$/).test(response)) {    // ************************** REGEX
-                        //falta validaciones
-                        AjaxRecibir(id, response, 0);
+        //function recibir(id) {
+        //    swal({
+        //        icon: 'warning',
+        //        title: "Recibir Compra " + id,
+        //        text: "Escribe numero de remito",
+        //        type: "input",
+        //        input: "text",
+        //        inputPlaceholder: "Numero de remito",
+        //        animation: "slide-from-top",
+        //        showCancelButton: true,
+        //        closeOnConfirm: false,
+        //        confirmButtonText: "Recibir",
+        //        cancelButtonText: "Cancelar"
+        //    }, function (response) {
+        //        if (response === false) {
+        //            //cancel
+        //            console.log(false)
+        //        } else {
+        //            //confirm
+        //            if ((/^\d{10}$/).test(response)) {    // ************************** REGEX
+        //                //falta validaciones
+        //                AjaxRecibir(id, response, 0);
 
-                    } else {
-                        swal('Formato no permitido', '', 'error')
-                    }
-                }
-            }); //end swal
+        //            } else {
+        //                swal('Formato no permitido', '', 'error')
+        //            }
+        //        }
+        //    }); //end swal
+        //}
+
+        ////triggered when modal is about to be shown
+        //$('#ModalrecibirCompra').on('show.bs.modal', function (e) {
+        //    //get data-id attribute of the clicked element
+        //    var compraId = $(e.relatedTarget).data('compra-id');
+        //    //popular modal
+        //    $(e.currentTarget).find('#tituloModalrecibirCompra').val('Recibir Compra #' + compraId);
+        //});
+
+        function ModalRecibirCompra(id) {
+            console.log("recibirCompra con id");
+            $('#tituloModalrecibirCompra').text('Recibir Compra #' + id);
+            $('#hiddenModalrecibirCompra').val(id);
         }
 
-        function AjaxRecibir(id, nroRemito, calificacion) {
-            $.ajax({
-                type: "post",
-                url: "/fabrica/CompraInsumo/RecibirCompra",
-                data: {
-                    idCompra: id,
-                    nroRemito: nroRemito,
-                    calificacion: calificacion
-                },
-                success: function (response) {
-                    if (response) {
-                        swal(
-                            'Compra recibida',
-                            'Remito: ' + nroRemito,
-                            'success'
-                        );
+        function BootonRecibirCompra() {
+            console.log("recibirCompra");
+            var compraId = $('#hiddenModalrecibirCompra').val();
+            var nroRemito = $("#NroRemito").val();
+            var dropdownCalificacion1 = $("#dropdownCalificacion1 :selected").val();
+            RecibirCompra(compraId, nroRemito, dropdownCalificacion1);
+        }
+
+        function RecibirCompra(id, nroRemito, calificacion1) {
+            console.log("RecibirCompra con 3 parametros");
+            if (modalForm.checkValidity()) {
+                $.ajax({
+                    type: "post",
+                    url: "/fabrica/CompraInsumo/RecibirCompra",
+                    data: {
+                        idCompra: id,
+                        nroRemito: nroRemito,
+                        calificacion1: calificacion1
+                    },
+                    success: function (response) {
+                        if (response) {
+                            swal(
+                                'Compra #' + id + ' recibida',
+                                'Remito: ' + nroRemito,
+                                'success'
+                            );
+                        }
                     }
-                }
-            }).done(function (precio) {
-                //window.setTimeout(function () {
-                //    location.reload();
-                //}, 600);
-            });
+                }).done(function (precio) {
+                    //window.setTimeout(function () {
+                    //    location.reload();
+                    //}, 600);
+                });
+            }
         }
 
         function marcarPagado(Id) {

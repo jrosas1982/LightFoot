@@ -155,7 +155,7 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var compra = await BuscarPorId(idCompra);
+                var compra = await _db.ComprasInsumos.FindAsync(idCompra);
                 if (compra == null)
                     throw new Exception("No existe la compra");
 
