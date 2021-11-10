@@ -8,7 +8,7 @@
 @model InsumoModel
 
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
+    <div class="col-xl-10 col-lg-9">
         <h2>@(esEdicion ? "Modificar" : "Crear")</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -25,8 +25,9 @@
             </li>
         </ol>
     </div>
-    <div class="col-lg-2 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
-        <button type="button" class="btn btn-default btn-rounded w-100"onclick="location.href='@Url.Action("Index", "Insumo", 0)'">
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-default w-100"
+                onclick="location.href='@Url.Action("Index", "Insumo", 0)'">
             <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
         </button>
     </div>
@@ -97,31 +98,32 @@
                 </div>
             </div>
         </div>
+        <div style="text-align:right">
+            <button type="Submit" class="btn btn-w-m btn-primary">@(esEdicion ? "Modificar" : "Crear") Insumo </button>
+        </div>
     </div>
-                <div style="text-align:right">
-                    <button type="Submit" class="btn btn-w-m btn-primary">@(esEdicion ? "Modificar" : "Crear") Insumo </button>
-                </div>
-                }
-            </div>
+                
+    }
+</div>
 
-            @section Styles {
-                <environment names="Development,Staging,Production">
-                    <link rel="stylesheet" href="~/lib/switchery/switchery.css" />
+@section Styles {
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/switchery/switchery.css" />
 
-                </environment>
-            }
+    </environment>
+}
 
-            @section Scripts {
-                <environment names="Development,Staging,Production">
-                    <script src="~/lib/switchery/switchery.js"></script>
-                    <script src="~/js/apphelpers.js"></script>
-                </environment>
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/switchery/switchery.js"></script>
+        <script src="~/js/apphelpers.js"></script>
+    </environment>
 
-                <script type="text/javascript">
-                    $(document).ready(function () {
-                        var elem = document.querySelector('.js-switch_3');
-                        var switchery = new Switchery(elem, { color: '#1AB394' });
-                    });
-                </script>
-            }
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var elem = document.querySelector('.js-switch_3');
+            var switchery = new Switchery(elem, { color: '#1AB394' });
+        });
+    </script>
+}
 

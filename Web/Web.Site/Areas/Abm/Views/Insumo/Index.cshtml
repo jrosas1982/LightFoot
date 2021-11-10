@@ -9,7 +9,7 @@
 @model IEnumerable<Insumo>
 
 <div class="row wrapper border-bottom white-bg page-heading navegacion">
-    <div class="col-lg-12">
+    <div class="col-xl-8 col-lg-6">
         <h2>Insumo</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -23,9 +23,16 @@
             </li>
         </ol>
     </div>
-    <div class="col-lg-12" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-default" onclick="Reporte()">Reporte</button>
-        <button type="button" class="btn btn-w-m btn-default" onclick="location.href='@Url.Action("CrearEditarInsumo", "Insumo", 0)'"> Crear nuevo Insumo</button>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()">
+            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
+        </button>
+    </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-primary w-100"
+                onclick="location.href='@Url.Action("CrearEditarInsumo", "Insumo", 0)'">
+            <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Nuevo Insumo
+        </button>
     </div>
 </div>
 

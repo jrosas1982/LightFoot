@@ -8,7 +8,7 @@
 @model IEnumerable<ArticuloCategoria>
 
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
+    <div class="col-xl-10 col-lg-9">
         <h2>Categorias</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -22,7 +22,7 @@
             </li>
         </ol>
     </div>
-    <div class="col-lg-2 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
         <button type="button" class="btn btn-w-m btn-primary w-100"
                 onclick="location.href='@Url.Action("CrearEditarCategoria", "ArticuloCategoria", 0)'">
             <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Nueva Categoria
@@ -138,25 +138,8 @@
       
             $('.dataTables-example').DataTable({
                 pageLength: 25,
-                dom: '<"html5buttons"B>lTfgitp',
-                buttons: [
-                    { extend: 'copy' },
-                    { extend: 'csv' },
-                    { extend: 'excel', title: 'ExampleFile' },
-                    { extend: 'pdf', title: 'ExampleFile' },
-
-                    {
-                        extend: 'print',
-                        customize: function (win) {
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                        }
-                    }
-                ]
+                dom: 'gitp',
+               
 
             });
         });

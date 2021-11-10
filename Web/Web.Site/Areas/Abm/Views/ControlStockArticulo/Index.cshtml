@@ -9,7 +9,7 @@
 @model IEnumerable<ArticuloStock>
 
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-12">
+    <div class="col-xl-10 col-lg-9">
         <h2>Stock Articulos</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -23,8 +23,9 @@
             </li>
         </ol>
     </div>
-    @*<div class="col-lg-12" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditarStockArticulo", "ControlStockArticulo", 0 )'">Crear nuevo Stock de Articulos</button>
+    @*<div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
+            <button type="button" class="btn btn-w-m btn-primary" 
+                onclick="location.href='@Url.Action("CrearEditarStockArticulo", "ControlStockArticulo", 0 )'">Crear nuevo Stock de Articulos</button>
     </div>*@
 </div>
 
@@ -160,31 +161,7 @@
 
             $('.dataTables-example').DataTable({
                 pageLength: 25,
-                dom: '<"html5buttons"B>lTfgitp',
-                buttons: [
-                    {
-                        extend: 'pdf', title: 'ExampleFile',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6]
-                        }
-                    },
-
-                    {
-                        extend: 'print',
-                        customize: function (win) {
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                        },
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6]
-                        }
-                    }
-                ]
-
+                dom: 'gitp',
             });
         });
     </script>
