@@ -53,7 +53,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         @Html.LabelFor(m => m.StockTotal)
-                        @Html.EditorFor(model => model.StockTotal, new { htmlAttributes = new { @id = "StockTotal", @class = "form-control", @placeholder = "Stock Total de Articulo" } })
+                        @Html.EditorFor(model => model.StockTotal, new { htmlAttributes = new { @id = "StockTotal", @class = "form-control", @placeholder = "Stock Total de Articulo" , @onkeypress = "return valideKey(event);" , @maxlength = "8" } })
                         @Html.ValidationMessageFor(model => model.StockTotal, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         @Html.LabelFor(m => m.StockMinimo)
-                        @Html.EditorFor(model => model.StockMinimo, new { htmlAttributes = new { @id = "StockMinimo", @class = "form-control", @placeholder = "Stock Minimo de Articulo" } })
+                        @Html.EditorFor(model => model.StockMinimo, new { htmlAttributes = new { @id = "StockMinimo", @class = "form-control", @placeholder = "Stock Minimo de Articulo", @onkeypress = "return valideKey(event);" , @maxlength = "8" } })
                         @Html.ValidationMessageFor(model => model.StockMinimo, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -87,7 +87,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         @Html.LabelFor(m => m.TamañoLote)
-                        @Html.EditorFor(model => model.TamañoLote, new { htmlAttributes = new { @id = "TamañoLote", @class = "form-control", @placeholder = "Tamaño de Lote" } })
+                        @Html.EditorFor(model => model.TamañoLote, new { htmlAttributes = new { @id = "TamañoLote", @class = "form-control", @placeholder = "Tamaño de Lote" ,  @onkeypress = "return valideKey(event);", @maxlength = "8" } })
                         @Html.ValidationMessageFor(model => model.TamañoLote, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -125,7 +125,7 @@
 @section Scripts {
     <environment names="Development,Staging,Production">
         <script src="~/lib/switchery/switchery.js"></script>
-
+        <script src="~/js/apphelpers.js"></script>
     </environment>
 
     <script type="text/javascript">
@@ -137,5 +137,6 @@
             var switchery_3 = new Switchery(elem_3, { color: '#1AB394' });
         });
     </script>
+
 }
 
