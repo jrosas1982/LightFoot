@@ -43,15 +43,15 @@ namespace Web.Site.Areas.Fabrica.Controllers
  
         public async Task<IActionResult> IndexAsync()
         { 
+            var recetas = await _recetaService.GetRecetas();
+            var insumos = await _insumoService.GetInsumos();
+            var ordenes = await _ordenesProduccionService.GetEtapasOrden();
+            ViewBag.ListadoRecetaType = recetas.Select(x => x.Articulo.Nombre).Distinct(); 
             var recetasTask = _recetaService.GetRecetas();
             var insumosTask = _insumoService.GetInsumos();
             var ordenesTask = _ordenesProduccionService.GetEtapasOrden();
 
             await Task.WhenAll(recetasTask, insumosTask, ordenesTask);
-
-            var recetas = recetasTask.Result;
-            var ordenes = ordenesTask.Result;
-            var insumos = insumosTask.Result;
 
             var modeloReceta = _mapper.Map<IEnumerable<RecetaModel>>(recetas);
 
@@ -64,16 +64,6 @@ namespace Web.Site.Areas.Fabrica.Controllers
                     detalle.UnidadDeMedida = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Unidad).Single();
                 });
             });
-
-            //foreach (var receta in modeloReceta)
-            //{
-            //    foreach (var detalle in receta.RecetaDetalles)
-            //    {
-            //        detalle.NombreEtapaOrdenProduccion = ordenes.Where(x => x.Id == detalle.IdEtapaOrdenProduccion).Select(d => d.Descripcion).Single();
-            //        detalle.NombreInsumo = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Nombre).Single();
-            //        detalle.UnidadDeMedida = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Unidad).Single();
-            //    }
-            //}
             return View(modeloReceta);
         }
 
@@ -99,7 +89,9 @@ namespace Web.Site.Areas.Fabrica.Controllers
                     item.NombreInsumo = insumos.Where(x => x.Id == item.IdInsumo).Select(d => d.Nombre).FirstOrDefault();
                 }
             }
-            ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); 
+            ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.Nombre} - {x.Color} - {x.TalleArticulo} ", Value = $"{x.Id}" });
+
+            //ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); 
             ViewBag.Insumos = insumos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); 
             ViewBag.EtapasOrden =  ordenes.Select(x => new SelectListItem() { Text = $"{x.Descripcion}", Value = $"{x.Orden}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
             
@@ -118,7 +110,8 @@ namespace Web.Site.Areas.Fabrica.Controllers
                     var insumos = await _insumoService.GetInsumos();
                     var ordenes = await _ordenesProduccionService.GetEtapasOrden();
 
-                    ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
+                    ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id} - {x.TalleArticulo} - {x.Color}" });
+                    //ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
                     ViewBag.Insumos = insumos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
                     ViewBag.EtapasOrden = ordenes.Select(x => new SelectListItem() { Text = $"{x.Descripcion}", Value = $"{x.Orden}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
 
@@ -181,16 +174,33 @@ namespace Web.Site.Areas.Fabrica.Controllers
                 return PartialView("_RecetaDetalle", data);
         }
 
-        //TODO: Idea para refactor 
-        //private async Task<RecetaDetalleModel> AgregarDetalleInsumoYOrdenesAsync(RecetaDetalleModel recetaDetalleModel)     
-        //{
-        //    var insumos = await _insumoService.GetInsumos();
-        //    var ordenes = await _ordenesProduccionService.GetEtapasOrden();
 
-        //    recetaDetalleModel.NombreEtapaOrdenProduccion = ordenes.Where(x => x.Orden == recetaDetalleModel.IdEtapaOrdenProduccion).Select(d => d.Descripcion).FirstOrDefault();
-        //    recetaDetalleModel.NombreInsumo = insumos.Where(x => x.Id == recetaDetalleModel.IdInsumo).Select(d => d.Nombre).FirstOrDefault();
-         
-        //    return recetaDetalleModel;
-        //}
+        public async Task<IActionResult> BuscarReceta(string NombreReceta)
+        {
+            var recetas = await _recetaService.GetRecetas();
+            var insumos = await _insumoService.GetInsumos();
+            var ordenes = await _ordenesProduccionService.GetEtapasOrden();
+            ViewBag.ListadoRecetaType = recetas.Select(x => x.Articulo.Id);
+            IEnumerable<RecetaModel> modeloReceta;
+            if (NombreReceta == null) {
+                 modeloReceta = _mapper.Map<IEnumerable<RecetaModel>>(recetas);
+            }
+            else {
+                recetas = recetas.Where(X => X.Articulo.Nombre == NombreReceta);
+                modeloReceta = _mapper.Map<IEnumerable<RecetaModel>>(recetas.Where(X => X.Articulo.Nombre == NombreReceta));
+            }
+            foreach (var receta in modeloReceta)
+            {
+                foreach (var detalle in receta.RecetaDetalles)
+                {
+                    detalle.NombreEtapaOrdenProduccion = ordenes.Where(x => x.Orden == detalle.IdEtapaOrdenProduccion)
+                        .Select(d => d.Descripcion).FirstOrDefault();
+                    detalle.NombreInsumo = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Nombre).FirstOrDefault();
+                    detalle.UnidadDeMedida = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Unidad).FirstOrDefault();
+                }
+            }
+
+            return PartialView("_listadoReceta", modeloReceta);
+        }
     }
 }
