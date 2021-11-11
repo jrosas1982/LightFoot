@@ -79,7 +79,7 @@
                 <li class="@Html.IsSelected(area: "Configs")">
                     <a href="#"><i class="fa fa-gears"></i> <span class="nav-label" data-i18n="nav.graphs">Parametrizables</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse @Html.IsSelected(area: "a", cssClass: "in")">
-                        <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Valorar proveedor</a></li>
+                        <li class="@Html.IsSelected(controller: "FabricaParametros")"><a href="@Url.Action("Index", "FabricaParametros", new { area = "abm" })">Valorar proveedor</a></li>
                      </ul>
                 </li>
             }
