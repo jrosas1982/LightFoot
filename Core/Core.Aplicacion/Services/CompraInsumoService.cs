@@ -151,6 +151,11 @@ namespace Core.Aplicacion.Services
             return comprasList;
         }
 
+        public async Task<IEnumerable<TipoPago>> GetTiposPago()
+        {
+            return await Task.FromResult(EnumExtensions.GetValues<TipoPago>());
+        }
+
         public async Task<bool> RecibirCompra(int idCompra, long nroRemito, double calificacionProveedor)
         {
             try

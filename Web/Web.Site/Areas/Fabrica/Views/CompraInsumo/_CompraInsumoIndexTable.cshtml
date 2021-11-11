@@ -68,8 +68,10 @@ else
         @if (!compra.Pagado)
         {
             <button class="btn btn-outline btn-primary btn-xs" type="button"
-            onclick="marcarPagado(@compra.Id)">
-            Marcar Pagado
+                onclick="ModalPagarCompra(@compra.Id)"
+                data-toggle="modal"
+                data-target="#ModalPagarCompra">
+                Marcar Pagado
             </button>
         }
     </td>
