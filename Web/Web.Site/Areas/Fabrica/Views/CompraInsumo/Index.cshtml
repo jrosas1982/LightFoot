@@ -128,9 +128,39 @@
                     <div class="modal-body py-2 border-bottom">
                         <h3>Califique su entrega</h3>
 
-                        <div class="form-group">
+                        <div class="modal-body py-2">
                             <label class="font-normal">Tiempo de entrega</label>
-                            <select class="form-control" id="dropdownCalificacion1" required>
+                            <select class="form-control" id="dropdownTiempoCalificacion" required>
+                                @*@foreach (var valor in ViewBag.CalificacionValores)*@
+                                @for (int i = 1; i <= 10; i++)
+                                {
+                                    <option value="@i">@i</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="modal-body py-2">
+                            <label class="font-normal">Distancia</label>
+                            <select class="form-control" id="dropdownDistanciaCalificacion" required>
+                                @*@foreach (var valor in ViewBag.CalificacionValores)*@
+                                @for (int i = 1; i <= 10; i++)
+                                {
+                                    <option value="@i">@i</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="modal-body py-2">
+                            <label class="font-normal">Precio</label>
+                            <select class="form-control" id="dropdownPrecioCalificacion" required>
+                                @*@foreach (var valor in ViewBag.CalificacionValores)*@
+                                @for (int i = 1; i <= 10; i++)
+                                {
+                                    <option value="@i">@i</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="modal-body py-2">
+                            <label class="font-normal">Calidad de entrega</label>
+                            <select class="form-control" id="dropdownCalidadCalificacion" required>
                                 @*@foreach (var valor in ViewBag.CalificacionValores)*@
                                 @for (int i = 1; i <= 10; i++)
                                 {
@@ -139,7 +169,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group">
+                        @*<div class="form-group">
                             <label class="font-normal">Tiempo de entrega</label>
                             <input id="tiempoCalificacion" class="form-control limitar10" type="number" value="" placeholder="" max="10" required>
                         </div>
@@ -155,11 +185,12 @@
                             <label class="font-normal">Calidad de entrega</label>
                             <input id="calidadCalificacion" class="form-control limitar10" type="number" value="" placeholder="" max="10" required>
                         </div>
-                    </div>
+                    </div>*@
+
                     <div class="modal-body py-2">
                         <div class="form-group">
                             <label class="font-normal">Remito</label>
-                            <input class="form-control limitarLength" type="number" id="NroRemito" placeholder="Remito" minLength="12" maxlength="12" required>
+                            <input class="form-control limitarLength" type="number" id="NroRemito" placeholder="Remito" maxlength="12" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -209,8 +240,8 @@
                         </div>*@
                     </div>
                     <div class="modal-footer">
-                        <button type="button" onclick="ClearModalrecibirCompra()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" onclick="btnPagarCompra()" class="btn btn-primary" data-dismiss="modal">Registrar Pago</button>
+                        <button type="button" onclick="ClearModalrecibirCompra()" class="btn btn-white">Cerrar</button>
+                        <button type="submit" onclick="btnPagarCompra()" class="btn btn-primary">Registrar Pago</button>
                     </div>
                 </form>
             </div>
@@ -249,12 +280,6 @@
     </script>
 
     <script type="text/javascript">
-        //prevent the form from doing a submit
-        $(document).on('submit', '.validateDontSubmit', function (e) {
-            e.preventDefault();
-            return false;
-        });
-
         $(document).ready(function () {
             $('.dataTables-example').DataTable({
                 pageLength: 25,
@@ -273,12 +298,10 @@
         $(document).on('input', ".limitarLength", function () {
             if (this.value.length > this.maxLength)
                 this.value = this.value.slice(0, this.maxLength);
-
         });
-
     </script>
-    <script type="text/javascript">
 
+    <script type="text/javascript">
         function verDetalle(id) {
             ActualizarDetalleCompra(id);
         }
@@ -298,9 +321,21 @@
                 }
             });
         }
-
     </script>
+
     <script type="text/javascript">
+        //prevent the form from doing a submit
+        $(document).on('submit', '.validateDontSubmit', function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+        $('#ModalrecibirCompra').on('hidden.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+        })
+        $('#ModalPagarCompra').on('hidden.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+        })
 
         function ModalRecibirCompra(id) {
             console.log("recibirCompra con id");
@@ -312,16 +347,15 @@
             console.log("recibirCompra");
             var compraId = $('#hiddenModalrecibirCompra').val();
             var nroRemito = $("#NroRemito").val();
-            var promedio = ($("#tiempoCalificacion").val() + $("#distanciaCalificacion").val() + $("#precioCalificacion").val() + $("#calidadCalificacion").val()) / 4;
-            RecibirCompra(compraId, nroRemito, promedio);
+            var tiempoCalificacion = $("#dropdownTiempoCalificacion :selected").val();
+            var distanciaCalificacion = $("#dropdownDistanciaCalificacion :selected").val();
+            var precioCalificacion = $("#dropdownPrecioCalificacion :selected").val();
+            var calidadCalificacion = $("#dropdownCalidadCalificacion :selected").val();
+            //var promedio = ($("#tiempoCalificacion").val() + $("#distanciaCalificacion").val() + $("#precioCalificacion").val() + $("#calidadCalificacion").val()) / 4;
+            RecibirCompra(compraId, nroRemito, tiempoCalificacion, distanciaCalificacion, precioCalificacion, calidadCalificacion);
         }
 
-        function ClearModalrecibirCompra() {
-            $('.limitar10').val("");
-            $('limitarLength').val("");
-        }
-
-        function RecibirCompra(id, nroRemito, calificacion) {
+        function RecibirCompra(id, nroRemito, tiempoCalificacion, distanciaCalificacion, precioCalificacion, calidadCalificacion) {
             console.log("RecibirCompra con 3 parametros");
             if (modalForm.checkValidity()) {
                 $.ajax({
@@ -330,7 +364,10 @@
                     data: {
                         idCompra: id,
                         nroRemito: nroRemito,
-                        calificacion: calificacion
+                        tiempoCalificacion: tiempoCalificacion,
+                        distanciaCalificacion: distanciaCalificacion,
+                        precioCalificacion: precioCalificacion,
+                        calidadCalificacion: calidadCalificacion
                     },
                     success: function (response) {
                         if (response) {
@@ -360,11 +397,11 @@
             $('#hiddenModalpagarCompra').val(id);
         }
 
-        function ClearModalrecibirCompra() {
-            $('#metodo_pago').prop("selectedIndex", 0);
-            $('#cantidadPagar').val("");
-            $('#Pagado').val("");
-        }
+        //function ClearModalrecibirCompra() {
+        //    $('#metodo_pago').prop("selectedIndex", 0);
+        //    $('#cantidadPagar').val("");
+        //    $('#Pagado').val("");
+        //}
 
         function btnPagarCompra() {
             console.log("pagarCompra");
@@ -400,8 +437,6 @@
             });
             
         }
-
-
 
     </script>
 }

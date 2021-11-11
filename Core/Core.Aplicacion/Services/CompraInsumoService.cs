@@ -156,7 +156,7 @@ namespace Core.Aplicacion.Services
             return await Task.FromResult(EnumExtensions.GetValues<TipoPago>());
         }
 
-        public async Task<bool> RecibirCompra(int idCompra, long nroRemito, double calificacionProveedor)
+        public async Task<bool> RecibirCompra(int idCompra, long nroRemito, int tiempoCalificacion, int distanciaCalificacion, int precioCalificacion, int calidadCalificacion)
         {
             try
             {
@@ -177,8 +177,8 @@ namespace Core.Aplicacion.Services
 
                 _db.ComprasInsumos.Update(compra);
 
-                var proveedor = await _db.Proveedores.FindAsync(compra.IdProveedor);
-                proveedor.Calificacion = calificacionProveedor;
+                var proveedor = await _db.Proveedores.FindAsync(compra.IdProveedor);                
+                proveedor.Calificacion = ObtenerCalificacion(tiempoCalificacion, distanciaCalificacion, precioCalificacion, calidadCalificacion);
                 _db.Proveedores.Update(proveedor);
 
                 await _db.SaveChangesAsync();
@@ -188,6 +188,17 @@ namespace Core.Aplicacion.Services
             {
                 return false;
             }
+        }
+
+        private double ObtenerCalificacion(int tiempoCalificacion, int distanciaCalificacion, int precioCalificacion, int calidadCalificacion)
+        {
+            int total = tiempoCalificacion + distanciaCalificacion + precioCalificacion + calidadCalificacion;
+
+            int res;
+
+            Math.DivRem(total, 4, out res);
+
+            return double.Parse(res.ToString());
         }
 
         public async Task EnviarMailCompra(int IdCompra)
