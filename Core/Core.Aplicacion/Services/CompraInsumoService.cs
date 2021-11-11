@@ -194,11 +194,18 @@ namespace Core.Aplicacion.Services
         {
             int total = tiempoCalificacion + distanciaCalificacion + precioCalificacion + calidadCalificacion;
 
-            int res;
+            var pesoTiempoCalificacion = 1;
+            var pesoDistanciaCalificacion = 1;
+            var pesoPrecioCalificacion = 1;
+            var pesoCalidadCalificacion = 1;
 
-            Math.DivRem(total, 4, out res);
+            double media = (tiempoCalificacion * pesoTiempoCalificacion) 
+                         + (distanciaCalificacion * pesoDistanciaCalificacion) 
+                         + (precioCalificacion * pesoPrecioCalificacion) 
+                         + (calidadCalificacion * pesoCalidadCalificacion) 
+                         / total;
 
-            return double.Parse(res.ToString());
+            return media;
         }
 
         public async Task EnviarMailCompra(int IdCompra)

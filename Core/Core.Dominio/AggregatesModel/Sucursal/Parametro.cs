@@ -10,5 +10,6 @@ namespace Core.Dominio.AggregatesModel
         Distancia = 20,
         Precio = 30,
         Calidad = 40,
+        TiempoExpedicion = 50,
     }
 }
