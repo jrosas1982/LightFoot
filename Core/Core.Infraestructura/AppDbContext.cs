@@ -67,6 +67,8 @@ namespace Core.Infraestructura
         public DbSet<Venta> Ventas { get; set; }
         public DbSet<VentaDetalle> VentasDetalle { get; set; }
 
+        public DbSet<FabricaParametro> FabricaParametros { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
