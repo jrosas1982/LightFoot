@@ -395,35 +395,37 @@
             console.log("pagarCompra");
             var compraId = $('#hiddenModalpagarCompra').val();
             var montoPagado = $("#Pagado").val();
-            pagarCompra(compraId, montoPagado)
+            var tipoPago = $("#dropdownProveedor :selected").val();
+            pagarCompra(compraId, montoPagado, tipoPago);
         }
 
-        function pagarCompra(idCompra, pagado) {
-            $.ajax({
-                type: "post",
-                url: "/fabrica/CompraInsumo/PagarCompra",
-                data: {
-                    idCompra: idCompra,
-                    tipoPago: $("#dropdownProveedor :selected").val(),
-                    montoPagado: pagado
-                },
-                success: function (response) {
-                    if (response) {
-                        swal(
-                            'Compra #' + idCompra + ' pagada',
-                            'Se pagado ' + pagado,
-                            'success'
-                        );
+        function pagarCompra(idCompra, pagado, tipoPago) {
+            if (modalForm.checkValidity()) {
+                $.ajax({
+                    type: "post",
+                    url: "/fabrica/CompraInsumo/PagarCompra",
+                    data: {
+                        idCompra: idCompra,
+                        tipoPago: tipoPago,
+                        montoPagado: pagado
+                    },
+                    success: function (response) {
+                        if (response) {
+                            swal(
+                                'Compra #' + idCompra + ' pagada',
+                                'Se pagado ' + pagado,
+                                'success'
+                            );
+                        }
                     }
-                }
-            }).done(function (response) {
-                $("#ComprasPartialView").html(""); //clear the records content
-                $("#ComprasPartialView").html(response);  //add the updated content.
-                //window.setTimeout(function () {
-                //    location.reload();
-                //}, 600);
-            });
-            
+                }).done(function (response) {
+                    $("#ComprasPartialView").html(""); //clear the records content
+                    $("#ComprasPartialView").html(response);  //add the updated content.
+                    //window.setTimeout(function () {
+                    //    location.reload();
+                    //}, 600);
+                });
+            }
         }
 
     </script>

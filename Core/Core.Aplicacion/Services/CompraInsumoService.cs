@@ -207,7 +207,7 @@ namespace Core.Aplicacion.Services
 
             return media;
         }
-
+        
         public async Task EnviarMailCompra(int IdCompra)
         {
             var compraRealizada = await _db.ComprasInsumos
