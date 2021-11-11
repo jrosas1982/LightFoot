@@ -21,18 +21,18 @@ namespace Core.Aplicacion.Services
         private readonly ILogger<CompraArticuloService> _logger;
         private readonly IArticuloService _articuloService;
         private readonly IProveedorService _proveedorService;
-        private readonly IProveedorArticuloService _proveedorArticuloService;
+        //private readonly IProveedorArticuloService _proveedorArticuloService;
         private readonly ISolicitudService _solicitudService;
         private readonly IConfiguration _Configuration;
         private readonly int IdSucursal;
 
-        public CompraArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraArticuloService> logger, IArticuloService articuloService, IProveedorService proveedorService, IProveedorArticuloService proveedorArticuloService, IConfiguration configuration, ISolicitudService solicitudService)
+        public CompraArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraArticuloService> logger, IArticuloService articuloService, IProveedorService proveedorService, /*IProveedorArticuloService proveedorArticuloService,*/ IConfiguration configuration, ISolicitudService solicitudService)
         {
             _db = extendedAppDbContext.context;
             _logger = logger;
             _articuloService = articuloService;
             _proveedorService = proveedorService;
-            _proveedorArticuloService = proveedorArticuloService;
+            //_proveedorArticuloService = proveedorArticuloService;
             _Configuration = configuration;
             IdSucursal = int.Parse(_db.GetSucursalId());
             _solicitudService = solicitudService;
@@ -99,22 +99,22 @@ namespace Core.Aplicacion.Services
                 decimal montoTotal = 0;
                 foreach (var item in grupo)
                 {
-                    var proveedorArticulo = await _proveedorArticuloService.BuscarProveedorArticulo(item.IdArticulo, item.IdProveedor);
+                    //var proveedorArticulo = await _proveedorArticuloService.BuscarProveedorArticulo(item.IdArticulo, item.IdProveedor);
                     var proveedoresArticuloList = proveedores.Where(x => x.ProveedorArticulos.Any(y => y.IdArticulo == item.IdArticulo));
 
-                    if (!proveedoresArticuloList.Any() || proveedorArticulo == null)
-                        throw new Exception($"No existe ningun proveedor asignado para el articulo {(await _articuloService.BuscarPorId(item.IdArticulo)).Nombre}");
+                    //if (!proveedoresArticuloList.Any() || proveedorArticulo == null)
+                    //    throw new Exception($"No existe ningun proveedor asignado para el articulo {(await _articuloService.BuscarPorId(item.IdArticulo)).Nombre}");
 
                     var proveedorSugerido = proveedoresArticuloList.OrderByDescending(x => x.Calificacion).First();
 
-                    var montoDetalle = proveedorArticulo.Precio * item.Cantidad;
-                    montoTotal += montoDetalle;
+                    //var montoDetalle = proveedorArticulo.Precio * item.Cantidad;
+                    //montoTotal += montoDetalle;
 
                     var detalle = new CompraArticuloDetalle()
                     {
                         IdArticulo = item.IdArticulo,
                         IdProveedorSugerido = proveedorSugerido.Id,
-                        Monto = montoDetalle,
+                        //Monto = montoDetalle,
                         Cantidad = item.Cantidad,
                         Comentario = item.Comentario,
                     };

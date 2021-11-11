@@ -37,7 +37,7 @@
                     <ul class="nav nav-second-level collapse @Html.IsSelected(area: "sucursal", cssClass: "in")">
 
                         <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Dashboard</a></li>
-                        <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Compras</a></li>
+                        <li class="@Html.IsSelected(controller: "CompraArticulo")"><a href="@Url.Action("Index", "CompraArticulo", new { area = "sucursal" })">Compras</a></li>
                         <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Ventas</a></li>
                         <li class="@Html.IsSelected(controller: "ControlStockArticulo") "><a href="@Url.Action("Index", "ControlStockArticulo", new { area = "abm" })">Control de Stock</a></li>
 
