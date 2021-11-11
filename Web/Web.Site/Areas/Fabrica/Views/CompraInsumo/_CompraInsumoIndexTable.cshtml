@@ -65,13 +65,13 @@ else
         </button>
     }
     else
-        @if (!compra.Pagado)
+        @if (compra.Recibido)
         {
             <button class="btn btn-outline btn-primary btn-xs" type="button"
-                onclick="ModalPagarCompra(@compra.Id)"
+                onclick="ModalPagarCompra(@compra.Id, @compra.MontoTotal)"
                 data-toggle="modal"
                 data-target="#ModalPagarCompra">
-                Marcar Pagado
+                Agregar Pago
             </button>
         }
     </td>
