@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Core.Dominio.AggregatesModel;
+using Core.Infraestructura;
 using LightFoot.Api.Publica.Dtos.CompraVirtual;
 using LightFoot.Api.Publica.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -9,16 +11,18 @@ namespace LightFoot.Api.Publica.Controllers.v1
 {
     [ApiController]
     [Route("v1/[Controller]")]
-    [ServiceFilter(typeof(ApiKeyAuth))]
+    //[ServiceFilter(typeof(ApiKeyAuth))]
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
     public class VentaController : ControllerBase
     {
+        private readonly AppDbContext _db;
         private readonly ILogger<VentaController> _logger;
 
-        public VentaController(ILogger<VentaController> logger)
+        public VentaController(ILogger<VentaController> logger, ExtendedAppDbContext db)
         {
             _logger = logger;
+            _db = db.context;
         }
 
         [HttpPost]
@@ -54,6 +58,17 @@ namespace LightFoot.Api.Publica.Controllers.v1
             _logger.LogInformation($"Se busco la venta {idVenta}");
 
             return Ok(response);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(Solicitud), 201)]
+        [SwaggerOperation("Registra una nueva venta en el sistema")]
+        public async Task<IActionResult> getSoloicitud(int solicitudId)
+        {
+            var response = _db.Solicitudes.Find(solicitudId);
+            //_logger.LogInformation($"Se registro la venta {response} ");
+            return Ok(response);    
+            //return CreatedAtAction(nameof(Get), new { idVenta = request }, request);
         }
     }
 }

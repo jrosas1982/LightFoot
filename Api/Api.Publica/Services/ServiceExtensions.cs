@@ -1,4 +1,5 @@
-﻿using LightFoot.Api.Publica.Filters;
+﻿using Core.Infraestructura;
+using LightFoot.Api.Publica.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LightFoot.Api.Publica.Services

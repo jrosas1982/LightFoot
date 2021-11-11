@@ -1,9 +1,14 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Core.Aplicacion.Helpers;
+using Core.Aplicacion.Interfaces;
+using Core.Aplicacion.Services;
+using Core.Infraestructura;
 using LightFoot.Api.Publica.Filters;
 using LightFoot.Api.Publica.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -75,6 +80,15 @@ namespace ApiPublic
             services.AddHttpContextAccessor();
 
             services.AddServices();
+
+
+            // DbContext
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Conexion")), ServiceLifetime.Transient);
+
+            services.AddCoreServices();
+            services.AddSecurityServices();        
+
+            services.AddSignalR();
 
         }
 
