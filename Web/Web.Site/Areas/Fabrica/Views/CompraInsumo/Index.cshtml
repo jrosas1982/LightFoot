@@ -128,64 +128,52 @@
                     <div class="modal-body py-2 border-bottom">
                         <h3>Califique su entrega</h3>
 
-                        <div class="modal-body py-2">
-                            <label class="font-normal">Tiempo de entrega</label>
-                            <select class="form-control" id="dropdownTiempoCalificacion" required>
-                                @*@foreach (var valor in ViewBag.CalificacionValores)*@
-                                @for (int i = 1; i <= 10; i++)
-                                {
-                                    <option value="@i">@i</option>
-                                }
-                            </select>
+                        <div class="row">
+                            <div class="modal-body border my-1 p-0 pr-1 d-flex justify-content-start align-items-end col-6">
+                                <label class="font-normal col-9">Tiempo de entrega</label>
+                                <select class="form-control col-3" id="dropdownTiempoCalificacion" required>
+                                    @*@foreach (var valor in ViewBag.CalificacionValores)*@
+                                    @for (int i = 1; i <= 10; i++)
+                                    {
+                                        <option value="@i">@i</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="modal-body border my-1 p-0 pl-1 d-flex justify-content-start align-items-end col-6">
+                                <label class="font-normal col-9">Distancia</label>
+                                <select class="form-control col-3" id="dropdownDistanciaCalificacion" required>
+                                    @*@foreach (var valor in ViewBag.CalificacionValores)*@
+                                    @for (int i = 1; i <= 10; i++)
+                                    {
+                                        <option value="@i">@i</option>
+                                    }
+                                </select>
+                            </div>
                         </div>
-                        <div class="modal-body py-2">
-                            <label class="font-normal">Distancia</label>
-                            <select class="form-control" id="dropdownDistanciaCalificacion" required>
-                                @*@foreach (var valor in ViewBag.CalificacionValores)*@
-                                @for (int i = 1; i <= 10; i++)
-                                {
-                                    <option value="@i">@i</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="modal-body py-2">
-                            <label class="font-normal">Precio</label>
-                            <select class="form-control" id="dropdownPrecioCalificacion" required>
-                                @*@foreach (var valor in ViewBag.CalificacionValores)*@
-                                @for (int i = 1; i <= 10; i++)
-                                {
-                                    <option value="@i">@i</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="modal-body py-2">
-                            <label class="font-normal">Calidad de entrega</label>
-                            <select class="form-control" id="dropdownCalidadCalificacion" required>
-                                @*@foreach (var valor in ViewBag.CalificacionValores)*@
-                                @for (int i = 1; i <= 10; i++)
-                                {
-                                    <option value="@i">@i</option>
-                                }
-                            </select>
+                        <div class="row">
+                            <div class="modal-body border my-1 p-0 pr-1 d-flex justify-content-start align-items-end col-6">
+                                <label class="font-normal col-9">Precio</label>
+                                <select class="form-control col-3" id="dropdownPrecioCalificacion" required>
+                                    @*@foreach (var valor in ViewBag.CalificacionValores)*@
+                                    @for (int i = 1; i <= 10; i++)
+                                    {
+                                        <option value="@i">@i</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="modal-body border my-1 p-0 pl-1 d-flex justify-content-start align-items-end col-6">
+                                <label class="font-normal col-9">Calidad de entrega</label>
+                                <select class="form-control col-3" id="dropdownCalidadCalificacion" required>
+                                    @*@foreach (var valor in ViewBag.CalificacionValores)*@
+                                    @for (int i = 1; i <= 10; i++)
+                                    {
+                                        <option value="@i">@i</option>
+                                    }
+                                </select>
+                            </div>
                         </div>
 
-                        @*<div class="form-group">
-                            <label class="font-normal">Tiempo de entrega</label>
-                            <input id="tiempoCalificacion" class="form-control limitar10" type="number" value="" placeholder="" max="10" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="font-normal">Distancia</label>
-                            <input id="distanciaCalificacion" class="form-control limitar10" type="number" value="" placeholder="" max="10" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="font-normal">Precio</label>
-                            <input id="precioCalificacion" class="form-control limitar10" type="number" value="" placeholder="" max="10" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="font-normal">Calidad de entrega</label>
-                            <input id="calidadCalificacion" class="form-control limitar10" type="number" value="" placeholder="" max="10" required>
-                        </div>
-                    </div>*@
+                    </div>
 
                     <div class="modal-body py-2">
                         <div class="form-group">
@@ -240,8 +228,8 @@
                         </div>*@
                     </div>
                     <div class="modal-footer">
-                        <button type="button" onclick="ClearModalrecibirCompra()" class="btn btn-white">Cerrar</button>
-                        <button type="submit" onclick="btnPagarCompra()" class="btn btn-primary">Registrar Pago</button>
+                        <button type="button" onclick="ClearModalrecibirCompra()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" onclick="btnPagarCompra()" class="btn btn-primary" data-dismiss="modal">Registrar Pago</button>
                     </div>
                 </form>
             </div>
