@@ -21,40 +21,32 @@ namespace Core.Aplicacion.Services
             _db = extendedAppDbContext.context;
             _logger = logger;
         }
-        public Task<Parametro> BuscarPorId(int idParametro)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<Parametro> BuscarPorNombre(string variable)
+
+        public Task<FabricaParametro> BuscarPorId(int idParametro)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> CrearParametro(Parametro parametro)
+        public Task<bool> EditarParamtro(int idParametro, int valor)
+        {
+            //    if(_db.GetGroupName() == Policies.IsFabrica)
+            //        throw new NotImplementedException();
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<FabricaParametro>> GetParametros()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> EditarParametro(int idParametro, string valor)
-        {
-            if(_db.GetGroupName() == Policies.IsFabrica)
-                throw new NotImplementedException();
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> EditarParamtro(Parametro parametro)
+        public Task<int> GetValorByParametro(Parametro parametro)
         {
             throw new NotImplementedException();
         }
-
-        public Task<bool> EliminarParamtro(Parametro parametro)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Parametro>> GetParametros()
-        {
-            throw new NotImplementedException();
-        }
+        
+        //tiempoCalificacion
+        //distanciaCalificacion
+        //precioCalificacion
+        //calidadCalificacion
     }
 }

@@ -8,12 +8,12 @@ namespace Core.Aplicacion.Interfaces
 {
     public interface IParametroService
     {
-        public Task<IEnumerable<Parametro>> GetParametros();
-        public Task<Parametro> BuscarPorId(int idParametro);
-        public Task<bool> CrearParametro(Parametro parametro);
-        public Task<bool> EditarParamtro(Parametro parametro);
-        public Task<bool> EliminarParamtro(Parametro parametro);
-        public Task<bool> EditarParametro(int idParametro, string valor);
+        public Task<IEnumerable<FabricaParametro>> GetParametros();
+        public Task<FabricaParametro> BuscarPorId(int idParametro);
+        public Task<bool> EditarParamtro(int idParametro, int valor);
+        public Task<int> GetValorByParametro(Parametro parametro);
+        //public Task<bool> EliminarParamtro(Parametro parametro);
+        //public Task<bool> EditarParametro(int idParametro, string valor);
         //public Task<bool> EditarParametroSucursal(int idParametro, string valor);
         //public Task<bool> EditarParametroFabrica(int idParametro, string valor);
     }

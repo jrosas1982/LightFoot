@@ -34,9 +34,10 @@ namespace Core.Aplicacion.Services
                     .AsNoTracking()
                     .Include(x => x.Articulo)
                     .Include(x => x.RecetaDetalles)
-                    .ThenInclude(x => x.Insumo)
+                        .ThenInclude(x => x.Insumo)
                     .Include(x => x.RecetaDetalles)
-                    .ThenInclude(x => x.EtapaOrdenProduccion).Where(x => x.Id == IdReceta).SingleOrDefaultAsync();
+                        .ThenInclude(x => x.EtapaOrdenProduccion)
+                    .Where(x => x.Id == IdReceta).SingleOrDefaultAsync();
 
                 return receta;
             }
@@ -45,7 +46,6 @@ namespace Core.Aplicacion.Services
                 _logger.LogInformation($" Error al BuscarPorId { ex.Message }");
                 throw;
             }
-
         }
 
         public async Task<IEnumerable<Receta>> GetRecetas()

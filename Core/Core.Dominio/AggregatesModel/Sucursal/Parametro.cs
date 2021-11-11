@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
-using Core.Dominio.SeedWork;
 
 namespace Core.Dominio.AggregatesModel
 {
-    public class Parametro : EntityBase
+    public enum Parametro : int
     {
-        [Key]
-        public int Id { get; set; }
-        public string Modulo { get; set; }
-        public string Variable { get; set; }
-        public string Descripcion { get; set; }
-        public string ValorPorDefecto { get; set; }
+        Tiempo = 10,
+        Distancia = 20,
+        Precio = 30,
+        Calidad = 40,
     }
 }

@@ -168,12 +168,12 @@ namespace Web.Site.Areas
             }
         }
 
-        public async Task<IActionResult> RecibirCompra(string idCompra, string nroRemito, double calificacion1)
+        public async Task<IActionResult> RecibirCompra(string idCompra, string nroRemito, double calificacion)
         {
             try
             {
 
-                var resp = await _compraInsumoService.RecibirCompra(int.Parse(idCompra), long.Parse(nroRemito), calificacion1);
+                var resp = await _compraInsumoService.RecibirCompra(int.Parse(idCompra), long.Parse(nroRemito), calificacion);
 
                 var compraInsumoList = await _compraInsumoService.GetCompras();
 

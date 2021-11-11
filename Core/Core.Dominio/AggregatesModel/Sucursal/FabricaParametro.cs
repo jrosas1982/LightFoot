@@ -10,11 +10,9 @@ namespace Core.Dominio.AggregatesModel
     {
         [Key]
         public int Id { get; set; }
-        public int IdParametro { get; set; }
-        public string Valor { get; set; }
-
-        [ForeignKey("IdParametro")]
-        public virtual Parametro Parametro { get; set; }
-
+        public string Modulo { get; set; }
+        public Parametro Parametro { get; set; }
+        public string Descripcion { get; set; }
+        public int Valor { get; set; }
     }
 }

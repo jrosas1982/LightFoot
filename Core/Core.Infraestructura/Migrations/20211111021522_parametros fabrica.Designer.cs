@@ -4,14 +4,16 @@ using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Infraestructura.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211111021522_parametros fabrica")]
+    partial class parametrosfabrica
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -522,7 +524,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Cortado",
-                            FechaCreacion = new DateTime(2021, 11, 10, 23, 33, 29, 3, DateTimeKind.Local).AddTicks(6676),
+                            FechaCreacion = new DateTime(2021, 11, 10, 23, 15, 21, 366, DateTimeKind.Local).AddTicks(7737),
                             Orden = 1
                         },
                         new
@@ -531,7 +533,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Aparado",
-                            FechaCreacion = new DateTime(2021, 11, 10, 23, 33, 29, 3, DateTimeKind.Local).AddTicks(7192),
+                            FechaCreacion = new DateTime(2021, 11, 10, 23, 15, 21, 366, DateTimeKind.Local).AddTicks(8069),
                             Orden = 2
                         },
                         new
@@ -540,7 +542,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Preparacion",
-                            FechaCreacion = new DateTime(2021, 11, 10, 23, 33, 29, 3, DateTimeKind.Local).AddTicks(7197),
+                            FechaCreacion = new DateTime(2021, 11, 10, 23, 15, 21, 366, DateTimeKind.Local).AddTicks(8077),
                             Orden = 3
                         },
                         new
@@ -549,7 +551,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Montado",
-                            FechaCreacion = new DateTime(2021, 11, 10, 23, 33, 29, 3, DateTimeKind.Local).AddTicks(7202),
+                            FechaCreacion = new DateTime(2021, 11, 10, 23, 15, 21, 366, DateTimeKind.Local).AddTicks(8084),
                             Orden = 4
                         },
                         new
@@ -558,7 +560,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Pegado",
-                            FechaCreacion = new DateTime(2021, 11, 10, 23, 33, 29, 3, DateTimeKind.Local).AddTicks(7207),
+                            FechaCreacion = new DateTime(2021, 11, 10, 23, 15, 21, 366, DateTimeKind.Local).AddTicks(8090),
                             Orden = 5
                         },
                         new
@@ -567,7 +569,7 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Terminado ",
-                            FechaCreacion = new DateTime(2021, 11, 10, 23, 33, 29, 3, DateTimeKind.Local).AddTicks(7212),
+                            FechaCreacion = new DateTime(2021, 11, 10, 23, 15, 21, 366, DateTimeKind.Local).AddTicks(8097),
                             Orden = 6
                         });
                 });
@@ -819,7 +821,7 @@ namespace Core.Infraestructura.Migrations
                             Direccion = "4562 Hazy Panda Limits, Chair Crossing, Kentucky, US, 607898",
                             Email = "TrifulcaLightFoot@gmail.com",
                             EsFabrica = true,
-                            FechaCreacion = new DateTime(2021, 11, 10, 23, 33, 29, 4, DateTimeKind.Local).AddTicks(8433),
+                            FechaCreacion = new DateTime(2021, 11, 10, 23, 15, 21, 368, DateTimeKind.Local).AddTicks(1073),
                             Nombre = "Fabrica LightFoot",
                             Telefono = "+541136558997"
                         });

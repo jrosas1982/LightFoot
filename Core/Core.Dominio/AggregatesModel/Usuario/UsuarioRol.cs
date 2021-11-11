@@ -15,6 +15,9 @@ namespace Core.Dominio.AggregatesModel
         [Category(Policies.IsFabrica)]
         [Display(GroupName = Policies.IsFabrica)]
         Supervisor = 20,
+        [Category(Policies.IsTesorero)]
+        [Display(GroupName = Policies.IsTesorero)]
+        Tesorero = 25,
         [Category(Policies.IsFabrica)]
         [Display(GroupName = Policies.IsFabrica)]
         Controlador = 80,
@@ -43,6 +46,7 @@ namespace Core.Dominio.AggregatesModel
 
         public const string IsGerente = "IsGerente";
         public const string IsSupervisor = "IsSupervisor";
+        public const string IsTesorero = "IsTesorero";
         public const string IsControlador = "IsControlador";
         public const string IsOperario = "IsOperario";
 

@@ -123,17 +123,29 @@
 
                     <div class="modal-body py-2 border-bottom">
                         <h3>Califique su entrega</h3>
+
                         <div class="form-group">
                             <label class="font-normal">Tiempo de entrega</label>
-                            <input id="tiempoCalificacion" class="form-control limitar10" type="number" value=""  placeholder="" max="10" required>
+                            <select class="form-control" id="dropdownCalificacion1" required>
+                                @*@foreach (var valor in ViewBag.CalificacionValores)*@
+                                @for (int i = 1; i <= 10; i++)
+                                {
+                                    <option value="@i">@i</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="font-normal">Tiempo de entrega</label>
+                            <input id="tiempoCalificacion" class="form-control limitar10" type="number" value="" placeholder="" max="10" required>
                         </div>
                         <div class="form-group">
                             <label class="font-normal">Distancia</label>
-                            <input id="distanciaCalificacion" class="form-control limitar10" type="number" value=""  placeholder="" max="10" required>
+                            <input id="distanciaCalificacion" class="form-control limitar10" type="number" value="" placeholder="" max="10" required>
                         </div>
                         <div class="form-group">
                             <label class="font-normal">Precio</label>
-                            <input id="precioCalificacion" class="form-control limitar10" type="number" value=""  placeholder="" max="10" required>
+                            <input id="precioCalificacion" class="form-control limitar10" type="number" value="" placeholder="" max="10" required>
                         </div>
                         <div class="form-group">
                             <label class="font-normal">Calidad de entrega</label>
@@ -257,7 +269,7 @@
             $('limitarLength').val("");
         }
 
-        function RecibirCompra(id, nroRemito, calificacion1) {
+        function RecibirCompra(id, nroRemito, calificacion) {
             console.log("RecibirCompra con 3 parametros");
             if (modalForm.checkValidity()) {
                 $.ajax({
@@ -266,7 +278,7 @@
                     data: {
                         idCompra: id,
                         nroRemito: nroRemito,
-                        calificacion1: calificacion1
+                        calificacion: calificacion
                     },
                     success: function (response) {
                         if (response) {

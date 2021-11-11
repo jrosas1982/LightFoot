@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
@@ -12,10 +14,12 @@ namespace Core.Aplicacion.Services
     {
         private readonly AppDbContext _db;
         private readonly ILogger<ControlStockArticuloService> _logger;
+        private readonly int IdSucursal;
         public ControlStockArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<ControlStockArticuloService> logger)
         {
             _logger = logger;
             _db = extendedAppDbContext.context;
+            IdSucursal = int.Parse(_db.GetSucursalId());
         }
         public async Task<ArticuloStock> BuscarPorId(int IdArticuloStock)
         {
@@ -62,7 +66,7 @@ namespace Core.Aplicacion.Services
         public async Task<IEnumerable<ArticuloStock>> GetArticuloStock()
         {
            // var articuloStockList = await _db.ArticulosStock.ToListAsync();
-            var articuloStockList = await _db.ArticulosStock.Include(p => p.Articulo).ToListAsync();
+            var articuloStockList = await _db.ArticulosStock.Where(x => x.IdSucursal == IdSucursal).Include(p => p.Articulo).ToListAsync();
             _logger.LogInformation("Se buscaron el stock de articulos");
             return articuloStockList;
         }
