@@ -36,6 +36,8 @@ namespace Web.Site.Areas
         {
             var compraInsumoList = await _compraInsumoService.GetCompras();
 
+            ViewBag.TiposPago = await _compraInsumoService.GetTiposPago();
+
             return View(compraInsumoList);
         }
 
@@ -184,6 +186,22 @@ namespace Web.Site.Areas
             {
                 throw ex;
             }
+        }
+
+        public async Task<IActionResult> PagarCompra(int idCompra, TipoPago tipoPago, decimal montoPagado)
+        {
+            try
+            {
+                var resp = await _compraInsumoService.AgregarPagoCompra(idCompra, tipoPago, montoPagado);
+                var compraInsumoList = await _compraInsumoService.GetCompras();
+
+                return PartialView("_CompraInsumoIndexTable", compraInsumoList);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
 
         public async Task<IActionResult> AgregarDetalle(CompraInsumoDetalleModel data)

@@ -9,6 +9,7 @@ namespace Core.Aplicacion.Interfaces
     public interface ICompraInsumoService
     {
         public Task<IEnumerable<CompraInsumo>> GetCompras();
+        public Task<IEnumerable<TipoPago>> GetTiposPago();
         public Task<IEnumerable<CompraInsumoDetalle>> GetCompraDetalles(int IdCompra);
         public Task<CompraInsumo> BuscarPorId(int IdCompra);
         public Task CrearCompra(IEnumerable<NuevaCompraInsumoModel> detalles);

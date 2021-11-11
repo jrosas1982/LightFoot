@@ -3,12 +3,14 @@
     Layout = "_Layout";
 
     IEnumerable<CompraInsumoDetalle> DetallesCompra = ViewBag.DetallesCompra;
+    IEnumerable<TipoPago> tiposdePago = ViewBag.TiposPago;
+    
 }
 
 @model IEnumerable<CompraInsumo>
 
 <div class="row wrapper border-bottom white-bg page-heading navegacion">
-    <div class="col-lg-10">
+    <div class="col-xl-10 col-lg-9">
         <h2>Compras</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -22,7 +24,7 @@
             </li>
         </ol>
     </div>
-    <div class="col-lg-2 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
         <button type="button" class="btn btn-w-m btn-primary w-100"
                 onclick="location.href='@Url.Action("ComprarInsumos", "CompraInsumo", 0)'">
             <span class="icon icon-xs"><span class="fas fa-shopping-cart mr-2"></span></span>Realizar Compra
@@ -71,7 +73,7 @@
     </div>
 
 
-    @*MODAL*@
+    @*MODAL detalle*@
 
     <div class="modal inmodal fade" id="ModalDetalle" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -107,6 +109,8 @@
             </div>
         </div>
     </div>
+
+    @*MODAL recibir*@
 
     <div class="modal inmodal fade" id="ModalrecibirCompra" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -155,20 +159,63 @@
                     <div class="modal-body py-2">
                         <div class="form-group">
                             <label class="font-normal">Remito</label>
-                            <input class="form-control limitarLength" type="number" id="NroRemito" placeholder="Remito" minLength="12" maxlength="12" required >
+                            <input class="form-control limitarLength" type="number" id="NroRemito" placeholder="Remito" minLength="12" maxlength="12" required>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" onclick="ClearModalrecibirCompra()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" onclick="BootonRecibirCompra()" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+                        <button type="submit" onclick="BootonRecibirCompra()" class="btn btn-primary" data-dismiss="modal">Recibir</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
+    @*MODAL pagar*@
 
-
+    <div class="modal inmodal fade" id="ModalPagarCompra" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form class="validateDontSubmit" id="modalForm" name="modalForm">
+                    <input type="text" id="hiddenModalpagarCompra" hidden>
+                    <div class="modal-header pb-1">
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-center">
+                                <h1 id="tituloModalpagarCompra" style="font-size:30px;">Pagar Compra </h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body py-2 border-bottom">
+                        <div class="form-group">
+                            <label class="font-normal">Metodo de Pago</label>
+                            <select class="form-control" name="metodo_pago" id="metodo_pago" data-placeholder="-- Metodo de Pago --" required>
+                                <option value="" disabled selected> -- Metodo de Pago -- </option>
+                                @if (tiposdePago != null)
+                                {
+                                    @foreach (var tipo in tiposdePago)
+                                    {
+                                        <option value="@tipo">@tipo</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-normal">A Pagar</label>
+                            <input id="cantidadPagar" class="form-control" type="number" min="0" max="" value="" placeholder="" required>
+                        </div>
+                        @*<div class="form-group">
+                            <label class="font-normal">Pagado</label>
+                            <input class="form-control" id="Pagado" placeholder="" disabled>
+                        </div>*@
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="ClearModalrecibirCompra()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" onclick="btnPagarCompra()" class="btn btn-primary" data-dismiss="modal">Registrar Pago</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 </div>
 
@@ -216,7 +263,7 @@
         });
 
         $(document).on('input', ".limitar10", function () {
-            if (this.value / 10 == this.max ||this.value == 10)
+            if (this.value / 10 == this.max || this.value == 10)
                 this.value = this.value.slice(0, 2);
 
             if (this.value > this.max || this.value.length > 1 && this.value != 10)
@@ -226,9 +273,11 @@
         $(document).on('input', ".limitarLength", function () {
             if (this.value.length > this.maxLength)
                 this.value = this.value.slice(0, this.maxLength);
-            
+
         });
 
+    </script>
+    <script type="text/javascript">
 
         function verDetalle(id) {
             ActualizarDetalleCompra(id);
@@ -250,6 +299,9 @@
             });
         }
 
+    </script>
+    <script type="text/javascript">
+
         function ModalRecibirCompra(id) {
             console.log("recibirCompra con id");
             $('#tituloModalrecibirCompra').text('Recibir Compra #' + id);
@@ -260,7 +312,7 @@
             console.log("recibirCompra");
             var compraId = $('#hiddenModalrecibirCompra').val();
             var nroRemito = $("#NroRemito").val();
-            var promedio = ($("#tiempoCalificacion").val() + $("#distanciaCalificacion").val() + $("#precioCalificacion").val() + $("#calidadCalificacion").val() ) / 4;
+            var promedio = ($("#tiempoCalificacion").val() + $("#distanciaCalificacion").val() + $("#precioCalificacion").val() + $("#calidadCalificacion").val()) / 4;
             RecibirCompra(compraId, nroRemito, promedio);
         }
 
@@ -298,10 +350,58 @@
                 });
             }
         }
+    </script>
 
-        function marcarPagado(Id) {
+    <script type="text/javascript">
 
+        function ModalPagarCompra(id) {
+            console.log("pagarCompra con id");
+            $('#tituloModalpagarCompra').text('Pagar Compra #' + id);
+            $('#hiddenModalpagarCompra').val(id);
         }
+
+        function ClearModalrecibirCompra() {
+            $('#metodo_pago').prop("selectedIndex", 0);
+            $('#cantidadPagar').val("");
+            $('#Pagado').val("");
+        }
+
+        function btnPagarCompra() {
+            console.log("pagarCompra");
+            var compraId = $('#hiddenModalpagarCompra').val();
+            var montoPagado = $("#Pagado").val();
+            pagarCompra(compraId, montoPagado)
+        }
+
+        function pagarCompra(idCompra, pagado) {
+            $.ajax({
+                type: "post",
+                url: "/fabrica/CompraInsumo/PagarCompra",
+                data: {
+                    idCompra: idCompra,
+                    tipoPago: $("#dropdownProveedor :selected").val(),
+                    montoPagado: pagado
+                },
+                success: function (response) {
+                    if (response) {
+                        swal(
+                            'Compra #' + idCompra + ' pagada',
+                            'Se pagado ' + pagado,
+                            'success'
+                        );
+                    }
+                }
+            }).done(function (response) {
+                $("#ComprasPartialView").html(""); //clear the records content
+                $("#ComprasPartialView").html(response);  //add the updated content.
+                //window.setTimeout(function () {
+                //    location.reload();
+                //}, 600);
+            });
+            
+        }
+
+
 
     </script>
 }
