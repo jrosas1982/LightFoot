@@ -133,22 +133,25 @@ namespace Web.Site.Areas
         public async Task<IActionResult> Crear(CompraInsumoModel comprainsumoModel)
         {
             try
-            {      
-                IList<NuevaCompraInsumoModel> compra = new List<NuevaCompraInsumoModel>();
-
-                foreach (var detalle in comprainsumoModel.CompraInsumoDetalleModels)
+            {
+                if (comprainsumoModel == null)
                 {
-                    compra.Add(new NuevaCompraInsumoModel()
+                    IList<NuevaCompraInsumoModel> compra = new List<NuevaCompraInsumoModel>();
+                    foreach (var detalle in comprainsumoModel.CompraInsumoDetalleModels)
                     {
-                        Cantidad = detalle.Cantidad,
-                        Comentario = detalle.Comentario,
-                        IdInsumo = detalle.IdInsumo,
-                        IdProveedor = detalle.IdProveedor
-                    });
+                        compra.Add(new NuevaCompraInsumoModel()
+                        {
+                            Cantidad = detalle.Cantidad,
+                            Comentario = detalle.Comentario,
+                            IdInsumo = detalle.IdInsumo,
+                            IdProveedor = detalle.IdProveedor
+                        });
+                    }
+                    await _compraInsumoService.CrearCompra(compra);
+                    return RedirectToAction("Index");
                 }
-                await _compraInsumoService.CrearCompra(compra);
-
-                return RedirectToAction("Index");
+                else
+                    return RedirectToAction("ComprarInsumos");
             }
             catch (Exception ex)
             {
