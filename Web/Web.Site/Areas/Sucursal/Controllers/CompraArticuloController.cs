@@ -86,21 +86,23 @@ namespace Web.Site.Areas
         {
             try
             {
-                IList<NuevaCompraArticuloModel> compra = new List<NuevaCompraArticuloModel>();
-
-                foreach (var detalle in compraArticuloModel.CompraArticuloDetalleModels)
-                {
-                    compra.Add(new NuevaCompraArticuloModel()
+                if (compraArticuloModel == null) { 
+                    IList<NuevaCompraArticuloModel> compra = new List<NuevaCompraArticuloModel>();
+                    foreach (var detalle in compraArticuloModel.CompraArticuloDetalleModels)
                     {
-                        Cantidad = detalle.Cantidad,
-                        Comentario = detalle.Comentario,
-                        IdArticulo = detalle.IdArticulo,
-                        IdProveedor = detalle.IdProveedor
-                    });
+                        compra.Add(new NuevaCompraArticuloModel()
+                        {
+                            Cantidad = detalle.Cantidad,
+                            Comentario = detalle.Comentario,
+                            IdArticulo = detalle.IdArticulo,
+                            IdProveedor = detalle.IdProveedor
+                        });
+                    }
+                    await _compraArticuloService.CrearCompra(compra);
+                    return RedirectToAction("Index");
                 }
-                await _compraArticuloService.CrearCompra(compra);
-
-                return RedirectToAction("Index");
+                else
+                    return RedirectToAction("ComprarArticulos");
             }
             catch (Exception ex)
             {
