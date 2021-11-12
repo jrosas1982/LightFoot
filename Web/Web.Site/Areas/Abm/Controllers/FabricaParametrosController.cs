@@ -30,9 +30,6 @@ namespace Web.Site.Areas.Abm.Controllers
         }
         public IActionResult EliminarParametro(int IdParametro) {
 
-
-            var a = IdParametro;
-
             return View();
         } 
         public async Task<IActionResult> EditarParametro(FabricaParametro fabricaParametro) {
@@ -47,15 +44,22 @@ namespace Web.Site.Areas.Abm.Controllers
         }  
 
         public async Task<IActionResult> CrearEditarParametro() {
-
-            //IEnumerable<FabricaParametro> parame = await _parametroService.GetParametros();
-            //var b = parame.GroupBy(x => x.Parametro).ToList();
-            //var c = ToListSelectListItem<Parametro>();
+            List<SelectListItem> valores = new List<SelectListItem>();
+            for (int i = 0; i <= 5 ; i++)
+            {
+                SelectListItem valor = new SelectListItem();
+                valor.Text = i.ToString();
+                valor.Value = i.ToString();
+                valores.Add(valor);
+            }
+           
+            ViewBag.ListaValor = valores;
             ViewBag.ListParametros = ToListSelectListItem<Parametro>();
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CrearEditarParametro(FabricaParametro fabricaParametro)
         {
             ViewBag.ListParametros = ToListSelectListItem<Parametro>();

@@ -23,9 +23,9 @@ namespace Core.Aplicacion.Services
             _logger = logger;
         }
 
-        public Task<FabricaParametro> BuscarPorId(int idParametro)
+        public async Task<FabricaParametro> BuscarPorId(int idParametro)
         {
-            throw new NotImplementedException();
+           return await _db.FabricaParametros.SingleOrDefaultAsync(x => x.Id == idParametro);
         }
 
         public Task<bool> EditarParamtro(int idParametro, int valor)
