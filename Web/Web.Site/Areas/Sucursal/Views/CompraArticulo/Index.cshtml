@@ -123,7 +123,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="modal-body py-2">
                         <div class="form-group">
                             <label class="font-normal">Remito</label>
@@ -188,6 +187,7 @@
         </div>
     </div>
 
+
 </div>
 
 @section Styles {
@@ -232,7 +232,7 @@
         function ActualizarDetalleCompra(id) {
             $.ajax({
                 type: "Get",
-                url: "/fabrica/CompraInsumo/ActualizarDetalleCompra?IdCompra=" + id,
+                url: "/sucursal/CompraArticulo/ActualizarDetalleCompra?IdCompra=" + id,
                 traditional: true,
                 data: {
                     Id: id
@@ -270,7 +270,6 @@
             console.log("recibirCompra");
             var compraId = $('#hiddenModalrecibirCompra').val();
             var nroRemito = $("#NroRemito").val();
-            //var promedio = ($("#tiempoCalificacion").val() + $("#distanciaCalificacion").val() + $("#precioCalificacion").val() + $("#calidadCalificacion").val()) / 4;
             RecibirCompra(compraId, nroRemito);
         }
 
@@ -279,7 +278,7 @@
             if (modalForm.checkValidity()) {
                 $.ajax({
                     type: "post",
-                    url: "/fabrica/CompraInsumo/RecibirCompra",
+                    url: "/sucursal/CompraArticulo/RecibirCompra",
                     data: {
                         idCompra: id,
                         nroRemito: nroRemito,
@@ -296,9 +295,7 @@
                 }).done(function (response) {
                     $("#ComprasPartialView").html(""); //clear the records content
                     $("#ComprasPartialView").html(response);  //add the updated content.
-                    //window.setTimeout(function () {
-                    //    location.reload();
-                    //}, 600);
+                    $('#ModalrecibirCompra').modal('hide');
                 });
             }
         }
@@ -313,12 +310,6 @@
             $('#cantidadPagar').max(montoTotal);
         }
 
-        //function ClearModalrecibirCompra() {
-        //    $('#metodo_pago').prop("selectedIndex", 0);
-        //    $('#cantidadPagar').val("");
-        //    $('#Pagado').val("");
-        //}
-
         function btnPagarCompra() {
             console.log("pagarCompra");
             var compraId = $('#hiddenModalpagarCompra').val();
@@ -330,7 +321,7 @@
         function pagarCompra(idCompra, pagado, tipoPago) {
             $.ajax({
                 type: "post",
-                url: "/fabrica/CompraInsumo/PagarCompra",
+                url: "/sucursal/CompraArticulo/PagarCompra",
                 data: {
                     idCompra: idCompra,
                     tipoPago: tipoPago,

@@ -337,7 +337,6 @@
             var distanciaCalificacion = $("#dropdownDistanciaCalificacion :selected").val();
             var precioCalificacion = $("#dropdownPrecioCalificacion :selected").val();
             var calidadCalificacion = $("#dropdownCalidadCalificacion :selected").val();
-            //var promedio = ($("#tiempoCalificacion").val() + $("#distanciaCalificacion").val() + $("#precioCalificacion").val() + $("#calidadCalificacion").val()) / 4;
             RecibirCompra(compraId, nroRemito, tiempoCalificacion, distanciaCalificacion, precioCalificacion, calidadCalificacion);            
         }
 
@@ -369,9 +368,6 @@
                     $("#ComprasPartialView").html(""); //clear the records content
                     $("#ComprasPartialView").html(response);  //add the updated content.
                     $('#ModalrecibirCompra').modal('hide');
-                    //window.setTimeout(function () {
-                    //    location.reload();
-                    //}, 600);
                 });
             }
             else {
@@ -388,12 +384,6 @@
             $('#hiddenModalpagarCompra').val(id);
             $('#cantidadPagar').max(montoTotal);
         }
-
-        //function ClearModalrecibirCompra() {
-        //    $('#metodo_pago').prop("selectedIndex", 0);
-        //    $('#cantidadPagar').val("");
-        //    $('#Pagado').val("");
-        //}
 
         function btnPagarCompra() {
             console.log("pagarCompra");
