@@ -1,6 +1,6 @@
 ﻿@using HtmlHelpers.BeginCollectionItemCore
 @using Web.Site.Areas
-@model IEnumerable<CompraInsumo>
+@model IEnumerable<CompraArticulo>
 
 
 @if (@Model == null)
@@ -65,13 +65,13 @@ else
         </button>
     }
     else
-        @if (compra.Recibido)
+        @if (!compra.Pagado)
         {
             <button class="btn btn-outline btn-primary btn-xs" type="button"
-                onclick="ModalPagarCompra(@compra.Id, @compra.MontoTotal)"
+                onclick="ModalPagarCompra(@compra.Id)"
                 data-toggle="modal"
                 data-target="#ModalPagarCompra">
-                Agregar Pago
+                Marcar Pagado
             </button>
         }
     </td>

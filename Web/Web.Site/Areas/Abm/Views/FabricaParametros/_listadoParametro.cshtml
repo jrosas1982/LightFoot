@@ -25,7 +25,7 @@
                          <td>@parametro.Valor</td>
 
                          <td class="d-print-none">
-                             <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="EditarParametro(@parametro.Id,'@parametro.Parametro')">Editar</button>
+                             <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="EditarParametro(@parametro.Id,'@parametro.Parametro', '@parametro.Descripcion', @parametro.Valor)" data-toggle="modal" data-target="#NewCommentModal">Editar</button>
                          </td>
                      </tr>
                     }

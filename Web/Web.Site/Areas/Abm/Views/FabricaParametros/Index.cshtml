@@ -54,42 +54,40 @@
 <div class="modal inmodal fade" id="NewCommentModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header pb-1">
-                <div class="row">
-                    <div class="col-sm-12 d-flex justify-content-center">
-                        <h1 style="font-size:30px;">Actualizar Parametro</h1>
+            <form class="validateDontSubmit" id="modalForm" name="modalForm">
+                <div class="modal-header pb-1">
+                    <div class="row">
+                        <div class="col-sm-12 d-flex justify-content-center">
+                            <h1 style="font-size:30px;">Actualizar Parametro</h1>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <input type="text" name="" value="" id="idParametro" class="form-control" hidden />
-            <div class="modal-body py-2">
-                <div class="form-floating">
-                    <label for="Descipcion">Parametro</label>
-                    <input type="text" name="Parametro" value="" id="Parametro" class="form-control" disabled />
+                <input type="text" name="" value="" id="idParametro" class="form-control" hidden required/>
+                <div class="modal-body py-2">
+                    <div class="form-floating">
+                        <label for="Descipcion">Parametro</label>
+                        <input type="text" name="Parametro" value="" id="Parametro" class="form-control" disabled />
+                    </div>
                 </div>
-            </div>
-            <div class="modal-body py-2">
-                <div class="form-floating">
-                    <label for="Descipcion">Descripcion</label>
-                    <input type="text" name="Descripcion" value="" id="Descripcion" class="form-control" />
+                <div class="modal-body py-2">
+                    <div class="form-floating">
+                        <label for="Descipcion">Descripcion</label>
+                        <input type="text" name="Descripcion" value="" id="Descripcion" class="form-control" required />
+                    </div>
                 </div>
-            </div>
-            <div class="modal-body py-2">
-                <div class="form-floating">
-                    <label for="Valor">Valor</label>
-                    <select class="form-control" name="Valor" id="Valor">
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
+                <div class="modal-body py-2">
+                    <div class="form-floating">
+                        <label for="Valor">Valor</label>
+                        <div id="ValorContent">
+                        </div>
+                    </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" onclick="UpdateParametro()" class="btn btn-primary" data-dismiss="modal">Actualizar Parametro</button>
+                </div>
+            </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                <button type="button" onclick="UpdateParametro()" class="btn btn-primary" data-dismiss="modal">Actualizar Parametro</button>
             </div>
         </div>
     </div>
@@ -113,11 +111,10 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $('.footable').footable();
-        });
+            $(this).find('form').trigger('reset');
+        })
     </script>
 
-    <script type="text/javascript">
         function EditarParametro(Id, Parametro) {
             $('#idParametro').val(Id);
             $('#Parametro').val(Parametro);
@@ -125,31 +122,33 @@
             console.log(Id);
             console.log(Parametro);
 
+            //$('#NewCommentModal').modal('show'); // abrir
         }
-    </script>
-    <script type="text/javascript">
-        function UpdateParametro() {
-            $.ajax({
-                type: "post",
-                url: "/abm/FabricaParametros/EditarParametro",
-                data: {
-                    fabricaParametro: {
-                        Id: $('#idParametro').val(),
-                        Parametro: $('#Parametro').val(),
-                        Descripcion: $('#Descripcion').val(),
-                        Valor: $('#Valor').val()
+
+            if (modalForm.checkValidity()) {
+                $.ajax({
+                    type: "post",
+                    url: "/abm/FabricaParametros/EditarParametro",
+                    data: {
+                        fabricaParametro: {
+                            Id: $('#idParametro').val(),
+                            Parametro: $('#Parametro').val(),
+                            Descripcion: $('#Descripcion').val(),
+                            Valor: $('#Valor').val()
+                        }
+                    },
+                    success: function (result) {
+                        $("#tablaContenido").html(""); //clear the records content
+                        $("#tablaContenido").html(result);  //add the updated content.
+                        $('.footable').footable(); //reaplicar formato footable
+                        swal("Exito!", "Se ha actualizado el parametro correctamente", "success");
+                    },
+                    error: function () {
+                        swal("Error", "Ocurrió un error inesperado", "error");
                     }
-                },
-                success: function (result) {
-                    $("#tablaContenido").html(""); //clear the records content
-                    $("#tablaContenido").html(result);  //add the updated content.
-                    $('.footable').footable(); //reaplicar formato footable
-                    swal("Exito!", "El parametro ha sido actualizado correctamente", "success");
-                },
-                error: function () {
-                    swal("Error", "Ocurrió un error inesperado", "error");
-                }
-            })
+                });
+            }
+
 
         };
     </script>
