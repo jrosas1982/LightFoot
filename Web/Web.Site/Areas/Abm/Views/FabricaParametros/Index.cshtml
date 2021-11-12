@@ -3,7 +3,8 @@
     Layout = "_Layout";
     string url_base = "/fabrica/FabricaParametro/";
 }
-
+@using Core.Aplicacion.Auth
+@using Core.Dominio.AggregatesModel
 @model IEnumerable<FabricaParametro>
 
 
@@ -22,12 +23,12 @@
             </li>
         </ol>
     </div>
-    @*@if ((await authorizationService.AuthorizeAsync(User, Policies.IsFabrica)).Succeeded)
+    @if((await authorizationService.AuthorizeAsync(User, Policies.IsFabrica)).Succeeded)
     {
         <div class="col-lg-12" style="text-align:right">
                 <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditarParametro", "FabricaParametros", new { area = "abm" })'">Alta de Parametros</button>
             </div>
-    }*@
+    }
     </div>
 <div class="wrapper wrapper-content animated fadeInRight ecommerce">
 
@@ -86,6 +87,8 @@
                     <button type="submit" onclick="UpdateParametro()" class="btn btn-primary" data-dismiss="modal">Actualizar Parametro</button>
                 </div>
             </form>
+            </div>
+            </div>
         </div>
     </div>
 </div>
@@ -108,45 +111,20 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $('.footable').footable();
-        });
-
-        //prevent the form from doing a submit
-        $(document).on('submit', '.validateDontSubmit', function (e) {
-            e.preventDefault();
-            return false;
-        });
-
-        $('#NewCommentModal').on('hidden.bs.modal', function () {
             $(this).find('form').trigger('reset');
         })
     </script>
 
-    <script type="text/javascript">
-        function EditarParametro(id, parametro, descripcion, valor,) {
-            if (id != 9) {
-                $("#ValorContent").html(`<select class="form-control" name="Valor" id="Valor" required>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                             </select>`);
-                $('#Valor').val(valor).change();
-            }
-            else {
-                $("#ValorContent").html('<input type="number" name="Valor" id="Valor" class="form-control" required />');
-                $('#Valor').val(valor);
-            }
-            $('#idParametro').val(id);
-            $('#Parametro').val(parametro);
-            $('#Descripcion').val(descripcion);
+        function EditarParametro(Id, Parametro) {
+            $('#idParametro').val(Id);
+            $('#Parametro').val(Parametro);
+            $('#NewCommentModal').modal('show'); // abrir
+            console.log(Id);
+            console.log(Parametro);
+
             //$('#NewCommentModal').modal('show'); // abrir
         }
-    </script>
 
-    <script type="text/javascript">
-        function UpdateParametro() {
             if (modalForm.checkValidity()) {
                 $.ajax({
                     type: "post",
@@ -170,6 +148,8 @@
                     }
                 });
             }
+
+
         };
     </script>
     <script type="text/javascript">
@@ -196,7 +176,7 @@
                         $("#tablaContenido").html(""); //clear the records content
                         $("#tablaContenido").html(result);  //add the updated content.
                         $('.footable').footable(); //reaplicar formato footable
-                        swal("Exito!", "La solicitud ha sido rechazada correctamente", "success");
+                        swal("Exito!", "El Parametro ha sido eliminado correctamente", "success");
                     },
                     error: function () {
                         swal("Error", "Ocurrió un error inesperado", "error");

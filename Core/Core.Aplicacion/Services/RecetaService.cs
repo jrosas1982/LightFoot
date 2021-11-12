@@ -115,13 +115,6 @@ namespace Core.Aplicacion.Services
             try
             {
                 var item = await _db.Recetas.FindAsync(IdReceta); //returns a single item.
-
-                //if (item == null)
-                //{
-                //    return false;
-                //}
-
-                //item.Activo = item.Activo ? false : true;
                 item.Activo = !item.Activo;
 
                 if (_db.Recetas.Any(x => x.IdArticulo == item.IdArticulo && x.Activo && x.Id != item.Id))

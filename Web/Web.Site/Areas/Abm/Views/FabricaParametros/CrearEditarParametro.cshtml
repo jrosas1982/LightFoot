@@ -37,44 +37,45 @@
         @Html.AntiForgeryToken()
         @Html.HiddenFor(x => x.Id)
 
-        <div class="ibox-content m-b-sm border-bottom">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.Parametro)
-                        @*@Html.DropDownListFor(m => m.Modulo, new SelectList(Model.usuarioRoles, "", "", Model.usuarioRoles.First()), new { @class = "form-control m-b", @id = "dropdownUsuario" })*@
-                        @Html.DropDownListFor(m => m.Parametro, (List<SelectListItem>) ViewBag.ListParametros, new { @class = "form-control m-b", @id = "dropdownParametro" })
-                    </div>
-                </div>
-            </div>
-            @*<div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.Modulo)
-                        @Html.EditorFor(model => model.Modulo, new { htmlAttributes = new { @id = "modulo", @class = "form-control", @placeholder = "Modulo" } })
-                        @Html.ValidationMessageFor(model => model.Modulo, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>*@
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.Descripcion)
-                        @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @id = "descripcionParametro", @class = "form-control", @placeholder = "Descripción" } })
-                        @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.Valor)
-                        @Html.EditorFor(model => model.Valor, new { htmlAttributes = new { @id = "Apellido", @class = "form-control", @placeholder = "Valor" } })
-                        @Html.ValidationMessageFor(model => model.Valor, "", new { @class = "text-danger" })
-                    </div>
+    <div class="ibox-content m-b-sm border-bottom">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Parametro)
+                    @*@Html.DropDownListFor(m => m.Modulo, new SelectList(Model.usuarioRoles, "", "", Model.usuarioRoles.First()), new { @class = "form-control m-b", @id = "dropdownUsuario" })*@
+                    @Html.DropDownListFor(m => m.Parametro, (List<SelectListItem>)ViewBag.ListParametros, new { @class = "form-control m-b", @id = "dropdownParametro" })
                 </div>
             </div>
         </div>
+        @*<div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Modulo)
+                    @Html.EditorFor(model => model.Modulo, new { htmlAttributes = new { @id = "modulo", @class = "form-control", @placeholder = "Modulo" } })
+                    @Html.ValidationMessageFor(model => model.Modulo, "", new { @class = "text-danger" })
+                </div>
+            </div>ViewBag.ListaValor
+        </div>*@
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Descripcion)
+                    @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @id = "descripcionParametro", @class = "form-control", @placeholder = "Descripción" } })
+                    @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Valor)
+                    @Html.DropDownListFor(m => m.Parametro, (List<SelectListItem>)ViewBag.ListaValor, new { @class = "form-control m-b", @id = "dropdownParametroValor" })
+                    @*@Html.EditorFor(model => model.Valor, new { htmlAttributes = new { @id = "Apellido", @class = "form-control", @placeholder = "Valor" } })*@
+                    @Html.ValidationMessageFor(model => model.Valor, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
         <div style="text-align:right">
             <button type="Submit" class="btn btn-w-m btn-primary"> Alta de Parametro </button>
         </div>
