@@ -135,6 +135,8 @@ namespace Core.Aplicacion.Services
                 .Include(x => x.Insumo)
                 .ThenInclude(x => x.Proveedor)
                 .Where(x => x.IdCompraInsumo == IdCompra)
+                .OrderByDescending(x => x.FechaModificacion.HasValue)
+                .ThenByDescending(x => x.FechaCreacion)
                 .ToListAsync();
             return compraDetalles;
         }
@@ -147,6 +149,10 @@ namespace Core.Aplicacion.Services
                     .ThenInclude(x => x.Insumo)
                         .ThenInclude(x => x.Proveedor)
                 .Include(x => x.Proveedor)
+                .OrderBy(x => x.Recibido)
+                .ThenBy(x => x.Pagado)
+                .ThenByDescending(x => x.FechaModificacion.HasValue)
+                .ThenByDescending(x => x.FechaCreacion)
                 .ToListAsync();
 
             _logger.LogInformation("Se buscaron las compras de insumos");

@@ -42,7 +42,8 @@ namespace Core.Aplicacion.Services
 
             _db.OrdenesProduccion.Update(ordenDb);
 
-            var insumosNecesarios = ordenDb.EtapaOrdenProduccion.RecetaDetalle.Select(x => new CantidadInsumo() { Cantidad = x.Cantidad, IdInsumo = x.IdInsumo });
+            var insumosNecesarios = _db.Recetas.Single(x => x.Activo && x.IdArticulo == ordenDb.IdArticulo).RecetaDetalles.Select(x => new CantidadInsumo() { Cantidad = x.Cantidad * ordenDb.CantidadTotal, IdInsumo = x.IdInsumo });
+            //ordenDb.EtapaOrdenProduccion.RecetaDetalle.Select(x => new CantidadInsumo() { Cantidad = x.Cantidad, IdInsumo = x.IdInsumo });
 
             var insumosVerificados = await _fabricacionService.VerificarStockInsumos(insumosNecesarios);
 
@@ -230,6 +231,10 @@ namespace Core.Aplicacion.Services
                 .Include(x => x.SolicitudDetalle)
                     .ThenInclude(x => x.Solicitud)
                     .ThenInclude(x => x.Sucursal)
+                .OrderBy(x => x.EstadoOrdenProduccion == EstadoOrdenProduccion.Finalizada)
+                .ThenBy(x => x.EstadoEtapaOrdenProduccion == EstadoEtapaOrdenProduccion.Cancelada)
+                .ThenByDescending(x => x.FechaModificacion.HasValue)
+                .ThenByDescending(x => x.FechaCreacion)
                 .ToListAsync();
 
             _logger.LogInformation("Se buscaron las ordenes");

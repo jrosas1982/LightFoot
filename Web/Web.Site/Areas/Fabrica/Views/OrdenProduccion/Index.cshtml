@@ -260,6 +260,7 @@
                 success: function (response) {
                     $("#tablaContenido").html(""); //clear the records content
                     $("#tablaContenido").html(response);  //add the updated content.
+                    $('.footable').footable();
                     $('.footable').trigger('footable_redraw'); //reaplicar formato footable
                 }
             });

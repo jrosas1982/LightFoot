@@ -55,7 +55,9 @@ namespace Core.Aplicacion.Services
                 var recetas = await _db.Recetas
                     .AsNoTracking()
                     .Include(x => x.Articulo)
-                    .Include(x => x.RecetaDetalles).ToListAsync();
+                    .Include(x => x.RecetaDetalles.OrderBy(x => x.EtapaOrdenProduccion.Orden).ThenBy(x => x.Insumo.Nombre))                    
+                    .OrderByDescending(x => x.Activo)
+                    .ToListAsync();
                     //   .ThenInclude(x => x.Insumo)
                     //.Include(x => x.RecetaDetalles)
                     //   .ThenInclude(x => x.EtapaOrdenProduccion);
@@ -75,7 +77,7 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var detallesSolicitud = await _db.RecetaDetalles.Where(x => x.IdReceta == Idreceta).ToListAsync();
+                var detallesSolicitud = await _db.RecetaDetalles.Where(x => x.IdReceta == Idreceta).OrderByDescending(x => x.Insumo.Nombre).ToListAsync();
                 return detallesSolicitud;
             }
             catch (Exception ex)

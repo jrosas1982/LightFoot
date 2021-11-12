@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
@@ -23,7 +24,9 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<ArticuloCategoria>> GetCategorias()
         {
-            var categoriasList = await _db.ArticulosCategoria.ToListAsync();
+            var categoriasList = await _db.ArticulosCategoria
+                .OrderByDescending(x => x.Descripcion)
+                .ToListAsync();
             return categoriasList;
         }
 

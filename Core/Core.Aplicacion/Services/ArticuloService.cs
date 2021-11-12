@@ -24,7 +24,9 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Articulo>> GetArticulos()
         {
-            var articulosList = await _db.Articulos.ToListAsync();
+            var articulosList = await _db.Articulos
+                .OrderByDescending(x => x.CodigoArticulo)
+                .ToListAsync();
             _logger.LogInformation("Se buscaron los articulos");
             return articulosList;
         }

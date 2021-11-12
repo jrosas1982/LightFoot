@@ -144,6 +144,8 @@ namespace Core.Aplicacion.Services
                     //.ThenInclude(x => x.ArticuloStock)
                     //    .ThenInclude(x => x.Proveedor)
                 .Where(x => x.IdCompraArticulo == IdCompra && x.CompraArticulo.IdSucursal == IdSucursal)
+                .OrderByDescending(x => x.FechaModificacion.HasValue)
+                .ThenByDescending(x => x.FechaCreacion)
                 .ToListAsync();
             return compraDetalles;
         }
@@ -158,6 +160,10 @@ namespace Core.Aplicacion.Services
                         //    .ThenInclude(x => x.Proveedor)
                 .Include(x => x.Proveedor)
                 .Where(x => x.IdSucursal == IdSucursal)
+                .OrderBy(x => x.Recibido)
+                .ThenBy(x => x.Pagado)
+                .ThenByDescending(x => x.FechaModificacion.HasValue)
+                .ThenByDescending(x => x.FechaCreacion)
                 .ToListAsync();
 
             _logger.LogInformation("Se buscaron las compras de insumos");

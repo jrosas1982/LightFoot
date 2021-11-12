@@ -69,11 +69,11 @@ namespace Core.Aplicacion.Services
 
             //TODO agregar validacion receta; UPDATE creo que era esto
             var articulosConReceta = await _db.Recetas.Where(x => x.Activo).Select(x => x.IdArticulo).ToListAsync();
-            if (solicitudDB.SolicitudDetalles.Any(x => !articulosConReceta.Contains(x.Id)))
+            if (solicitudDB.SolicitudDetalles.Any(x => !articulosConReceta.Contains(x.IdArticulo)))
                 throw new Exception($"Al menos un articulo perteneciente a la solicitud {idSolicitud} no posee una receta de fabricacion activa asociada");
 
-            if (solicitudDB.SolicitudDetalles.Any(x => !x.Articulo.Recetas.Any(x => x.Activo)))
-                throw new Exception($"Al menos un articulo perteneciente a la solicitud {idSolicitud} no posee una receta de fabricacion activa asociada");
+            //if (solicitudDB.SolicitudDetalles.Any(x => !x.Articulo.Recetas.Any(x => x.Activo)))
+            //    throw new Exception($"Al menos un articulo perteneciente a la solicitud {idSolicitud} no posee una receta de fabricacion activa asociada");
 
             var insumosNecesarios = await _fabricacion.ContabilizarInsumosRequeridos(idSolicitud);
 
@@ -199,7 +199,11 @@ namespace Core.Aplicacion.Services
                 .Include(x => x.SolicitudDetalles)
                     .ThenInclude(x => x.Articulo)
                 .Include(x => x.SolicitudDetalles)
-                    .ThenInclude(x => x.OrdenesProduccion).ToListAsync();
+                    .ThenInclude(x => x.OrdenesProduccion)
+                .OrderByDescending(x => x.EstadoSolicitud == EstadoSolicitud.PendienteAprobacion)
+                .ThenByDescending(x => x.FechaModificacion.HasValue)
+                .ThenByDescending(x => x.FechaCreacion)
+                .ToListAsync();
 
             _logger.LogInformation("Se buscaron las solicitudes");
             return solicitudesList;
@@ -212,7 +216,7 @@ namespace Core.Aplicacion.Services
                 var solicitudesList = await _db.Solicitudes
            .AsNoTracking()
            .Include(x => x.Sucursal)
-           .Include(x => x.SolicitudDetalles)
+           .Include(x => x.SolicitudDetalles.OrderBy(x => x.Articulo.Nombre))
                .ThenInclude(x => x.Articulo)
            .Include(x => x.SolicitudDetalles)
                .ThenInclude(x => x.OrdenesProduccion)
@@ -220,6 +224,9 @@ namespace Core.Aplicacion.Services
                        && filter.EstadoSolicitudList.Contains(x.EstadoSolicitud)
                        && x.FechaCreacion > filter.FechaDesde
                        && x.FechaCreacion < filter.FechaHasta)
+            .OrderByDescending(x => x.EstadoSolicitud == EstadoSolicitud.PendienteAprobacion)
+            .ThenByDescending(x => x.FechaModificacion.HasValue)
+            .ThenByDescending(x => x.FechaCreacion)
            .ToListAsync();
 
                 _logger.LogInformation("Se buscaron las solicitudes");
