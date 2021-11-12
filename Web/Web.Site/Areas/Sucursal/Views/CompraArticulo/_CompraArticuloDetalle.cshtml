@@ -12,10 +12,10 @@
     <tr>
         @using (Html.BeginCollectionItem("CompraArticuloDetalleModels"))
         {
-            @Html.HiddenFor(x => x.IdInsumo)
+            @Html.HiddenFor(x => x.IdArticulo)
             @Html.HiddenFor(x => x.IdProveedor)
             @Html.HiddenFor(x => x.Cantidad)
-            <td>@Html.DisplayFor(x => x.InsumoNombre)</td>
+            <td>@Html.DisplayFor(x => x.ArticuloNombre)</td>
             <td>@Html.DisplayFor(x => x.ProveedorNombre)</td>
             <td>@Html.DisplayFor(x => x.Cantidad)</td>
             <td>@Html.DisplayFor(x => x.Precio)</td>

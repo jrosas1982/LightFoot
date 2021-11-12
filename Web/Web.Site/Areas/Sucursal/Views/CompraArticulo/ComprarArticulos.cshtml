@@ -200,7 +200,7 @@
                 type: "post",
                 url: "/sucursal/compraArticulo/FiltrarProveedores",
                 data: {
-                    IdInsumo: $("#dropdownArticulo :selected").val()
+                    IdArticulo: $("#dropdownArticulo :selected").val()
                 },
             }).done(function (partialView) {
                 $("#dropdownProveedorPartialView").html(""); //clear the records content
@@ -227,7 +227,7 @@
                 type: "post",
                 url: "/sucursal/compraArticulo/ActualizarPrecio",
                 data: {
-                    IdInsumo: $("#dropdownArticulo :selected").val(),
+                    IdArticulo: $("#dropdownArticulo :selected").val(),
                     IdProveedor: $("#dropdownProveedor :selected").val(),
                     Cantidad: $("#ArticuloCantidad").val(),
                 },
