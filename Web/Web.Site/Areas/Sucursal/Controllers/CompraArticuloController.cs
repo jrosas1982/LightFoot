@@ -21,6 +21,7 @@ namespace Web.Site.Areas
         private ICompraArticuloService _compraArticuloService;
         private IArticuloService _articuloService;
         private IProveedorService _proveedorService;
+        private IProveedorArticuloService _proveedorArticuloService;
 
         public CompraArticuloController(ICompraArticuloService compraArticuloService, IArticuloService articuloService, IProveedorService proveedorService)
         {
@@ -36,7 +37,7 @@ namespace Web.Site.Areas
             return View(compraArticulosList);
         }
 
-        public async Task<IActionResult> ComprarInsumos()
+        public async Task<IActionResult> ComprarArticulos()
         {            
             var proveedoresListTask = _proveedorService.GetProveedores();
             var articulosListTask = _articuloService.GetArticulos();
@@ -48,7 +49,7 @@ namespace Web.Site.Areas
 
             CompraArticuloModel compraArticuloModel = new CompraArticuloModel();
 
-            compraArticuloModel.Insumos = articulosList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" });
+            compraArticuloModel.Articulos = articulosList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" });
             compraArticuloModel.Proveedores = proveedoresList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" });
 
             return View(compraArticuloModel);
@@ -65,77 +66,44 @@ namespace Web.Site.Areas
             return PartialView("_CompraInsumoProveedores", proveedoresInsumo);
         }
 
-        //public async Task<IActionResult> ActualizarProveedorPreferidoSugerido(int idInsumo)
-        //{
-        //    var insumo = await _insumosService.BuscarPorId(idInsumo);
-        //    var proveedores = await _proveedorService.GetProveedores();
-        //    var proveedoresInsumo = proveedores.Where(x => x.ProveedorInsumos.Any(y => y.IdInsumo == idInsumo));
+        public async Task<IActionResult> ActualizarPrecio(int idArticulo, int idProveedor, decimal cantidad)
+        {
+            if (idArticulo == 0 || idProveedor == 0)
+                return Json(0);
 
-        //    if (!proveedoresInsumo.Any())
-        //        return PartialView("_CompraInsumoProveedorPreferidoSugerido", null);
+            var precioInsumo = await _proveedorArticuloService.GetPrecioArticulo(idArticulo, idProveedor);
 
-        //    CompraInsumoProveedorModel proveedoresModel = new CompraInsumoProveedorModel();
+            return Json(precioInsumo * cantidad);
+        }
 
-        //    var proveedorSugerido = proveedoresInsumo.OrderByDescending(x => x.Calificacion).First();
-        //    proveedoresModel.ProveedorSugerido = proveedorSugerido;
 
-        //    if (insumo.IdProveedorPreferido == null)
-        //        return PartialView("_CompraInsumoProveedorPreferidoSugerido", proveedoresModel);
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Crear(CompraArticuloModel compraArticuloModel)
+        {
+            try
+            {
+                IList<NuevaCompraArticuloModel> compra = new List<NuevaCompraArticuloModel>();
 
-        //    var proveedorPreferido = proveedoresInsumo.Single(x => x.Id == (int)insumo.IdProveedorPreferido);
-        //    proveedoresModel.ProveedorPreferido = proveedorPreferido;
+                foreach (var detalle in compraArticuloModel.CompraArticuloDetalleModels)
+                {
+                    compra.Add(new NuevaCompraArticuloModel()
+                    {
+                        Cantidad = detalle.Cantidad,
+                        Comentario = detalle.Comentario,
+                        IdArticulo = detalle.IdArticulo,
+                        IdProveedor = detalle.IdProveedor
+                    });
+                }
+                await _compraArticuloService.CrearCompra(compra);
 
-        //    return PartialView("_CompraInsumoProveedorPreferidoSugerido", proveedoresModel);
-        //}
-
-        //public async Task<IActionResult> ActualizarPrecio(int idInsumo, int idProveedor, decimal cantidad)
-        //{
-        //    if (idInsumo == 0 || idProveedor == 0)
-        //        return Json(0);
-
-        //    var precioInsumo = await _proveedorInsumoService.GetPrecioInsumo(idInsumo, idProveedor);            
-
-        //    return Json(precioInsumo * cantidad);
-        //}
-
-        //public async Task<IActionResult> ActualizarComentario(int idProveedor, int idInsumo)
-        //{
-        //    var insumo = await _insumosService.BuscarPorId(idInsumo);
-        //    var idproveedorPreferido = insumo.IdProveedorPreferido;
-
-        //    if (idProveedor == idproveedorPreferido && idproveedorPreferido != null)
-        //        return Json(true);
-
-        //    return Json(false);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Crear(CompraInsumoModel comprainsumoModel)
-        //{
-        //    try
-        //    {      
-        //        IList<NuevaCompraInsumoModel> compra = new List<NuevaCompraInsumoModel>();
-
-        //        foreach (var detalle in comprainsumoModel.CompraInsumoDetalleModels)
-        //        {
-        //            compra.Add(new NuevaCompraInsumoModel()
-        //            {
-        //                Cantidad = detalle.Cantidad,
-        //                Comentario = detalle.Comentario,
-        //                IdInsumo = detalle.IdInsumo,
-        //                IdProveedor = detalle.IdProveedor
-        //            });
-        //        }
-        //        await _compraInsumoService.CrearCompra(compra);
-
-        //        return RedirectToAction("Index");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         public async Task<IActionResult> ActualizarDetalleCompra(int idCompra)
         {
@@ -151,38 +119,38 @@ namespace Web.Site.Areas
             }
         }
 
-        //public async Task<IActionResult> RecibirCompra(int idCompra, long nroRemito, int tiempoCalificacion, int distanciaCalificacion, int precioCalificacion, int calidadCalificacion)
-        //{
-        //    try
-        //    {
-        //        var resp = await _compraInsumoService.RecibirCompra(idCompra, nroRemito, tiempoCalificacion, distanciaCalificacion, precioCalificacion, calidadCalificacion);
+        public async Task<IActionResult> RecibirCompra(int idCompra, long nroRemito, int tiempoCalificacion, int distanciaCalificacion, int precioCalificacion, int calidadCalificacion)
+        {
+            try
+            {
+                var resp = await _compraArticuloService.RecibirCompra(idCompra, nroRemito);
 
-        //        var compraInsumoList = await _compraInsumoService.GetCompras();
+                var compraArticuloList = await _compraArticuloService.GetCompras();
 
-        //        return PartialView("_CompraInsumoIndexTable", compraInsumoList);
+                return PartialView("_CompraArticuloIndexTable", compraArticuloList);
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
-        //public async Task<IActionResult> PagarCompra(int idCompra, TipoPago tipoPago, decimal montoPagado)
-        //{
-        //    try
-        //    {
-        //        var resp = await _compraInsumoService.AgregarPagoCompra(idCompra, tipoPago, montoPagado);
-        //        var compraInsumoList = await _compraInsumoService.GetCompras();
+        public async Task<IActionResult> PagarCompra(int idCompra, TipoPago tipoPago, decimal montoPagado)
+        {
+            try
+            {
+                var resp = await _compraArticuloService.AgregarPagoCompra(idCompra, tipoPago, montoPagado);
+                var compraArticuloList = await _compraArticuloService.GetCompras();
 
-        //        return PartialView("_CompraInsumoIndexTable", compraInsumoList);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
+                return PartialView("_CompraArticuloIndexTable", compraArticuloList);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
-        //}
+        }
 
         public async Task<IActionResult> AgregarDetalle(CompraArticuloDetalleModel data)
         {
@@ -199,11 +167,9 @@ namespace Web.Site.Areas
             //data.IdInsumo = insumo.Id;
             //data.Insumo = insumo;
             //data.Proveedor = proveedor;
-                        
+
             return PartialView("_CompraArticuloDetalle", data);
         }
-
-
 
     }
 

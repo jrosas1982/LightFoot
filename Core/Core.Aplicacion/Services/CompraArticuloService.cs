@@ -162,7 +162,7 @@ namespace Core.Aplicacion.Services
             return comprasList;
         }
 
-        public async Task<bool> RecibirCompra(int idCompra, long nroRemito, double calificacionProveedor)
+        public async Task<bool> RecibirCompra(int idCompra, long nroRemito)
         {
             try
             {
@@ -183,9 +183,9 @@ namespace Core.Aplicacion.Services
 
                 _db.ComprasArticulos.Update(compra);
 
-                var proveedor = await _db.Proveedores.FindAsync(compra.IdProveedor);
-                proveedor.Calificacion = calificacionProveedor;
-                _db.Proveedores.Update(proveedor);
+                //var proveedor = await _db.Proveedores.FindAsync(compra.IdProveedor);
+                //proveedor.Calificacion = calificacionProveedor;
+                //_db.Proveedores.Update(proveedor);
 
                 await _db.SaveChangesAsync();
                 return true;

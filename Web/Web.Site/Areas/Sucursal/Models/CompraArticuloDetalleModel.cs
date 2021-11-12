@@ -4,8 +4,8 @@ namespace Web.Site.Areas
 {
     public class CompraArticuloDetalleModel
     {
-        public int IdInsumo { get; set; }
-        public string InsumoNombre { get; set; }
+        public int IdArticulo { get; set; }
+        public string ArticuloNombre { get; set; }
         public int IdProveedor { get; set; }
         public string ProveedorNombre { get; set; }
         public int Cantidad { get; set; }

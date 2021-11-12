@@ -11,7 +11,7 @@ namespace Core.Aplicacion.Interfaces
         public Task<IEnumerable<CompraArticuloDetalle>> GetCompraDetalles(int IdCompra);
         public Task<CompraArticulo> BuscarPorId(int IdCompra);
         public Task CrearCompra(IEnumerable<NuevaCompraArticuloModel> detalles);
-        public Task<bool> RecibirCompra(int idCompra, long nroRemito, double calificacionProveedor);
+        public Task<bool> RecibirCompra(int idCompra, long nroRemito);
         public Task<bool> AgregarPagoCompra(int idCompra, TipoPago tipoPago, decimal montoPagado);       
         
     }
