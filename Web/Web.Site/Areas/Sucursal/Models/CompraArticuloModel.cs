@@ -11,7 +11,9 @@ namespace Web.Site.Areas
     {
         public IEnumerable<CompraArticuloDetalleModel> CompraArticuloDetalleModels { get; set; }
         //public CompraInsumo CompraInsumo { get; set; }
-        public IEnumerable<SelectListItem> Insumos { get; set; }
+        public IEnumerable<SelectListItem> Articulos { get; set; }
+        public IEnumerable<SelectListItem> Talles { get; set; }
+        public IEnumerable<SelectListItem> Colores { get; set; }
         public IEnumerable<SelectListItem> Proveedores { get; set; }
         //public CompraInsumoDetalleModel CompraInsumoDetalleModel { get; set; }
 
