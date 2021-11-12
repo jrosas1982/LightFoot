@@ -208,7 +208,7 @@
                 success: function (modeloReceta) {
                     $("#tablaContenido").html(""); //clear the records content
                     $("#tablaContenido").html(modeloReceta);  //add the updated content.
-                    $('.footable').footable(); //reaplicar formato footable
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
                 }
             });
         }
