@@ -3,6 +3,7 @@
     Layout = "_Layout";
 
     IEnumerable<CompraArticuloDetalle> DetallesCompra = ViewBag.DetallesCompra;
+    IEnumerable<TipoPago> tiposdePago = ViewBag.TiposPago;
 }
 
 @model IEnumerable<CompraArticulo>
@@ -88,7 +89,7 @@
                         <table class="table table-striped table-hover table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Insumo</th>
+                                    <th>Articulo</th>
                                     <th>Proveedor</th>
                                     <th>Cantidad</th>
                                     <th>Monto</th>
@@ -108,7 +109,84 @@
         </div>
     </div>
 
+    @*MODAL recibir*@
 
+    <div class="modal inmodal fade" id="ModalrecibirCompra" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form class="validateDontSubmit" id="modalForm" name="modalForm">
+                    <input type="text" id="hiddenModalrecibirCompra" hidden>
+                    <div class="modal-header pb-1">
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-center">
+                                <h1 id="tituloModalrecibirCompra" style="font-size:30px;">Recibir Compra </h1>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Remito</label>
+                            <input class="form-control limitarLength" type="number" id="NroRemito" placeholder="Remito" maxlength="12" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="ClearModalrecibirCompra()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" onclick="BootonRecibirCompra()" class="btn btn-primary">Recibir</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @*MODAL pagar*@
+
+    <div class="modal inmodal fade" id="ModalPagarCompra" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form class="validateDontSubmit" id="modalForm2" name="modalForm2">
+                    <input type="text" id="hiddenModalpagarCompra" hidden>
+                    <div class="modal-header pb-1">
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-center">
+                                <h1 id="tituloModalpagarCompra" style="font-size:30px;">Pagar Compra </h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="partialViewModalPagos">
+                        <partial name="_CompraArticuloIndexPagos.cshtml" model="null" />
+                    </div>
+                    <div class="modal-body py-2 border-bottom">
+                        <div class="form-group">
+                            <label class="font-normal">Metodo de Pago</label>
+                            <select class="form-control" name="metodo_pago" id="metodo_pago" data-placeholder="-- Metodo de Pago --" required>
+                                <option value="" selected> -- Metodo de Pago -- </option>
+                                @if (tiposdePago != null)
+                                {
+                                    @foreach (var tipo in tiposdePago)
+                                    {
+                                        <option value="@tipo">@tipo</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-normal">A Pagar</label>
+                            <input id="cantidadPagar" class="form-control" type="number" min="0" max="" value="0" placeholder="" required>
+                        </div>
+                        @*<div class="form-group">
+                                <label class="font-normal">Pagado</label>
+                                <input class="form-control" id="Pagado" placeholder="" disabled>
+                            </div>*@
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="ClearModalrecibirCompra()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" onclick="btnPagarCompra()" class="btn btn-primary">Registrar Pago</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 </div>
 
@@ -143,7 +221,7 @@
                 dom: 'gitp'
             });
         });
-        
+
     </script>
 
     <script type="text/javascript">
@@ -192,15 +270,11 @@
             console.log("recibirCompra");
             var compraId = $('#hiddenModalrecibirCompra').val();
             var nroRemito = $("#NroRemito").val();
-            var tiempoCalificacion = $("#dropdownTiempoCalificacion :selected").val();
-            var distanciaCalificacion = $("#dropdownDistanciaCalificacion :selected").val();
-            var precioCalificacion = $("#dropdownPrecioCalificacion :selected").val();
-            var calidadCalificacion = $("#dropdownCalidadCalificacion :selected").val();
             //var promedio = ($("#tiempoCalificacion").val() + $("#distanciaCalificacion").val() + $("#precioCalificacion").val() + $("#calidadCalificacion").val()) / 4;
-            RecibirCompra(compraId, nroRemito, tiempoCalificacion, distanciaCalificacion, precioCalificacion, calidadCalificacion);
+            RecibirCompra(compraId, nroRemito);
         }
 
-        function RecibirCompra(id, nroRemito, tiempoCalificacion, distanciaCalificacion, precioCalificacion, calidadCalificacion) {
+        function RecibirCompra(id, nroRemito) {
             console.log("RecibirCompra con 3 parametros");
             if (modalForm.checkValidity()) {
                 $.ajax({
@@ -209,10 +283,6 @@
                     data: {
                         idCompra: id,
                         nroRemito: nroRemito,
-                        tiempoCalificacion: tiempoCalificacion,
-                        distanciaCalificacion: distanciaCalificacion,
-                        precioCalificacion: precioCalificacion,
-                        calidadCalificacion: calidadCalificacion
                     },
                     success: function (response) {
                         if (response) {
@@ -240,6 +310,7 @@
             console.log("pagarCompra con id");
             $('#tituloModalpagarCompra').text('Pagar Compra #' + id);
             $('#hiddenModalpagarCompra').val(id);
+            $('#cantidadPagar').max(montoTotal);
         }
 
         //function ClearModalrecibirCompra() {
@@ -252,16 +323,17 @@
             console.log("pagarCompra");
             var compraId = $('#hiddenModalpagarCompra').val();
             var montoPagado = $("#Pagado").val();
-            pagarCompra(compraId, montoPagado)
+            var tipoPago = $("#metodo_pago :selected").val();
+            pagarCompra(compraId, montoPagado, tipoPago)
         }
 
-        function pagarCompra(idCompra, pagado) {
+        function pagarCompra(idCompra, pagado, tipoPago) {
             $.ajax({
                 type: "post",
                 url: "/fabrica/CompraInsumo/PagarCompra",
                 data: {
                     idCompra: idCompra,
-                    tipoPago: $("#dropdownProveedor :selected").val(),
+                    tipoPago: tipoPago,
                     montoPagado: pagado
                 },
                 success: function (response) {
@@ -276,11 +348,12 @@
             }).done(function (response) {
                 $("#ComprasPartialView").html(""); //clear the records content
                 $("#ComprasPartialView").html(response);  //add the updated content.
+                $('#ModalPagarCompra').modal('hide');
                 //window.setTimeout(function () {
                 //    location.reload();
                 //}, 600);
             });
-            
+
         }
 
     </script>

@@ -11,7 +11,7 @@ using System;
 using Core.Dominio.CoreModelHelpers;
 using System.Collections.Generic;
 
-namespace Web.Site.Areas.Sucursal_
+namespace Web.Site.Areas
 {
     //[Authorize (Policy = Policies.IsControlador)]
     [Area("sucursal")]

@@ -1,6 +1,6 @@
 ﻿using Core.Dominio.AggregatesModel;
 
-namespace Web.Site.Areas.Sucursal_
+namespace Web.Site.Areas
 {
     public class CompraArticuloDetalleModel
     {
