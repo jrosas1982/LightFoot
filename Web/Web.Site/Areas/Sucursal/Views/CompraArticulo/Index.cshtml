@@ -295,6 +295,7 @@
                 }).done(function (response) {
                     $("#ComprasPartialView").html(""); //clear the records content
                     $("#ComprasPartialView").html(response);  //add the updated content.
+                    $('.footable').footable();
                     $('.footable').trigger('footable_redraw');
                     $('#ModalrecibirCompra').modal('hide');
                 });
@@ -340,6 +341,7 @@
             }).done(function (response) {
                 $("#ComprasPartialView").html(""); //clear the records content
                 $("#ComprasPartialView").html(response);  //add the updated content.
+                $('.footable').footable();
                 $('.footable').trigger('footable_redraw');
                 $('#ModalPagarCompra').modal('hide');
                 //window.setTimeout(function () {
