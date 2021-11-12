@@ -204,6 +204,9 @@
                             </div>
                         </div>
                     </div>
+                    <div id="partialViewModalPagos">
+                        <partial name="_CompraInsumoIndexPagos.cshtml" model="null" />
+                    </div>
                     <div class="modal-body py-2 border-bottom">
                         <div class="form-group">
                             <label class="font-normal">Metodo de Pago</label>
@@ -211,9 +214,9 @@
                                 <option value="" selected> -- Metodo de Pago -- </option>
                                 @if (tiposdePago != null)
                                 {
-                                    @foreach (var tipo in tiposdePago)
+                                @foreach (var tipo in tiposdePago)
                                     {
-                                        <option value="@tipo">@tipo</option>
+                                <option value="@tipo">@tipo</option>
                                     }
                                 }
                             </select>
@@ -223,9 +226,9 @@
                             <input id="cantidadPagar" class="form-control" type="number" min="0" max="" value="0" placeholder="" required>
                         </div>
                         @*<div class="form-group">
-                            <label class="font-normal">Pagado</label>
-                            <input class="form-control" id="Pagado" placeholder="" disabled>
-                        </div>*@
+                    <label class="font-normal">Pagado</label>
+                    <input class="form-control" id="Pagado" placeholder="" disabled>
+                </div>*@
                     </div>
                     <div class="modal-footer">
                         <button type="button" onclick="ClearModalrecibirCompra()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
@@ -402,8 +405,7 @@
             var compraId = $('#hiddenModalpagarCompra').val();
             var montoPagado = $("#cantidadPagar").val();
             var tipoPago = $("#metodo_pago :selected").val();
-            pagarCompra(compraId, montoPagado, tipoPago);
-            
+            pagarCompra(compraId, montoPagado, tipoPago);            
         }
 
         function pagarCompra(idCompra, pagado, tipoPago) {

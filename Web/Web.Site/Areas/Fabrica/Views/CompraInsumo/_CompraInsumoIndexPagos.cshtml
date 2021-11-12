@@ -1,0 +1,41 @@
+﻿@{
+    var totalPagado = Model?.Sum(x => x.MontoPagado);
+}
+
+@model IEnumerable<ProveedorInsumoCuentaCorriente>
+
+
+@if (Model != null)
+{
+    <div class="modal-body py-2">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Monto Pagado</th>
+                        <th>Registrado por</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pago in Model)
+                    {
+                        <tr>
+                            <td>@(pago.FechaModificacion != null ? pago.FechaModificacion : pago.FechaCreacion)</td>
+                            <td>@pago.TipoPago</td>
+                            <td>@pago.MontoPagado</td>
+                            <td>@(pago.ModificadoPor != null ? pago.ModificadoPor : pago.CreadoPor)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <label>total pagado: @totalPagado</label>
+}
+@*<th>Fecha</th>
+    <th>Tipo</th>
+    <th>Monto Pagado</th>
+    <th>Registrado por</th>*@
