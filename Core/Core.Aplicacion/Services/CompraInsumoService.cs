@@ -22,9 +22,10 @@ namespace Core.Aplicacion.Services
         private readonly IInsumoService _insumoService;
         private readonly IProveedorService _proveedorService;
         private readonly IProveedorInsumoService _proveedorInsumoService;
+        private readonly IParametroService _parametroService;
         private readonly IConfiguration _Configuration;
 
-        public CompraInsumoService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraInsumoService> logger, IConfiguration configuration, IInsumoService insumoService, IProveedorService proveedorService, IProveedorInsumoService proveedorInsumoService)
+        public CompraInsumoService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraInsumoService> logger, IConfiguration configuration, IInsumoService insumoService, IProveedorService proveedorService, IProveedorInsumoService proveedorInsumoService, IParametroService parametroService)
         {
             _db = extendedAppDbContext.context;
             _logger = logger;
@@ -32,6 +33,7 @@ namespace Core.Aplicacion.Services
             _insumoService = insumoService;
             _proveedorService = proveedorService;
             _proveedorInsumoService = proveedorInsumoService;
+            _parametroService = parametroService;
         }
 
         public async Task<bool> AgregarPagoCompra(int idCompra, TipoPago tipoPago, decimal montoPagado)
@@ -160,7 +162,7 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var compra = await _db.ComprasInsumos.FindAsync(idCompra);
+                var compra = await _db.ComprasInsumos.Include(x => x.CompraInsumoDetalles).SingleOrDefaultAsync(x => x.Id == idCompra);
                 if (compra == null)
                     throw new Exception("No existe la compra");
 
@@ -178,7 +180,7 @@ namespace Core.Aplicacion.Services
                 _db.ComprasInsumos.Update(compra);
 
                 var proveedor = await _db.Proveedores.FindAsync(compra.IdProveedor);                
-                proveedor.Calificacion = ObtenerCalificacion(tiempoCalificacion, distanciaCalificacion, precioCalificacion, calidadCalificacion);
+                proveedor.Calificacion = await ObtenerCalificacion(tiempoCalificacion, distanciaCalificacion, precioCalificacion, calidadCalificacion);
                 _db.Proveedores.Update(proveedor);
 
                 await _db.SaveChangesAsync();
@@ -190,14 +192,14 @@ namespace Core.Aplicacion.Services
             }
         }
 
-        private double ObtenerCalificacion(int tiempoCalificacion, int distanciaCalificacion, int precioCalificacion, int calidadCalificacion)
+        private async Task<double> ObtenerCalificacion(int tiempoCalificacion, int distanciaCalificacion, int precioCalificacion, int calidadCalificacion)
         {
-            int total = tiempoCalificacion + distanciaCalificacion + precioCalificacion + calidadCalificacion;
+            var pesoTiempoCalificacion = await _parametroService.GetValorByParametro(Parametro.Tiempo);
+            var pesoDistanciaCalificacion = await _parametroService.GetValorByParametro(Parametro.Distancia);
+            var pesoPrecioCalificacion = await _parametroService.GetValorByParametro(Parametro.Precio);
+            var pesoCalidadCalificacion = await _parametroService.GetValorByParametro(Parametro.Calidad);
 
-            var pesoTiempoCalificacion = 1;
-            var pesoDistanciaCalificacion = 1;
-            var pesoPrecioCalificacion = 1;
-            var pesoCalidadCalificacion = 1;
+            int total = pesoTiempoCalificacion + pesoDistanciaCalificacion + pesoPrecioCalificacion + pesoCalidadCalificacion;
 
             double media = (tiempoCalificacion * pesoTiempoCalificacion) 
                          + (distanciaCalificacion * pesoDistanciaCalificacion) 
@@ -205,7 +207,9 @@ namespace Core.Aplicacion.Services
                          + (calidadCalificacion * pesoCalidadCalificacion) 
                          / total;
 
-            return media;
+            double media2 = media / 10;
+
+            return media2;
         }
         
         public async Task EnviarMailCompra(int IdCompra)

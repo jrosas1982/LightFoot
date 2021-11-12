@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Aplicacion.Auth;
@@ -55,9 +56,11 @@ namespace Core.Aplicacion.Services
             return await _db.FabricaParametros.ToListAsync();       
         }
 
-        public Task<int> GetValorByParametro(Parametro parametro)
+        public async Task<int> GetValorByParametro(Parametro parametro)
         {
-            throw new NotImplementedException();
+            var parametroDb = await _db.FabricaParametros.SingleAsync(x => x.Parametro == parametro);
+
+            return parametroDb.Valor;
         }
 
         public async Task<bool> EditarParamtro(FabricaParametro fabricaParametro)

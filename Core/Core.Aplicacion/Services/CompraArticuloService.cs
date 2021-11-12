@@ -21,21 +21,23 @@ namespace Core.Aplicacion.Services
         private readonly ILogger<CompraArticuloService> _logger;
         private readonly IArticuloService _articuloService;
         private readonly IProveedorService _proveedorService;
-        //private readonly IProveedorArticuloService _proveedorArticuloService;
+        private readonly IProveedorArticuloService _proveedorArticuloService;
         private readonly ISolicitudService _solicitudService;
+        private readonly IControlStockArticuloService _controlStockArticuloService;
         private readonly IConfiguration _Configuration;
         private readonly int IdSucursal;
 
-        public CompraArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraArticuloService> logger, IArticuloService articuloService, IProveedorService proveedorService, /*IProveedorArticuloService proveedorArticuloService,*/ IConfiguration configuration, ISolicitudService solicitudService)
+        public CompraArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraArticuloService> logger, IArticuloService articuloService, IProveedorService proveedorService, IProveedorArticuloService proveedorArticuloService, IConfiguration configuration, ISolicitudService solicitudService, IControlStockArticuloService controlStockArticuloService)
         {
             _db = extendedAppDbContext.context;
             _logger = logger;
             _articuloService = articuloService;
             _proveedorService = proveedorService;
-            //_proveedorArticuloService = proveedorArticuloService;
+            _proveedorArticuloService = proveedorArticuloService;
             _Configuration = configuration;
             IdSucursal = int.Parse(_db.GetSucursalId());
             _solicitudService = solicitudService;
+            _controlStockArticuloService = controlStockArticuloService;
         }
 
         public async Task<bool> AgregarPagoCompra(int idCompra, TipoPago tipoPago, decimal montoPagado)
@@ -99,22 +101,22 @@ namespace Core.Aplicacion.Services
                 decimal montoTotal = 0;
                 foreach (var item in grupo)
                 {
-                    //var proveedorArticulo = await _proveedorArticuloService.BuscarProveedorArticulo(item.IdArticulo, item.IdProveedor);
+                    var proveedorArticulo = await _proveedorArticuloService.BuscarProveedorArticulo(item.IdArticulo, item.IdProveedor);
                     var proveedoresArticuloList = proveedores.Where(x => x.ProveedorArticulos.Any(y => y.IdArticulo == item.IdArticulo));
 
-                    //if (!proveedoresArticuloList.Any() || proveedorArticulo == null)
-                    //    throw new Exception($"No existe ningun proveedor asignado para el articulo {(await _articuloService.BuscarPorId(item.IdArticulo)).Nombre}");
+                    if (!proveedoresArticuloList.Any() || proveedorArticulo == null)
+                        throw new Exception($"No existe ningun proveedor asignado para el articulo {(await _articuloService.BuscarPorId(item.IdArticulo)).Nombre}");
 
                     var proveedorSugerido = proveedoresArticuloList.OrderByDescending(x => x.Calificacion).First();
 
-                    //var montoDetalle = proveedorArticulo.Precio * item.Cantidad;
-                    //montoTotal += montoDetalle;
+                    var montoDetalle = proveedorArticulo.Precio * item.Cantidad;
+                    montoTotal += montoDetalle;
 
                     var detalle = new CompraArticuloDetalle()
                     {
-                        IdArticulo = item.IdArticulo,
+                        IdArticulo = item.IdArticulo,                      
                         IdProveedorSugerido = proveedorSugerido.Id,
-                        //Monto = montoDetalle,
+                        Monto = montoDetalle,
                         Cantidad = item.Cantidad,
                         Comentario = item.Comentario,
                     };
@@ -166,7 +168,7 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var compra = await _db.ComprasArticulos.Where(x => x.IdSucursal == IdSucursal).SingleOrDefaultAsync(x => x.Id == idCompra);
+                var compra = await _db.ComprasArticulos.Include(x => x.CompraArticuloDetalles).Where(x => x.IdSucursal == IdSucursal).SingleOrDefaultAsync(x => x.Id == idCompra);
                 if (compra == null)
                     throw new Exception("No existe la compra");
 
@@ -176,9 +178,27 @@ namespace Core.Aplicacion.Services
 
                 foreach (var detalle in compra.CompraArticuloDetalles)
                 {
-                    var articulo = await _db.ArticulosStock.SingleOrDefaultAsync(x => x.Id == detalle.IdArticulo && x.IdSucursal == IdSucursal);
-                    articulo.StockTotal += detalle.Cantidad;
-                    _db.ArticulosStock.Update(articulo);
+                    var articulo = await _db.ArticulosStock.SingleOrDefaultAsync(x => x.IdArticulo == detalle.IdArticulo && x.IdSucursal == IdSucursal);
+                    if (articulo == null)
+                    {
+                        articulo = new ArticuloStock()
+                        {
+                            IdArticulo = detalle.IdArticulo,
+                            IdSucursal = compra.IdSucursal,
+                            StockTotal = detalle.Cantidad,
+                            IdProveedorPreferido = null,
+                            StockMinimo = 0,
+                            TamañoLote = 0,
+                            EsReposicionPorLote = false,
+                            EsReposicionAutomatica = false,
+                        };
+                        _db.ArticulosStock.Add(articulo);
+                    }
+                    else
+                    {
+                        articulo.StockTotal += detalle.Cantidad;
+                        _db.ArticulosStock.Update(articulo);
+                    }
                 }
 
                 _db.ComprasArticulos.Update(compra);
@@ -190,7 +210,7 @@ namespace Core.Aplicacion.Services
                 await _db.SaveChangesAsync();
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }

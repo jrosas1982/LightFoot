@@ -24,10 +24,10 @@ namespace Web.Site.Areas
         public async Task<IActionResult> Index()
         {
             var stockArticuloList = await _controlStockArticuloService.GetArticuloStock();
-            if (User.GetUserRole().ToString() != "Administrador") {
-                return View(stockArticuloList.Where(x => x.IdSucursal == int.Parse(User.GetUserIdSucursal())).ToList());
-            }
-            return View(stockArticuloList.ToList());
+            //if (User.GetUserRole().ToString() != "Administrador") {
+            //    return View(stockArticuloList.Where(x => x.IdSucursal == int.Parse(User.GetUserIdSucursal())).ToList());
+            //}
+            return View(stockArticuloList);
         }
 
         public async Task<IActionResult> CrearEditarStockArticulo(int IdStockArticulo)
