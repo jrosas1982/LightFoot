@@ -23,13 +23,13 @@
             </li>
         </ol>
     </div>
-    @if((await authorizationService.AuthorizeAsync(User, Policies.IsFabrica)).Succeeded)
+    @*@if ((await authorizationService.AuthorizeAsync(User, Policies.IsFabrica)).Succeeded)
     {
         <div class="col-lg-12" style="text-align:right">
-                <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditarParametro", "FabricaParametros", new { area = "abm" })'">Alta de Parametros</button>
-            </div>
-    }
-    </div>
+            <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditarParametro", "FabricaParametros", new { area = "abm" })'">Alta de Parametros</button>
+        </div>
+    }*@
+</div>
 <div class="wrapper wrapper-content animated fadeInRight ecommerce">
 
     <div class="row">
@@ -62,7 +62,7 @@
                         </div>
                     </div>
                 </div>
-                <input type="text" name="" value="" id="idParametro" class="form-control" hidden required/>
+                <input type="text" name="" value="" id="idParametro" class="form-control" hidden required />
                 <div class="modal-body py-2">
                     <div class="form-floating">
                         <label for="Descipcion">Parametro</label>
@@ -87,11 +87,11 @@
                     <button type="submit" onclick="UpdateParametro()" class="btn btn-primary" data-dismiss="modal">Actualizar Parametro</button>
                 </div>
             </form>
-            </div>
-            </div>
         </div>
     </div>
 </div>
+
+
 @section Styles {
     <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
     <link rel="stylesheet" href="~/lib/footable/css/footable.core.min.css" />
@@ -111,20 +111,46 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            $('.footable').footable();
+        })
+
+        //prevent the form from doing a submit
+        $(document).on('submit', '.validateDontSubmit', function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+        $('#NewCommentModal').on('hidden.bs.modal', function () {
             $(this).find('form').trigger('reset');
         })
     </script>
 
-        function EditarParametro(Id, Parametro) {
-            $('#idParametro').val(Id);
-            $('#Parametro').val(Parametro);
-            $('#NewCommentModal').modal('show'); // abrir
-            console.log(Id);
-            console.log(Parametro);
 
+    <script type="text/javascript">
+        function EditarParametro(id, parametro, descripcion, valor,) {
+            if (id != 9) {
+                $("#ValorContent").html(`<select class="form-control" name="Valor" id="Valor" required>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                     </select>`);
+                $('#Valor').val(valor).change();
+            }
+            else {
+                $("#ValorContent").html('<input type="number" name="Valor" id="Valor" class="form-control" required />');
+                $('#Valor').val(valor);
+            }
+            $('#idParametro').val(id);
+            $('#Parametro').val(parametro);
+            $('#Descripcion').val(descripcion);
             //$('#NewCommentModal').modal('show'); // abrir
         }
+    </script>
 
+    <script type="text/javascript">
+        function UpdateParametro() {
             if (modalForm.checkValidity()) {
                 $.ajax({
                     type: "post",
@@ -141,17 +167,16 @@
                         $("#tablaContenido").html(""); //clear the records content
                         $("#tablaContenido").html(result);  //add the updated content.
                         $('.footable').footable(); //reaplicar formato footable
-                        swal("Exito!", "Se ha actualizado el parametro correctamente", "success");
+                        swal("Exito!", "El parametro ha sido actualizado correctamente", "success");
                     },
                     error: function () {
                         swal("Error", "Ocurrió un error inesperado", "error");
                     }
                 });
             }
-
-
         };
     </script>
+
     <script type="text/javascript">
         function EliminarParametro(Id) {
             alerta(Id);
