@@ -199,6 +199,7 @@
                 success: function (result) {
                     $("#tablaContenido").html(""); //clear the records content
                     $("#tablaContenido").html(result);  //add the updated content.
+                    $('.footable').footable();
                     $('.footable').trigger('footable_redraw'); //reaplicar formato footable
                 },
                 error: function () {
@@ -225,6 +226,7 @@
                     success: function (result) {
                         $("#tablaContenido").html(""); //clear the records content
                         $("#tablaContenido").html(result);  //add the updated content.
+                        $('.footable').footable();
                         $('.footable').trigger('footable_redraw'); //reaplicar formato footable
                         swal("Exito!", "La solicitud ha sido rechazada correctamente", "success");           
                     },

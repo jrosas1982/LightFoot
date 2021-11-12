@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
@@ -18,7 +19,9 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Sucursal>> GetSucursales()
         {
-            var sucursalesList = await _db.Sucursales.ToListAsync();
+            var sucursalesList = await _db.Sucursales
+                .OrderBy(x => x.Nombre)
+                .ToListAsync();
             return sucursalesList;
         }
 

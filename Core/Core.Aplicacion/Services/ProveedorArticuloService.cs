@@ -25,6 +25,9 @@ namespace Core.Aplicacion.Services
         {
             try
             {
+                var exists = _db.ProveedoresArticulos.Any(x => x.IdArticulo == articuloProveedor.IdArticulo && x.IdProveedor == articuloProveedor.IdProveedor);
+                if (exists)
+                    throw new Exception("Un proveedor no puede tener asignado el mismo articulo dos veces");
                 _db.ProveedoresArticulos.Add(articuloProveedor);
                 //_logger.LogInformation($"Insumo creado para receta : {insumoProveedor.IdReceta}");
                 await _db.SaveChangesAsync();

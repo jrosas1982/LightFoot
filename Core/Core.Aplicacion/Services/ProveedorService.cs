@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
@@ -73,6 +74,7 @@ namespace Core.Aplicacion.Services
                     .ThenInclude(x => x.Insumo)
                 .Include(x => x.ProveedorArticulos)
                     .ThenInclude(x => x.Articulo)
+                .OrderBy(x => x.Nombre)
                 .ToListAsync();
 
             return proveedoresList;

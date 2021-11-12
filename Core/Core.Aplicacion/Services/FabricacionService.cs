@@ -44,7 +44,7 @@ namespace Core.Aplicacion.Helpers
             //  |  |  DetalleReceta
             //  |  |  DetalleReceta 
 
-            var solicitud = await _db.Solicitudes.FindAsync(Idsolicitud);
+            var solicitud = await _db.Solicitudes.Include(x => x.SolicitudDetalles).SingleAsync(x => x.Id == Idsolicitud);
             //Declaro un acumulador para ir sumando la cantidad necesaria de cada insumo para producir una solicitud a partir de sus detalles
             var ListadoAcumRecetaDetalles = new List<CantidadInsumo>();
             //Parallel.ForEach(solicitud.SolicitudDetalles, detalleSolicitud =>
@@ -52,15 +52,16 @@ namespace Core.Aplicacion.Helpers
             {
                 //Para cada detalle de la solicitud me traigo la receta para fabricarlo (cada detalle posee un solo articulo)
                 //Una receta posee n detalles de la cantidad necesaria de determinado insumo por etapa
-                var Recetadetalles = _db.Articulos.Find(detalleSolicitud.IdArticulo).Recetas.Single(x => x.Activo).RecetaDetalles;
+                var articulo = _db.Articulos.Include(x => x.Recetas).ThenInclude(x => x.RecetaDetalles).Single(x => x.Id == detalleSolicitud.IdArticulo);
+                var Recetadetalles = articulo.Recetas.Single(x => x.Activo).RecetaDetalles;
                 //Para cada detalle de la receta de un articulo
                 //Si el insumo ya esta registrado en mi acumulador, le sumo la cantidad requerida para fabricar ese detalle
                 //Si el insumo no esta registrado, lo agrego
                 foreach (var detalleReceta in Recetadetalles)
                     if (ListadoAcumRecetaDetalles.Any(x => x.IdInsumo == detalleReceta.IdInsumo))
-                        ListadoAcumRecetaDetalles.Single(x => x.IdInsumo == detalleReceta.IdInsumo).Cantidad += detalleReceta.Cantidad;
+                        ListadoAcumRecetaDetalles.Single(x => x.IdInsumo == detalleReceta.IdInsumo).Cantidad += detalleReceta.Cantidad * detalleSolicitud.CantidadSolicitada;
                     else
-                        ListadoAcumRecetaDetalles.Add(new CantidadInsumo() { IdInsumo = detalleReceta.IdInsumo, Cantidad = detalleReceta.Cantidad });
+                        ListadoAcumRecetaDetalles.Add(new CantidadInsumo() { IdInsumo = detalleReceta.IdInsumo, Cantidad = detalleReceta.Cantidad * detalleSolicitud.CantidadSolicitada });
             }
             //});
             return ListadoAcumRecetaDetalles;
@@ -70,12 +71,19 @@ namespace Core.Aplicacion.Helpers
         public async Task<IEnumerable<CantidadInsumoNecesarioStock>> VerificarStockInsumos(IEnumerable<CantidadInsumo> insumosNecesarios)
         {
             var insumos = await _db.Insumos.ToListAsync();
-            var insumosVerificados = insumos.Select(x => new CantidadInsumoNecesarioStock()
+            //var insumosVerificados = insumos.Select(x => new CantidadInsumoNecesarioStock()
+            //{
+            //    Insumo = x,
+            //    CantidadNecesaria = insumosNecesarios.Single(y => y.IdInsumo == x.Id).Cantidad,
+            //    CantidadDisponible = x.StockTotal - x.StockReservado,
+            //});
+            var insumosVerificados = insumosNecesarios.Select(x => new CantidadInsumoNecesarioStock()
             {
-                Insumo = x,
-                CantidadNecesaria = insumosNecesarios.Single(y => y.IdInsumo == x.Id).Cantidad,
-                CantidadDisponible = x.StockTotal - x.StockReservado,
+                Insumo = insumos.Single(z => z.Id  == x.IdInsumo),
+                CantidadNecesaria = x.Cantidad,
+                CantidadDisponible = insumos.Single(z => z.Id == x.IdInsumo).StockTotal - insumos.Single(z => z.Id == x.IdInsumo).StockReservado,
             });
+
 
             return insumosVerificados;
         }
@@ -94,25 +102,26 @@ namespace Core.Aplicacion.Helpers
             }
 
             _db.Insumos.UpdateRange(insumosStock);
-            //await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
 
         public async Task DescontarStockInsumosReservados(IEnumerable<CantidadInsumo> insumosNecesarios)
         {
-            var insumosStock = _db.Insumos.Where(x => insumosNecesarios.Select(y => y.IdInsumo).Contains(x.Id));
+            var insumosStock = _db.Insumos.Where(x => insumosNecesarios.Select(y => y.IdInsumo).Contains(x.Id)).ToList();
 
-            foreach (var insumo in insumosStock)
+            foreach (var insumo in insumosNecesarios)
             {
-                var cantidadAfectada = insumosNecesarios.Single(x => x.IdInsumo == insumo.Id).Cantidad;
-                insumo.StockReservado -= cantidadAfectada;
-                insumo.StockTotal -= cantidadAfectada;
+                var insumoAfectado = insumosStock.Single(x => x.Id == insumo.IdInsumo);
+                insumoAfectado.StockReservado -= insumo.Cantidad;
+                insumoAfectado.StockTotal -= insumo.Cantidad;
 
-                if (insumo.StockTotal < insumo.StockReservado)
+                if (insumoAfectado.StockTotal < insumoAfectado.StockReservado)
                     throw new Exception("No hay suficiente stock disponible para descontar para la orden de produccion");
+
+            _db.Insumos.Update(insumoAfectado);
             }
 
-            _db.Insumos.UpdateRange(insumosStock);
-            //await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
     }
 }

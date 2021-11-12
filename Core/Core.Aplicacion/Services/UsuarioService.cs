@@ -30,7 +30,9 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Usuario>> GetUsuarios()
         {
-            var usuariosList = await _db.Usuarios.ToListAsync();
+            var usuariosList = await _db.Usuarios
+                .OrderByDescending(x => x.NombreUsuario)
+                .ToListAsync();
             await _hubContext.Clients.All.SendAsync($"GetUsuarios", $"Se solicito la lista de usuarios");
             return usuariosList;
         }

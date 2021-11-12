@@ -66,7 +66,11 @@ namespace Core.Aplicacion.Services
         public async Task<IEnumerable<ArticuloStock>> GetArticuloStock()
         {
            // var articuloStockList = await _db.ArticulosStock.ToListAsync();
-            var articuloStockList = await _db.ArticulosStock.Where(x => x.IdSucursal == IdSucursal).Include(p => p.Articulo).ToListAsync();
+            var articuloStockList = await _db.ArticulosStock
+                .Where(x => x.IdSucursal == IdSucursal)
+                .Include(p => p.Articulo)
+                .OrderByDescending(x => x.Articulo.CodigoArticulo)
+                .ToListAsync();
             _logger.LogInformation("Se buscaron el stock de articulos");
             return articuloStockList;
         }
