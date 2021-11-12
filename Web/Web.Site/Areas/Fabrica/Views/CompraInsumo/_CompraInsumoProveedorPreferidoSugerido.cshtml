@@ -5,12 +5,12 @@
 
 @if (Model != null)
 {
-    <div class="row modal-body m-auto py-0"> 
+    <div class="row modal-body m-auto py-0">
         <div class="col-lg-6 p-0 pr-1">
             @if (Model.ProveedorPreferido != null)
             {
                 //card Proveedor Preferido
-              <input id="IdProveedorPreferido" value="@Model.ProveedorPreferido.Id" hidden disabled />
+                <input id="IdProveedorPreferido" value="@Model.ProveedorPreferido.Id" hidden disabled />
                 <h4 class="font-normal no-margins">
                     Proveedor Preferido
                 </h4>
@@ -40,7 +40,7 @@
             @if (Model.ProveedorSugerido != null)
             {
                 //card Proveedor Sugerido
-            <input id="IdProveedorSugerido" value="@Model.ProveedorSugerido.Id" hidden disabled />
+                <input id="IdProveedorSugerido" value="@Model.ProveedorSugerido.Id" hidden disabled />
                 <h4 class="font-normal no-margins">
                     Proveedor Sugerido
                 </h4>
@@ -53,4 +53,8 @@
             }
         </div>
     </div>
+}
+else
+{
+    <input id="IdProveedorSugerido" value="0" hidden disabled />
 }

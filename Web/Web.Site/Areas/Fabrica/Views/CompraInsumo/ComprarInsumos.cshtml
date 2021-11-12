@@ -95,7 +95,7 @@
                         @*<div class="form-floating">*@
                         <div class="form-group">
                             <label class="font-normal">Insumo</label>
-                            <select class="form-control  chosen-select " id="dropdownInsumo" data-placeholder="Seleccione Insumo" required>
+                            <select class="form-control  chosen-select " id="dropdownInsumo" data-placeholder="Seleccione Insumo" onchange="InsumoSeleccionadoOnChange()" required>
                                 <option value=""> -- Seleccionar Insumo --</option>
                                 @foreach (var insumo in Model.Insumos)
                                 {
@@ -160,6 +160,16 @@
     </environment>
 
     <script type="text/javascript">
+        $(document).ready(function () {
+            //InsumoSeleccionadoOnChange();
+            //$('#dropdownInsumo').change(function () {
+            //    InsumoSeleccionadoOnChange();
+            //    //ObligarComentario();
+            //});
+            //$('#dropdownProveedor').change(function () {
+            //    ComentarioChange();
+            //});
+        });
 
         $('.chosen-select').chosen({
             no_results_text: "No hay resultados que coincidan con ",
@@ -169,20 +179,15 @@
             $('.chosen-select', this).chosen('destroy').chosen({
                 no_results_text: "No hay resultados que coincidan con ",
             });
+            ObligarComentario();
         });
-
-        function observerModal() {
-            console.log($("#dropdownInsumo :selected").val() + " " + $("#dropdownInsumo :selected").text());
-            console.log($("#dropdownProveedor").val() + " " + $("#dropdownProveedor :selected").text());
-            console.log($("#InsumoCantidad").val());
-        };
 
         function InsumoSeleccionadoOnChange() {
             FiltrarProveedores();
             ProveedorPreferidoSugerido();
             ActualizarPrecio();
             $("#InsumoCantidad").val("");
-            //ComentarioChange();
+            //ComentarioChange();     
         }
 
         function ProveeorOnChange() {
@@ -228,6 +233,7 @@
             }).done(function (partialView) {
                 $("#proveedorPreferidoSugeridoPartialView").html(""); //clear the records content
                 $("#proveedorPreferidoSugeridoPartialView").html(partialView);  //add the updated content.
+                ObligarComentario();
             });
         }
        
@@ -242,6 +248,7 @@
                 },
             }).done(function (precio) {
                 $("#Precio").val(precio);
+                //ObligarComentario();
             });
         };
 
@@ -251,16 +258,7 @@
             return false;
         })
 
-        $(document).ready(function () {
-            InsumoSeleccionadoOnChange();
-            ObligarComentario();
-            $('#dropdownInsumo').change(function () {
-                InsumoSeleccionadoOnChange();
-            });
-            //$('#dropdownProveedor').change(function () {
-            //    ComentarioChange();
-            //});
-        });
+
 
         function ComentarioChange() {
             $.ajax({
