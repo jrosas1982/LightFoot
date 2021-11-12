@@ -55,15 +55,15 @@ namespace Web.Site.Areas
             return View(compraArticuloModel);
         }
 
-        public async Task<IActionResult> FiltrarProveedores(int idInsumo)
+        public async Task<IActionResult> FiltrarProveedores(int idArticulo)
         {
             var proveedores = await _proveedorService.GetProveedores();
 
-            var proveedoresInsumo = proveedores
-                .Where(x => x.ProveedorInsumos.Any(y => y.IdInsumo == idInsumo))
+            var proveedoresArticulo = proveedores
+                .Where(x => x.ProveedorArticulos.Any(y => y.IdArticulo == idArticulo))
                 .Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" });
 
-            return PartialView("_CompraInsumoProveedores", proveedoresInsumo);
+            return PartialView("_CompraArticuloProveedores", proveedoresArticulo);
         }
 
         public async Task<IActionResult> ActualizarPrecio(int idArticulo, int idProveedor, decimal cantidad)
