@@ -113,6 +113,7 @@
                                             <button class="btn btn-outline btn-danger btn-xs" type="button" onclick="BorrarProveedor('@proveedor.Id')">Borrar</button>
                                             <button class="btn btn-outline btn-warning btn-xs" type="button" onclick="EditarProveedor('@proveedor.Id')">Editar</button>
                                             <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AsociarInsumos('@proveedor.Id')">Asociar Insumos</button>
+                                            <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AsociarArticulos('@proveedor.Id')">Asociar Articulos</button>
                                         </td>
                                     </tr>
                                         }
@@ -214,6 +215,10 @@
 
         function AsociarInsumos(Id) {
             window.location = '/abm/Proveedor/AsignarProveedorInsumo?idProveedor=' + Id;
+        }
+
+        function AsociarArticulos(Id) {
+            window.location = '/abm/Proveedor/AsignarProveedorArticulo?idProveedor=' + Id;
         }
 
         function Reporte() {

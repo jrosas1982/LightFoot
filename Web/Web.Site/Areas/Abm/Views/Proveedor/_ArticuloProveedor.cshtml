@@ -9,10 +9,10 @@
 @if (Model != null)
 {
     <tr @*id="@idTr*@>
-        <td>@Model.Insumo.Nombre</td>
+        <td>@Model.Articulo.Nombre</td>
         <td>@Model.Precio</td>
         <td>
-            <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="eliminarDetalleInsumo(this, @Model.Id)">Borrar</button>
+            <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="eliminarDetalleArticulo(this, @Model.Id)">Borrar</button>
         </td>
     </tr>
 }

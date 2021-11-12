@@ -26,7 +26,9 @@ namespace Core.Aplicacion.Services
         {
             var proveedor = await _db.Proveedores
                 .Include(x => x.ProveedorInsumos)
-                .ThenInclude(x => x.Insumo)
+                    .ThenInclude(x => x.Insumo)
+                .Include(x => x.ProveedorArticulos)
+                    .ThenInclude(x => x.Articulo)
                 .SingleOrDefaultAsync(x => x.Id == IdProveedor);
             return proveedor;
         }
@@ -68,7 +70,10 @@ namespace Core.Aplicacion.Services
         {
             var proveedoresList = await _db.Proveedores
                 .Include(x => x.ProveedorInsumos)
-                    .ThenInclude(x => x.Insumo).ToListAsync();
+                    .ThenInclude(x => x.Insumo)
+                .Include(x => x.ProveedorArticulos)
+                    .ThenInclude(x => x.Articulo)
+                .ToListAsync();
 
             return proveedoresList;
         }

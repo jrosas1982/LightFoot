@@ -27,6 +27,7 @@ namespace Core.Infraestructura
             serviceCollection.AddScoped<IControlStockArticuloService, ControlStockArticuloService>();
             serviceCollection.AddScoped<IParametroService, ParametroService>();
             serviceCollection.AddScoped<ICompraArticuloService, CompraArticuloService>();
+            serviceCollection.AddScoped<IProveedorArticuloService, ProveedorArticuloService>();
 
             serviceCollection.AddScoped<UserResolverService>();
             serviceCollection.AddTransient<ExtendedAppDbContext>();

@@ -1,15 +1,15 @@
 ﻿@{
-    ViewData["Title"] = "Asignar Insumos";
+    ViewData["Title"] = "Asignar Articulos";
     Layout = "_Layout";
     //bool esEdicion = (Model.Id != 0);
-    string Accion = "Insumo a proveedor";
+    string Accion = "Articulo a proveedor";
     string url_base = "/abm/Proveedor/";
 
     Proveedor ProveedorSeleccionado = ViewBag.ProveedorSeleccionado;
-    IEnumerable<DesplegableModel> InsumosDesplegable = ViewBag.InsumosDesplegable;
+    IEnumerable<DesplegableModel> ArticulosDesplegable = ViewBag.ArticulosDesplegable;
 }
 
-@model ProveedorInsumo
+@model ProveedorArticulo
 
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -26,7 +26,7 @@
                 <a href="@Url.Action("Index", "Proveedor", new { area = "fabrica" })">@Accion</a>
             </li>
             <li class="active breadcrumb-item">
-                <strong>Asignar Inusmos a Proveedor</strong>
+                <strong>Asignar Articulos a Proveedor</strong>
             </li>
         </ol>
     </div>
@@ -64,11 +64,11 @@
                     <th>Acciones</th>
                 </tr>
                 <tbody>
-                    @if (ProveedorSeleccionado.ProveedorInsumos != null)
+                    @if (ProveedorSeleccionado.ProveedorArticulos != null)
                     {
-                        foreach (var item in ProveedorSeleccionado.ProveedorInsumos)
+                        foreach (var item in ProveedorSeleccionado.ProveedorArticulos)
                         {
-                            @await Html.PartialAsync("_InsumoProveedor", item)
+                            @await Html.PartialAsync("_ArticuloProveedor", item)
                         }
                     }
                 </tbody>
@@ -95,7 +95,7 @@
     </div>
 
     @* MODAL NEW COMMENT *@
-    @using (Html.BeginForm("AsignarProveedorInsumo", "Proveedor", FormMethod.Post, new { id = "formInsumoProveedor" }))
+    @using (Html.BeginForm("AsignarProveedorArticulo", "Proveedor", FormMethod.Post, new { id = "formArticuloProveedor" }))
     {
         <div class="modal inmodal fade" id="NewCommentModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -111,10 +111,10 @@
                     @Html.HiddenFor(x => x.IdProveedor)
                     <div class="modal-body py-2">
                         <div class="form-floating">
-                            @Html.LabelFor(m => m.IdInsumo)
+                            @Html.LabelFor(m => m.IdArticulo)
                             @*@Html.DropDownListFor(m => m.Articulo.IdArticuloCategoria, new SelectList(Model.ArticuloCategorias, "Id", "Descripcion", Model.ArticuloCategorias.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownCategorias" })*@
-                            @Html.DropDownListFor(m => m.IdInsumo, new List<SelectListItem>(ViewBag.Insumos), " -- Seleccionar Insumo -- ", new { @id = "IdInsumo", @class = "form-control " })
-                            @Html.ValidationMessageFor(model => model.IdInsumo, "", new { @class = "text-danger" })
+                            @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), " -- Seleccionar Articulo -- ", new { @id = "IdArticulo", @class = "form-control " })
+                            @Html.ValidationMessageFor(model => model.IdArticulo, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="modal-body py-2">
@@ -126,7 +126,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                        <button type="button" onclick="addInsumo()" class="btn btn-primary" data-dismiss="modal">Agregar Insumos</button>
+                        <button type="button" onclick="addArticulo()" class="btn btn-primary" data-dismiss="modal">Agregar Articulo</button>
                     </div>
                 </div>
             </div>
@@ -134,37 +134,37 @@
     }
 </div>
 
-    @section Styles {
-        <environment names="Development,Staging,Production">
-            <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+@section Styles {
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
 
-        </environment>
-    }
+    </environment>
+}
 
-    @section Scripts {
-        <environment names="Development,Staging,Production">
-            <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-            <script src="~/lib/validate/jquery.validate.min.js"></script>
-            <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
-        </environment>
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/validate/jquery.validate.min.js"></script>
+        <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
+    </environment>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function () {
 
         });
 
         function ClearModal() {
-            $("#IdInsumo").val("");
+            $("#IdArticulo").val("");
             $("#Precio").val("");
         }
 
-        function addInsumo() {
+        function addArticulo() {
             $.ajax({
                 type: "post",
-                url: '@url_base' + 'AgregarDetalleInsumo/',
+                url: '@url_base' + 'AgregarDetalleArticulo/',
                 data: {
                     IdProveedor: $("#proveedorSeleccionado").val(),
-                    IdInsumo: $("#IdInsumo").val(),
+                    IdArticulo: $("#IdArticulo").val(),
                     Precio: $("#Precio").val()
                 }
             }).done(function (partialView) {
@@ -173,10 +173,10 @@
             });
         }
 
-        function eliminarDetalleInsumo(row,Id) {
+        function eliminarDetalleArticulo(row,Id) {
             swal({
-                title: "Seguro que desea eliminar el insumo?",
-                text: "El insumo será eliminad de la lista de detalle. Esta accion no se puede deshacer",
+                title: "Seguro que desea eliminar el articulo?",
+                text: "El Articulo será eliminado de la lista de detalle. Esta accion no se puede deshacer",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
@@ -186,11 +186,11 @@
             }, function () {
                 $.ajax({
                     type: "post",
-                    url: '@url_base' + "EliminarDetalleInsumo",
+                    url: '@url_base' + "EliminarDetalle",
                     data: { id: Id },
                     success: function (result) {
                         if (result == true) {
-                            swal("Exito!", "El Insumo ha sido eliminado correctamente", "success");
+                            swal("Exito!", "El Articulo ha sido eliminado correctamente", "success");
                             $(row).parents('tr').first().remove();
                         } else {
                             swal("Error", "Ocurrió un error inesperado", "error");
@@ -203,6 +203,6 @@
             $(row).parents('tr').first().remove();
         }
 
-        </script>
-    }
+    </script>
+}
 

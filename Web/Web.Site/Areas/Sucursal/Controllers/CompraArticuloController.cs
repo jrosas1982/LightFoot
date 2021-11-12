@@ -23,16 +23,19 @@ namespace Web.Site.Areas
         private IProveedorService _proveedorService;
         private IProveedorArticuloService _proveedorArticuloService;
 
-        public CompraArticuloController(ICompraArticuloService compraArticuloService, IArticuloService articuloService, IProveedorService proveedorService)
+        public CompraArticuloController(ICompraArticuloService compraArticuloService, IArticuloService articuloService, IProveedorService proveedorService, IProveedorArticuloService proveedorArticuloService)
         {
             _compraArticuloService = compraArticuloService;
             _articuloService = articuloService;
             _proveedorService = proveedorService;
+            _proveedorArticuloService = proveedorArticuloService;
         }
 
         public async Task<IActionResult> Index()
         {
             var compraArticulosList = await _compraArticuloService.GetCompras();
+
+            ViewBag.TiposPago = await _compraArticuloService.GetTiposPago();
 
             return View(compraArticulosList);
         }
@@ -49,7 +52,7 @@ namespace Web.Site.Areas
 
             CompraArticuloModel compraArticuloModel = new CompraArticuloModel();
 
-            compraArticuloModel.Articulos = articulosList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" });
+            compraArticuloModel.Articulos = articulosList.Select(x => new SelectListItem() { Text = $"{x.Nombre} - {x.Color} - Talle {x.TalleArticulo} ", Value = $"{x.Id}" });
             compraArticuloModel.Proveedores = proveedoresList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" });
 
             return View(compraArticuloModel);

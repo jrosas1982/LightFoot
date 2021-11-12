@@ -19,63 +19,64 @@ else
 {
     @foreach (var compra in @Model)
     {
-<tr>
-    <td> @compra.Id </td>
-    <td> @compra.Proveedor.Nombre </td>
-    @if (compra.FechaRecibido != null)
-    {
-        <td> @compra.FechaRecibido.Value.ToLongDateString() </td>
-    }
-    else
-    {
-        <td> Aun no recibida</td>
-    }
-    @if (compra.FechaPagado != null)
-    {
-        <td> @compra.FechaPagado.Value.ToLongDateString() </td>
-    }
-    else
-    {
-        <td> Aun no pagada</td>
-    }
-    <td> @compra.MontoTotal </td>
-    @if (compra.NroRemito != null)
-    {
-        <td> @compra.NroRemito.Value</td> 
-    }
-    else
-    {
-        <td> No posee remito asociado </td>
-    }
-    
-    <td class="d-print-none">
-    <button class="btn btn-outline btn-success btn-xs" type="button"
-            onclick="verDetalle(@compra.Id)"
-            data-toggle="modal"
-            data-target="#ModalDetalle">
-        Ver Detalles
-    </button>
-    @if (!compra.Recibido)
-    {
-        <button class="btn btn-outline btn-warning btn-xs" type="button"
-            onclick="ModalRecibirCompra(@compra.Id)"
-            data-toggle="modal"
-            data-target="#ModalrecibirCompra">
-            Marcar Recibido
-        </button>
-    }
-    else
-        @if (compra.Recibido)
-        {
-            <button class="btn btn-outline btn-primary btn-xs" type="button"
-                onclick="ModalPagarCompra(@compra.Id, @compra.MontoTotal)"
-                data-toggle="modal"
-                data-target="#ModalPagarCompra">
-                Agregar Pago
-            </button>
+        <tr>
+            <td> @compra.Id </td>
+            <td> @compra.Proveedor.Nombre </td>
+            @if (compra.FechaRecibido != null)
+            {
+                <td> @compra.FechaRecibido.Value.ToLongDateString() </td>
+            }
+            else
+            {
+                <td> Aun no recibida</td>
+            }
+            @if (compra.FechaPagado != null)
+            {
+                <td> @compra.FechaPagado.Value.ToLongDateString() </td>
+            }
+            else
+            {
+                <td> Aun no pagada</td>
+            }
+            <td> @compra.MontoTotal </td>
+            @if (compra.NroRemito != null)
+            {
+                <td> @compra.NroRemito.Value</td>
+
+            }
+            else
+            {
+                <td> No posee remito asociado </td>
+            }
+
+            <td class="d-print-none">
+                <button class="btn btn-outline btn-success btn-xs" type="button"
+                        onclick="verDetalle(@compra.Id)"
+                        data-toggle="modal"
+                        data-target="#ModalDetalle">
+                    Ver Detalles
+                </button>
+                @if (!compra.Recibido)
+                {
+                    <button class="btn btn-outline btn-warning btn-xs" type="button"
+                            onclick="ModalRecibirCompra(@compra.Id)"
+                            data-toggle="modal"
+                            data-target="#ModalrecibirCompra">
+                        Marcar Recibido
+                    </button>
+                }
+                else
+                    @if (compra.Recibido)
+                {
+                    <button class="btn btn-outline btn-primary btn-xs" type="button"
+                            onclick="ModalPagarCompra(@compra.Id, @compra.MontoTotal)"
+                            data-toggle="modal"
+                            data-target="#ModalPagarCompra">
+                        Agregar Pago
+                    </button>
+                }
+                </td>
+            </tr>
         }
-    </td>
-</tr>
-     }
 }
 

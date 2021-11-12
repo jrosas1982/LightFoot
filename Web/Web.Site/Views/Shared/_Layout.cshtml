@@ -102,7 +102,7 @@
         @if(ViewBag.CatchError == true){
 
         <text>
-        swal("Error", "Ocurrió un error inesperado con Mensaje: " + "@ViewBag.MensajeError" , "error");
+        swal("Error", "@ViewBag.MensajeError" , "error");
 
         @*swal({
             title: "Error al procesar",

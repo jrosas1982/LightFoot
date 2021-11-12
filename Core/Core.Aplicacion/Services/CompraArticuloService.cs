@@ -257,5 +257,10 @@ namespace Core.Aplicacion.Services
 
             await _solicitudService.CrearSolicitud(solicitud, solicitudDetalles);
         }
+
+        public async Task<IEnumerable<TipoPago>> GetTiposPago()
+        {
+            return await Task.FromResult(EnumExtensions.GetValues<TipoPago>());
+        }
     }
 }

@@ -291,7 +291,7 @@
             if (modalForm.checkValidity()) {
                 $.ajax({
                     type: "post",
-                    url: "/fabrica/comprainsumo/agregardetalle",
+                    url: "/sucursal/compraArticulo/agregardetalle",
                     data: {
                         IdArticulo: $("#dropdownArticulo :selected").val(),
                         ArticuloNombre: $("#dropdownArticulo :selected").text(),
