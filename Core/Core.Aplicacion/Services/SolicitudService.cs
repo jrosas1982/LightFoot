@@ -185,6 +185,9 @@ namespace Core.Aplicacion.Services
                         .ThenInclude(x => x.Recetas)
                             .ThenInclude(x => x.RecetaDetalles)
                                 .ThenInclude(x => x.Insumo)
+                .Include(x => x.SolicitudDetalles)
+                    .ThenInclude(x => x.Articulo)
+                        .ThenInclude(x => x.ArticuloCategoria)
                 .SingleOrDefaultAsync(x => x.Id == idSolicitud);
             if (solicitud == null)
                 throw new Exception("La solicitud solicitada no existe");
@@ -198,6 +201,7 @@ namespace Core.Aplicacion.Services
                 .Include(x => x.Sucursal)
                 .Include(x => x.SolicitudDetalles)
                     .ThenInclude(x => x.Articulo)
+                        .ThenInclude(x => x.ArticuloCategoria)
                 .Include(x => x.SolicitudDetalles)
                     .ThenInclude(x => x.OrdenesProduccion)
                 .OrderByDescending(x => x.EstadoSolicitud == EstadoSolicitud.PendienteAprobacion)

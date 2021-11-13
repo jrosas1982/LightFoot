@@ -209,6 +209,7 @@ namespace Core.Aplicacion.Services
         {
             var orden = await _db.OrdenesProduccion
                 .Include(x => x.Articulo)
+                    .ThenInclude(x => x.ArticuloCategoria)
                 .Include(x => x.EtapaOrdenProduccion)
                 .Include(x => x.SolicitudDetalle)
                     .ThenInclude(x => x.Solicitud)
@@ -227,6 +228,7 @@ namespace Core.Aplicacion.Services
         {
             var ordenesList = _db.OrdenesProduccion
                 .Include(x => x.Articulo)
+                    .ThenInclude(x => x.ArticuloCategoria)
                 .Include(x => x.EtapaOrdenProduccion)
                 .Include(x => x.SolicitudDetalle)
                     .ThenInclude(x => x.Solicitud)

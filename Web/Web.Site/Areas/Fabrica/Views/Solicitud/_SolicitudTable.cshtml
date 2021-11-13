@@ -33,8 +33,6 @@
                                                     <thead>
                                                         <tr>
                                                             <th style="background-color: #9ac5ca82;">Articulo</th>
-                                                            <th style="background-color: #9ac5ca82;">Color</th>
-                                                            <th style="background-color: #9ac5ca82;">Talle</th>
                                                             <th style="background-color: #9ac5ca82;">Descripcion</th>
                                                             <th style="background-color: #9ac5ca82;">Cantidad Solicitada</th>
                                                             <th style="background-color: #9ac5ca82;">Motivo</th>
@@ -46,18 +44,23 @@
                                                         @foreach (var detalle in solicitud.SolicitudDetalles)
                                                         {
                                                             <tr>
-                                                                <td>@detalle.Articulo.Nombre</td>
-                                                                <td>@detalle.Articulo.Color</td>
-                                                                <td>@detalle.Articulo.TalleArticulo</td>
+                                                                <td>@detalle.Articulo.ArticuloCategoria.Descripcion - @detalle.Articulo.CodigoArticulo - @detalle.Articulo.Nombre - @detalle.Articulo.Color - Talle @detalle.Articulo.TalleArticulo</td>
                                                                 <td>@detalle.Articulo.Descripcion</td>
                                                                 <td>@detalle.CantidadSolicitada</td>
-                                                                <td>@detalle.Motivo</td>
-                                                                <td>
-                                                                    @foreach (var op in detalle.OrdenesProduccion)
-                                                                    {
-                                                                        <button class="btn btn-outline btn-@op.EstadoOrdenProduccion.GetGroupName()  btn-xs" type="button" onclick="VerOrdenAsociada('@op.Id')">Orden @op.Id</button>
-                                                                    }
-                                                                </td>
+                                                                <td>@(string.IsNullOrWhiteSpace(detalle.Motivo) ? "No Posee" : @detalle.Motivo)</td>
+                                                                @if (!detalle.OrdenesProduccion.Any())
+                                                                {
+                                                                    <td>No Posee</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td>
+                                                                        @foreach (var op in detalle.OrdenesProduccion)
+                                                                        {
+                                                                            <button class="btn btn-outline btn-@op.EstadoOrdenProduccion.GetGroupName()  btn-xs" type="button" onclick="VerOrdenAsociada('@op.Id')">Orden @op.Id</button>
+                                                                        }
+                                                                    </td>
+                                                                }
                                                             </tr>
                                                         }
                                                     </tbody>
