@@ -23,11 +23,26 @@
             </li>
         </ol>
     </div>
+
+
     <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()">
-            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
-        </button>
+        <div class="dropdown">
+            <button class="btn btn-w-m btn-default w-100 dropdown-toggle count-info" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Generar Reporte
+            </button>
+            <div class="dropdown-menu">
+                <button class="dropdown-item w-100" type="button" onclick="ReporteSimple()">Reporte Simple</button>
+                <button class="dropdown-item w-100" type="button" onclick="ReporteDetallado()">Reporte Detallado</button>
+            </div>
+        </div>
     </div>
+
+    @*<div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()">
+            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Generar Reporte
+        </button>
+    </div>*@
+
     <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
         <button type="button" class="btn btn-w-m btn-primary w-100"
                 onclick="location.href='@Url.Action("CrearEditarProveedor", "Proveedor", 0)'">
@@ -59,10 +74,10 @@
                                         <th>Proveedor</th>
                                         <th data-hide="all" data-animation="true"></th>
                                         <th>CUIT</th>
-                                            <th>Direccion</th>
-                                            <th>Email</th>
-                                            <th>Calificacion</th>
-                                            <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+                                        <th>Direccion</th>
+                                        <th>Email</th>
+                                        <th>Calificacion</th>
+                                        <th data-sort-ignore="true" class="d-print-none">Acciones</th>
 
                                     </tr>
                                 </thead>
@@ -72,50 +87,87 @@
                                     {
                                         foreach (var proveedor in Model)
                                         {
-                                    <tr>
-                                        <td>@proveedor.Nombre</td>
-                                        <td>
-                                            @if (proveedor.ProveedorInsumos != null && proveedor.ProveedorInsumos.Any())
-                                            {
-                                                <div class="col">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-striped table-hover table-bordered">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th style="background-color: #9ac5ca82;">Insumo</th>
-                                                                    <th style="background-color: #9ac5ca82;">Descripcion</th>
-                                                                    <th style="background-color: #9ac5ca82;">Stock Actual</th>
-                                                                    @*<th style="background-color: #9ac5ca82;" data-sort-ignore="true">Historico</th>*@
+                                            <tr>
+                                                <td>@proveedor.Nombre</td>
+                                                <td>
+                                                    @if (proveedor.ProveedorInsumos != null && proveedor.ProveedorInsumos.Any())
+                                                    {
+                                                        <div class="col">
+                                                            <div class="table-responsive">
+                                                                <table class="footable table table-striped table-hover table-bordered  toggle-arrow-tiny">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th style="background-color: #9ac5ca82;" width="20%">Insumo</th>
+                                                                            <th style="background-color: #9ac5ca82;" width="40%">Descripcion</th>
+                                                                            <th style="background-color: #9ac5ca82;" width="10%">Precio</th>
+                                                                            <th style="background-color: #9ac5ca82;" width="10%" data-sort-ignore="true" class="d-print-none">Acciones</th>
+                                                                            @*<th style="background-color: #9ac5ca82;" data-sort-ignore="true">Historico</th>*@
 
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach (var proveedorInsumo in proveedor.ProveedorInsumos)
-                                                                {
-                                                                    <tr>
-                                                                        <td>@proveedorInsumo.Insumo.Nombre</td>
-                                                                        <td>@proveedorInsumo.Insumo.Descripcion</td>
-                                                                        <td>@(proveedorInsumo.Insumo.StockTotal + proveedorInsumo.Insumo.Unidad)</td>
-                                                                    </tr>
-                                                                }
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach (var proveedorInsumo in proveedor.ProveedorInsumos)
+                                                                        {
+                                                                            <tr>
+                                                                                <td>@proveedorInsumo.Insumo.Nombre</td>
+                                                                                <td>@proveedorInsumo.Insumo.Descripcion</td>
+                                                                                <td>@proveedorInsumo.Precio</td>
+                                                                                <td class="d-print-none">
+                                                                                    <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="ModificarPrecioInsumo('@proveedorInsumo.Id', @proveedorInsumo.Precio)">Modificar Precio</button>
+                                                                                </td>
+                                                                            </tr>
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    }
 
-                                            }
-                                        </td>
-                                        <td>@proveedor.CUIT</td>
-                                        <td>@proveedor.Direccion</td>
-                                        <td>@proveedor.Email</td>
-                                        <td>@proveedor.Calificacion</td>
-                                        <td class="d-print-none">
-                                            <button class="btn btn-outline btn-danger btn-xs" type="button" onclick="BorrarProveedor('@proveedor.Id')">Borrar</button>
-                                            <button class="btn btn-outline btn-warning btn-xs" type="button" onclick="EditarProveedor('@proveedor.Id')">Editar</button>
-                                            <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AsociarInsumos('@proveedor.Id')">Asociar Insumos</button>
-                                            <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AsociarArticulos('@proveedor.Id')">Asociar Articulos</button>
-                                        </td>
-                                    </tr>
+                                                    @if (proveedor.ProveedorArticulos != null && proveedor.ProveedorArticulos.Any())
+                                                    {
+                                                        <div class="col">
+                                                            <div class="table-responsive">
+                                                                <table class="footable table table-striped table-hover table-bordered  toggle-arrow-tiny">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th style="background-color: #99c98d82;" width="20%">Articulo</th>
+                                                                            <th style="background-color: #99c98d82;" width="40%">Descripcion</th>
+                                                                            <th style="background-color: #99c98d82;" width="10%">Precio</th>
+                                                                            <th style="background-color: #99c98d82;" width="10%" data-sort-ignore="true" class="d-print-none">Acciones</th>
+                                                                            @*<th style="background-color: #9ac5ca82;" data-sort-ignore="true">Historico</th>*@
+
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach (var proveedorArticulo in proveedor.ProveedorArticulos)
+                                                                        {
+                                                                            <tr>
+                                                                                <td>@proveedorArticulo.Articulo.Nombre - @proveedorArticulo.Articulo.Color - Talle @proveedorArticulo.Articulo.TalleArticulo</td>
+                                                                                <td>@proveedorArticulo.Articulo.Descripcion</td>
+                                                                                <td>@proveedorArticulo.Precio</td>
+                                                                                <td class="d-print-none">
+                                                                                    <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="ModificarPrecioArticulo('@proveedorArticulo.Id', @proveedorArticulo.Precio)">Modificar Precio</button>
+                                                                                </td>
+                                                                            </tr>
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+
+                                                    }
+                                                </td>
+                                                <td>@proveedor.CUIT</td>
+                                                <td>@proveedor.Direccion</td>
+                                                <td>@proveedor.Email</td>
+                                                <td>@proveedor.Calificacion</td>
+                                                <td class="d-print-none">
+                                                    <button class="btn btn-outline btn-danger btn-xs" type="button" onclick="BorrarProveedor('@proveedor.Id')">Borrar</button>
+                                                    <button class="btn btn-outline btn-warning btn-xs" type="button" onclick="EditarProveedor('@proveedor.Id')">Editar</button>
+                                                    <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AsociarInsumos('@proveedor.Id')">Asociar Insumos</button>
+                                                    <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AsociarArticulos('@proveedor.Id')">Asociar Articulos</button>
+                                                </td>
+                                            </tr>
                                         }
                                     }
                                 </tbody>
@@ -222,6 +274,7 @@
         }
 
         function Reporte() {
+
             window.print();
         }
 

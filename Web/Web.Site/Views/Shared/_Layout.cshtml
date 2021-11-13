@@ -69,10 +69,9 @@
     <script src="~/custom/Personalizado.js"></script>
     @*<script type="text/javascript">@Html.Raw(ViewBag.JsFunction);</script>*@
     <!-- LightFoot End -->
-    @*<partial name="_JsInteropPartial"/>*@
-
     <!-- _JsInteropPartial Begin-->
-    @await Html.PartialAsync("_JsInteropPartial")
+    <partial name="_JsInteropPartial" />
+    @*@await Html.PartialAsync("_JsInteropPartial")*@
     <!-- _JsInteropPartial End-->
     <!-- _NotificationsHub Begin-->
     @await Html.PartialAsync("_NotificationsHub")
@@ -82,6 +81,17 @@
         @await RenderSectionAsync("scripts", required: false)
 
     <script type="text/javascript">
+        function ReporteSimple() {
+            $('.footable-even').removeClass("footable-detail-show");
+            $('.footable-odd').removeClass("footable-detail-show");
+            window.print();
+        }
+        function ReporteDetallado() {
+            $('.footable-even').addClass("footable-detail-show");
+            $('.footable-odd').addClass("footable-detail-show");
+            window.print();
+        }
+
         window.onbeforeprint = function () {
             $('.dataTables_filter').addClass("d-print-none");
             var numberOfRows = Number.MAX_SAFE_INTEGER;
@@ -92,12 +102,17 @@
 
         window.onafterprint = function () {
             $('.dataTables_filter').removeClass("d-print-none");
+            $('.footable-even').removeClass("footable-detail-show");
+            $('.footable-odd').removeClass("footable-detail-show");
             var numberOfRows = 15;
             $('.footable').footable();
             $('.footable').data('page-size', numberOfRows);
             $('.footable').trigger('footable_redraw');
         }
+
+
     </script>
+
     <script>
         @if(ViewBag.CatchError == true){
 
@@ -111,6 +126,7 @@
         </text>
     }
     </script>
+
     <script type="text/javascript">
         //uncomment to prevent on startup
         //removeDefaultFunction();

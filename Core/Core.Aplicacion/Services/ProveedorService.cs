@@ -70,9 +70,9 @@ namespace Core.Aplicacion.Services
         public async Task<IEnumerable<Proveedor>> GetProveedores()
         {
             var proveedoresList = await _db.Proveedores
-                .Include(x => x.ProveedorInsumos)
+                .Include(x => x.ProveedorInsumos.OrderBy(x => x.Insumo.Nombre))
                     .ThenInclude(x => x.Insumo)
-                .Include(x => x.ProveedorArticulos)
+                .Include(x => x.ProveedorArticulos.OrderBy(x => x.Articulo.Nombre))
                     .ThenInclude(x => x.Articulo)
                 .OrderBy(x => x.Nombre)
                 .ToListAsync();
