@@ -26,8 +26,8 @@ namespace Web.Site.Areas.Fabrica
         [Display(Name = "Descripción Artículo")]
         public string Descripcion { get; set; }
         [Display(Name = "Color Artículo")]
-    
         public string Color { get; set; }
+        //public string Categoria { get; set; }
   
         public decimal PrecioMinorista { get; set; }
 

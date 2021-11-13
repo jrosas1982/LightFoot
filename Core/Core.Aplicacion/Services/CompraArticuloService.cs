@@ -78,7 +78,8 @@ namespace Core.Aplicacion.Services
                 .AsNoTracking()
                 .Include(x => x.CompraArticuloDetalles)
                     .ThenInclude(x => x.Articulo)
-                        //.ThenInclude(x => x.) TODO completar
+                        .ThenInclude(x => x.ArticuloCategoria)
+                //.ThenInclude(x => x.) TODO completar
                 .Include(x => x.Proveedor)
                 .Where(x => x.IdSucursal == IdSucursal)
                 .SingleAsync(x => x.Id == IdCompra);
@@ -141,6 +142,7 @@ namespace Core.Aplicacion.Services
             var compraDetalles = await _db.CompraArticuloDetalles
                 .AsNoTracking()
                 .Include(x => x.Articulo)
+                    .ThenInclude(x => x.ArticuloCategoria)
                     //.ThenInclude(x => x.ArticuloStock)
                     //    .ThenInclude(x => x.Proveedor)
                 .Where(x => x.IdCompraArticulo == IdCompra && x.CompraArticulo.IdSucursal == IdSucursal)
@@ -156,7 +158,7 @@ namespace Core.Aplicacion.Services
                 .AsNoTracking()
                 .Include(x => x.CompraArticuloDetalles)
                     .ThenInclude(x => x.Articulo)
-                        //.ThenInclude(x => x.ArticuloStock)
+                        .ThenInclude(x => x.ArticuloCategoria)
                         //    .ThenInclude(x => x.Proveedor)
                 .Include(x => x.Proveedor)
                 .Where(x => x.IdSucursal == IdSucursal)
@@ -227,6 +229,9 @@ namespace Core.Aplicacion.Services
             var compraRealizada = await _db.ComprasArticulos
                     .Include(x => x.CompraArticuloDetalles)
                         .ThenInclude(x => x.Articulo)
+                        .ThenInclude(x => x.ArticuloCategoria)
+                    .Include(x => x.CompraArticuloDetalles)
+                        .ThenInclude(x => x.Articulo)
                         .ThenInclude(x => x.ProveedoresArticulo)
                     .Include(x => x.Proveedor)
                     .SingleAsync(x => x.Id == IdCompra);
@@ -237,7 +242,7 @@ namespace Core.Aplicacion.Services
             string Maildetalles = "";
             foreach (var item in compraRealizada.CompraArticuloDetalles)
             {
-                var row = templateBaseRow.Replace("@NombreItem", item.Articulo.Nombre)
+                var row = templateBaseRow.Replace("@NombreItem", $"{item.Articulo.ArticuloCategoria.Descripcion} - {item.Articulo.Nombre} - {item.Articulo.Color} - Talle {item.Articulo.TalleArticulo}")
                                          .Replace("@DescripcionItem", item.Articulo.Descripcion)
                                          .Replace("@UnidadesItem", item.Cantidad.ToString() + "u")
                                          .Replace("@PrecioItem", item.Articulo.ProveedoresArticulo.Single(x => x.IdProveedor == compraRealizada.IdProveedor).Precio.ToString());
@@ -252,9 +257,10 @@ namespace Core.Aplicacion.Services
 
             var template = templateBaseMail.Replace("@NombreProveedor", compraRealizada.Proveedor.Nombre)
                                            .Replace("@IdCompra", compraRealizada.Id.ToString())
+                                           .Replace("@Cliente", sucursalCompra.Nombre)
+                                           .Replace("@Producto", "Articulos")
                                            .Replace("@Fecha", DateTime.Now.ToLongDateString())
                                            .Replace("@TableRows", Maildetalles)
-                                           .Replace("@Cliente", sucursalCompra.Nombre)
                                            .Replace("@MontoTotal", compraRealizada.MontoTotal.ToString())
                                            .Replace("@Direccion", sucursalCompra.Direccion);
 

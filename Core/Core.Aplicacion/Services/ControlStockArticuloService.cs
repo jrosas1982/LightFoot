@@ -69,7 +69,9 @@ namespace Core.Aplicacion.Services
             var articuloStockList = await _db.ArticulosStock
                 .Where(x => x.IdSucursal == IdSucursal)
                 .Include(p => p.Articulo)
-                .OrderByDescending(x => x.Articulo.CodigoArticulo)
+                    .ThenInclude(p => p.ArticuloCategoria)
+                .OrderBy(x => x.Articulo.ArticuloCategoria)
+                    .ThenByDescending(x => x.Articulo.CodigoArticulo)
                 .ToListAsync();
             _logger.LogInformation("Se buscaron el stock de articulos");
             return articuloStockList;

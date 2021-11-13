@@ -246,9 +246,10 @@ namespace Core.Aplicacion.Services
 
             var template = templateBaseMail.Replace("@NombreProveedor", compraRealizada.Proveedor.Nombre)
                                            .Replace("@IdCompra", compraRealizada.Id.ToString())
+                                           .Replace("@Cliente", "Fabrica LightFoot")
+                                           .Replace("@Producto", "Insumos")
                                            .Replace("@Fecha", DateTime.Now.ToLongDateString())
                                            .Replace("@TableRows", Maildetalles)
-                                           .Replace("@Cliente", "Fabrica LightFoot")
                                            .Replace("@MontoTotal", compraRealizada.MontoTotal.ToString())
                                            .Replace("@Direccion", "4562 Hazy Panda Limits, Chair Crossing, Kentucky, US, 607898");
 

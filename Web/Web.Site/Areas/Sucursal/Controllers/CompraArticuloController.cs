@@ -52,7 +52,7 @@ namespace Web.Site.Areas
 
             CompraArticuloModel compraArticuloModel = new CompraArticuloModel();
 
-            compraArticuloModel.Articulos = articulosList.Select(x => new SelectListItem() { Text = $"{x.Nombre} - {x.Color} - Talle {x.TalleArticulo} ", Value = $"{x.Id}" });
+            compraArticuloModel.Articulos = articulosList.Select(x => new SelectListItem() { Text = $"{x.ArticuloCategoria.Descripcion} - {x.CodigoArticulo} - {x.Nombre} - {x.Color} - Talle {x.TalleArticulo} ", Value = $"{x.Id}" });
             compraArticuloModel.Proveedores = proveedoresList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" });
 
             return View(compraArticuloModel);
@@ -86,7 +86,6 @@ namespace Web.Site.Areas
         {
             try
             {
-                if (compraArticuloModel == null) { 
                     IList<NuevaCompraArticuloModel> compra = new List<NuevaCompraArticuloModel>();
                     foreach (var detalle in compraArticuloModel.CompraArticuloDetalleModels)
                     {
@@ -100,9 +99,6 @@ namespace Web.Site.Areas
                     }
                     await _compraArticuloService.CrearCompra(compra);
                     return RedirectToAction("Index");
-                }
-                else
-                    return RedirectToAction("ComprarArticulos");
             }
             catch (Exception ex)
             {

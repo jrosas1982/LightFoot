@@ -17,7 +17,7 @@
         @foreach (var detalle in Model.CompraArticuloDetalles)
         {
             <tr>
-                <td>@detalle.Articulo.Nombre</td>
+                <td>@detalle.Articulo.ArticuloCategoria.Descripcion - @detalle.Articulo.CodigoArticulo - @detalle.Articulo.Nombre - @detalle.Articulo.Color - Talle @detalle.Articulo.TalleArticulo</td>
                 <td>@Model.Proveedor.Nombre</td>
                 <td>@detalle.Cantidad</td>
                 <td>@detalle.Monto</td>
