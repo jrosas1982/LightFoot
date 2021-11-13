@@ -74,6 +74,7 @@ namespace Core.Aplicacion.Services
                     .ThenInclude(x => x.Insumo)
                 .Include(x => x.ProveedorArticulos.OrderBy(x => x.Articulo.Nombre))
                     .ThenInclude(x => x.Articulo)
+                    .ThenInclude(x => x.ArticuloCategoria)
                 .OrderBy(x => x.Nombre)
                 .ToListAsync();
 

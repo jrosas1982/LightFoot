@@ -65,169 +65,40 @@
                     <h5>Proveedor</h5>
                 </div>
                 <div class="ibox-content">
-                    <div class="ibox-content">
-                        <div class="table-responsive">
-                            <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
-                                <thead>
-                                    <tr>
-
-                                        <th>Proveedor</th>
-                                        <th data-hide="all" data-animation="true"></th>
-                                        <th>CUIT</th>
-                                        <th>Direccion</th>
-                                        <th>Email</th>
-                                        <th>Calificacion</th>
-                                        <th data-sort-ignore="true" class="d-print-none">Acciones</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    @if (Model != null)
-                                    {
-                                        foreach (var proveedor in Model)
-                                        {
-                                            <tr>
-                                                <td>@proveedor.Nombre</td>
-                                                <td>
-                                                    @if (proveedor.ProveedorInsumos != null && proveedor.ProveedorInsumos.Any())
-                                                    {
-                                                        <div class="col">
-                                                            <div class="table-responsive">
-                                                                <table class="footable table table-striped table-hover table-bordered  toggle-arrow-tiny">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th style="background-color: #9ac5ca82;" width="20%">Insumo</th>
-                                                                            <th style="background-color: #9ac5ca82;" width="40%">Descripcion</th>
-                                                                            <th style="background-color: #9ac5ca82;" width="10%">Precio</th>
-                                                                            <th style="background-color: #9ac5ca82;" width="10%" data-sort-ignore="true" class="d-print-none">Acciones</th>
-                                                                            @*<th style="background-color: #9ac5ca82;" data-sort-ignore="true">Historico</th>*@
-
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        @foreach (var proveedorInsumo in proveedor.ProveedorInsumos)
-                                                                        {
-                                                                            <tr>
-                                                                                <td>@proveedorInsumo.Insumo.Nombre</td>
-                                                                                <td>@proveedorInsumo.Insumo.Descripcion</td>
-                                                                                <td>@proveedorInsumo.Precio</td>
-                                                                                <td class="d-print-none">
-                                                                                    <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="ModificarPrecioInsumo('@proveedorInsumo.Id', @proveedorInsumo.Precio)">Modificar Precio</button>
-                                                                                </td>
-                                                                            </tr>
-                                                                        }
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                    }
-
-                                                    @if (proveedor.ProveedorArticulos != null && proveedor.ProveedorArticulos.Any())
-                                                    {
-                                                        <div class="col">
-                                                            <div class="table-responsive">
-                                                                <table class="footable table table-striped table-hover table-bordered  toggle-arrow-tiny">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th style="background-color: #99c98d82;" width="20%">Articulo</th>
-                                                                            <th style="background-color: #99c98d82;" width="40%">Descripcion</th>
-                                                                            <th style="background-color: #99c98d82;" width="10%">Precio</th>
-                                                                            <th style="background-color: #99c98d82;" width="10%" data-sort-ignore="true" class="d-print-none">Acciones</th>
-                                                                            @*<th style="background-color: #9ac5ca82;" data-sort-ignore="true">Historico</th>*@
-
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        @foreach (var proveedorArticulo in proveedor.ProveedorArticulos)
-                                                                        {
-                                                                            <tr>
-                                                                                <td>@proveedorArticulo.Articulo.Nombre - @proveedorArticulo.Articulo.Color - Talle @proveedorArticulo.Articulo.TalleArticulo</td>
-                                                                                <td>@proveedorArticulo.Articulo.Descripcion</td>
-                                                                                <td>@proveedorArticulo.Precio</td>
-                                                                                <td class="d-print-none">
-                                                                                    <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="ModificarPrecioArticulo('@proveedorArticulo.Id', @proveedorArticulo.Precio)">Modificar Precio</button>
-                                                                                </td>
-                                                                            </tr>
-                                                                        }
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-
-                                                    }
-                                                </td>
-                                                <td>@proveedor.CUIT</td>
-                                                <td>@proveedor.Direccion</td>
-                                                <td>@proveedor.Email</td>
-                                                <td>@proveedor.Calificacion</td>
-                                                <td class="d-print-none">
-                                                    <button class="btn btn-outline btn-danger btn-xs" type="button" onclick="BorrarProveedor('@proveedor.Id')">Borrar</button>
-                                                    <button class="btn btn-outline btn-warning btn-xs" type="button" onclick="EditarProveedor('@proveedor.Id')">Editar</button>
-                                                    <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AsociarInsumos('@proveedor.Id')">Asociar Insumos</button>
-                                                    <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AsociarArticulos('@proveedor.Id')">Asociar Articulos</button>
-                                                </td>
-                                            </tr>
-                                        }
-                                    }
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="6">
-                                            <ul class="pagination float-right"></ul>
-                                        </td>
-                                    </tr>
-                                </tfoot>
+                    <div id="partialViewTable">
+                        <partial name="_ProveedorIndexTable.cshtml" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
-                            </table>
+    @*MODAL modificar precio*@
+    <div class="modal inmodal fade" id="ModalModificarPrecio" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form class="validateDontSubmit" id="modalForm" name="modalForm">
+                    <input type="text" id="hiddenModalmodificarPrecio" hidden>
+                    <input type="text" id="hiddenTipoModificacion" hidden>
+                    <div class="modal-header pb-1">
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-center">
+                                <h1 id="tituloModalModificarPrecio" style="font-size:30px;">Modificar Precio </h1>
+                            </div>
                         </div>
                     </div>
-
-
-
-                    @*<table class="table table-striped table-bordered table-hover dataTables-example">
-                            <thead>
-                                <tr>
-                                    <th>CUIT</th>
-                                    <th>Nombre</th>
-                                    <th>Direccion</th>
-                                    <th>Email</th>
-                                    <th>Calificacion</th>
-                                    <th class="d-print-none">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model != null)
-                                {
-                                    foreach (var item in Model)
-                                    {
-                                        <tr class="gradeC">
-                                            <td>@item.CUIT</td>
-                                            <td>@item.Nombre</td>
-                                            <td>@item.Direccion</td>
-                                            <td>@item.Email</td>
-                                            <td>@item.Calificacion</td>
-                                            <td class="d-print-none">
-                                                <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarProveedor('@item.Id')">Borrar</button>
-                                                <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarProveedor('@item.Id')">Editar</button>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                            <tfoot>
-                                <tr class="d-print-none">
-                                    <th>CUIT</th>
-                                    <th>Nombre</th>
-                                    <th>Direccion</th>
-                                    <th>Email</th>
-                                    <th>Calificacion</th>
-                                    <th class="d-print-none">Acciones</th>
-                                </tr>
-                            </tfoot>
-                        </table>*@
-                </div>
+                    <div class="modal-body py-2 border-bottom">
+                        <div class="form-group">
+                            <label class="font-normal">Precio</label>
+                            <input id="precio" class="form-control" type="number" min="0" max="" value="0" placeholder="" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" onclick="ModificarPrecio()" class="btn btn-primary">Modificar Precio</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -253,9 +124,73 @@
         $(document).ready(function () {
             $('.footable').footable();
         });
+
+        $('#ModalModificarPrecio').on('hidden.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+        })
+
+        //prevent the form from doing a submit
+        $(document).on('submit', '.validateDontSubmit', function (e) {
+            e.preventDefault();
+            return false;
+        });
     </script>
 
     <script type="text/javascript">
+
+        function ModificarPrecioInsumo(id, tipo, precio) {
+            $('#hiddenModalmodificarPrecio').val(id);
+            $('#precio').val(precio);
+            console.log(id);
+            console.log(precio);
+            console.log(tipo);
+            console.log($("#hiddenTipoModificacion").val());
+            $('#hiddenTipoModificacion').val(tipo);
+        }
+
+        function ModificarPrecioArticulo(id, tipo, precio) {
+            $('#hiddenModalmodificarPrecio').val(id);
+            console.log(id);
+            console.log(precio);
+            $('#precio').val(precio);
+            console.log(tipo);
+            $('#hiddenTipoModificacion').val(tipo);
+        }
+
+        function ModificarPrecio() {
+            var id = $('#hiddenModalmodificarPrecio').val();
+            var precio = $("#precio").val();
+            var tipo = $("#hiddenTipoModificacion").val();
+
+            console.log(tipo);
+            var url = '/abm/Proveedor/ModificarPrecioArticulo'
+            if (tipo == 'Insumo')
+                url = '/abm/Proveedor/ModificarPrecioInsumo';
+
+            if (modalForm.checkValidity()) {
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    data: {
+                        id: id,
+                        precio: precio
+                    },
+                    success: function () {
+                        swal(
+                            'Exito',
+                            'Se modifico el precio correctamente',
+                            'success'
+                        );
+                    }
+                }).done(function (response) {
+                    $("#partialViewTable").html(""); //clear the records content
+                    $("#partialViewTable").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw');
+                    $('#ModalModificarPrecio').modal('hide');
+                });
+            }
+        }
 
         function BorrarProveedor(Id) {
             alert(Id);
@@ -301,9 +236,11 @@
                         }
                     }
                 }).done(function () {
-                    window.setTimeout(function () {
-                        location.reload();
-                    }, 600);
+                    $("#ComprasPartialView").html(""); //clear the records content
+                    $("#ComprasPartialView").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw');
+                    $('#ModalrecibirCompra').modal('hide');
                 });
             });
         };

@@ -13,5 +13,7 @@ namespace Core.Aplicacion.Interfaces
         public Task<bool> EliminarInsumoDeProveedor(int lineaInsumo);
         public Task<ProveedorInsumo> BuscarProveedorInsumo(int idInsumo, int idProveedor);
         public Task<decimal> GetPrecioInsumo(int idInsumo, int idProveedor);
+
+        public Task ModificarPrecioInsumo(int idProveedorInsumo, decimal precio);
     }
 }

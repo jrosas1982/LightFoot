@@ -195,6 +195,29 @@ namespace Web.Site.Areas
             return PartialView("_ArticuloProveedor", nuevoLineaReceta);
         }
 
+        public async Task<IActionResult> ModificarPrecioInsumo(int id, decimal precio)
+        {
+            await _proveedorInsumoService.ModificarPrecioInsumo(id, precio);
+            var proveedores = await _proveedorService.GetProveedores();
+            return PartialView("_ProveedorIndexTable", proveedores);
+        }
+
+        public async Task<IActionResult> ModificarPrecioArticulo(ProveedorArticulo data)
+        {
+            var nuevoLineaReceta = await _proveedorArticuloService.BuscarProveedorArticuloPorId(await _proveedorArticuloService.AgregarArticuloAProveedor(data));
+
+            var ret = new List<ProveedorArticulo>();
+
+            ret.Add(nuevoLineaReceta);
+            //var proveedorInsumoDb = _mapper.Map<ProveedorInsumoModel>(nuevoLineaReceta);
+            //proveedorInsumoDb.Proveedor = data.Proveedor;
+            //proveedorInsumoDb.ProveedoresInsumos = data.ProveedoresInsumos;
+            //proveedorInsumoDb.Insumos = data.Insumos;
+            //proveedorInsumoDb.Insumo = data.Insumo;
+
+            return PartialView("_ArticuloProveedor", nuevoLineaReceta);
+        }
+
     }
 
 }

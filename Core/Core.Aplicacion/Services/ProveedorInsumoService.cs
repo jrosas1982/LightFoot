@@ -62,6 +62,16 @@ namespace Core.Aplicacion.Services
             return proveedorInsumo.Precio;
         }
 
+        public async Task ModificarPrecioInsumo(int idProveedorInsumo, decimal precio)
+        {
+            var proveedorInsumo = await _db.ProveedoresInsumos.SingleOrDefaultAsync(x => x.Id == idProveedorInsumo);
+            if (proveedorInsumo == null)
+                throw new Exception("El ProveedorInsumo solicitado no existe");
+            proveedorInsumo.Precio = precio;
+            _db.ProveedoresInsumos.Update(proveedorInsumo);
+            await _db.SaveChangesAsync();
+        }
+
         public async Task<bool> EliminarInsumoDeProveedor(int lineaInsumo)
         {
             try
