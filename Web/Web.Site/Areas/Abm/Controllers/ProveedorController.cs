@@ -97,7 +97,7 @@ namespace Web.Site.Areas
                 Descripcion = x.Descripcion
             });
 
-            ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.Nombre} - {x.Color} - Talle {x.TalleArticulo} ", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
+            ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.ArticuloCategoria.Descripcion} - {x.Nombre} - {x.Color} - Talle {x.TalleArticulo} ", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
 
             //ProveedorInsumoModel proveedorInsumo = new ProveedorInsumoModel();
             //var proveedor = await _proveedorService.GetProveedores();
@@ -176,7 +176,7 @@ namespace Web.Site.Areas
         [HttpPost]
         public async Task<IActionResult> EliminarDetalleArticulo(int id)
         {
-            return Ok(await _proveedorInsumoService.EliminarInsumoDeProveedor(id));
+            return Ok(await _proveedorArticuloService.EliminarArticuloDeProveedor(id));
         }
 
         public async Task<IActionResult> AgregarDetalle(ProveedorArticulo data)
@@ -202,20 +202,11 @@ namespace Web.Site.Areas
             return PartialView("_ProveedorIndexTable", proveedores);
         }
 
-        public async Task<IActionResult> ModificarPrecioArticulo(ProveedorArticulo data)
+        public async Task<IActionResult> ModificarPrecioArticulo(int id, decimal precio)
         {
-            var nuevoLineaReceta = await _proveedorArticuloService.BuscarProveedorArticuloPorId(await _proveedorArticuloService.AgregarArticuloAProveedor(data));
-
-            var ret = new List<ProveedorArticulo>();
-
-            ret.Add(nuevoLineaReceta);
-            //var proveedorInsumoDb = _mapper.Map<ProveedorInsumoModel>(nuevoLineaReceta);
-            //proveedorInsumoDb.Proveedor = data.Proveedor;
-            //proveedorInsumoDb.ProveedoresInsumos = data.ProveedoresInsumos;
-            //proveedorInsumoDb.Insumos = data.Insumos;
-            //proveedorInsumoDb.Insumo = data.Insumo;
-
-            return PartialView("_ArticuloProveedor", nuevoLineaReceta);
+            await _proveedorArticuloService.ModificarPrecioArticulo(id, precio);
+            var proveedores = await _proveedorService.GetProveedores();
+            return PartialView("_ProveedorIndexTable", proveedores);
         }
 
     }

@@ -62,7 +62,7 @@
                     <th>Inusmo</th>
                     <th>Descripcion</th>
                     <th>Precio</th>
-                    <th>Acciones</th>         
+                    <th>Acciones</th>
                 </tr>
                 <tbody>
                     @if (ProveedorSeleccionado.ProveedorInsumos != null)
@@ -96,62 +96,81 @@
     </div>
 
     @* MODAL NEW COMMENT *@
-    @using (Html.BeginForm("AsignarProveedorInsumo", "Proveedor", FormMethod.Post, new { id = "formInsumoProveedor" }))
-    {
         <div class="modal inmodal fade" id="NewCommentModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header pb-1">
-                        <div class="row">
-                            <div class="col-sm-12 d-flex justify-content-center">
-                                <h1 style="font-size:30px;">Nuevo @Accion</h1>
+                    <form class="validateDontSubmit" id="modalForm" name="modalForm">
+                        <div class="modal-header pb-1">
+                            <div class="row">
+                                <div class="col-sm-12 d-flex justify-content-center">
+                                    <h1 style="font-size:30px;">Nuevo @Accion</h1>
+                                </div>
+                            </div>
+                        </div>                        
+                        @Html.AntiForgeryToken()
+                        <div class="modal-body py-2">
+                            <label class="font-normal">Insumo</label>
+                            <select class="form-control  chosen-select " id="IdInsumo" required>
+                                <option value=""> -- Seleccionar Insumo --</option>
+                                @foreach (var insumo in ViewBag.Insumos)
+                                {
+                                    <option value="@insumo.Value"> @insumo.Text</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="modal-body py-2">
+                            <div class="form-group">
+                                <label class="font-normal">Precio</label>
+                                <input id="Precio" class="form-control" type="number" min="0" max="" value="0" placeholder="" required>
                             </div>
                         </div>
-                    </div>
-                    @Html.AntiForgeryToken()
-                    @Html.HiddenFor(x => x.IdProveedor)
-                    <div class="modal-body py-2">
-                        <div class="form-floating">
-                            @Html.LabelFor(m => m.IdInsumo)
-                            @*@Html.DropDownListFor(m => m.Articulo.IdArticuloCategoria, new SelectList(Model.ArticuloCategorias, "Id", "Descripcion", Model.ArticuloCategorias.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownCategorias" })*@
-                            @Html.DropDownListFor(m => m.IdInsumo, new List<SelectListItem>(ViewBag.Insumos), " -- Seleccionar Insumo -- ", new { @id = "IdInsumo", @class = "form-control " })
-                            @Html.ValidationMessageFor(model => model.IdInsumo, "", new { @class = "text-danger" })
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" onclick="addInsumo()" class="btn btn-primary">Agregar Insumos</button>
                         </div>
-                    </div>
-                    <div class="modal-body py-2">
-                        <div class="form-floating">
-                            @Html.LabelFor(m => m.Precio)
-                            @Html.EditorFor(model => model.Precio, new { htmlAttributes = new { @id = "Precio", @class = "form-control ", @placeholder = "" } })
-                            @Html.ValidationMessageFor(model => model.Precio, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                        <button type="button" onclick="addInsumo()" class="btn btn-primary" data-dismiss="modal">Agregar Insumos</button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
-    }
 </div>
 
-    @section Styles {
-        <environment names="Development,Staging,Production">
-            <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+@section Styles {
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+        <link rel="stylesheet" href="~/lib/chosen/bootstrap-chosen.css" />
 
-        </environment>
-    }
+    </environment>
+}
 
-    @section Scripts {
-        <environment names="Development,Staging,Production">
-            <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-            <script src="~/lib/validate/jquery.validate.min.js"></script>
-            <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
-        </environment>
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/validate/jquery.validate.min.js"></script>
+        <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="~/lib/chosen/chosen.jquery.js"></script>
+        <script src="~/custom/chosen-patch.js"></script>
+    </environment>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function () {
 
+        });
+
+        //prevent the form from doing a submit
+        $(document).on('submit', '.validateDontSubmit', function (e) {
+            e.preventDefault();
+            return false;
+        })
+
+        $('.chosen-select').chosen({
+            no_results_text: "No hay resultados que coincidan con ",
+        });
+
+        $('#NewCommentModal').on('shown.bs.modal', function () {
+            $('.chosen-select', this).chosen('destroy').chosen({
+                no_results_text: "No hay resultados que coincidan con ",
+            });
         });
 
         function ClearModal() {
@@ -160,18 +179,21 @@
         }
 
         function addInsumo() {
-            $.ajax({
-                type: "post",
-                url: '@url_base' + 'AgregarDetalleInsumo/',
-                data: {
-                    IdProveedor: $("#proveedorSeleccionado").val(),
-                    IdInsumo: $("#IdInsumo").val(),
-                    Precio: $("#Precio").val()
-                }
-            }).done(function (partialView) {
-                $('#ListaAriticulo tbody:last-child').after().append(partialView);
-                ClearModal();
-            });
+            if (modalForm.checkValidity()) {
+                $.ajax({
+                    type: "post",
+                    url: '@url_base' + 'AgregarDetalleInsumo/',
+                    data: {
+                        IdProveedor: $("#proveedorSeleccionado").val(),
+                        IdInsumo: $("#IdInsumo").val(),
+                        Precio: $("#Precio").val()
+                    }
+                }).done(function (partialView) {
+                    $('#ListaAriticulo tbody:last-child').after().append(partialView);
+                    $("#NewCommentModal").modal('hide');
+                    ClearModal();
+                });
+            }
         }
 
         function eliminarDetalleInsumo(row,Id) {
@@ -204,6 +226,6 @@
             $(row).parents('tr').first().remove();
         }
 
-        </script>
-    }
+    </script>
+}
 

@@ -59,7 +59,9 @@
         <div class="ibox-content m-b-sm border-bottom">
             <table id="ListaAriticulo" class="table table-bordered">
                 <tr>
+                    <th>Codigo</th>
                     <th>Articulo</th>
+                    <th>Categoria</th>
                     <th>Descripcion</th>
                     <th>Precio</th>
                     <th>Acciones</th>
@@ -96,48 +98,49 @@
     </div>
 
     @* MODAL NEW COMMENT *@
-    @using (Html.BeginForm("AsignarProveedorArticulo", "Proveedor", FormMethod.Post, new { id = "formArticuloProveedor" }))
-    {
+
         <div class="modal inmodal fade" id="NewCommentModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header pb-1">
-                        <div class="row">
-                            <div class="col-sm-12 d-flex justify-content-center">
-                                <h1 style="font-size:30px;">Nuevo @Accion</h1>
+                    <form class="validateDontSubmit" id="modalForm" name="modalForm">
+                        <div class="modal-header pb-1">
+                            <div class="row">
+                                <div class="col-sm-12 d-flex justify-content-center">
+                                    <h1 style="font-size:30px;">Nuevo @Accion</h1>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    @Html.AntiForgeryToken()
-                    @Html.HiddenFor(x => x.IdProveedor)
-                    <div class="modal-body py-2">
-                        <div class="form-floating">
-                            @Html.LabelFor(m => m.IdArticulo)
-                            @*@Html.DropDownListFor(m => m.Articulo.IdArticuloCategoria, new SelectList(Model.ArticuloCategorias, "Id", "Descripcion", Model.ArticuloCategorias.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownCategorias" })*@
-                            @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), " -- Seleccionar Articulo -- ", new { @id = "IdArticulo", @class = "form-control " })
-                            @Html.ValidationMessageFor(model => model.IdArticulo, "", new { @class = "text-danger" })
+                        @Html.AntiForgeryToken()
+                        <div class="modal-body py-2">
+                            <label class="font-normal">Articulo</label>
+                            <select class="form-control  chosen-select " id="IdArticulo" required>
+                                <option value=""> -- Seleccionar Articulo --</option>
+                                @foreach (var insumo in ViewBag.Articulos)
+                                {
+                                    <option value="@insumo.Value"> @insumo.Text</option>
+                                }
+                            </select>
                         </div>
-                    </div>
-                    <div class="modal-body py-2">
-                        <div class="form-floating">
-                            @Html.LabelFor(m => m.Precio)
-                            @Html.EditorFor(model => model.Precio, new { htmlAttributes = new { @id = "Precio", @class = "form-control ", @placeholder = "" } })
-                            @Html.ValidationMessageFor(model => model.Precio, "", new { @class = "text-danger" })
+                        <div class="modal-body py-2">
+                            <div class="form-group">
+                                <label class="font-normal">Precio</label>
+                                <input id="Precio" class="form-control" type="number" min="0" max="" value="0" placeholder="" required>
+                            </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                        <button type="button" onclick="addArticulo()" class="btn btn-primary" data-dismiss="modal">Agregar Articulo</button>
-                    </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" onclick="addArticulo()" class="btn btn-primary">Agregar Articulo</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    }
 </div>
 
 @section Styles {
     <environment names="Development,Staging,Production">
         <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+        <link rel="stylesheet" href="~/lib/chosen/bootstrap-chosen.css" />
 
     </environment>
 }
@@ -147,11 +150,29 @@
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/lib/validate/jquery.validate.min.js"></script>
         <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="~/lib/chosen/chosen.jquery.js"></script>
+        <script src="~/custom/chosen-patch.js"></script>
     </environment>
 
     <script type="text/javascript">
         $(document).ready(function () {
 
+        });
+
+        //prevent the form from doing a submit
+        $(document).on('submit', '.validateDontSubmit', function (e) {
+            e.preventDefault();
+            return false;
+        })
+
+        $('.chosen-select').chosen({
+            no_results_text: "No hay resultados que coincidan con ",
+        });
+
+        $('#NewCommentModal').on('shown.bs.modal', function () {
+            $('.chosen-select', this).chosen('destroy').chosen({
+                no_results_text: "No hay resultados que coincidan con ",
+            });
         });
 
         function ClearModal() {
@@ -160,18 +181,21 @@
         }
 
         function addArticulo() {
-            $.ajax({
-                type: "post",
-                url: '@url_base' + 'AgregarDetalleArticulo/',
-                data: {
-                    IdProveedor: $("#proveedorSeleccionado").val(),
-                    IdArticulo: $("#IdArticulo").val(),
-                    Precio: $("#Precio").val()
-                }
-            }).done(function (partialView) {
-                $('#ListaAriticulo tbody:last-child').after().append(partialView);
-                ClearModal();
-            });
+            if (modalForm.checkValidity()) {
+                $.ajax({
+                    type: "post",
+                    url: '@url_base' + 'AgregarDetalleArticulo/',
+                    data: {
+                        IdProveedor: $("#proveedorSeleccionado").val(),
+                        IdArticulo: $("#IdArticulo").val(),
+                        Precio: $("#Precio").val()
+                    }
+                }).done(function (partialView) {
+                    $('#ListaAriticulo tbody:last-child').after().append(partialView);
+                    $("#NewCommentModal").modal('hide');
+                    ClearModal();
+                });
+            }
         }
 
         function eliminarDetalleArticulo(row,Id) {
@@ -187,7 +211,7 @@
             }, function () {
                 $.ajax({
                     type: "post",
-                    url: '@url_base' + "EliminarDetalle",
+                    url: '@url_base' + "EliminarDetalleArticulo",
                     data: { id: Id },
                     success: function (result) {
                         if (result == true) {

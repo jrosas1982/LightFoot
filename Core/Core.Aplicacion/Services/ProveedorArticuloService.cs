@@ -42,7 +42,7 @@ namespace Core.Aplicacion.Services
 
         public async Task<ProveedorArticulo> BuscarProveedorArticulo(int idArticulo, int idProveedor)
         {
-            var detalle = await _db.ProveedoresArticulos.Include(x => x.Articulo).SingleOrDefaultAsync(x => x.IdArticulo == idArticulo && x.IdProveedor == idProveedor);
+            var detalle = await _db.ProveedoresArticulos.Include(x => x.Articulo).ThenInclude(x => x.ArticuloCategoria).SingleOrDefaultAsync(x => x.IdArticulo == idArticulo && x.IdProveedor == idProveedor);
             if (detalle == null)
                 throw new Exception("No existe un proveedor que venda el articulo solicitado");
             return detalle;
@@ -50,7 +50,7 @@ namespace Core.Aplicacion.Services
 
         public async Task<ProveedorArticulo> BuscarProveedorArticuloPorId(int idProveedorArticulo)
         {
-            var detalle = await _db.ProveedoresArticulos.Include(x => x.Articulo).SingleOrDefaultAsync(x => x.Id == idProveedorArticulo);
+            var detalle = await _db.ProveedoresArticulos.Include(x => x.Articulo).ThenInclude(x => x.ArticuloCategoria).SingleOrDefaultAsync(x => x.Id == idProveedorArticulo);
             if (detalle == null)
                 throw new Exception("El ProveedorArticulo solicitado no existe");
             return detalle;
@@ -84,6 +84,16 @@ namespace Core.Aplicacion.Services
             if (proveedorArticulo == null)
                 return 0;
             return proveedorArticulo.Precio;
+        }
+
+        public async Task ModificarPrecioArticulo(int idProveedorArticulo, decimal precio)
+        {
+            var proveedorArticulo = await _db.ProveedoresArticulos.SingleOrDefaultAsync(x => x.Id == idProveedorArticulo);
+            if (proveedorArticulo == null)
+                throw new Exception("El proveedorArticulo solicitado no existe");
+            proveedorArticulo.Precio = precio;
+            _db.ProveedoresArticulos.Update(proveedorArticulo);
+            await _db.SaveChangesAsync();
         }
     }
 }
