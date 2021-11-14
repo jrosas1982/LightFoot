@@ -3,6 +3,7 @@
     Layout = "_Layout";
 
     IEnumerable<string> TypeaheadCodArticulo = ViewBag.TypeaheadCodArticulo;
+    IEnumerable<string> TypeaheadCategoria = ViewBag.TypeaheadCategoria;
     IEnumerable<string> TypeaheadArticulo = ViewBag.TypeaheadArticulo;
     IEnumerable<string> TypeaheadColor = ViewBag.TypeaheadColor;
     IEnumerable<string> TypeaheadTalle = ViewBag.TypeaheadTalle;
@@ -38,8 +39,8 @@
             </li>
         </ol>
     </div>
-    <div class="col-lg-2 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()">
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-0" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="ReporteSimple()">
             <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
         </button>
     </div>
@@ -152,17 +153,12 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h5>Solicitudes</h5>
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
+                </div>
+                <div class="ibox-content">
+                    <div id="tablaContenido">
+                        <partial name="_IndexTable.cshtml" model="Model" />
                     </div>
                 </div>
-
-                <div id="tablaContenido">
-                    <partial name="_IndexTable.cshtml" model="Model" />
-                </div>
-
             </div>
         </div>
     </div>
@@ -170,14 +166,11 @@
 
 
 @section Styles {
-    <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" />
     <link rel="stylesheet" href="~/lib/chosen/bootstrap-chosen.css" />
 }
 
 @section Scripts {
-    <script src="~/lib/dataTables/datatables.min.js"></script>
-    <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
     <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
     <script src="~/lib/chosen/chosen.jquery.js"></script>
     <script src="~/custom/bootstrap-datepicker.es.js"></script>
@@ -186,6 +179,7 @@
         //Filtros
 
         var typeaheadCodArticulo = @Html.Raw(Json.Serialize(TypeaheadCodArticulo));
+        var typeaheadCategoria = @Html.Raw(Json.Serialize(TypeaheadCategoria));
         var typeaheadArticulo = @Html.Raw(Json.Serialize(TypeaheadArticulo));
         var typeaheadColor = @Html.Raw(Json.Serialize(TypeaheadColor));
         var typeaheadTalle = @Html.Raw(Json.Serialize(TypeaheadTalle));
@@ -197,6 +191,7 @@
             minLength: 1,
             source: {
                 Codigo: { data: typeaheadCodArticulo },
+                Categoria: { data: typeaheadCategoria },
                 Articulo: { data: typeaheadArticulo },
                 Color: { data: typeaheadColor },
                 Talle: { data: typeaheadTalle }

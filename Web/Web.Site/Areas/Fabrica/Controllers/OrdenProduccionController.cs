@@ -36,6 +36,7 @@ namespace Web.Site.Areas
 
             if (filter.Articulo != null)
                 ordenesList = ordenesList.Where(x => x.Articulo.Nombre.ToLower().Contains(filter.Articulo.ToLower())
+                                                  || x.Articulo.ArticuloCategoria.Descripcion.ToLower().Contains(filter.Articulo.ToLower()) 
                                                   || x.Articulo.CodigoArticulo.ToLower().Contains(filter.Articulo.ToLower())
                                                   || x.Articulo.Color.ToLower().Contains(filter.Articulo.ToLower())
                                                   || x.Articulo.TalleArticulo.ToLower().Contains(filter.Articulo.ToLower()));
@@ -77,6 +78,7 @@ namespace Web.Site.Areas
             ViewBag.FechaDesde = DateTime.Today - TimeSpan.FromDays(30);
             ViewBag.FechaHasta = DateTime.Today;
             ViewBag.TypeaheadCodArticulo = ordenesList.Select(x => x.Articulo.CodigoArticulo).Distinct();
+            ViewBag.TypeaheadCategoria = ordenesList.Select(x => x.Articulo.ArticuloCategoria.Descripcion).Distinct();
             ViewBag.TypeaheadArticulo = ordenesList.Select(x => x.Articulo.Nombre).Distinct();
             ViewBag.TypeaheadColor = ordenesList.Select(x => x.Articulo.Color).Distinct();
             ViewBag.TypeaheadTalle = ordenesList.Select(x => x.Articulo.TalleArticulo).Distinct();

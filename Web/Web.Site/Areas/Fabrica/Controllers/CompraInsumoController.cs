@@ -32,9 +32,28 @@ namespace Web.Site.Areas
             _proveedorInsumoService = proveedorInsumoService;
         }
 
+
+        public async Task<IActionResult> FiltrarCompras(string nombreCompra)
+        {
+            var compraInsumoList = await _compraInsumoService.GetCompras();
+
+            if (!string.IsNullOrWhiteSpace(nombreCompra))
+                compraInsumoList = compraInsumoList.Where(x => x.Id.ToString().Contains(nombreCompra.ToLower())
+                                                            || x.NroRemito.ToString().Contains(nombreCompra.ToLower())
+                                                            || x.MontoTotal.ToString().Contains(nombreCompra.ToLower())
+                                                            || x.Proveedor.Nombre.ToLower().Contains(nombreCompra.ToLower()));
+
+            return PartialView("_CompraInsumoIndexTable", compraInsumoList);
+        }
+
         public async Task<IActionResult> Index()
         {
             var compraInsumoList = await _compraInsumoService.GetCompras();
+
+            ViewBag.TypeaheadNumCompra = compraInsumoList.Select(x => x.Id.ToString()).Distinct();
+            ViewBag.TypeaheadRemito = compraInsumoList.Where(x => !string.IsNullOrWhiteSpace(x.NroRemito.ToString())).Select(x => x.NroRemito.ToString()).Distinct();
+            ViewBag.TypeaheadTotal = compraInsumoList.Select(x => x.MontoTotal.ToString()).Distinct();
+            ViewBag.TypeaheadProveedor = compraInsumoList.Select(x => x.Proveedor.Nombre).Distinct();
 
             ViewBag.TiposPago = await _compraInsumoService.GetTiposPago();
 

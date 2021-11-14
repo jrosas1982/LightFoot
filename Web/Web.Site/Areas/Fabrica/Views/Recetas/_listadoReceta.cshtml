@@ -6,12 +6,13 @@
             <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
                 <thead>
                     <tr>
-                        <th data-toggle="true"># Receta</th>
-                        <th data-hide="all" data-animation="true" class="d-print-none"></th>
+                        <th ># Receta</th>
+                        <th data-hide="all" data-animation="true"></th>
                         <th>Codigo</th>
                         <th>Articulo</th>
                         <th>Color</th>
                         <th>Talle</th>
+                        <th>Categoria</th>
                         <th>Estado</th>
                         <th>Usuario Modificacion</th>
                         <th>Fecha Modificacion</th>
@@ -58,6 +59,7 @@
                                 <td>@receta.Articulo.Nombre</td>
                                 <td>@receta.Articulo.Color</td>
                                 <td>@receta.Articulo.TalleArticulo</td>
+                                <td>@receta.Articulo.IdArticuloCategoria</td>
 
                                 @if (receta.Activo)
                                 {
@@ -106,7 +108,7 @@
                         }
                     }
                 </tbody>
-                <tfoot>
+                <tfoot class="d-print-none">
                     <tr>
                         <td colspan="12">
                             <ul class="pagination float-right"></ul>

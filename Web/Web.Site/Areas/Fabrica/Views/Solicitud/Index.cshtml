@@ -25,15 +25,22 @@
             </li>
         </ol>
     </div>
-    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-0" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()">
-            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
-        </button>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
+        <div class="dropdown">
+            <button class="btn btn-w-m btn-default w-100 dropdown-toggle count-info" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Generar Reporte
+            </button>
+            <div class="dropdown-menu">
+                <button class="dropdown-item w-100" type="button" onclick="ReporteSimple()">Reporte Simple</button>
+                <button class="dropdown-item w-100" type="button" onclick="ReporteDetallado()">Reporte Detallado</button>
+            </div>
+        </div>
     </div>
     <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary w-100" 
+        <button type="button" class="btn btn-w-m btn-primary w-100"
                 onclick="location.href='@Url.Action("CrearEditarSolicitud", "Solicitud", 0)'">
-            <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Generar Solicitud</button>
+            <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Generar Solicitud
+        </button>
     </div>
 </div>
 
@@ -118,14 +125,11 @@
 
 
 @section Styles {
-    <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" />
     <link rel="stylesheet" href="~/lib/chosen/bootstrap-chosen.css" />
 }
 
 @section Scripts {
-    <script src="~/lib/dataTables/datatables.min.js"></script>
-    <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
     <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
     <script src="~/lib/chosen/chosen.jquery.js"></script>
 
