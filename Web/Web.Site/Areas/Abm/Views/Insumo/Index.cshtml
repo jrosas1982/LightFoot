@@ -51,44 +51,44 @@
                 </div>
                 <div class="ibox-content">
 
-                    <table class="table table-striped table-bordered table-hover dataTables-example">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Descripcion</th>
-                                <th>Proveedor Preferido</th>
-                                <th>Stock Actual</th>
-                                <th class="d-print-none">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model != null)
-                            {
-                                foreach (var item in Model)
+                    <div class="table-responsive">
+                        <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Descripcion</th>
+                                    <th>Proveedor Preferido</th>
+                                    <th>Stock Actual</th>
+                                    <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null)
                                 {
-                            <tr class="gradeC">
-                                <td>@item.Nombre</td>
-                                <td>@item.Descripcion</td>
-                                <td>@(item.IdProveedorPreferido == null ? "No Posee" : item.Proveedor.Nombre)</td>
-                                <td>@(item.StockTotal + item.Unidad)</td>
-                                <td class="d-print-none">
-                                    <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarInsumo('@item.Id')">Borrar</button>
-                                    <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarInsumo('@item.Id')">Editar</button>
-                                </td>
-                            </tr>
+                                    foreach (var item in Model)
+                                    {
+                                        <tr class="gradeC">
+                                            <td>@item.Nombre</td>
+                                            <td>@item.Descripcion</td>
+                                            <td>@(item.IdProveedorPreferido == null ? "No Posee" : item.Proveedor.Nombre)</td>
+                                            <td>@(item.StockTotal + item.Unidad)</td>
+                                            <td class="d-print-none">
+                                                <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarInsumo('@item.Id')">Borrar</button>
+                                                <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarInsumo('@item.Id')">Editar</button>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr class="d-print-none">
-                                <th>Nombre</th>
-                                <th>Descripcion</th>
-                                <th>Proveedor Preferido</th>
-                                <th>Stock Actual</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                            </tbody>
+                            <tfoot class="d-print-none">
+                                <tr>
+                                    <td colspan="6">
+                                        <ul class="pagination float-right"></ul>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -96,18 +96,15 @@
 
 </div>
 @section Styles {
-    <environment names="Development,Staging,Production">
-        <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
-    </environment>
+
 }
 
 @section Scripts {
-    <environment names="Development,Staging,Production">
-        <script src="~/lib/dataTables/datatables.min.js"></script>
-        <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
-    </environment>
 
     <script type="text/javascript">
+        $(document).ready(function () {
+            $('.footable').footable();
+        });
 
         function BorrarInsumo(Id) {
             alert(Id);

@@ -50,69 +50,71 @@
                 </div>
                 <div class="ibox-content">
 
-                    <table class="table table-striped table-bordered table-hover dataTables-example">
-                        <thead>
-                            <tr>
-                                @*<th>Número de sucursal</th>*@
-                                <th>Nombre</th>
-                                <th>Descripción</th>
-                                <th>Dirección</th>
-                                <th>Activo</th>
-                                <th class="d-print-none">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model != null)
-                            {
-                                foreach (var item in Model)
+                    <div class="table-responsive">
+                        <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
+                            <thead>
+                                <tr>
+                                    @*<th>Número de sucursal</th>*@
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Dirección</th>
+                                    <th>Activo</th>
+                                    <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null)
                                 {
-                                    <tr class="gradeC">
-                                        @*<td>@item.Id</td>*@
-                                        <td>@item.Nombre</td>
-                                        <td>@item.Descripcion</td>
-                                        <td>@item.Direccion</td>
-                                        @if (item.Activo)
-                                        {
-                                            <td> Si </td>
-                                        }
-                                        else
-                                        {
-                                            <td>No </td>
-                                        }
-                                        <td class="d-print-none">
-                                            <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarSucursal('@item.Id')">Borrar</button>
-                                            <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarSucursal('@item.Id')">Editar</button>
-                                        </td>
-                                    </tr>
+                                    foreach (var item in Model)
+                                    {
+                                        <tr class="gradeC">
+                                            @*<td>@item.Id</td>*@
+                                            <td>@item.Nombre</td>
+                                            <td>@item.Descripcion</td>
+                                            <td>@item.Direccion</td>
+                                            @if (item.Activo)
+                                            {
+                                                <td> Si </td>
+                                            }
+                                            else
+                                            {
+                                                <td>No </td>
+                                            }
+                                            <td class="d-print-none">
+                                                <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarSucursal('@item.Id')">Borrar</button>
+                                                <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarSucursal('@item.Id')">Editar</button>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr class="d-print-none">
-                                @*<th>Número de sucursal</th>*@
-                                <th>Nombre</th>
-                                <th>Descripción</th>
-                                <th>Dirección</th>
-                                <th>Activo</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                            </tbody>
+                            <tfoot class="d-print-none">
+                                <tr>
+                                    <td colspan="6">
+                                        <ul class="pagination float-right"></ul>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
 </div>
+
 @section Styles {
-    <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
+
 }
 
 @section Scripts {
-    <script src="~/lib/dataTables/datatables.min.js"></script>
-    <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
 
     <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('.footable').footable();
+        });
 
         function BorrarSucursal(Id) {
             alert(Id);

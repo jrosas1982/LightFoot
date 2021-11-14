@@ -24,9 +24,9 @@
         </ol>
     </div>
     @*<div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
-            <button type="button" class="btn btn-w-m btn-primary" 
-                onclick="location.href='@Url.Action("CrearEditarStockArticulo", "ControlStockArticulo", 0 )'">Crear nuevo Stock de Articulos</button>
-    </div>*@
+                <button type="button" class="btn btn-w-m btn-primary"
+                    onclick="location.href='@Url.Action("CrearEditarStockArticulo", "ControlStockArticulo", 0 )'">Crear nuevo Stock de Articulos</button>
+        </div>*@
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -37,86 +37,82 @@
                     <h5>Stock Articulos</h5>
                 </div>
                 <div class="ibox-content">
-
-                    <table class="table table-striped table-bordered table-hover dataTables-example">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Código Art.</th>
-                                <th>Cantidad</th>
-                                <th>Punto Reposición</th>
-                                <th>Reposición Lote</th>
-                                <th>Reposición Automática</th>
-                                <th>Tamaño lote</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model != null)
-                            {
-                                foreach (var item in Model)
+                    <div class="table-responsive">
+                        <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Código Art.</th>
+                                    <th>Cantidad</th>
+                                    <th>Punto Reposición</th>
+                                    <th>Reposición Lote</th>
+                                    <th>Reposición Automática</th>
+                                    <th>Tamaño lote</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null)
                                 {
-                            <tr class="gradeC">
-                                <td>@item.Articulo.ArticuloCategoria.Descripcion - @item.Articulo.Nombre - @item.Articulo.Color - Talle @item.Articulo.TalleArticulo</td>
-                                <td>@item.Articulo.CodigoArticulo</td>
-                                <td>@item.StockTotal</td>
-                                <td>@item.StockMinimo</td>
-                                @if (item.EsReposicionPorLote == true)
-                                {
-                                    <td>SI</td>
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Articulo.ArticuloCategoria.Descripcion - @item.Articulo.Nombre - @item.Articulo.Color - Talle @item.Articulo.TalleArticulo</td>
+                                            <td>@item.Articulo.CodigoArticulo</td>
+                                            <td>@item.StockTotal</td>
+                                            <td>@item.StockMinimo</td>
+                                            @if (item.EsReposicionPorLote == true)
+                                            {
+                                                <td>SI</td>
+                                            }
+                                            else
+                                            {
+                                                <td>No</td>
+                                            }
+                                            @if (item.EsReposicionAutomatica == true)
+                                            {
+                                                <td>SI</td>
+                                            }
+                                            else
+                                            {
+                                                <td>No</td>
+                                            }
+                                            <td>@item.TamañoLote</td>
+                                            <td>
+                                                @*<button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarArticulo('@item.Id')">Borrar</button>*@
+                                                <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarStockArticulo('@item.Id')">Editar</button>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
-                                else
-                                {
-                                    <td>No</td>
-                                }
-                                @if (item.EsReposicionAutomatica == true)
-                                {
-                                    <td>SI</td>
-                                }
-                                else
-                                {
-                                    <td>No</td>
-                                }
-                                <td>@item.TamañoLote</td>
-                                <td>
-                                    @*<button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarArticulo('@item.Id')">Borrar</button>*@
-                                    <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarStockArticulo('@item.Id')">Editar</button>
-                                </td>
-                            </tr>
-                                }
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Código Art.</th>
-                                <th>Cantidad</th>
-                                <th>Punto Reposición</th>
-                                <th>Reposición Lote</th>
-                                <th>Reposición Automática</th>
-                                <th>Tamaño lote</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                            </tbody>
+                            <tfoot class="d-print-none">
+                                <tr>
+                                    <td colspan="12">
+                                        <ul class="pagination float-right"></ul>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
 
 </div>
 @section Styles {
-    <environment names="Development,Staging,Production">
-        <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
-    </environment>
+
 }
 
 @section Scripts {
-    <environment names="Development,Staging,Production">
-        <script src="~/lib/dataTables/datatables.min.js"></script>
-        <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
 
-    </environment>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.footable').footable();
+        });
+    </script>
 
     <script type="text/javascript">
 
