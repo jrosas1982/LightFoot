@@ -4,6 +4,11 @@
 
     IEnumerable<CompraArticuloDetalle> DetallesCompra = ViewBag.DetallesCompra;
     IEnumerable<TipoPago> tiposdePago = ViewBag.TiposPago;
+
+    IEnumerable<string> TypeaheadNumCompra = ViewBag.TypeaheadNumCompra;
+    IEnumerable<string> TypeaheadRemito = ViewBag.TypeaheadRemito;
+    IEnumerable<string> TypeaheadTotal = ViewBag.TypeaheadTotal;
+    IEnumerable<string> TypeaheadProveedor = ViewBag.TypeaheadProveedor;
 }
 
 @model IEnumerable<CompraArticulo>
@@ -32,6 +37,31 @@
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="ibox-content m-b-sm border-bottom  d-print-none">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-form-labe" for="solicitud_name">Compra</label>
+                    <div class="typeahead__container">
+                        <div class="typeahead__field">
+                            <div class="typeahead__query">
+                                <input class="js-typeahead typeaheadCustom " id="typeCompras" placeholder="Buscar Compra" autocomplete="on" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 d-flex align-items-end justify-content-end">
+                <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="FiltrarCompras()">
+                    <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
@@ -39,32 +69,8 @@
                     <h5>Compras de Articulos</h5>
                 </div>
                 <div class="ibox-content">
-                    <div class="ibox-content">
-                        <div class="table-responsive">
-                            <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
-                                <thead>
-                                    <tr>
-                                        <th>#Compra</th>
-                                        <th>Proveedor</th>
-                                        <th>Fecha Recibido</th>
-                                        <th>Fecha Ultimo Pago</th>
-                                        <th>Monto Total</th>
-                                        <th>Remito Asociado</th>
-                                        <th data-sort-ignore="true" class="d-print-none">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="ComprasPartialView">
-                                    <partial name="_CompraArticuloIndexTable.cshtml" model="Model" />
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="7">
-                                            <ul class="pagination float-right"></ul>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                    <div id="ComprasPartialView">
+                        <partial name="_CompraArticuloIndexTable.cshtml" model="Model" />
                     </div>
                 </div>
             </div>
@@ -191,22 +197,10 @@
 </div>
 
 @section Styles {
-    <environment names="Development,Staging,Production">
-        <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
-        <link rel="stylesheet" href="~/lib/footable/css/footable.core.min.css" />
-        <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
-        <link rel="stylesheet" href="~/lib/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css" />
-    </environment>
+
 }
 
 @section Scripts {
-    <environment names="Development,Staging,Production">
-        <script src="~/lib/dataTables/datatables.min.js"></script>
-        <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
-        <script src="~/lib/footable/dist/footable.all.min.js"></script>
-        <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
-        <script src="~/lib/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js"></script>
-    </environment>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -215,13 +209,43 @@
     </script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('.dataTables-example').DataTable({
-                pageLength: 25,
-                dom: 'gitp'
-            });
+        var typeaheadNumCompra = @Html.Raw(Json.Serialize(TypeaheadNumCompra));
+        var typeaheadRemito = @Html.Raw(Json.Serialize(TypeaheadRemito));
+        var typeaheadTotal = @Html.Raw(Json.Serialize(TypeaheadTotal));
+        var typeaheadProveedor = @Html.Raw(Json.Serialize(TypeaheadProveedor));
+
+        $.typeahead({
+            input: '.js-typeahead',
+            order: "desc",
+            template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+            minLength: 1,
+            source: {
+                Compra: { data: typeaheadNumCompra },
+                Remito: { data: typeaheadRemito },
+                Total: { data: typeaheadTotal },
+                Proveedor: { data: typeaheadProveedor }
+            }
         });
 
+      function FiltrarCompras() {
+            var compra = $("#typeCompras").val();
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("FiltrarCompras", "CompraArticulo", new { area = "sucursal" })',
+                traditional: true,
+                data: //formData,
+                {
+                    NombreCompra: compra,
+                },
+                contentType: "application/json",
+                success: function (partial) {
+                    $("#ComprasPartialView").html(""); //clear the records content
+                    $("#ComprasPartialView").html(partial);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
     </script>
 
     <script type="text/javascript">
