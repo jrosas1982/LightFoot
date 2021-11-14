@@ -55,6 +55,7 @@ namespace Core.Aplicacion.Services
                 var recetas = await _db.Recetas
                     .AsNoTracking()
                     .Include(x => x.Articulo)
+                        .ThenInclude(x => x.ArticuloCategoria)
                     .Include(x => x.RecetaDetalles.OrderBy(x => x.EtapaOrdenProduccion.Orden).ThenBy(x => x.Insumo.Nombre))                    
                     .OrderByDescending(x => x.Activo)
                     .ToListAsync();

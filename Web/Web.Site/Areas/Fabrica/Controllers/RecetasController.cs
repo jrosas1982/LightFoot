@@ -40,16 +40,22 @@ namespace Web.Site.Areas.Fabrica.Controllers
             _recetaDetalleService = recetaDetalleService;
             _mapper = mapper;
         }
- 
+
+        public void LlenarViewBagsFiltro(IEnumerable<Receta> recetasList)
+        {
+            ViewBag.TypeaheadCodArticulo = recetasList.Select(x => x.Articulo.CodigoArticulo).Distinct();
+            ViewBag.TypeaheadCategoria = recetasList.Select(x => x.Articulo.ArticuloCategoria.Descripcion).Distinct();
+            ViewBag.TypeaheadArticulo = recetasList.Select(x => x.Articulo.Nombre).Distinct();
+            ViewBag.TypeaheadColor = recetasList.Select(x => x.Articulo.Color).Distinct();
+            ViewBag.TypeaheadTalle = recetasList.Select(x => x.Articulo.TalleArticulo).Distinct();
+        }
+
         public async Task<IActionResult> IndexAsync()
         { 
             var recetas = await _recetaService.GetRecetas();
             var insumos = await _insumoService.GetInsumos();
             var ordenes = await _ordenesProduccionService.GetEtapasOrden();
-            ViewBag.TypeaheadCodArticulo = recetas.Select(x => x.Articulo.CodigoArticulo).Distinct();
-            ViewBag.TypeaheadArticulo = recetas.Select(x => x.Articulo.Nombre).Distinct();
-            ViewBag.TypeaheadColor = recetas.Select(x => x.Articulo.Color).Distinct();
-            ViewBag.TypeaheadTalle = recetas.Select(x => x.Articulo.TalleArticulo).Distinct();
+            LlenarViewBagsFiltro(recetas);
             var recetasTask = _recetaService.GetRecetas();
             var insumosTask = _insumoService.GetInsumos();
             var ordenesTask = _ordenesProduccionService.GetEtapasOrden();
@@ -186,13 +192,15 @@ namespace Web.Site.Areas.Fabrica.Controllers
             var ordenes = await _ordenesProduccionService.GetEtapasOrden();
             ViewBag.ListadoRecetaType = recetas.Select(x => x.Articulo.Id);
             IEnumerable<RecetaModel> modeloReceta;
-            if (NombreReceta == null) {
-                 modeloReceta = _mapper.Map<IEnumerable<RecetaModel>>(recetas);
-            }
-            else {
-                recetas = recetas.Where(X => X.Articulo.Nombre == NombreReceta);
-                modeloReceta = _mapper.Map<IEnumerable<RecetaModel>>(recetas.Where(X => X.Articulo.Nombre == NombreReceta));
-            }
+
+            if (!string.IsNullOrWhiteSpace(NombreReceta))
+                recetas = recetas.Where(x => x.Articulo.Nombre.ToLower().Contains(NombreReceta.ToLower())
+                                          || x.Articulo.ArticuloCategoria.Descripcion.ToLower().Contains(NombreReceta.ToLower())
+                                          || x.Articulo.CodigoArticulo.ToLower().Contains(NombreReceta.ToLower())
+                                          || x.Articulo.Color.ToLower().Contains(NombreReceta.ToLower())
+                                          || x.Articulo.TalleArticulo.ToLower().Contains(NombreReceta.ToLower()));
+
+            modeloReceta = _mapper.Map<IEnumerable<RecetaModel>>(recetas);
             foreach (var receta in modeloReceta)
             {
                 foreach (var detalle in receta.RecetaDetalles)

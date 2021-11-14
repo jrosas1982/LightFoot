@@ -36,47 +36,63 @@
     </div>
 </div>
 
-<div class="d-none d-print-block w-100">
+<!--<div class="d-none d-print-block w-100">
     <div class="alert alert-default" role="alert">
-        Fecha: @DateTime.Now
-        <h4>Sucursal: @Model.Sucursal.Nombre </h4>
-        <h5>Detalle solicitud numero @Model.Id | @Model.EstadoSolicitud.GetDisplayName()</h5>
-        <h6>Comentario: @Model.Comentario</h6>
+        Fecha Reporte: @DateTime.Now-->
+        @*<h4>Sucursal: @Model.Sucursal.Nombre </h4>*@
+        <!--<h5>Detalle solicitud numero @Model.Id | @Model.EstadoSolicitud.GetDisplayName()</h5>
+        <h5>Comentario: @Model.Comentario</h5>
     </div>
-</div>
+</div>-->
 
 <div class="wrapper wrapper-content pt-1 animated fadeInRight">
-    <div class="row mt-2">
-
-        <div class="col-lg-7 d-print-none">
+    <div class="row mt-2" style="text-align: center;">
+        <div class="col-lg-12">
             <div class="ibox">
-                <div class="ibox-title">
-                    <span class="float-right label label-@Model.EstadoSolicitud.GetGroupName()">
-                        @Model.EstadoSolicitud.GetDisplayName()
-                    </span>
-                    <h5>Solicitud @Model.Id</h5>
-                </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">@Model.Sucursal.Nombre</h1>
-                    <div class="stat-percent font-bold text-@Model.EstadoSolicitud.GetGroupName()">
-                        @Model.FechaCreacion.ToLocalTime() <i class="fa fa-clock-o"></i>
+                    <div class="row">
+                        <div class="col align-self-start my-auto">
+                            <h3>Solicitud #@Model.Id <span class="label label-@Model.EstadoSolicitud.GetGroupName()">@Model.EstadoSolicitud.GetDisplayName()</span></h3>
+                            <h5 style="font-size: 12px !important;">@Model.Comentario</h5>
+                        </div>
+                        <div class="col align-self-center my-auto">
+                            <h1>@Model.Sucursal.Nombre</h1>
+                            <h4>@Model.Sucursal.Direccion</h4>
+                        </div>
+                        @*<div class="col align-self-center">
+                            <h4 class="m-b-md">Articulos solicitados</h4>
+                            <h2 class="text-navy">
+                                <i class="fa fa-archive"></i> @Model.SolicitudDetalles.Count()
+                            </h2>
+                        </div>*@
+                        <div class="col align-self-end my-auto">
+                            <h4>Articulos solicitados: @Model.SolicitudDetalles.Count()</h4>
+                            <h5><i class="fa fa-clock-o"></i> Creada:  @Model.FechaCreacion.ToLocalTime()</h5>
+                            @if (Model.EstadoSolicitud == EstadoSolicitud.Aprobada)
+                            {
+                                <h5><i class="fa fa-clock-o"></i> Aprobada:  @Model.FechaModificacion.Value.ToLocalTime()</h5>
+                            }
+                            else if (Model.EstadoSolicitud == EstadoSolicitud.Rechazada)
+                            {
+                                <h5><i class="fa fa-clock-o"></i> Rechazada:  @Model.FechaModificacion.Value.ToLocalTime()</h5>
+                            }
+                        </div>
                     </div>
-                    <small>@Model.Sucursal.Direccion</small>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-5 d-print-none">
+        @*<div class="stat-percent font-bold text-@Model.EstadoSolicitud.GetGroupName()">
+            @Model.FechaCreacion.ToLocalTime()
+        </div>*@
+
+        @*<div class="col-lg-5 d-print-none">
             <div class="ibox">
                 <div class="ibox-content">
-                    <h5 class="m-b-md">Articulos solicitados</h5>
-                    <h2 class="text-navy">
-                        <i class="fa fa-archive"></i> @Model.SolicitudDetalles.Count()
-                    </h2>
-                    <small>@Model.Comentario</small>
+
                 </div>
             </div>
-        </div>
+        </div>*@
 
         @foreach (var detalle in Model.SolicitudDetalles)
         {
@@ -120,13 +136,13 @@
                                     </div>
                                 </div>
 
-                                <div class="col-3">
-                                    <small class="stats-label">Ordenes Asociadas</small>
+                                <div class="col-3 my-auto">
+                                    <small class="stats-label">Orden Asociada</small>
                                     @if (detalle.OrdenesProduccion.Any())
                                     {
                                         @foreach (var op in detalle.OrdenesProduccion)
                                         {
-                                            <h4 class="text-@op.EstadoOrdenProduccion.GetGroupName()"><i class="fa fa-circle "></i> Orden @op.Id</h4>
+                                            <h4 onclick="window.location = '/fabrica/OrdenProduccion/DetallesOrdenProduccion?IdOrdenProduccion=' + @op.Id;" class="text-@op.EstadoOrdenProduccion.GetGroupName()"><i class="fa fa-circle "></i> Orden @op.Id</h4>
                                         }
                                     }
                                     else
@@ -139,7 +155,7 @@
                         </div>
                     </div>
 
-                    <div class="panel-footer">
+                    <div class="panel-footer pb-0 m-0">
                         Receta
                     </div>
                     <div class="panel-body">
@@ -150,22 +166,20 @@
                                 <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
                                     <thead>
                                         <tr>
-                                            <th data-toggle="true">Id</th>
                                             <th>Insumo</th>
                                             <th>Cantidad</th>
+                                            <th>Etapa Asociada</th>
                                             <th>Comentario</th>
-                                            <th>Creacion</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach (var detalleReceta in detalle.Articulo.Recetas.Single(x => x.Activo).RecetaDetalles)
                                         {
                                             <tr>
-                                                <td>@detalleReceta.Insumo.Id</td>
                                                 <td>@detalleReceta.Insumo.Nombre</td>
-                                                <td>@detalleReceta.Cantidad</td>
+                                                <td>@detalleReceta.Cantidad@detalleReceta.Insumo.Unidad</td>
+                                                <td>@detalleReceta.EtapaOrdenProduccion.Descripcion</td>
                                                 <td>@detalleReceta.Comentario</td>
-                                                <td>@detalleReceta.FechaCreacion</td>
                                             </tr>
                                         }
                                     </tbody>

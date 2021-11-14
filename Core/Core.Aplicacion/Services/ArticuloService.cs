@@ -25,8 +25,8 @@ namespace Core.Aplicacion.Services
         public async Task<IEnumerable<Articulo>> GetArticulos()
         {
             var articulosList = await _db.Articulos
-                .OrderBy(x => x.ArticuloCategoria.Descripcion)
                 .Include(x => x.ArticuloCategoria)
+                .OrderBy(x => x.ArticuloCategoria.Descripcion)
                 .ToListAsync();
             _logger.LogInformation("Se buscaron los articulos");
             return articulosList;
@@ -74,14 +74,14 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var articuloDb = await _db.Usuarios.FindAsync(articulo.Id);
+                var articuloDb = await _db.Articulos.FindAsync(articulo.Id);
 
                 _db.Remove(articuloDb);
                 await _db.SaveChangesAsync();
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
                 return false;
             }

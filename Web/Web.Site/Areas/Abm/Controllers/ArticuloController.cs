@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Web.Site.Dtos;
 using Web.Site.Helpers;
 using Web.Site.Areas.Abm;
+using System.Collections.Generic;
 
 namespace Web.Site.Areas
 {
@@ -24,10 +25,34 @@ namespace Web.Site.Areas
             _articuloCategoriaService = articuloCategoriaService;
         }
 
+        public async Task<IActionResult> FiltrarArticulos(string nombreArticulo)
+        {
+            var articulosList = await _articuloService.GetArticulos();
+
+            if (!string.IsNullOrWhiteSpace(nombreArticulo))
+                articulosList = articulosList.Where(x => x.Nombre.ToLower().Contains(nombreArticulo.ToLower())
+                                                      || x.ArticuloCategoria.Descripcion.ToLower().Contains(nombreArticulo.ToLower())
+                                                      || x.CodigoArticulo.ToLower().Contains(nombreArticulo.ToLower())
+                                                      || x.Color.ToLower().Contains(nombreArticulo.ToLower())
+                                                      || x.TalleArticulo.ToLower().Contains(nombreArticulo.ToLower()));
+
+            return PartialView("_ArticuloIndexTable", articulosList);
+        }
+
+        public void LlenarViewBagsFiltro(IEnumerable<Articulo> articulosList)
+        {
+            ViewBag.TypeaheadCodArticulo = articulosList.Select(x => x.CodigoArticulo).Distinct();
+            ViewBag.TypeaheadCategoria = articulosList.Select(x => x.ArticuloCategoria.Descripcion).Distinct();
+            ViewBag.TypeaheadArticulo = articulosList.Select(x => x.Nombre).Distinct();
+            ViewBag.TypeaheadColor = articulosList.Select(x => x.Color).Distinct();
+            ViewBag.TypeaheadTalle = articulosList.Select(x => x.TalleArticulo).Distinct();
+        }
+
         public async Task<IActionResult> Index()
         {
             var articulosList = await _articuloService.GetArticulos();
-            return View(articulosList.ToList());
+            LlenarViewBagsFiltro(articulosList);
+            return View(articulosList);
         }
 
         public async Task<IActionResult> CrearEditarArticulo(int IdArticulo)

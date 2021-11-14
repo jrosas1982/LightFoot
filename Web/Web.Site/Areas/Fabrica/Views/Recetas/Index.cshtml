@@ -4,6 +4,7 @@
     string controlador = "Recetas";
     string url_base = "/fabrica/Recetas/";
     IEnumerable<string> TypeaheadCodArticulo = ViewBag.TypeaheadCodArticulo;
+    IEnumerable<string> TypeaheadCategoria = ViewBag.TypeaheadCategoria;
     IEnumerable<string> TypeaheadArticulo = ViewBag.TypeaheadArticulo;
     IEnumerable<string> TypeaheadColor = ViewBag.TypeaheadColor;
     IEnumerable<string> TypeaheadTalle = ViewBag.TypeaheadTalle;
@@ -81,20 +82,13 @@
 
 
 @section Styles {
-    <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
-    <link rel="stylesheet" href="~/lib/footable/css/footable.core.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" />
     <link rel="stylesheet" href="~/lib/chosen/bootstrap-chosen.css" />
-    <link rel="stylesheet" href="~/custom/jquery.typeahead.min.css" />
 }
 
 @section Scripts {
-    <script src="~/lib/dataTables/datatables.min.js"></script>
-    <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
-    <script src="~/lib/footable/dist/footable.all.min.js"></script>
     <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
     <script src="~/lib/chosen/chosen.jquery.js"></script>
-    <script src="~/custom/jquery.typeahead.min.js"></script>
 
     <script type="text/javascript">
         $('#fechaRango .input-daterange').datepicker({
@@ -126,6 +120,7 @@
 
     <script type="text/javascript">
         var typeaheadCodArticulo = @Html.Raw(Json.Serialize(TypeaheadCodArticulo));
+        var typeaheadCategoria = @Html.Raw(Json.Serialize(TypeaheadCategoria));
         var typeaheadArticulo = @Html.Raw(Json.Serialize(TypeaheadArticulo));
         var typeaheadColor = @Html.Raw(Json.Serialize(TypeaheadColor));
         var typeaheadTalle = @Html.Raw(Json.Serialize(TypeaheadTalle));
@@ -136,6 +131,7 @@
             minLength: 1,
             source: {
                 Codigo: { data: typeaheadCodArticulo },
+                Categoria: { data: typeaheadCategoria },
                 Articulo: { data: typeaheadArticulo },
                 Color: { data: typeaheadColor },
                 Talle: { data: typeaheadTalle }

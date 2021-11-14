@@ -29,14 +29,22 @@
 
             <div class="panel-body">
                 <ul class="list-group">
-                    <li class="list-group-item list-group-item-action">
-                        <h4 class="mb-0">Articulo:</h4>
-                        <h2 class="text-right mt-0">@Model.Articulo.Nombre</h2>
+                    <li class="list-group-item list-group-item-action py-3">
+                        <div class="d-flex justify-content-between">
+                            <h4 class="mb-0">Articulo:</h4>
+                            <h2 class="text-right mt-0">@Model.Articulo.Nombre</h2>
+                        </div>
                     </li>
                     <li class="list-group-item list-group-item-action">
                         <div class="d-flex justify-content-between">
                             <h4>Codigo Articulo:</h4>
                             <p>@Model.Articulo.CodigoArticulo</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between">
+                            <h4>Categoria:</h4>
+                            <p>@Model.Articulo.ArticuloCategoria.Descripcion</p>
                         </div>
                     </li>
                     <li class="list-group-item list-group-item-action">
@@ -139,12 +147,12 @@
             <div class="ibox-title">
                 <h5>Historial de eventos</h5>
             </div>
-            <div class="ibox-content">
+            <div class="ibox-content d-print-none">
                 <p>
                     Etapas de produccion
                 </p>
 
-                <div id="wizard" class="d-print-none ">
+                <div id="wizard" class="d-print-none">
                     @foreach (var etapa in EtapasOrdenProduccion)
                     {
                         <h1>@etapa.Descripcion</h1>
@@ -179,44 +187,48 @@
                         </div>
                     }
                 </div>
+            </div>
 
 
                 @*Reporte*@
                 <div class="d-none d-print-block">
                     @foreach (var etapa in EtapasOrdenProduccion)
                     {
-                        <h3>@etapa.Descripcion</h3>
-                        <table class="table table-hover ">
-                            <thead class="">
-                                <tr>
-                                    <th colspan="1" class="text-left"><h4>Estado Orden</h4></th>
-                                    <th colspan="1" class="text-left"><h4>Etapa Orden</h4></th>
-                                    <th colspan="1" class="text-left"><h4>Descripcion Etapa</h4></th>
-                                    <th colspan="1" class="text-left"><h4>Fecha Evento</h4></th>
-                                    <th colspan="1" class="text-left"><h4>Usuario</h4></th>
-                                    <th colspan="1" class="text-left"><h4>Comentario</h4></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var evento in Model.OrdenProduccionEventos.Where(x => x.IdEtapaOrdenProduccion == etapa.Id).OrderByDescending(x => x.FechaCreacion))
-                                {
+                        if (Model.OrdenProduccionEventos.Where(x => x.IdEtapaOrdenProduccion == etapa.Id).Any())
+                        {
+
+                            <h3>@etapa.Descripcion</h3>
+                            <table class="table table-hover ">
+                                <thead class="">
                                     <tr>
-                                        <td class="text-left">@evento.EstadoOrdenProduccion.GetDisplayName()</td>
-                                        <td class="text-left">@evento.EtapaOrdenProduccion.Descripcion</td>
-                                        <td class="text-left">@evento.EstadoEtapaOrdenProduccion.GetDisplayName()</td>
-                                        <td class="text-left">@evento.FechaCreacion</td>
-                                        <td class="text-left">@evento.CreadoPor</td>
-                                        <td class="text-left">@(string.IsNullOrWhiteSpace(evento.Comentario) ? "Sin Comentario" : evento.Comentario)</td>
+                                        <th colspan="1" class="text-left"><h4>Estado Orden</h4></th>
+                                        <th colspan="1" class="text-left"><h4>Etapa Orden</h4></th>
+                                        <th colspan="1" class="text-left"><h4>Descripcion Etapa</h4></th>
+                                        <th colspan="1" class="text-left"><h4>Fecha Evento</h4></th>
+                                        <th colspan="1" class="text-left"><h4>Usuario</h4></th>
+                                        <th colspan="1" class="text-left"><h4>Comentario</h4></th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach (var evento in Model.OrdenProduccionEventos.Where(x => x.IdEtapaOrdenProduccion == etapa.Id).OrderByDescending(x => x.FechaCreacion))
+                                    {
+                                        <tr>
+                                            <td class="text-left">@evento.EstadoOrdenProduccion.GetDisplayName()</td>
+                                            <td class="text-left">@evento.EtapaOrdenProduccion.Descripcion</td>
+                                            <td class="text-left">@evento.EstadoEtapaOrdenProduccion.GetDisplayName()</td>
+                                            <td class="text-left">@evento.FechaCreacion</td>
+                                            <td class="text-left">@evento.CreadoPor</td>
+                                            <td class="text-left">@(string.IsNullOrWhiteSpace(evento.Comentario) ? "Sin Comentario" : evento.Comentario)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
                     }
                 </div>
 
 
 
-            </div>
         </div>
     </div>
 
