@@ -2,6 +2,12 @@
 @using Web.Site.Areas
 @model IEnumerable<CompraArticulo>
 
+@{
+    IEnumerable<string> TypeaheadNumCompra = ViewBag.TypeaheadNumCompra;
+    IEnumerable<string> TypeaheadRemito = ViewBag.TypeaheadRemito;
+    IEnumerable<string> TypeaheadTotal = ViewBag.TypeaheadTotal;
+    IEnumerable<string> TypeaheadProveedor = ViewBag.TypeaheadProveedor;
+}
 
 @if (@Model != null)
 {
@@ -92,3 +98,24 @@
     </div>
 }
 
+<script type="text/javascript">
+
+    var typeaheadNumCompra = @Html.Raw(Json.Serialize(TypeaheadNumCompra));
+    var typeaheadRemito = @Html.Raw(Json.Serialize(TypeaheadRemito));
+    var typeaheadTotal = @Html.Raw(Json.Serialize(TypeaheadTotal));
+    var typeaheadProveedor = @Html.Raw(Json.Serialize(TypeaheadProveedor));
+
+    $.typeahead({
+        input: '.js-typeahead',
+        order: "desc",
+        template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+        minLength: 1,
+        source: {
+            Compra: { data: typeaheadNumCompra },
+            Remito: { data: typeaheadRemito },
+            Total: { data: typeaheadTotal },
+            Proveedor: { data: typeaheadProveedor }
+        }
+    });
+
+</script>

@@ -145,9 +145,14 @@ namespace Web.Site.Areas
             {
                 var resp = await _compraArticuloService.RecibirCompra(idCompra, nroRemito);
 
-                var compraArticuloList = await _compraArticuloService.GetCompras();
+                var compraArticulosList = await _compraArticuloService.GetCompras();
 
-                return PartialView("_CompraArticuloIndexTable", compraArticuloList);
+                ViewBag.TypeaheadNumCompra = compraArticulosList.Select(x => x.Id.ToString()).Distinct();
+                ViewBag.TypeaheadRemito = compraArticulosList.Where(x => !string.IsNullOrWhiteSpace(x.NroRemito.ToString())).Select(x => x.NroRemito.ToString()).Distinct();
+                ViewBag.TypeaheadTotal = compraArticulosList.Select(x => x.MontoTotal.ToString()).Distinct();
+                ViewBag.TypeaheadProveedor = compraArticulosList.Select(x => x.Proveedor.Nombre).Distinct();
+
+                return PartialView("_CompraArticuloIndexTable", compraArticulosList);
 
             }
             catch (Exception ex)
