@@ -54,7 +54,7 @@ namespace Core.Aplicacion.Services
             await _db.SaveChangesAsync();
             _logger.LogInformation($"Solicitud creada: {solicitud.Id}");
 
-        }       
+        }
 
 
         public async Task AprobarSolicitud(int idSolicitud)
@@ -92,7 +92,7 @@ namespace Core.Aplicacion.Services
                 EstadoSolicitud = solicitudDB.EstadoSolicitud
             });
 
-            _db.Update(solicitudDB);            
+            _db.Update(solicitudDB);
 
             var PrimerEtapaOrdenProduccion = _db.EtapasOrdenProduccion.OrderBy(x => x.Orden).FirstOrDefault();
             if (PrimerEtapaOrdenProduccion == null)
@@ -151,25 +151,25 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-            var solicitudDB = await _db.Solicitudes.FindAsync(idSolicitud);
+                var solicitudDB = await _db.Solicitudes.FindAsync(idSolicitud);
 
-            solicitudDB.EstadoSolicitud = EstadoSolicitud.Rechazada;
+                solicitudDB.EstadoSolicitud = EstadoSolicitud.Rechazada;
 
-            solicitudDB.SolicitudEventos.Add(new SolicitudEvento()
-            {
-                Comentario = solicitudDB.Comentario,
-                EstadoSolicitud = solicitudDB.EstadoSolicitud
-            });
+                solicitudDB.SolicitudEventos.Add(new SolicitudEvento()
+                {
+                    Comentario = solicitudDB.Comentario,
+                    EstadoSolicitud = solicitudDB.EstadoSolicitud
+                });
 
-            _db.Update(solicitudDB);
-            await _db.SaveChangesAsync();
+                _db.Update(solicitudDB);
+                await _db.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error en RechazarSolicitud Mensaje: {ex.Message}");
                 return false;
-            
+
             }
 
         }
@@ -222,31 +222,34 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var solicitudesList = await _db.Solicitudes
-           .AsNoTracking()
-           .Include(x => x.Sucursal)
-           .Include(x => x.SolicitudDetalles.OrderBy(x => x.Articulo.Nombre))
-               .ThenInclude(x => x.Articulo)
-           .Include(x => x.SolicitudDetalles)
-               .ThenInclude(x => x.OrdenesProduccion)
-           .Where(x => filter.IdSucursalList.Contains(x.IdSucursal)
-                       && filter.EstadoSolicitudList.Contains(x.EstadoSolicitud)
-                       && x.FechaCreacion > filter.FechaDesde
-                       && x.FechaCreacion < filter.FechaHasta)
-            .OrderByDescending(x => x.EstadoSolicitud == EstadoSolicitud.PendienteAprobacion)
-            .ThenByDescending(x => x.FechaModificacion.HasValue)
-            .ThenByDescending(x => x.FechaCreacion)
-           .ToListAsync();
+                var solicitudesList = _db.Solicitudes
+                   .AsNoTracking()
+                   .Include(x => x.Sucursal)
+                   .Include(x => x.SolicitudDetalles.OrderBy(x => x.Articulo.Nombre))
+                       .ThenInclude(x => x.Articulo)
+                            .ThenInclude(x => x.ArticuloCategoria)
+                   .Include(x => x.SolicitudDetalles)
+                       .ThenInclude(x => x.OrdenesProduccion)
+                    .OrderByDescending(x => x.EstadoSolicitud == EstadoSolicitud.PendienteAprobacion)
+                    .ThenByDescending(x => x.FechaModificacion.HasValue)
+                    .ThenByDescending(x => x.FechaCreacion);
+
+                var solicitudesFiltered = solicitudesList.Where(x => x.FechaCreacion > filter.FechaDesde
+                                                                  && x.FechaCreacion < filter.FechaHasta.AddDays(1));
+                if (filter.IdSucursalList.Any())
+                    solicitudesFiltered = solicitudesList.Where(x => filter.IdSucursalList.Contains(x.IdSucursal));
+                if (filter.EstadoSolicitudList.Any())
+                    solicitudesFiltered = solicitudesFiltered.Where(x => filter.EstadoSolicitudList.Contains(x.EstadoSolicitud));      
 
                 _logger.LogInformation("Se buscaron las solicitudes");
-                return solicitudesList;
+                return await solicitudesFiltered.ToListAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error en GetSolicitudes Mensaje: {ex.Message}");
                 throw;
             }
-       
+
         }
 
         public async Task<IEnumerable<SolicitudDetalle>> GetSolicitudDetalles(int idSolicitud)
@@ -268,7 +271,7 @@ namespace Core.Aplicacion.Services
             return await Task.FromResult(EnumExtensions.GetValues<EstadoSolicitud>());
         }
 
-        public async Task<bool> HayStockSuficiente(int idSolicitud) 
+        public async Task<bool> HayStockSuficiente(int idSolicitud)
         {
             var insumosNecesarios = await _fabricacion.ContabilizarInsumosRequeridos(idSolicitud);
 

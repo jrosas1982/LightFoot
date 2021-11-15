@@ -43,7 +43,7 @@ namespace Web.Site.Areas
             ViewBag.Sucursales = SucursalesTask.Result;
             ViewBag.EstadosSolicitud = EstadosSolicitudTask.Result;
 
-            ViewBag.FechaDesde = DateTime.Today - TimeSpan.FromDays(30);
+            ViewBag.FechaDesde = DateTime.Today.AddDays(-30);
             ViewBag.FechaHasta = DateTime.Today;
             if (error)
             {
