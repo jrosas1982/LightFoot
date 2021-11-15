@@ -230,6 +230,8 @@ namespace Core.Aplicacion.Services
                 .Include(x => x.Articulo)
                     .ThenInclude(x => x.ArticuloCategoria)
                 .Include(x => x.EtapaOrdenProduccion)
+                .Include(x => x.OrdenProduccionEventos)
+                    .ThenInclude(x => x.EtapaOrdenProduccion)
                 .Include(x => x.SolicitudDetalle)
                     .ThenInclude(x => x.Solicitud)
                     .ThenInclude(x => x.Sucursal)

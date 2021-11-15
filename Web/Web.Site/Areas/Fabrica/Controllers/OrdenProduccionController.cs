@@ -17,12 +17,14 @@ namespace Web.Site.Areas
         private IOrdenProduccionService _ordenProduccionService;
         private ISucursalService _sucursalService;
         private IArticuloService _articuloService;
+        private IParametroService _parametroService;
 
-        public OrdenProduccionController(IOrdenProduccionService ordenProduccionService, ISucursalService sucursalService, IArticuloService articuloService)
+        public OrdenProduccionController(IOrdenProduccionService ordenProduccionService, ISucursalService sucursalService, IArticuloService articuloService, IParametroService parametroService)
         {
             _ordenProduccionService = ordenProduccionService;
             _sucursalService = sucursalService;
             _articuloService = articuloService;
+            _parametroService = parametroService;
         }
 
         public async Task<IActionResult> FiltrarOrdenes(OrdenProduccionFilter filter)
@@ -69,6 +71,8 @@ namespace Web.Site.Areas
             await Task.WhenAll(ordenesListTask, EstadoOrdenProduccionesTask, EstadoEtapaOrdenProduccionesTask);
 
             var ordenesList = ordenesListTask.Result;
+
+            ViewBag.Expedicion = await _parametroService.GetValorByParametro(Parametro.TiempoExpedicion);
 
             ViewBag.EstadoOrdenProducciones = EstadoOrdenProduccionesTask.Result;
             ViewBag.EstadoEtapaOrdenProducciones = EstadoEtapaOrdenProduccionesTask.Result;

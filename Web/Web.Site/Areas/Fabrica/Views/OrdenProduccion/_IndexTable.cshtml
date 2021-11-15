@@ -1,70 +1,99 @@
 ﻿
+@{
+    int horasExpedicion = int.Parse(ViewData["parametroExpedicion"].ToString());
+}
 @model IEnumerable<OrdenProduccion>
 
 
-    <div class="table-responsive">
-        <table class="footable table table-stripped table-bordered  table-hover toggle-arrow-tiny" data-page-size="15">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Codigo</th>
-                    <th>Articulo</th>
-                    <th>Color</th>
-                    <th>Talle</th>
-                    <th>Categoria</th>
-                    <th>Cantidad a Fabricar</th>
-                    <th>Estado Orden</th>
-                    <th>Etapa</th>
-                    <th>Estado de la Etapa</th>
-                    @*
-                <th>Cantidad Fabricada</th>*@
-                    <th>Fecha</th>
-                    <th>Tiempo total empleado</th>
-                    <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+<div class="table-responsive">
+    <table class="footable table table-stripped table-bordered  table-hover toggle-arrow-tiny" data-page-size="15">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Codigo</th>
+                <th>Articulo</th>
+                <th>Color</th>
+                <th>Talle</th>
+                <th>Categoria</th>
+                <th>Cantidad a Fabricar</th>
+                <th>Estado Orden</th>
+                <th>Etapa</th>
+                <th>Estado de la Etapa</th>
+                @*
+                    <th>Cantidad Fabricada</th>*@
+                <th>Fecha Inicio</th>
+                <th>Fecha Limite Expedicion</th>
+                <th>Tiempo total empleado</th>
+                <th data-sort-ignore="true" class="d-print-none">Acciones</th>
 
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model != null && Model.Any())
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var orden in Model)
                 {
-                    foreach (var orden in Model)
+                    var eventoExpedicion = orden.OrdenProduccionEventos.SingleOrDefault(x => x.EtapaOrdenProduccion.Descripcion == "Expedicion" && x.EstadoEtapaOrdenProduccion == EstadoEtapaOrdenProduccion.Iniciada);
+                    var customStyle = "";
+                    if (eventoExpedicion != null)
                     {
-                        <tr>
-                            <td>@orden.Id</td>
-                            <td>@orden.Articulo.CodigoArticulo</td>
-                            <td>@orden.Articulo.Nombre</td>
-                            <td>@orden.Articulo.Color</td>
-                            <td>@orden.Articulo.TalleArticulo</td>
-                            <td>@orden.Articulo.ArticuloCategoria.Descripcion</td>
-                            <td>@orden.CantidadTotal</td>
-                            <td>
-                                <span class="label label-@orden.EstadoOrdenProduccion.GetGroupName()">@orden.EstadoOrdenProduccion.GetDisplayName()</span>
-                            </td>
-                            <td>@orden.EtapaOrdenProduccion.Descripcion</td>
-                            <td>
-                                <span class="label label-@orden.EstadoEtapaOrdenProduccion.GetGroupName()">@orden.EstadoEtapaOrdenProduccion.GetDisplayName()</span>
-                            </td>
-
-                            @*
-                        <td>@orden.CantidadFabricada</td>*@
-                            <th>@orden.FechaCreacion.ToShortDateString()</th>
-                            <th>@((DateTime.Now - orden.FechaCreacion).ToString(@"hh\:mm\:ss"))</th>
-                            <td class="d-print-none">
-                                <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerDetalles('@orden.Id')">Ver Detalles</button>
-                            </td>
-                        </tr>
+                        @if (DateTime.Now > eventoExpedicion.FechaCreacion.AddHours(horasExpedicion))
+                        {
+                            customStyle = "background: #ffc8c8; !important";
+                        }
+                        else
+                        {
+                            customStyle = "background: #2cdd0029; !important";
+                        }
                     }
-                }
-            </tbody>
-            <tfoot class="d-print-none">
-                <tr>
-                    <td colspan="13">
-                        <ul class="pagination float-right"></ul>
-                    </td>
-                </tr>
-            </tfoot>
+                    <tr>
+                        <td>@orden.Id</td>
+                        <td>@orden.Articulo.CodigoArticulo</td>
+                        <td>@orden.Articulo.Nombre</td>
+                        <td>@orden.Articulo.Color</td>
+                        <td>@orden.Articulo.TalleArticulo</td>
+                        <td>@orden.Articulo.ArticuloCategoria.Descripcion</td>
+                        <td>@orden.CantidadTotal</td>
+                        <td>
+                            <span class="label label-@orden.EstadoOrdenProduccion.GetGroupName()">@orden.EstadoOrdenProduccion.GetDisplayName()</span>
+                        </td>
+                        <td>@orden.EtapaOrdenProduccion.Descripcion</td>
+                        <td>
+                            <span class="label label-@orden.EstadoEtapaOrdenProduccion.GetGroupName()">@orden.EstadoEtapaOrdenProduccion.GetDisplayName()</span>
+                        </td>
 
-        </table>
-    </div>
+                        @*
+                            <td>@orden.CantidadFabricada</td>*@
+                        <th>@orden.FechaCreacion.ToShortDateString()</th>
+
+                        @if (eventoExpedicion != null)//orden.EtapaOrdenProduccion.Descripcion == "Expedicion" && orden.EstadoEtapaOrdenProduccion == EstadoEtapaOrdenProduccion.Iniciada)
+                        {
+                            var fechaLimiteExpedicion = eventoExpedicion.FechaCreacion.AddHours(horasExpedicion);
+                            <th  style="@customStyle">@fechaLimiteExpedicion</th>
+                            @*<th>@orden.OrdenProduccionEventos.Single(x => x.EtapaOrdenProduccion.Descripcion == "Expedicion" && x.EstadoEtapaOrdenProduccion == EstadoEtapaOrdenProduccion.Iniciada).FechaCreacion.AddHours(horasExpedicion)</th>*@
+                        }
+                        else
+                        {
+                            <th>-@*La orden aun no se encuentra en etapa de Expedicion*@</th>
+                        }
+
+                        <th>@((DateTime.Now - orden.FechaCreacion).ToString(@"hh\:mm\:ss"))</th>
+                        <td class="d-print-none">
+                            <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerDetalles('@orden.Id')">Ver Detalles</button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+        <tfoot class="d-print-none">
+            <tr>
+                <td colspan="13">
+                    <ul class="pagination float-right"></ul>
+                </td>
+            </tr>
+        </tfoot>
+
+    </table>
+</div>
 
 
