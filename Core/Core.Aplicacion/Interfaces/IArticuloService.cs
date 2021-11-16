@@ -7,6 +7,7 @@ namespace Core.Aplicacion.Interfaces
     public interface IArticuloService
     {
         public Task<IEnumerable<Articulo>> GetArticulos();
+        public Task<IEnumerable<Articulo>> GetArticulosFabrica();
         public Task<Articulo> BuscarPorId(int IdArticulo);
         public Task CrearArticulo(Articulo articulo);
         public Task EditarArticulo(Articulo articulo);
