@@ -48,7 +48,7 @@
 
     <div class="ibox-content m-b-sm border-bottom  d-print-none">
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-8">
                 <div class="form-group">
                     <label class="col-form-labe" for="solicitud_name">Articulo</label>
                     <div class="typeahead__container">
@@ -60,11 +60,17 @@
                     </div>
                 </div>
             </div>
+            <div class="col-sm-4"></div>
         </div>
         <div class="row">
-            <div class="col-sm-12 d-flex align-items-end justify-content-end">
+            <div class="col-sm-8 d-flex align-items-end justify-content-end">
                 <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="FiltrarArticulos()">
                     <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                </button>
+            </div>
+            <div class="col-sm-4 d-flex align-items-end justify-content-end">
+                <button class="btn btn-block btn-outline-info" type="button" onclick="ActivarCambioPrecioMasivo()">
+                    <i class="fa fa-money" aria-hidden="true"></i> Cambio de precio masivo
                 </button>
             </div>
         </div>
@@ -85,6 +91,57 @@
 
 </div>
 
+@* MODAL NEW COMMENT *@
+<div class="modal inmodal fade" id="CambioPrecioMasivo" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form class="validateDontSubmit" id="modalForm" name="modalForm">
+                <div class="modal-header pb-1">
+                    <div class="row">
+                        <div class="col-sm-12 d-flex justify-content-center">
+                            <h1 style="font-size:30px;">Cambio de precio</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body py-2">
+                    <div class="form-group">
+                        <label class="font-normal">Precio</label>
+                        <input id="Precio" class="form-control" type="number" min="0" max="9999999" maxlength="9" value="0" placeholder="" required>
+                    </div>
+                </div>
+
+                <div class="modal-body py-2">
+                    <label class="font-normal">Tipo de cambio</label>
+                    <select class="form-control  chosen-select " id="IdInsumo" required>
+                        <option value=""> -- Seleccionar tipo de cambio --</option>
+                        <option value="1">Aumento</option>
+                        <option value="-1">Descuento</option>
+                    </select>
+                </div>
+                <div class="modal-body py-2">
+                    <label class="font-normal">Tipo de precio</label>
+                    <select class="form-control  chosen-select " id="IdInsumo" required>
+                        <option value=""> -- Seleccionar tipo de precio --</option>
+                        <option value="1">Mayorista</option>
+                        <option value="2">Minorista</option>
+                    </select>
+                </div>
+                <div class="modal-body py-2">
+                    <div class="form-group">
+                        <label class="font-normal">Comentario</label>
+                        <input id="comentario" class="form-control" type="text" placeholder="Comentario" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" onclick="tipoCambio()" class="btn btn-primary">Aceptar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @section Styles {
 
 }
@@ -99,15 +156,19 @@
 
     <script type="text/javascript">
 
+        function ActivarCambioPrecioMasivo() {
+            $("#CambioPrecioMasivo").modal('show');
+        }
+
         function BorrarArticulo(Id) {
-            alert(Id);
+            alerta(Id);
         }
 
         function EditarArticulo(Id) {
             window.location = '/abm/Articulo/CrearEditarArticulo?IdArticulo=' + Id;
         }
 
-        function alert(Id) {
+        function alerta(Id) {
             swal({
                 title: "Seguro que desea dar de baja el Articulo?",
                 text: "El Articulo será dada de baja definitivamente!",
