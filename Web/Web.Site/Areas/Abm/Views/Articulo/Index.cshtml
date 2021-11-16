@@ -69,7 +69,7 @@
                 </button>
             </div>
             <div class="col-sm-4 d-flex align-items-end justify-content-end">
-                <button class="btn btn-block btn-outline-info" type="button" onclick="ActivarCambioPrecioMasivo()">
+                <button class="btn btn-block btn-outline-info" type="button" data-toggle="tooltip" data-placement="top" title="Los cambios de precio se aplicarán a los artículos que están seleccionados por el filtro aplicado, si no se aplicaron filtros los cambios se aplicaran a todos los artículos" onclick="ActivarCambioPrecioMasivo()">
                     <i class="fa fa-money" aria-hidden="true"></i> Cambio de precio masivo
                 </button>
             </div>
@@ -95,69 +95,120 @@
 <div class="modal inmodal fade" id="CambioPrecioMasivo" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form class="validateDontSubmit" id="modalForm" name="modalForm">
-                <div class="modal-header pb-1">
-                    <div class="row">
-                        <div class="col-sm-12 d-flex justify-content-center">
-                            <h1 style="font-size:30px;">Cambio de precio</h1>
-                        </div>
+            @*<form class="validateDontSubmit" id="modalForm" name="modalForm">*@
+            @*@Html.AntiForgeryToken()*@
+            <div class="modal-header pb-1">
+                <div class="row">
+                    <div class="col-sm-12 d-flex justify-content-center">
+                        <h1 style="font-size:30px;">Cambio de Precio</h1>
                     </div>
                 </div>
-                <div class="modal-body py-2">
-                    <div class="form-group">
-                        <label class="font-normal">Precio</label>
-                        <input id="Precio" class="form-control" type="number" min="0" max="9999999" maxlength="9" value="0" placeholder="" required>
-                    </div>
+            </div>
+            <div class="modal-body py-2">
+                <div class="form-group">
+                    <label class="font-normal">Porcentaje</label>
+                    <input id="porcentaje" class="form-control" type="text" maxlength="9" onkeypress="return valideKey(event);" placeholder="0" required>
                 </div>
+            </div>
 
-                <div class="modal-body py-2">
-                    <label class="font-normal">Tipo de cambio</label>
-                    <select class="form-control  chosen-select " id="IdInsumo" required>
-                        <option value=""> -- Seleccionar tipo de cambio --</option>
-                        <option value="1">Aumento</option>
-                        <option value="-1">Descuento</option>
-                    </select>
+            <div class="modal-body py-2">
+                <label class="font-normal">Tipo de cambio</label>
+                <select class="form-control  chosen-select " id="selecTipoCambio" required>
+                    <option value=""> -- Seleccionar tipo de cambio --</option>
+                    <option value="1">Aumento</option>
+                    <option value="-1">Descuento</option>
+                </select>
+            </div>
+            <div class="modal-body py-2">
+                <label class="font-normal">Tipo de precio</label>
+                <select class="form-control  chosen-select " id="selecTipoPrecio" required>
+                    <option value=""> -- Seleccionar tipo de precio --</option>
+                    <option value="PrecioMayorista">Mayorista</option>
+                    <option value="PrecioMinorista">Minorista</option>
+                </select>
+            </div>
+            <div class="modal-body py-2">
+                <div class="form-group">
+                    <label class="font-normal">Comentario</label>
+                    <input id="comentario" class="form-control" type="text" placeholder="Comentario" required>
                 </div>
-                <div class="modal-body py-2">
-                    <label class="font-normal">Tipo de precio</label>
-                    <select class="form-control  chosen-select " id="IdInsumo" required>
-                        <option value=""> -- Seleccionar tipo de precio --</option>
-                        <option value="1">Mayorista</option>
-                        <option value="2">Minorista</option>
-                    </select>
-                </div>
-                <div class="modal-body py-2">
-                    <div class="form-group">
-                        <label class="font-normal">Comentario</label>
-                        <input id="comentario" class="form-control" type="text" placeholder="Comentario" required>
-                    </div>
-                </div>
+            </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" onclick="tipoCambio()" class="btn btn-primary">Aceptar</button>
-                </div>
-            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                @*<button type="submit" onclick="tipoCambio()" class="btn btn-primary">Aceptar</button>*@
+                <button type="submit" onclick="tipoCambio()" class="ladda-button ladda-button-demo btn btn-primary"  data-style="zoom-in">Aceptar</button>
+            </div>
+            @*</form>*@
         </div>
     </div>
 </div>
 
 @section Styles {
+    <link rel="stylesheet" href="~/lib/ladda/dist/ladda-themeless.min.css" />
 
 }
 
 @section Scripts {
+    <script src="~/lib/ladda/dist/spin.min.js"></script>
+    <script src="~/lib/ladda/dist/ladda.min.js"></script>
+    <script src="~/lib/ladda/dist/ladda.jquery.min.js"></script>
+    <script src="~/js/apphelpers.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
             $('.footable').footable();
+
+        
         });
     </script>
 
     <script type="text/javascript">
 
+        function tipoCambio() {
+
+            var Porcentaje = $("#porcentaje").val();
+            var selecTipoCambio = $("#selecTipoCambio").val();
+            var selecTipoPrecio = $("#selecTipoPrecio").val();
+            var Comentario = $("#comentario").val();
+            var typeArticulo = $("#typeArticulo").val();
+            var l = $('.ladda-button-demo').ladda();
+            l.ladda('start');
+                $.ajax({
+                type: "Get",
+                url: '@Url.Action("CambiarPrecio", "Articulo", new { area = "abm" })',
+                traditional: true,
+                data: //formData,
+                {
+                    Porcentaje: Porcentaje,
+                    TipCambio: selecTipoCambio,
+                    TipoPrecioAfectado: selecTipoPrecio,
+                    Comentartio: Comentario,
+                    ArticulosAfectados: typeArticulo,
+                },
+                contentType: "application/json",
+                success: function (partial) {
+                    $("#tablaContenido").html(""); //clear the records content
+                    $("#tablaContenido").html(partial);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                    $("#CambioPrecioMasivo").modal('hide');
+                    l.ladda('stop');
+                    },
+                    error: function () {
+                        l.ladda('stop');
+                        swal("Error", "Ocurrió un error intente mas tarde", "error");
+                    }
+            });
+
+        }
+
         function ActivarCambioPrecioMasivo() {
-            $("#CambioPrecioMasivo").modal('show');
+            $('#CambioPrecioMasivo').modal({
+                backdrop: 'static',
+                keyboard: true,
+                show: true
+            });
         }
 
         function BorrarArticulo(Id) {
