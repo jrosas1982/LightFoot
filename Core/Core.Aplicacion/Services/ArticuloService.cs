@@ -32,6 +32,17 @@ namespace Core.Aplicacion.Services
             return articulosList;
         }
 
+        public async Task<IEnumerable<Articulo>> GetArticulosFabrica()
+        {
+            var articulosList = await _db.Articulos
+                .Where(x => x.ProveedoresArticulo.Any(z => z.Proveedor.EsFabrica == true))
+                .Include(x => x.ArticuloCategoria)
+                .OrderBy(x => x.ArticuloCategoria.Descripcion)
+                .ToListAsync();
+            _logger.LogInformation("Se buscaron los articulos");
+            return articulosList;
+        }
+
         public async Task<Articulo> BuscarPorId(int IdArticulo)
         {
             var articulo = await _db.Articulos.FindAsync(IdArticulo);

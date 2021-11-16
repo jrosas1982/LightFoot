@@ -48,6 +48,11 @@ namespace Core.Aplicacion.Services
                 if (compra == null)
                     throw new Exception("No existe la compra");
 
+                var montoPagadoTotal = await _db.ProveedoresArticulosCuentaCorriente.Where(x => x.IdCompraArticulo == idCompra).SumAsync(x => x.MontoPagado);
+
+                if (compra.MontoTotal < (montoPagado + montoPagadoTotal))
+                    throw new Exception("No se puede pagar mas del total de la compra");
+
                 var proveedorCuentaCorriente = new ProveedorArticuloCuentaCorriente()
                 {
                     IdProveedor = compra.IdProveedor,

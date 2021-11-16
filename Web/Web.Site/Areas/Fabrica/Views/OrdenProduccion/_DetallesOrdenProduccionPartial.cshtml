@@ -158,31 +158,33 @@
                         <h1>@etapa.Descripcion</h1>
                         <div class="step-content w-100">
                             <div class="">
-                                <table class="table table-hover ">
-                                    <thead class="">
-                                        <tr>
-                                            <th colspan="1" class="text-left"><h3>Estado Orden</h3></th>
-                                            <th colspan="1" class="text-left"><h3>Etapa Orden</h3></th>
-                                            <th colspan="1" class="text-left"><h3>Descripcion Etapa</h3></th>
-                                            <th colspan="1" class="text-left"><h3>Fecha Evento</h3></th>
-                                            <th colspan="1" class="text-left"><h3>Usuario</h3></th>
-                                            <th colspan="1" class="text-left"><h3>Comentario</h3></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var evento in Model.OrdenProduccionEventos.Where(x => x.IdEtapaOrdenProduccion == etapa.Id).OrderByDescending(x => x.FechaCreacion))
-                                        {
+                                <div class="table-responsive">
+                                    <table class="table table-hover ">
+                                        <thead class="">
                                             <tr>
-                                                <td class="text-left">@evento.EstadoOrdenProduccion.GetDisplayName()</td>
-                                                <td class="text-left">@evento.EtapaOrdenProduccion.Descripcion</td>
-                                                <td class="text-left">@evento.EstadoEtapaOrdenProduccion.GetDisplayName()</td>
-                                                <td class="text-left">@evento.FechaCreacion</td>
-                                                <td class="text-left">@evento.CreadoPor</td>
-                                                <td class="text-left">@(string.IsNullOrWhiteSpace(evento.Comentario) ? "Sin Comentario" : evento.Comentario)</td>
+                                                <th colspan="1" class="text-left"><h3>Estado Orden</h3></th>
+                                                <th colspan="1" class="text-left"><h3>Etapa Orden</h3></th>
+                                                <th colspan="1" class="text-left"><h3>Descripcion Etapa</h3></th>
+                                                <th colspan="1" class="text-left"><h3>Fecha Evento</h3></th>
+                                                <th colspan="1" class="text-left"><h3>Usuario</h3></th>
+                                                <th colspan="1" class="text-left"><h3>Comentario</h3></th>
                                             </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var evento in Model.OrdenProduccionEventos.Where(x => x.IdEtapaOrdenProduccion == etapa.Id).OrderByDescending(x => x.FechaCreacion))
+                                            {
+                                                <tr>
+                                                    <td class="text-left">@evento.EstadoOrdenProduccion.GetDisplayName()</td>
+                                                    <td class="text-left">@evento.EtapaOrdenProduccion.Descripcion</td>
+                                                    <td class="text-left">@evento.EstadoEtapaOrdenProduccion.GetDisplayName()</td>
+                                                    <td class="text-left">@evento.FechaCreacion</td>
+                                                    <td class="text-left">@evento.CreadoPor</td>
+                                                    <td class="text-left">@(string.IsNullOrWhiteSpace(evento.Comentario) ? "Sin Comentario" : evento.Comentario)</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     }

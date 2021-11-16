@@ -51,10 +51,10 @@ namespace Core.Aplicacion.Services
                 throw new Exception("No hay suficiente stock disponible para iniciar la etapa");
 
             await _fabricacionService.DescontarStockInsumosReservados(insumosNecesarios);
-
-            await GuardarEventoAsync(ordenDb, comentario);
             
             await _db.SaveChangesAsync();
+            
+            await GuardarEventoAsync(ordenDb, comentario);
 
             await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
             return true;
@@ -103,8 +103,8 @@ namespace Core.Aplicacion.Services
             //pausa la etapa si no estaba pausada
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
 
-            if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Iniciada)
-                throw new Exception("La etapa de la orden debe encontrarse en estado Iniciada para poder ser Finalizada");
+            if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Iniciada && ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Retrabajo)
+                throw new Exception("La etapa de la orden debe encontrarse en estado Iniciada o retrabajo para poder ser Finalizada");
 
             ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.EnProceso;
             ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Finalizada;
@@ -136,6 +136,26 @@ namespace Core.Aplicacion.Services
             await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
             return true;
         }
+
+        //public async Task<bool> CompletarRetrabado(int idOrdenProduccion, string comentario)
+        //{
+        //    //pasa la etapa a finalizada
+        //    var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
+
+        //    if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Retrabajo)
+        //        throw new Exception("La etapa de la orden debe encontrarse en estado retrabajo para poder ser Completado");
+
+        //    ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.EnProceso;
+        //    ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Finalizada;
+
+        //    _db.OrdenesProduccion.Update(ordenDb);
+        //    await _db.SaveChangesAsync();
+        //    await GuardarEventoAsync(ordenDb, comentario);
+
+
+        //    await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
+        //    return true;
+        //}
 
         public async Task<bool> AvanzarSiguienteEtapa(int idOrdenProduccion, string comentario = "")
         {
@@ -305,7 +325,7 @@ namespace Core.Aplicacion.Services
             };
 
             _db.OrdenesProduccionEventos.Add(evento);
-            //await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
 
 
