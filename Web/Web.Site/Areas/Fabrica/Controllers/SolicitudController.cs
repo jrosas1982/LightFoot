@@ -69,7 +69,7 @@ namespace Web.Site.Areas
             {
                 var estadoSolicitudListTask = _solicitudService.GetEstadosSolicitud();
                 var sucursalesListTask = _sucursalService.GetSucursales();
-                var articulosListTask = _articuloService.GetArticulos();
+                var articulosListTask = _articuloService.GetArticulosFabrica();
 
                 await Task.WhenAll(estadoSolicitudListTask, sucursalesListTask, articulosListTask);
 
