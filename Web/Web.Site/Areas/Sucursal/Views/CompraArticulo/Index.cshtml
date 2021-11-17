@@ -91,6 +91,7 @@
                     </div>
                 </div>
                 <div class="modal-body py-2">
+                    <h3>Articulos</h3>
                     <div class="table-responsive">
                         <table class="footable table table-stripped table-hover table-bordered no-paging toggle-arrow-tiny">
                             <thead>
@@ -106,6 +107,11 @@
                                 <partial name="_CompraArticuloIndexDetalle.cshtml" model="null" />
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <div class="modal-body py-2">
+                    <div id="partialViewModalDetalle">
+                        <partial name="_CompraArticuloIndexPagos.cshtml" model="null" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -136,7 +142,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" onclick="ClearModalrecibirCompra()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
                         <button type="submit" onclick="BootonRecibirCompra()" class="btn btn-primary">Recibir</button>
                     </div>
                 </form>
@@ -158,36 +164,38 @@
                             </div>
                         </div>
                     </div>
-                    <div id="partialViewModalPagos">
-                        <partial name="_CompraArticuloIndexPagos.cshtml" model="null" />
+                    <div class="modal-body py-2">
+                        <div id="partialViewModalPagos">
+                            <partial name="_CompraArticuloIndexPagos.cshtml" model="null" />
+                        </div>
                     </div>
-                    <div class="modal-body py-2 border-bottom">
-                        <div class="form-group">
-                            <label class="font-normal">Metodo de Pago</label>
-                            <select class="form-control" name="metodo_pago" id="metodo_pago" data-placeholder="-- Metodo de Pago --" required>
-                                <option value="" selected> -- Metodo de Pago -- </option>
-                                @if (tiposdePago != null)
-                                {
-                                    @foreach (var tipo in tiposdePago)
+                        <div class="modal-body py-2 border-bottom">
+                            <div class="form-group">
+                                <label class="font-normal">Metodo de Pago</label>
+                                <select class="form-control" name="metodo_pago" id="metodo_pago" data-placeholder="-- Metodo de Pago --" required>
+                                    <option value="" selected> -- Metodo de Pago -- </option>
+                                    @if (tiposdePago != null)
                                     {
-                                        <option value="@tipo">@tipo</option>
+                                        @foreach (var tipo in tiposdePago)
+                                        {
+                                            <option value="@tipo">@tipo</option>
+                                        }
                                     }
-                                }
-                            </select>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-normal">A Pagar</label>
+                                <input id="Pagado" class="form-control" type="number" min="0" max="" value="0" placeholder="" required>
+                            </div>
+                            @*<div class="form-group">
+                    <label class="font-normal">Pagado</label>
+                    <input class="form-control" id="Pagado" placeholder="" disabled>
+                </div>*@
                         </div>
-                        <div class="form-group">
-                            <label class="font-normal">A Pagar</label>
-                            <input id="Pagado" class="form-control" type="number" min="0" max="" value="0" placeholder="" required>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" onclick="btnPagarCompra()" class="btn btn-primary">Registrar Pago</button>
                         </div>
-                        @*<div class="form-group">
-                                <label class="font-normal">Pagado</label>
-                                <input class="form-control" id="Pagado" placeholder="" disabled>
-                            </div>*@
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" onclick="ClearModalrecibirCompra()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" onclick="btnPagarCompra()" class="btn btn-primary">Registrar Pago</button>
-                    </div>
                 </form>
             </div>
         </div>
@@ -251,6 +259,22 @@
     <script type="text/javascript">
         function verDetalle(id) {
             ActualizarDetalleCompra(id);
+            $.ajax({
+                type: "Get",
+                url: "/sucursal/CompraArticulo/CargarPagosRealizados",
+                traditional: true,
+                data: {
+                    idCompra: id
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#partialViewModalDetalle").html(""); //clear the records content
+                    $("#partialViewModalDetalle").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw');
+                    //$('#ModalrecibirCompra').modal('hide');
+                }
+            });
         }
 
         function ActualizarDetalleCompra(id) {
@@ -265,6 +289,8 @@
                 success: function (response) {
                     $("#partialViewEventos").html(""); //clear the records content
                     $("#partialViewEventos").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw');
                 }
             });
         }
@@ -333,7 +359,23 @@
             console.log("pagarCompra con id");
             $('#tituloModalpagarCompra').text('Pagar Compra #' + id);
             $('#hiddenModalpagarCompra').val(id);
-            $('#cantidadPagar').max(montoTotal);
+            //$('#cantidadPagar').max(montoTotal);
+            $.ajax({
+                type: "Get",
+                url: "/sucursal/CompraArticulo/CargarPagosRealizados",
+                traditional: true,
+                data: {
+                    idCompra: id
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#partialViewModalPagos").html(""); //clear the records content
+                    $("#partialViewModalPagos").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw');
+                    //$('#ModalrecibirCompra').modal('hide');
+                }
+            });
         }
 
         function btnPagarCompra() {
@@ -345,34 +387,35 @@
         }
 
         function pagarCompra(idCompra, pagado, tipoPago) {
-            $.ajax({
-                type: "post",
-                url: "/sucursal/CompraArticulo/PagarCompra",
-                data: {
-                    idCompra: idCompra,
-                    tipoPago: tipoPago,
-                    montoPagado: pagado
-                },
-                success: function (response) {
-                    if (response) {
-                        swal(
-                            'Compra #' + idCompra + ' pagada',
-                            'Se pago ' + pagado,
-                            'success'
-                        );
+            if (modalForm.checkValidity()) {
+                $.ajax({
+                    type: "post",
+                    url: "/sucursal/CompraArticulo/PagarCompra",
+                    data: {
+                        idCompra: idCompra,
+                        tipoPago: tipoPago,
+                        montoPagado: pagado
+                    },
+                    success: function (response) {
+                        if (response) {
+                            swal(
+                                'Compra #' + idCompra + ' pagada',
+                                'Se pago ' + pagado,
+                                'success'
+                            );
+                        }
                     }
-                }
-            }).done(function (response) {
-                $("#ComprasPartialView").html(""); //clear the records content
-                $("#ComprasPartialView").html(response);  //add the updated content.
-                $('.footable').footable();
-                $('.footable').trigger('footable_redraw');
-                $('#ModalPagarCompra').modal('hide');
-                //window.setTimeout(function () {
-                //    location.reload();
-                //}, 600);
-            });
-
+                }).done(function (response) {
+                    $("#ComprasPartialView").html(""); //clear the records content
+                    $("#ComprasPartialView").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw');
+                    $('#ModalPagarCompra').modal('hide');
+                    //window.setTimeout(function () {
+                    //    location.reload();
+                    //}, 600);
+                });
+            }
         }
     </script>
 }

@@ -260,5 +260,13 @@ namespace Core.Aplicacion.Services
 
             await EmailSender.SendEmail($"Nueva Compra Orden #{compraRealizada.Id}", template, compraRealizada.Proveedor.Email);
         }
+
+        public async Task<IEnumerable<ProveedorInsumoCuentaCorriente>> GetPagosRealizados(int IdCompra)
+        {
+            var pagos = await _db.ProveedoresInsumosCuentaCorriente.Where(x => x.IdCompraInsumo == IdCompra).ToListAsync();
+
+            return pagos;
+        }
+
     }
 }

@@ -16,5 +16,6 @@ namespace Core.Aplicacion.Interfaces
         public Task<bool> RecibirCompra(int idCompra, long nroRemito, int tiempoCalificacion, int distanciaCalificacion, int precioCalificacion, int calidadCalificacion);
         public Task<bool> AgregarPagoCompra(int idCompra, TipoPago tipoPago, decimal montoPagado);
         public Task EnviarMailCompra(int IdCompra);
+        public Task<IEnumerable<ProveedorInsumoCuentaCorriente>> GetPagosRealizados(int IdCompra);
     }
 }

@@ -299,5 +299,12 @@ namespace Core.Aplicacion.Services
         {
             return await Task.FromResult(EnumExtensions.GetValues<TipoPago>());
         }
+
+        public async Task<IEnumerable<ProveedorArticuloCuentaCorriente>> GetPagosRealizados(int IdCompra)
+        {
+            var pagos = await _db.ProveedoresArticulosCuentaCorriente.Where(x => x.IdCompraArticulo == IdCompra).ToListAsync();
+
+            return pagos;
+        }
     }
 }

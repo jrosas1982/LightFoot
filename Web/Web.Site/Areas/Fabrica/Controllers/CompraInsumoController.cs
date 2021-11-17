@@ -219,7 +219,20 @@ namespace Web.Site.Areas
             {
                 throw ex;
             }
+        }
 
+        public async Task<IActionResult> CargarPagosRealizados(int idCompra)
+        {
+            try
+            {
+                var resp = await _compraInsumoService.GetPagosRealizados(idCompra);              
+
+                return PartialView("_CompraInsumoIndexPagos", resp);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<IActionResult> AgregarDetalle(CompraInsumoDetalleModel data)
