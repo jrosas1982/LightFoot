@@ -401,6 +401,35 @@
             $('#tituloModalpagarCompra').text('Pagar Compra #' + id);
             $('#hiddenModalpagarCompra').val(id);
             $('#cantidadPagar').max(montoTotal);
+            //$.ajax({
+            //    type: "post",
+            //    url: "/fabrica/CompraInsumo/PagarCompra",
+            //    data: {
+            //        idCompra: idCompra,
+            //        tipoPago: tipoPago,
+            //        montoPagado: pagado
+            //    },
+            //    success: function (response) {
+            //        if (response) {
+            //            swal(
+            //                'Compra #' + idCompra + ' pagada',
+            //                'Se pagado ' + pagado,
+            //                'success'
+            //            );
+            //        }
+            //    }
+            //}).done(function (response) {
+            //    $("#ComprasPartialView").html(""); //clear the records content
+            //    $("#ComprasPartialView").html(response);  //add the updated content.
+            //    $('.footable').footable();
+            //    $('.footable').trigger('footable_redraw');
+            //    $('#ModalPagarCompra').modal('hide');
+            //    //window.setTimeout(function () {
+            //    //    location.reload();
+            //    //}, 600);
+            //});
+            //$('#partialViewModalPagos').val(id);
+            
         }
 
         function btnPagarCompra() {

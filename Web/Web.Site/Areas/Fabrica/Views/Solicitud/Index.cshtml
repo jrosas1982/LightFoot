@@ -78,7 +78,7 @@
                     <select id="solicitud_estado" data-placeholder="Estado de solicitud" class="chosen-select" multiple tabindex="3">
                         @foreach (var estado in EstadosSolicitud)
                         {
-                            <option value="@((int)estado)"> @estado.GetDisplayName() </option>
+                            <option value="@(estado)"> @estado.GetDisplayName() </option>
                         }
                     </select>
                 </div>
@@ -182,10 +182,15 @@
         }
 
         function Filtrar() {
+            console.log("filtrado");
             sucursalesSeleccionadas = $("#solicitud_sucursal").chosen().val();
             estadosSeleccionados = $("#solicitud_estado").chosen().val();
             fechaDesde = $("#fechaDesde").val();
             fechaHasta = $("#fechaHasta").val();
+            console.log(sucursalesSeleccionadas);
+            console.log(estadosSeleccionados);
+            console.log(fechaDesde);
+            console.log(fechaHasta);
 
             $.ajax({
                 type: "post",
@@ -199,12 +204,15 @@
                     }
                 },
                 success: function (result) {
+                    console.log("succeess");
                     $("#tablaContenido").html(""); //clear the records content
                     $("#tablaContenido").html(result);  //add the updated content.
                     $('.footable').footable();
                     $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                    console.log("end");
                 },
                 error: function () {
+                    console.log("error");
                     swal("Error", "Ocurrió un error inesperado", "error");
                 }
             });
@@ -237,33 +245,7 @@
                     }
                 })
             });
-        };
-        $(document).ready(function () {
-
-            $('.dataTables-example').DataTable({
-                pageLength: 25,
-                dom: '<"html5buttons"B>lTfgitp',
-                buttons: [
-                    { extend: 'copy' },
-                    { extend: 'csv' },
-                    { extend: 'excel', title: 'ExampleFile' },
-                    { extend: 'pdf', title: 'ExampleFile' },
-
-                    {
-                        extend: 'print',
-                        customize: function (win) {
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                        }
-                    }
-                ]
-
-            });
-        });
+        };        
     </script>
 
 }
