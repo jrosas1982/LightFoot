@@ -16,6 +16,7 @@ namespace Core.Aplicacion.Services
 {
     public class VentaService : IVentaService
     {
+        private readonly int IdSucursal;
         private readonly AppDbContext _db;
         private readonly ILogger<VentaService> _logger;
         private readonly IArticuloService _articuloService;
@@ -26,6 +27,7 @@ namespace Core.Aplicacion.Services
 
         public VentaService( ExtendedAppDbContext extendedAppDbContext, ILogger<VentaService> logger, IArticuloService articuloService, IProveedorService proveedorService, IProveedorArticuloService proveedorArticuloService, IControlStockArticuloService controlStockArticuloService, IConfiguration configuration)
         {
+            IdSucursal = int.Parse(_db.GetSucursalId());
             _db = extendedAppDbContext.context;
             _logger = logger;
             _articuloService = articuloService;
@@ -69,6 +71,7 @@ namespace Core.Aplicacion.Services
         {
             var ventasList = await _db.Ventas
                 .AsNoTracking()
+                .Where(x => x.IdSucursal == IdSucursal)
                 .Include(x => x.VentaDetalles)
                     .ThenInclude(x => x.Articulo)
                 .Include(x => x.Cliente)
