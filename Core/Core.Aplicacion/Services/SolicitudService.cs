@@ -8,7 +8,9 @@ using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Z.EntityFramework.Plus;
 
 namespace Core.Aplicacion.Services
 {
@@ -201,21 +203,39 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Solicitud>> GetSolicitudes()
         {
-            var solicitudesList = await _db.Solicitudes
-                .AsNoTracking()
-                .Include(x => x.Sucursal)
-                .Include(x => x.SolicitudDetalles)
-                    .ThenInclude(x => x.Articulo)
-                        .ThenInclude(x => x.ArticuloCategoria)
-                .Include(x => x.SolicitudDetalles)
-                    .ThenInclude(x => x.OrdenesProduccion)
+            var options = new MemoryCacheEntryOptions() { SlidingExpiration = TimeSpan.FromSeconds(10) };
+
+            var solicitudesList = _db.Solicitudes
                 .OrderByDescending(x => x.EstadoSolicitud == EstadoSolicitud.PendienteAprobacion)
                 .ThenByDescending(x => x.FechaModificacion.HasValue)
                 .ThenByDescending(x => x.FechaCreacion)
-                .ToListAsync();
+                .IncludeOptimized(x => x.Sucursal)
+                .IncludeOptimized(x => x.Sucursal.Nombre)                
+                .IncludeOptimized(x => x.SolicitudDetalles)
+                .IncludeOptimized(x => x.SolicitudDetalles.Select(d => d.Articulo))
+                .IncludeOptimized(x => x.SolicitudDetalles.Select(d => d.Articulo.ArticuloCategoria))
+                .IncludeOptimized(x => x.SolicitudDetalles.Select(d => d.Articulo.ArticuloCategoria.Descripcion))
+                .IncludeOptimized(x => x.SolicitudDetalles.Select(d => d.OrdenesProduccion.Select(o => o.Id)))
+                .ToList();
+
+            //.ToListAsync()
+            //.FromCacheAsync(options);
+
+            //var solicitudesList = await _db.Solicitudes
+            //    .AsNoTracking()
+            //    .Include(x => x.Sucursal)
+            //    .Include(x => x.SolicitudDetalles)
+            //        .ThenInclude(x => x.Articulo)
+            //            .ThenInclude(x => x.ArticuloCategoria)
+            //    .Include(x => x.SolicitudDetalles)
+            //        .ThenInclude(x => x.OrdenesProduccion)
+            //    .OrderByDescending(x => x.EstadoSolicitud == EstadoSolicitud.PendienteAprobacion)
+            //    .ThenByDescending(x => x.FechaModificacion.HasValue)
+            //    .ThenByDescending(x => x.FechaCreacion)
+            //    .ToListAsync();
 
             _logger.LogInformation("Se buscaron las solicitudes");
-            return solicitudesList;
+            return await Task.FromResult(solicitudesList);
         }
 
         public async Task<IEnumerable<Solicitud>> GetSolicitudes(SolicitudFilter filter)
@@ -223,23 +243,24 @@ namespace Core.Aplicacion.Services
             try
             {
                 var solicitudesList = _db.Solicitudes
-                   .AsNoTracking()
-                   .Include(x => x.Sucursal)
-                   .Include(x => x.SolicitudDetalles.OrderBy(x => x.Articulo.Nombre))
-                       .ThenInclude(x => x.Articulo)
-                            .ThenInclude(x => x.ArticuloCategoria)
-                   .Include(x => x.SolicitudDetalles)
-                       .ThenInclude(x => x.OrdenesProduccion)
                     .OrderByDescending(x => x.EstadoSolicitud == EstadoSolicitud.PendienteAprobacion)
                     .ThenByDescending(x => x.FechaModificacion.HasValue)
-                    .ThenByDescending(x => x.FechaCreacion);
+                    .ThenByDescending(x => x.FechaCreacion)
+                    .IncludeOptimized(x => x.Sucursal)
+                    .IncludeOptimized(x => x.Sucursal.Nombre)
+                    .IncludeOptimized(x => x.SolicitudDetalles)
+                    .IncludeOptimized(x => x.SolicitudDetalles.Select(d => d.Articulo))
+                    .IncludeOptimized(x => x.SolicitudDetalles.Select(d => d.Articulo.ArticuloCategoria))
+                    .IncludeOptimized(x => x.SolicitudDetalles.Select(d => d.Articulo.ArticuloCategoria.Descripcion))
+                    .IncludeOptimized(x => x.SolicitudDetalles.Select(d => d.OrdenesProduccion.Select(o => o.Id)));
 
                 var solicitudesFiltered = solicitudesList.Where(x => x.FechaCreacion > filter.FechaDesde
-                                                                  && x.FechaCreacion < filter.FechaHasta.AddDays(1));
-                if (filter.IdSucursalList.Any())
-                    solicitudesFiltered = solicitudesList.Where(x => filter.IdSucursalList.Contains(x.IdSucursal));
-                if (filter.EstadoSolicitudList.Any())
-                    solicitudesFiltered = solicitudesFiltered.Where(x => filter.EstadoSolicitudList.Contains(x.EstadoSolicitud));      
+                                                                  && x.FechaCreacion < filter.FechaHasta);
+
+                if (filter.IdSucursalList != null && filter.IdSucursalList.Any())
+                    solicitudesFiltered = solicitudesList.Where(x => filter.IdSucursalList.Any(f => f == x.IdSucursal));
+                if (filter.EstadoSolicitudList != null && filter.EstadoSolicitudList.Any())
+                    solicitudesFiltered = solicitudesFiltered.Where(x => filter.EstadoSolicitudList.Any(f => f == x.EstadoSolicitud));      
 
                 _logger.LogInformation("Se buscaron las solicitudes");
                 return await solicitudesFiltered.ToListAsync();

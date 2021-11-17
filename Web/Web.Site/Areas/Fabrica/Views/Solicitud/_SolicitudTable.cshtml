@@ -6,7 +6,7 @@
                 <tr>
 
                     <th >Sucursal</th>
-                    <th data-hide="all" data-animation="true" class="d-print-none"></th>
+                    @*<th data-hide="all" data-animation="true" class="d-print-none"></th>*@
                     <th>Articulos</th>
                     <th>Comentario</th>
                     <th>Estado</th>
@@ -23,7 +23,7 @@
                     {
                         <tr>
                             <td>@solicitud.Sucursal.Nombre</td>
-                            <td>
+                            @*<td>
                                 @if (solicitud.SolicitudDetalles != null && solicitud.SolicitudDetalles.Any())
                                 {       
                                         <div class="col">
@@ -68,7 +68,7 @@
                                         </div>            
 
                                 }
-                            </td>
+                            </td>*@
                             <td>@solicitud.SolicitudDetalles.Count()</td>
                             <td>@solicitud.Comentario</td>
                             <td>

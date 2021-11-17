@@ -8,6 +8,8 @@ using Web.Site.Dtos;
 using Web.Site.Helpers;
 using Web.Site.Areas.Abm;
 using System.Collections.Generic;
+using Web.Site.Areas.Abm.Models;
+using System;
 
 namespace Web.Site.Areas
 {
@@ -94,6 +96,53 @@ namespace Web.Site.Areas
             return Ok(result);
         }
 
-    }
+        public async Task<IActionResult> CambiarPrecio(CambioPrecioModel cambioPrecio)
+        {
+            var nombreArticulo = cambioPrecio.ArticulosAfectados;
+            var articulosList = await _articuloService.GetArticulos();
 
+            if (!string.IsNullOrWhiteSpace(nombreArticulo))
+                articulosList = articulosList.Where(x => x.Nombre.ToLower().Contains(nombreArticulo.ToLower())
+                                                      || x.ArticuloCategoria.Descripcion.ToLower().Contains(nombreArticulo.ToLower())
+                                                      || x.CodigoArticulo.ToLower().Contains(nombreArticulo.ToLower())
+                                                      || x.Color.ToLower().Contains(nombreArticulo.ToLower())
+                                                      || x.TalleArticulo.ToLower().Contains(nombreArticulo.ToLower()));
+            
+            // hacer refactor código feo solo para test
+            foreach (var item in articulosList)
+            {
+                //usar reflection?
+                if ("PrecioMayorista" == cambioPrecio.TipoPrecioAfectado)
+                {
+                    if (cambioPrecio.TipCambio == -1)
+                    {
+                        item.PrecioMayorista = item.PrecioMayorista - ActualizarPrecio(item.PrecioMayorista, cambioPrecio.Porcentaje);
+                    }
+                    else
+                    {
+                        item.PrecioMayorista = item.PrecioMayorista + ActualizarPrecio(item.PrecioMayorista, cambioPrecio.Porcentaje);
+                    }
+                }
+                else {
+                    if (cambioPrecio.TipCambio == -1)
+                    {
+                        item.PrecioMinorista = item.PrecioMinorista - ActualizarPrecio(item.PrecioMinorista, cambioPrecio.Porcentaje);
+                    }
+                    else
+                    {
+                        item.PrecioMinorista = item.PrecioMinorista + ActualizarPrecio(item.PrecioMinorista, cambioPrecio.Porcentaje);
+                    }
+                }
+            }
+
+            await _articuloService.CambioPrecio(articulosList);
+            return PartialView("_ArticuloIndexTable", articulosList);
+        }
+
+        private decimal ActualizarPrecio(decimal actual, decimal porcentaje)
+        {
+            return actual * porcentaje / 100;
+        }
+    }
+    
 }

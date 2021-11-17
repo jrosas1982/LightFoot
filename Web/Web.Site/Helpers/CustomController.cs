@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -21,8 +23,16 @@ namespace Web.Site.Helpers
         //{
         //    TempData["JsFunction"] = "";
         //    await base.OnActionExecutionAsync(context, next);
-            
+
         //}
+
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            base.OnActionExecuting(filterContext);
+            var cultureInfo = CultureInfo.GetCultureInfo("es-AR");
+            Thread.CurrentThread.CurrentCulture = cultureInfo;
+            Thread.CurrentThread.CurrentUICulture = cultureInfo;
+        }
 
         protected override void Dispose(bool disposing)
         {

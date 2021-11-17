@@ -172,7 +172,7 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Filtrar(SolicitudFilter solicitudFilter)
         {
-        
+            solicitudFilter.FechaHasta.AddDays(1);
              var result = await _solicitudService.GetSolicitudes(solicitudFilter);
             return PartialView("_SolicitudTable", result);
 

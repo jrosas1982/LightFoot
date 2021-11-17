@@ -94,6 +94,7 @@ namespace Core.Aplicacion.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error al CambioPrecio: {ex.Message }");
                 return false;
             }
         }
@@ -103,5 +104,61 @@ namespace Core.Aplicacion.Services
             return await Task.FromResult(EnumExtensions.GetValues<ArticuloEstado>());
         }
 
+        public async Task CambioPrecio(IEnumerable<Articulo> articulos)
+        {
+            try
+            {
+                foreach (var item in articulos)
+                {
+                    _db.Update(item);
+                    await _db.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error al CambioPrecio: {ex.Message }");
+                throw;
+            }
+      
+        }
+
+        public async Task EnviarMailPrecioActualizado()
+        {
+            //var compraRealizada = await _db.ComprasInsumos
+            //        .Include(x => x.CompraInsumoDetalles)
+            //            .ThenInclude(x => x.Insumo)
+            //            .ThenInclude(x => x.ProveedoresInsumo)
+            //        .Include(x => x.Proveedor)
+            //        .SingleAsync(x => x.Id == IdCompra);
+
+            //byte[] dataRow = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CompraItem")["EmailTableRow"]);
+            //string templateBaseRow = Encoding.UTF8.GetString(dataRow);
+
+            //string Maildetalles = "";
+            //foreach (var item in compraRealizada.CompraInsumoDetalles)
+            //{
+            //    var row = templateBaseRow.Replace("@NombreItem", item.Insumo.Nombre)
+            //                             .Replace("@DescripcionItem", item.Insumo.Descripcion)
+            //                             .Replace("@UnidadesItem", item.Cantidad.ToString() + item.Insumo.Unidad)
+            //                             .Replace("@PrecioItem", item.Insumo.ProveedoresInsumo.Single(x => x.IdProveedor == compraRealizada.IdProveedor).Precio.ToString());
+            //    Maildetalles += row;
+            //}
+
+
+            //byte[] dataMail = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CompraItem")["EmailBody"]);
+            //string templateBaseMail = Encoding.UTF8.GetString(dataMail);
+
+            //var template = templateBaseMail.Replace("@NombreProveedor", compraRealizada.Proveedor.Nombre)
+            //                               .Replace("@IdCompra", compraRealizada.Id.ToString())
+            //                               .Replace("@Cliente", "Fabrica LightFoot")
+            //                               .Replace("@Producto", "Insumos")
+            //                               .Replace("@Fecha", DateTime.Now.ToLongDateString())
+            //                               .Replace("@TableRows", Maildetalles)
+            //                               .Replace("@MontoTotal", compraRealizada.MontoTotal.ToString())
+            //                               .Replace("@Direccion", "4562 Hazy Panda Limits, Chair Crossing, Kentucky, US, 607898");
+
+            //await EmailSender.SendEmail($"Nueva Compra Orden #{compraRealizada.Id}", template, compraRealizada.Proveedor.Email);
+            await EmailSender.SendEmail("","");
+        }
     }
 }

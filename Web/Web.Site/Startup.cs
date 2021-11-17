@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Globalization;
+using AutoMapper;
 using Core.Aplicacion.Auth;
 using Core.Aplicacion.Hubs;
 using Core.Infraestructura;
@@ -26,6 +27,13 @@ namespace LightFoot.Web.Site
 
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var cultureInfo = new CultureInfo("es-AR");
+            cultureInfo.NumberFormat.CurrencySymbol = "$";
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
             // DbContext
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Conexion")), ServiceLifetime.Transient);
 
