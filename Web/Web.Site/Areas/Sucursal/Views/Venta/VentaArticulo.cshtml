@@ -1,0 +1,328 @@
+﻿@{
+    ViewData["Title"] = "Venta";
+    Layout = "_Layout";
+
+}
+
+@model VentaModel
+
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
+    <div class="col-lg-10">
+        <h2>Ventas</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Dashboard", new { area = "sucursal" })">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Sucursal</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Venta", 0)">Ventas</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>Nuevo</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-default w-100"
+                onclick="history.go(-1);">
+            <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+        </button>
+    </div>
+</div>
+
+
+<div class="wrapper wrapper-content animated fadeInRight ecommerce">
+
+    @using (Html.BeginForm("Crear", "Venta", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="ibox-content m-b-sm border-bottom">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">@*
+                        @Html.LabelFor(m => m, "Cliente")
+                        @Html.DropDownListFor(m => m.IdCliente, new List<SelectListItem>(ViewBag.Cliente), new { @class = "form-control chosen-select", @id = "dropdownCliente", @disabled = "disabled" })
+                    *@</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wrapper wrapper-content animated fadeInRight ecommerce">
+            <div class="ibox-content m-b-sm border-bottom">
+                <table id="ListaDetalleCompra" class="table table-bordered">
+                    <tr>
+                        @*<th>#</th>*@
+                        <th>Articulo</th>
+                        <th>Proveedor</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Comentario</th>
+                        <th>Acciones</th>
+                    </tr>
+                    <tbody>
+                        @*@if (Model.CompraArticuloDetalleModels != null)
+                            {
+                                @foreach (var Adds in Model.CompraArticuloDetalleModels)
+                                {
+                                    if (Adds != null)
+                                    {
+                                        @await Html.PartialAsync("_CompraArticuloDetalle", Adds)
+                                    }
+                                }
+                            }*@
+                    </tbody>
+                </table>
+                <div class="ibox-content border-0 pt-0 pr-0">
+                    <div class="text-center d-flex justify-content-end">
+                        <button type="button" class="btn btn-outline btn-default btn-lg mr-1" data-toggle="modal" data-target="#agregarArticuloModal">
+                            <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Agregar Articulo
+                        </button>
+                        <button type="Submit" class="btn btn-primary btn-lg" id="comprar">
+                            Comprar
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+
+    @* MODAL NEW COMMENT *@
+    <div class="modal inmodal fade" id="agregarArticuloModal" tabindex="-1" role="dialog" style="display: none;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form class="validateDontSubmit" id="modalForm" name="modalForm">
+                    <div class="modal-header pb-1">
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-center">
+                                <h1 style="font-size:30px;">Agregar Articulo</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        @*<div class="form-floating">*@
+                        <div class="form-group">
+                            <label class="font-normal">Articulo</label>
+                            <select class="form-control  chosen-select " id="dropdownArticulo" data-placeholder="Seleccione Articulo" required>
+                                <option value=""> -- Seleccionar Articulo --</option>
+                                @*@foreach (var insumo in Model.Articulos)
+                                    {
+                                        <option value="@insumo.Value"> @insumo.Text</option>
+                                    }*@
+                            </select>
+                        </div>
+                        @*</div>*@
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Proveedor</label>
+                            <div id="dropdownProveedorPartialView">
+                                @* <partial name="_CompraArticuloProveedores.cshtml" model="null" />*@
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Cantidad</label>
+                            <input class="form-control" type="number" id="ArticuloCantidad" placeholder="Cantidad" required oninput="ActualizarPrecio()">
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Precio</label>
+                            <input class="form-control" id="Precio" placeholder="" disabled>
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal" id="ComentarioLabel">Comentario</label>
+                            <input class="form-control" id="Comentario" placeholder="Ingrese un comentario">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="ClearModal()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" onclick="addArticuloToCompra()" class="btn btn-primary">Agregar Articulo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Styles {
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/chosen/bootstrap-chosen.css" />
+    </environment>
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/chosen/chosen.jquery.js"></script>
+        <script src="~/custom/chosen-patch.js"></script>
+    </environment>
+
+    <script type="text/javascript">
+
+        $('.chosen-select').chosen({
+            no_results_text: "No hay resultados que coincidan con ",
+        });
+
+        $('#agregarArticuloModal').on('shown.bs.modal', function () {
+            $('.chosen-select', this).chosen('destroy').chosen({
+                no_results_text: "No hay resultados que coincidan con ",
+            });
+        });
+
+        function ArticuloSeleccionadoOnChange() {
+            FiltrarProveedores();
+            //ProveedorPreferidoSugerido();
+            ActualizarPrecio();
+            $("#ArticuloCantidad").val("");
+            //ComentarioChange();
+        }
+
+        function ProveeorOnChange() {
+            ActualizarPrecio();
+            //ObligarComentario();
+        }
+
+        //function ObligarComentario() {
+        //    $("#ComentarioLabel").empty();
+        //    if ($("#IdProveedorSugerido").val() != $("#dropdownProveedor :selected").val())
+        //    {
+        //        $("#Comentario").prop('required', true);
+        //        $("#ComentarioLabel").append("Motivo por el que no se selecciono el proveedor sugerido");
+        //    }
+        //    else
+        //    {
+        //        $("#Comentario").prop('required', false);
+        //        $("#ComentarioLabel").append("Comentario");
+        //    }
+        //}
+
+        function FiltrarProveedores() {
+            $.ajax({
+                type: "post",
+                url: "/sucursal/VentaArticulo/FiltrarProveedores",
+                data: {
+                    IdArticulo: $("#dropdownArticulo :selected").val()
+                },
+            }).done(function (partialView) {
+                $("#dropdownProveedorPartialView").html(""); //clear the records content
+                $("#dropdownProveedorPartialView").html(partialView);  //add the updated content.
+                $('#dropdownProveedor').chosen();
+            });
+        }
+
+        //function ProveedorPreferidoSugerido() {
+        //    $.ajax({
+        //        type: "post",
+        //        url: "/fabrica/comprainsumo/ActualizarProveedorPreferidoSugerido",
+        //        data: {
+        //            IdInsumo: $("#dropdownArticulo :selected").val()
+        //        },
+        //    }).done(function (partialView) {
+        //        $("#proveedorPreferidoSugeridoPartialView").html(""); //clear the records content
+        //        $("#proveedorPreferidoSugeridoPartialView").html(partialView);  //add the updated content.
+        //    });
+        //}
+
+        function ActualizarPrecio() {
+            $.ajax({
+                type: "post",
+                url: "/sucursal/VentaArticulo/ActualizarPrecio",
+                data: {
+                    IdArticulo: $("#dropdownArticulo :selected").val(),
+                    IdProveedor: $("#dropdownProveedor :selected").val(),
+                    Cantidad: $("#ArticuloCantidad").val(),
+                },
+            }).done(function (precio) {
+                $("#Precio").val(precio);
+            });
+        };
+
+        //prevent the form from doing a submit
+        $(document).on('submit', '.validateDontSubmit', function (e) {
+            e.preventDefault();
+            return false;
+        })
+
+        $(document).ready(function () {
+            ArticuloSeleccionadoOnChange();
+            //ObligarComentario();
+            $('#dropdownArticulo').change(function () {
+                ArticuloSeleccionadoOnChange();
+            });
+            //$('#dropdownProveedor').change(function () {
+            //    ComentarioChange();
+            //});
+        });
+
+        //function ComentarioChange() {
+        //    $.ajax({
+        //        type: "post",
+        //        url: "/fabrica/comprainsumo/ActualizarComentario",
+        //        data: {
+        //            IdInsumo: $("#dropdownArticulo :selected").val(),
+        //            IdProveedor: $('#dropdownProveedor :selected').val()
+        //        },
+        //    }).done(function (bool) {
+        //        if (bool) {
+        //            document.getElementById("Comentario").setAttribute('disabled', 'disabled');
+        //            document.getElementById("Comentario").removeAttribute('required');
+        //        }
+        //        else {
+        //            document.getElementById("Comentario").removeAttribute('disabled');
+        //            document.getElementById("Comentario").setAttribute('required', 'required');
+        //        }
+
+
+        //        //console.log(bool);
+        //    });
+        //}
+
+        //function ClearModal() {
+        //    $("#dropdownArticulo").prop("selectedIndex", 0);
+        //    $("#ArticuloCantidad").val("");
+        //    $("#Precio").val("");
+        //    $("#Comentario").val("");
+        //}
+
+        $('#agregarArticuloModal').on('hidden.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+        })
+
+        function addArticuloToCompra() {
+            if (modalForm.checkValidity()) {
+                $.ajax({
+                    type: "post",
+                    url: "/sucursal/VentaArticulo/agregardetalle",
+                    data: {
+                        IdArticulo: $("#dropdownArticulo :selected").val(),
+                        ArticuloNombre: $("#dropdownArticulo :selected").text(),
+                        IdProveedor: $("#dropdownProveedor :selected").val(),
+                        ProveedorNombre: $("#dropdownProveedor :selected").text(),
+                        Cantidad: $("#ArticuloCantidad").val(),
+                        Precio: $("#Precio").val(),
+                        Comentario: $("#Comentario").val()
+                    }
+                }).done(function (partialView) {
+                    $('#ListaDetalleCompra tbody:last-child').after().append(partialView);
+                    $("#agregarArticuloModal").modal('hide');
+                    //ClearModal();
+                });
+            }
+        }
+        function removeRow(row) {
+            $(row).parents('tr').first().remove();
+        }
+
+    </script>
+}
+

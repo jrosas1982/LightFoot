@@ -177,6 +177,21 @@ namespace Web.Site.Areas
 
         }
 
+
+        public async Task<IActionResult> CargarPagosRealizados(int idCompra)
+        {
+            try
+            {
+                var resp = await _compraArticuloService.GetPagosRealizados(idCompra);
+
+                return PartialView("_CompraArticuloIndexPagos", resp);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<IActionResult> AgregarDetalle(CompraArticuloDetalleModel data)
         {
             //var insumosList = await _insumosService.GetInsumos();

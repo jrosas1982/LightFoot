@@ -96,8 +96,9 @@
                     </div>
                 </div>
                 <div class="modal-body py-2">
+                    <h3>Insumos</h3>
                     <div class="table-responsive">
-                        <table class="footable table table-stripped table-hover table-bordered no-paging toggle-arrow-tiny">
+                        <table class="footable table table-stripped table-hover table-bordered no-paging toggle-arrow-tiny" data-page-size="3">
                             <thead>
                                 <tr>
                                     <th>Insumo</th>
@@ -111,6 +112,11 @@
                                 <partial name="_CompraInsumoIndexDetalle.cshtml" model="null" />
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <div class="modal-body py-2">
+                    <div id="partialViewModalDetalle">
+                        <partial name="_CompraInsumoIndexPagos.cshtml" model="null" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -192,7 +198,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" onclick="ClearModalrecibirCompra()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
                         <button type="submit" onclick="BootonRecibirCompra()" class="btn btn-primary">Recibir</button>
                     </div>
                 </form>
@@ -214,8 +220,10 @@
                             </div>
                         </div>
                     </div>
-                    <div id="partialViewModalPagos">
-                        <partial name="_CompraInsumoIndexPagos.cshtml" model="null" />
+                    <div class="modal-body py-2">
+                        <div id="partialViewModalPagos">
+                            <partial name="_CompraInsumoIndexPagos.cshtml" model="null" />
+                        </div>
                     </div>
                     <div class="modal-body py-2 border-bottom">
                         <div class="form-group">
@@ -241,7 +249,7 @@
                             </div>*@
                     </div>
                     <div class="modal-footer">
-                        <button type="button" onclick="ClearModalrecibirCompra()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
                         <button type="submit" onclick="btnPagarCompra()" class="btn btn-primary">Registrar Pago</button>
                     </div>
                 </form>
@@ -306,6 +314,22 @@
     <script type="text/javascript">
         function verDetalle(id) {
             ActualizarDetalleCompra(id);
+            $.ajax({
+                type: "Get",
+                url: "/fabrica/CompraInsumo/CargarPagosRealizados",
+                traditional: true,
+                data: {
+                    idCompra: id
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#partialViewModalDetalle").html(""); //clear the records content
+                    $("#partialViewModalDetalle").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw');
+                    //$('#ModalrecibirCompra').modal('hide');
+                }
+            });
         }
 
         function ActualizarDetalleCompra(id) {
@@ -320,6 +344,8 @@
                 success: function (response) {
                     $("#partialViewEventos").html(""); //clear the records content
                     $("#partialViewEventos").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw');
                 }
             });
         }
@@ -400,36 +426,22 @@
             console.log("pagarCompra con id");
             $('#tituloModalpagarCompra').text('Pagar Compra #' + id);
             $('#hiddenModalpagarCompra').val(id);
-            $('#cantidadPagar').max(montoTotal);
-            //$.ajax({
-            //    type: "post",
-            //    url: "/fabrica/CompraInsumo/PagarCompra",
-            //    data: {
-            //        idCompra: idCompra,
-            //        tipoPago: tipoPago,
-            //        montoPagado: pagado
-            //    },
-            //    success: function (response) {
-            //        if (response) {
-            //            swal(
-            //                'Compra #' + idCompra + ' pagada',
-            //                'Se pagado ' + pagado,
-            //                'success'
-            //            );
-            //        }
-            //    }
-            //}).done(function (response) {
-            //    $("#ComprasPartialView").html(""); //clear the records content
-            //    $("#ComprasPartialView").html(response);  //add the updated content.
-            //    $('.footable').footable();
-            //    $('.footable').trigger('footable_redraw');
-            //    $('#ModalPagarCompra').modal('hide');
-            //    //window.setTimeout(function () {
-            //    //    location.reload();
-            //    //}, 600);
-            //});
-            //$('#partialViewModalPagos').val(id);
-            
+            $.ajax({
+                type: "Get",
+                url: "/fabrica/CompraInsumo/CargarPagosRealizados",
+                traditional: true,
+                data: {
+                    idCompra: id
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#partialViewModalPagos").html(""); //clear the records content
+                    $("#partialViewModalPagos").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw');
+                    //$('#ModalrecibirCompra').modal('hide');
+                }
+            });
         }
 
         function btnPagarCompra() {
