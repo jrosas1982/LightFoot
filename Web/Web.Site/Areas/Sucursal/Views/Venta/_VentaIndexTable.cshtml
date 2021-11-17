@@ -16,24 +16,24 @@
             <thead>
                 <tr>
                     <th style="background-color: #caeee982; ">#Venta</th>
-                    <th style="background-color: #caeee982;">Tipo de Cliente</th>
+                    <th style="background-color: #caeee982;">Vendedor</th>
+                    <th style="background-color: #caeee982;">Cliente</th>
                     <th style="background-color: #caeee982;">Tipo de Pago</th>
                     <th style="background-color: #caeee982;">Monto Total</th>
                     <th style="background-color: #caeee982;">Fecha</th>
-                    <th style="background-color: #caeee982;">Vendedor</th>
                     <th style="background-color: #caeee982;" data-sort-ignore="true" class="d-print-none">Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @*@foreach (var compra in @Model)
-                {*@
+                @foreach (var venta in @Model)
+                {
                 <tr>
-                    <td>23</td>
-                    <td>mayo</td>
-                    <td>tarjeta</td>
-                    <td>$345</td>
-                    <td>24/02/35</td>
-                    <td>El lider</td>
+                    <td>@venta.Id</td>
+                    <td>@venta.CreadoPor</td>
+                    <td>@venta.Cliente.Nombre</td>
+                    <td>@venta.VentaTipo</td>
+                    <td>@venta.MontoTotal</td>
+                    <td>@venta.FechaCreacion</td>
                     <td class="d-print-none">
                         <button class="btn btn-outline btn-success btn-xs" type="button"
                                 @*onclick="verDetalle(@compra.Id)"*@
@@ -44,7 +44,7 @@
 
                     </td>
                 </tr>
-                 @*}*@
+                }
             </tbody>
             <tfoot>
                 <tr>
