@@ -37,34 +37,80 @@ namespace Core.Aplicacion.Services
             _Configuration = configuration;
         }
 
-        public Task AgregarPagoVenta(int idVenta, TipoPago tipoPago, decimal montoPagado)
+        public async Task AgregarPagoVenta(int idVenta, TipoPago tipoPago, decimal montoPercibido)
         {
-            throw new NotImplementedException();
+            var venta = await _db.Ventas.Where(x => x.IdSucursal == IdSucursal).SingleOrDefaultAsync(x => x.Id == idVenta);
+            if (venta == null)
+                throw new Exception("No existe la compra");
+
+            var montoPercibidoTotal = await _db.ClientesCuentaCorriente.Where(x => x.IdVenta == idVenta).SumAsync(x => x.MontoPercibido);
+
+            if (venta.MontoTotal < (montoPercibido + montoPercibidoTotal))
+                throw new Exception("No se puede cobrar mas del total de la venta");
+
+            var clienteCuentaCorriente = new ClienteCuentaCorriente()
+            {
+                IdCliente = venta.IdCliente,
+                IdVenta = venta.Id,
+                TipoPago = tipoPago,
+                MontoPercibido = montoPercibido
+            };
+
+            venta.Pagado = true;
+            venta.FechaPagado = DateTime.Now;
+
+            _db.Ventas.Update(venta);
+            _db.ClientesCuentaCorriente.Add(clienteCuentaCorriente);
+
+            await _db.SaveChangesAsync();
         }
 
-        public Task<Venta> BuscarPorId(int idVenta)
+        public async Task<Venta> BuscarPorId(int idVenta)
         {
-            throw new NotImplementedException();
+            var venta = await _db.Ventas
+                           .AsNoTracking()
+                           .Where(x => x.IdSucursal == IdSucursal && x.Id == idVenta)
+                           .Include(x => x.VentaDetalles)
+                               .ThenInclude(x => x.Articulo)
+                           .Include(x => x.Cliente)
+                           .Include(x => x.Sucursal)
+                           .OrderBy(x => x.FechaModificacion)
+                           .ThenBy(x => x.Descuento)
+                           .ThenByDescending(x => x.FechaModificacion.HasValue)
+                           .ThenByDescending(x => x.FechaCreacion)
+                           .SingleAsync();
+
+            return venta;
         }
 
-        public Task CrearVenta(NuevaVentaModel cabecera, IEnumerable<NuevaVentaDetalleModel> detalles)
+        public async Task CrearVenta(NuevaVentaModel cabecera, IEnumerable<NuevaVentaDetalleModel> detalles)
         {
-            throw new NotImplementedException();
+
+            //var ventaDetalles = detalles.Select(x => new VentaDetalle()
+            //{
+            //    IdArticulo = x.IdArticulo,
+            //    Cantidad = x.Cantidad,
+            //    Monto = 
+            //}
         }
 
-        public Task<IEnumerable<TipoPago>> GetTiposPago()
+        public async Task<IEnumerable<TipoPago>> GetTiposPago()
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(EnumExtensions.GetValues<TipoPago>());
         }
 
-        public Task<IEnumerable<VentaTipo>> GetTiposVenta()
+        public async Task<IEnumerable<VentaTipo>> GetTiposVenta()
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(EnumExtensions.GetValues<VentaTipo>());
         }
 
-        public Task<IEnumerable<VentaDetalle>> GetVentaDetalles(int idVenta)
+        public async Task<IEnumerable<VentaDetalle>> GetVentaDetalles(int idVenta)
         {
-            throw new NotImplementedException();
+            var ventaDetalles = _db.VentasDetalle
+                .Include(x => x.Articulo)
+                .Where(x => x.IdVenta == idVenta);
+
+            return await Task.FromResult(ventaDetalles);
         }
 
         public async Task<IEnumerable<Venta>> GetVentas()
