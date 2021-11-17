@@ -255,12 +255,12 @@ namespace Core.Aplicacion.Services
                     .IncludeOptimized(x => x.SolicitudDetalles.Select(d => d.OrdenesProduccion.Select(o => o.Id)));
 
                 var solicitudesFiltered = solicitudesList.Where(x => x.FechaCreacion > filter.FechaDesde
-                                                                  && x.FechaCreacion < filter.FechaHasta);
+                                                                  && x.FechaCreacion < filter.FechaHasta.AddDays(1));
 
                 if (filter.IdSucursalList != null && filter.IdSucursalList.Any())
-                    solicitudesFiltered = solicitudesList.Where(x => filter.IdSucursalList.Any(f => f == x.IdSucursal));
+                    solicitudesFiltered = solicitudesFiltered.Where(x => filter.IdSucursalList.Contains(x.IdSucursal));
                 if (filter.EstadoSolicitudList != null && filter.EstadoSolicitudList.Any())
-                    solicitudesFiltered = solicitudesFiltered.Where(x => filter.EstadoSolicitudList.Any(f => f == x.EstadoSolicitud));      
+                    solicitudesFiltered = solicitudesFiltered.Where(x => filter.EstadoSolicitudList.Contains(x.EstadoSolicitud));      
 
                 _logger.LogInformation("Se buscaron las solicitudes");
                 return await solicitudesFiltered.ToListAsync();
@@ -268,7 +268,7 @@ namespace Core.Aplicacion.Services
             catch (Exception ex)
             {
                 _logger.LogError($"Error en GetSolicitudes Mensaje: {ex.Message}");
-                throw;
+                throw ex;
             }
 
         }

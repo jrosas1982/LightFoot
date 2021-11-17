@@ -74,7 +74,7 @@
                             <td>
                                 <span class="label label-@solicitud.EstadoSolicitud.GetGroupName()">@solicitud.EstadoSolicitud.GetDisplayName()</span>
                             </td>
-                            <td>@solicitud.FechaCreacion.ToLocalTime()</td>
+                            <td>@solicitud.FechaCreacion</td>
                             <td class="d-print-none">
                                 <button class="btn btn-outline btn-success btn-xs" type="button" onclick="VerDetalles('@solicitud.Id')">Ver Detalles</button>
 

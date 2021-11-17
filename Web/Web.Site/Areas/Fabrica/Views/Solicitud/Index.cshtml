@@ -78,7 +78,7 @@
                     <select id="solicitud_estado" data-placeholder="Estado de solicitud" class="chosen-select" multiple tabindex="3">
                         @foreach (var estado in EstadosSolicitud)
                         {
-                            <option value="@(estado)"> @estado.GetDisplayName() </option>
+                            <option value="@((int)estado)"> @estado.GetDisplayName() </option>
                         }
                     </select>
                 </div>
