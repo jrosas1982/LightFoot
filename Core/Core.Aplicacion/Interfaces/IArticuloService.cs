@@ -13,5 +13,6 @@ namespace Core.Aplicacion.Interfaces
         public Task EditarArticulo(Articulo articulo);
         public Task<bool> EliminarArticulo(Articulo articulo);
         public Task<IEnumerable<ArticuloEstado>> GetArticuloEstados();
+        public Task CambioPrecio(IEnumerable<Articulo> articulos);
     }
 }
