@@ -2,6 +2,7 @@
     ViewData["Title"] = "Venta";
     Layout = "_Layout";
 
+    var idCliente = ViewBag.IdCliente;
 }
 
 @model VentaModel
@@ -26,12 +27,12 @@
     </div>
     <div class="col-lg-2 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
         <button type="button" class="btn btn-default w-100"
-                onclick="history.go(-1);">
+                onclick="location.href='@Url.Action("Index", "Venta", 0)'">
             <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
         </button>
     </div>
 </div>
-
+@*history.go(-1);*@
 
 <div class="wrapper wrapper-content animated fadeInRight ecommerce">
 
@@ -41,54 +42,56 @@
         <div class="ibox-content m-b-sm border-bottom">
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group">@*
-                        @Html.LabelFor(m => m, "Cliente")
-                        @Html.DropDownListFor(m => m.IdCliente, new List<SelectListItem>(ViewBag.Cliente), new { @class = "form-control chosen-select", @id = "dropdownCliente", @disabled = "disabled" })
-                    *@</div>
+                    <div class="form-group">
+                        @*
+                            @Html.LabelFor(m => m, "Cliente")
+                            @Html.DropDownListFor(m => m.IdCliente, new List<SelectListItem>(ViewBag.Cliente), new { @class = "form-control chosen-select", @id = "dropdownCliente", @disabled = "disabled" })
+                    *@
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="wrapper wrapper-content animated fadeInRight ecommerce">
-            <div class="ibox-content m-b-sm border-bottom">
-                <table id="ListaDetalleCompra" class="table table-bordered">
-                    <tr>
-                        @*<th>#</th>*@
-                        <th>Articulo</th>
-                        <th>Proveedor</th>
-                        <th>Cantidad</th>
-                        <th>Precio</th>
-                        <th>Comentario</th>
-                        <th>Acciones</th>
-                    </tr>
-                    <tbody>
-                        @*@if (Model.CompraArticuloDetalleModels != null)
+    <div class="wrapper wrapper-content animated fadeInRight ecommerce">
+        <div class="ibox-content m-b-sm border-bottom">
+            <table id="ListaDetalleCompra" class="table table-bordered">
+                <tr>
+                    @*<th>#</th>*@
+                    <th>Articulo</th>
+                    <th>Proveedor</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Comentario</th>
+                    <th>Acciones</th>
+                </tr>
+                <tbody>
+                    @*@if (Model.CompraArticuloDetalleModels != null)
+                        {
+                            @foreach (var Adds in Model.CompraArticuloDetalleModels)
                             {
-                                @foreach (var Adds in Model.CompraArticuloDetalleModels)
+                                if (Adds != null)
                                 {
-                                    if (Adds != null)
-                                    {
-                                        @await Html.PartialAsync("_CompraArticuloDetalle", Adds)
-                                    }
+                                    @await Html.PartialAsync("_CompraArticuloDetalle", Adds)
                                 }
-                            }*@
-                    </tbody>
-                </table>
-                <div class="ibox-content border-0 pt-0 pr-0">
-                    <div class="text-center d-flex justify-content-end">
-                        <button type="button" class="btn btn-outline btn-default btn-lg mr-1" data-toggle="modal" data-target="#agregarArticuloModal">
-                            <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Agregar Articulo
-                        </button>
-                        <button type="Submit" class="btn btn-primary btn-lg" id="comprar">
-                            Comprar
-                        </button>
-
-                    </div>
+                            }
+                        }*@
+                </tbody>
+            </table>
+            <div class="ibox-content border-0 pt-0 pr-0">
+                <div class="text-center d-flex justify-content-end">
+                    <button type="button" class="btn btn-outline btn-default btn-lg mr-1" data-toggle="modal" data-target="#agregarArticuloModal">
+                        <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Agregar Articulo
+                    </button>
+                    <button type="Submit" class="btn btn-primary btn-lg" id="comprar">
+                        Comprar
+                    </button>
 
                 </div>
+
             </div>
         </div>
-    }
+    </div>
+}
 
     @* MODAL NEW COMMENT *@
     <div class="modal inmodal fade" id="agregarArticuloModal" tabindex="-1" role="dialog" style="display: none;">

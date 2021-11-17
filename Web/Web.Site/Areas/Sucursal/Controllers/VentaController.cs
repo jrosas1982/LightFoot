@@ -18,38 +18,44 @@ namespace Web.Site.Areas
     public class VentaController : CustomController
     {
         private IVentaService _ventaService;
+        private IClienteService _clienteService;
         
-        public VentaController(IVentaService ventaService)
+        public VentaController(IVentaService ventaService, IClienteService clienteService)
         {
             _ventaService = ventaService;
+            _clienteService = clienteService;
         }
         public async Task<IActionResult> Index()
         {
-            var ventasList = await _ventaService.GetVentas(); 
+            var ventasList = await _ventaService.GetVentas();
+
+            var clienteListTask = _clienteService.GetClientes();
+            await Task.WhenAll(clienteListTask);
+            var clienteList = clienteListTask.Result;
+            ViewBag.Clientes = clienteList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" });
 
             return View(ventasList);
         }
 
-        public async Task<IActionResult> VentaArticulo( /*int idCliente*/ )
+        public async Task<IActionResult> VentaArticulo(int IdCliente)
         {
             //var proveedoresListTask = _proveedorService.GetProveedores();
             //var articulosListTask = _articuloService.GetArticulos();
-            //var clienteListTask = _clienteService.BuscarPorId(idCliente)
 
-            //await Task.WhenAll(proveedoresListTask, articulosListTask, clienteListTask);
+            //await Task.WhenAll(proveedoresListTask, articulosListTask);
 
             //var proveedoresList = proveedoresListTask.Result;
             //var articulosList = articulosListTask.Result;
-            //var clienteList = clienteListTask.Result;
-
-            //ViewBag.Cliente = clienteList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" });
-
-            VentaModel ventaModel = new VentaModel();
+            Cliente cliente = await _clienteService.BuscarPorId(IdCliente);
+            VentaModel ventaModel = new VentaModel()
+            {
+                Cliente = cliente
+            };
 
             //compraArticuloModel.Articulos = articulosList.Select(x => new SelectListItem() { Text = $"{x.ArticuloCategoria.Descripcion} - {x.CodigoArticulo} - {x.Nombre} - {x.Color} - Talle {x.TalleArticulo} ", Value = $"{x.Id}" });
             //compraArticuloModel.Proveedores = proveedoresList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" });
 
-            return View();
+            return View(ventaModel);
         }
     }
 }

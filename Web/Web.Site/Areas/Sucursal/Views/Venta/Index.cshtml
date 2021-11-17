@@ -4,7 +4,7 @@
 
     var title = "Ventas";
 
-
+    //IEnumerable<Cliente> Clientes = ViewBag.Clientes;
 }
 
 @model IEnumerable<Venta>
@@ -120,35 +120,41 @@
     <div class="modal inmodal fade" id="ModalVenta" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-lg" style="max-width: 900px !important;">
             <div class="modal-content">
-                <div class="modal-header pb-1">
-                    <div class="row">
-                        <div class="col-sm-12 d-flex justify-content-center">
-                            <h1 style="font-size:30px;">Registrar Venta</h1>
+                <form class="validateDontSubmit" id="modalForm" name="modalForm">
+                    <div class="modal-header pb-1">
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-center">
+                                <h1 style="font-size:30px;">Registrar Venta</h1>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-body py-2">
-                    <div class="form-group">
-                        <label class="font-normal">Cliente</label>
-                        @*<div class="row">
-                            <div class="col-lg-8">*@
-                                <select class="form-control chosen-select" id="dropdownCliente" data-placeholder="Seleccione Cliente" @*onchange="InsumoSeleccionadoOnChange()"*@ required>
-                                    <option value=""> -- Seleccionar Cliente --</option>
-                                    <option value="1"> Un Cliente</option>
-                                </select>
-                            @*</div>*@
-                            @*<div class="col-lg-4 py-2 p-lg-0">*@
-                                <button type="button" class="btn btn-white w-100">
-                                    <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Nuevo
-                                </button>
-                            @*</div>
-                        </div>*@
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Cliente</label>
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <select required class="form-control chosen-select" id="dropdownCliente" data-placeholder="Seleccione Cliente" onclick="" @*onchange="InsumoSeleccionadoOnChange()"*@>
+                                        <option value=""> -- Seleccionar Cliente --</option>
+                                        @foreach (var cliente in ViewBag.Clientes)
+                                        {
+                                            <option value=@cliente.Value> @cliente.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-lg-4 py-2 p-lg-0">
+                                    <button type="button" class="btn btn-w-m btn-white w-100"
+                                            onclick="window.location ='/abm/Clientes/CrearEditarCliente'">
+                                        <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Nuevo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" onclick="location.href='@Url.Action("VentaArticulo", "Venta", 0)'" class="btn btn-primary">Registrar una Venta</button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" onclick="refVenta()" @*"location.href='@Url.Action("VentaArticulo", "Venta", 0)'"*@ class="btn btn-primary">Registrar una Venta</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -199,6 +205,15 @@
             e.preventDefault();
             return false;
         });
+
+        function refVenta() {
+            Id = $('#dropdownCliente :selected').val();
+            if (modalForm.checkValidity()) {
+                //window.location.href = '@Url.Action("VentaArticulo", "Venta", 0)';
+                window.location = '/sucursal/Venta/VentaArticulo?IdCliente='+Id;
+            }
+        }
+
 
     </script>
 
