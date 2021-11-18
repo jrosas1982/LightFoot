@@ -20,7 +20,7 @@ namespace Core.Aplicacion.Services
         private readonly ILogger<ArticuloService> _logger;
         private readonly IConfiguration _Configuration;
 
-        public ArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<ArticuloService> logger, IConfiguration configuration)
+        public ArticuloService(AppDbContext db, ILogger<ArticuloService> logger, IConfiguration configuration)
         {
             _db = db;
             _logger = logger;
