@@ -9,6 +9,8 @@ namespace Web.Site.Areas
 {
     public class VentaModel
     {
+        
+        public int IdCliente { get; set; }
         public Cliente Cliente { get; set; }
         public VentaTipo VentaTipo { get; set; }
         public decimal DescuentoRealizado { get; set; }

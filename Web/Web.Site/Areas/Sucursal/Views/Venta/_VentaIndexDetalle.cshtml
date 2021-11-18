@@ -16,22 +16,17 @@
 }
 else
 {
-    @*@foreach (var detalle in Model.CompraArticuloDetalles)
+    @foreach (var detalle in Model.VentaDetalles)
     {
-        <tr>
-            <td>@detalle.Articulo.ArticuloCategoria.Descripcion - @detalle.Articulo.CodigoArticulo - @detalle.Articulo.Nombre - @detalle.Articulo.Color - Talle @detalle.Articulo.TalleArticulo</td>
-            <td>@Model.Proveedor.Nombre</td>
-            <td>@detalle.Cantidad</td>
-            <td>@detalle.Monto</td>
-            @if (detalle.Comentario == "" || detalle.Comentario == null)
-            {
-                <td>Sin Comentarios</td>
-            }
-            else
-            {
-                <td>@detalle.Comentario</td>
-            }
+    <tr>
+        <td>@detalle.Articulo.CodigoArticulo</td>
+        <td>@detalle.Articulo.Nombre</td>
+        <td>@detalle.Articulo.Descripcion</td>
+        <td>@detalle.Articulo.Color</td>
+        <td>@detalle.Articulo.TalleArticulo</td>
+        <td>@detalle.Cantidad</td>
+        <td>@(detalle.PrecioUnitario*detalle.Cantidad)</td>
 
-        </tr>
-    }*@
+    </tr>
+    }
 }
