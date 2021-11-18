@@ -16,7 +16,6 @@ namespace Core.Aplicacion.Services
 {
     public class VentaService : IVentaService
     {
-        private readonly int IdSucursal;
         private readonly AppDbContext _db;
         private readonly ILogger<VentaService> _logger;
         private readonly IArticuloService _articuloService;
@@ -34,12 +33,12 @@ namespace Core.Aplicacion.Services
             _proveedorArticuloService = proveedorArticuloService;
             _controlStockArticuloService = controlStockArticuloService;
             _Configuration = configuration;
-            IdSucursal = int.Parse(_db.GetSucursalId());
         }
 
         public async Task AgregarPagoVenta(int idVenta, TipoPago tipoPago, decimal montoPercibido)
         {
-            var venta = await _db.Ventas.Where(x => x.IdSucursal == IdSucursal).SingleOrDefaultAsync(x => x.Id == idVenta);
+            int idSucursal = int.Parse(_db.GetSucursalId());
+            var venta = await _db.Ventas.Where(x => x.IdSucursal == idSucursal).SingleOrDefaultAsync(x => x.Id == idVenta);
             if (venta == null)
                 throw new Exception("No existe la compra");
 
@@ -67,9 +66,11 @@ namespace Core.Aplicacion.Services
 
         public async Task<Venta> BuscarPorId(int idVenta)
         {
+            int idSucursal = int.Parse(_db.GetSucursalId());
+
             var venta = await _db.Ventas
                            .AsNoTracking()
-                           .Where(x => x.IdSucursal == IdSucursal && x.Id == idVenta)
+                           .Where(x => x.IdSucursal == idSucursal && x.Id == idVenta)
                            .Include(x => x.VentaDetalles)
                                .ThenInclude(x => x.Articulo)
                            .Include(x => x.Cliente)
@@ -83,7 +84,7 @@ namespace Core.Aplicacion.Services
             return venta;
         }
 
-        public async Task CrearVenta(int idCliente, VentaTipo ventaTipo, decimal descuentoRealizado, IEnumerable<NuevaVentaDetalleModel> detalles)
+        public async Task<Venta> CrearVenta(int idCliente, VentaTipo ventaTipo, decimal descuentoRealizado, IEnumerable<NuevaVentaDetalleModel> detalles)
         {
             IEnumerable<ArticuloPrecio> articuloPrecioList;
             if (ventaTipo == VentaTipo.Mayorista)
@@ -99,15 +100,19 @@ namespace Core.Aplicacion.Services
                 {
                     IdArticulo = item.IdArticulo,
                     Cantidad = item.Cantidad,
-                    Monto = articuloPrecioList.Single(x => x.IdArticulo == item.IdArticulo).Precio
+                    PrecioUnitario = articuloPrecioList.Single(x => x.IdArticulo == item.IdArticulo).Precio,
+                    
                 };
                 ventaDetalles.Add(detalle);
-                montoTotalAcum += detalle.Monto;
+                montoTotalAcum += detalle.PrecioUnitario;
             }
+
+
+            int idSucursal = int.Parse(_db.GetSucursalId());
 
             var venta = new Venta()
             {
-                IdSucursal = IdSucursal,
+                IdSucursal = idSucursal,
                 IdCliente = idCliente,
                 IdUsuario = _db.Usuarios.Single(x => x.NombreUsuario == _db.GetUsername()).Id,
                 MontoTotal = montoTotalAcum  - descuentoRealizado,
@@ -117,6 +122,8 @@ namespace Core.Aplicacion.Services
 
             _db.Ventas.Add(venta);
             await _db.SaveChangesAsync();
+
+            return venta;
         }
 
         private class ArticuloPrecio
@@ -127,7 +134,7 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<TipoPago>> GetTiposPago()
         {
-            return await Task.FromResult(EnumExtensions.GetValues<TipoPago>());
+            return await Task.FromResult(new List<TipoPago>() { TipoPago.Cheque, TipoPago.Transferencia });
         }
 
         public async Task<IEnumerable<VentaTipo>> GetTiposVenta()
@@ -146,9 +153,11 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Venta>> GetVentas()
         {
+            int idSucursal = int.Parse(_db.GetSucursalId());
+
             var ventasList = await _db.Ventas
                 .AsNoTracking()
-                .Where(x => x.IdSucursal == IdSucursal)
+                .Where(x => x.IdSucursal == idSucursal)
                 .Include(x => x.VentaDetalles)
                     .ThenInclude(x => x.Articulo)
                 .Include(x => x.Cliente)
