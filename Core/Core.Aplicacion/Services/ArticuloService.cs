@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
+using Core.Dominio.CoreModelHelpers;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Aplicacion.Services
@@ -15,11 +18,13 @@ namespace Core.Aplicacion.Services
     {
         private readonly AppDbContext _db;
         private readonly ILogger<ArticuloService> _logger;
+        private readonly IConfiguration _Configuration;
 
-        public ArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<ArticuloService> logger)
+        public ArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<ArticuloService> logger, IConfiguration configuration)
         {
             _db = extendedAppDbContext.context;
             _logger = logger;
+            _Configuration = configuration;
         }
 
         public async Task<IEnumerable<Articulo>> GetArticulos()
@@ -104,61 +109,93 @@ namespace Core.Aplicacion.Services
             return await Task.FromResult(EnumExtensions.GetValues<ArticuloEstado>());
         }
 
-        public async Task CambioPrecio(IEnumerable<Articulo> articulos)
+        public async Task CambioPrecio(NuevoCambioPrecioModel modelo)
         {
-            try
+            var articulosDb = _db.Articulos.Where(x => modelo.Detalle.Select(a => a.IdArticulo).Contains(x.Id));
+
+         
+             decimal precio;
+            var articuloPrecioList = new List<ArticuloPrecio>();
+            var tipoCambio = "Mayorista";
+            foreach (var item in modelo.Detalle)
             {
-                foreach (var item in articulos)
-                {
-                    _db.Update(item);
-                    await _db.SaveChangesAsync();
+                var articulo = articulosDb.Single(x => x.Id == item.IdArticulo);
+
+                if (modelo.CambioPrecioMayorista)
+                    precio = articulo.PrecioMayorista;
+                else {
+                    tipoCambio = "Minorista";
+                    precio = articulo.PrecioMinorista;
                 }
+                var articuloPrecio = new ArticuloPrecio()
+                {
+                    IdArticulo = item.IdArticulo,
+                    NombreArticulo = $"{articulo.CodigoArticulo} - {articulo.Nombre} - {articulo.Color} - Talle {articulo.TalleArticulo}",
+                    PrecioAnterior = precio,
+                    PrecioNuevo = item.NuevoPrecio
+                };
+                articuloPrecioList.Add(articuloPrecio);
             }
-            catch (Exception ex)
+
+            foreach (var item in articulosDb)
             {
-                _logger.LogError($"Error al CambioPrecio: {ex.Message }");
-                throw;
+                var nuevoPrecio = modelo.Detalle.Single(x => x.IdArticulo == item.Id).NuevoPrecio;
+
+                if (modelo.CambioPrecioMayorista)
+                    item.PrecioMayorista = nuevoPrecio;
+                else
+                    item.PrecioMinorista = nuevoPrecio;
+
+                _db.Articulos.Update(item);
+         
             }
-      
+            await _db.SaveChangesAsync();
+            await EnviarMailPrecioActualizado(articuloPrecioList, tipoCambio, modelo.Comentario, articuloPrecioList.Count());
+
         }
 
-        public async Task EnviarMailPrecioActualizado()
+        private async Task EnviarMailPrecioActualizado(List<ArticuloPrecio> articulos, string tipoCambio, string comentario, int cantidadModificada)
         {
-            //var compraRealizada = await _db.ComprasInsumos
-            //        .Include(x => x.CompraInsumoDetalles)
-            //            .ThenInclude(x => x.Insumo)
-            //            .ThenInclude(x => x.ProveedoresInsumo)
-            //        .Include(x => x.Proveedor)
-            //        .SingleAsync(x => x.Id == IdCompra);
+            //busqueda de supervisores
 
-            //byte[] dataRow = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CompraItem")["EmailTableRow"]);
-            //string templateBaseRow = Encoding.UTF8.GetString(dataRow);
+            var supervisores = _db.Usuarios.Where(x => x.UsuarioRol == UsuarioRol.Supervisor);
 
-            //string Maildetalles = "";
-            //foreach (var item in compraRealizada.CompraInsumoDetalles)
-            //{
-            //    var row = templateBaseRow.Replace("@NombreItem", item.Insumo.Nombre)
-            //                             .Replace("@DescripcionItem", item.Insumo.Descripcion)
-            //                             .Replace("@UnidadesItem", item.Cantidad.ToString() + item.Insumo.Unidad)
-            //                             .Replace("@PrecioItem", item.Insumo.ProveedoresInsumo.Single(x => x.IdProveedor == compraRealizada.IdProveedor).Precio.ToString());
-            //    Maildetalles += row;
-            //}
+            byte[] dataRow = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CambioPrecio")["EmailTableRow"]);
+            string templateBaseRow = Encoding.UTF8.GetString(dataRow);
+
+            string Maildetalles = "";
+
+            foreach (var item in articulos)
+            {
+                var row = templateBaseRow.Replace("@NombreArticulo", item.NombreArticulo)
+                                         .Replace("@PrecioAnterior", item.PrecioAnterior.ToString())
+                                         .Replace("@PrecioNuevo", item.PrecioNuevo.ToString()); 
+                Maildetalles += row;
+            }
+            byte[] dataMail = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CambioPrecio")["EmailBody"]);
+            string templateBaseMail = Encoding.UTF8.GetString(dataMail);
 
 
-            //byte[] dataMail = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CompraItem")["EmailBody"]);
-            //string templateBaseMail = Encoding.UTF8.GetString(dataMail);
 
-            //var template = templateBaseMail.Replace("@NombreProveedor", compraRealizada.Proveedor.Nombre)
-            //                               .Replace("@IdCompra", compraRealizada.Id.ToString())
-            //                               .Replace("@Cliente", "Fabrica LightFoot")
-            //                               .Replace("@Producto", "Insumos")
-            //                               .Replace("@Fecha", DateTime.Now.ToLongDateString())
-            //                               .Replace("@TableRows", Maildetalles)
-            //                               .Replace("@MontoTotal", compraRealizada.MontoTotal.ToString())
-            //                               .Replace("@Direccion", "4562 Hazy Panda Limits, Chair Crossing, Kentucky, US, 607898");
+            var template = templateBaseMail.Replace("@TipoDeCambio", tipoCambio)
+                                           .Replace("@cantMod", cantidadModificada.ToString())
+                                           .Replace("@Comentario", comentario)
+                                           .Replace("@TableRows", Maildetalles);
 
-            //await EmailSender.SendEmail($"Nueva Compra Orden #{compraRealizada.Id}", template, compraRealizada.Proveedor.Email);
-            await EmailSender.SendEmail("","");
+
+            foreach (var item in supervisores)
+            {
+                 var body = template.Replace("@NombreSupervisor!", item.NombreUsuario);
+                 await EmailSender.SendEmail($"Nueva Modificación de precio ", body, item.Email);
+            }
+        }
+
+        private class ArticuloPrecio
+        {
+            public int IdArticulo { get; set; }
+            public string NombreArticulo { get; set; }
+            public decimal PrecioAnterior { get; set; }
+            public decimal PrecioNuevo { get; set; }
         }
     }
 }

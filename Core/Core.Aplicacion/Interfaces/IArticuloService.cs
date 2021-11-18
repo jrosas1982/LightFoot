@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Dominio.AggregatesModel;
+using Core.Dominio.CoreModelHelpers;
 
 namespace Core.Aplicacion.Interfaces
 {
@@ -13,6 +14,6 @@ namespace Core.Aplicacion.Interfaces
         public Task EditarArticulo(Articulo articulo);
         public Task<bool> EliminarArticulo(Articulo articulo);
         public Task<IEnumerable<ArticuloEstado>> GetArticuloEstados();
-        public Task CambioPrecio(IEnumerable<Articulo> articulos);
+        public Task CambioPrecio(NuevoCambioPrecioModel modelo);
     }
 }
