@@ -37,10 +37,17 @@ namespace Web.Site.Areas
             var compraArticulosList = await _compraArticuloService.GetCompras();
 
             if (!string.IsNullOrWhiteSpace(nombreCompra))
-                compraArticulosList = compraArticulosList.Where(x => x.Id.ToString().Contains(nombreCompra.ToLower())
-                                                            || x.NroRemito.ToString().Contains(nombreCompra.ToLower())
-                                                            || x.MontoTotal.ToString().Contains(nombreCompra.ToLower())
-                                                            || x.Proveedor.Nombre.ToLower().Contains(nombreCompra.ToLower()));
+            {
+                compraArticulosList = compraArticulosList.Where(x => x.Id.ToString().Equals(nombreCompra.ToLower())
+                                                            || x.NroRemito.ToString().Equals(nombreCompra.ToLower())
+                                                            || x.MontoTotal.ToString().Equals(nombreCompra.ToLower())
+                                                            || x.Proveedor.Nombre.ToLower().Equals(nombreCompra.ToLower()));
+                if (!compraArticulosList.Any())
+                    compraArticulosList = compraArticulosList.Where(x => x.Id.ToString().Contains(nombreCompra.ToLower())
+                                            || x.NroRemito.ToString().Contains(nombreCompra.ToLower())
+                                            || x.MontoTotal.ToString().Contains(nombreCompra.ToLower())
+                                            || x.Proveedor.Nombre.ToLower().Contains(nombreCompra.ToLower()));
+            }
 
             return PartialView("_CompraArticuloIndexTable", compraArticulosList);
         }

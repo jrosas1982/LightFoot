@@ -38,10 +38,17 @@ namespace Web.Site.Areas
             var compraInsumoList = await _compraInsumoService.GetCompras();
 
             if (!string.IsNullOrWhiteSpace(nombreCompra))
-                compraInsumoList = compraInsumoList.Where(x => x.Id.ToString().Contains(nombreCompra.ToLower())
-                                                            || x.NroRemito.ToString().Contains(nombreCompra.ToLower())
-                                                            || x.MontoTotal.ToString().Contains(nombreCompra.ToLower())
-                                                            || x.Proveedor.Nombre.ToLower().Contains(nombreCompra.ToLower()));
+            {
+                compraInsumoList = compraInsumoList.Where(x => x.Id.ToString().Equals(nombreCompra.ToLower())
+                                                            || x.NroRemito.ToString().Equals(nombreCompra.ToLower())
+                                                            || x.MontoTotal.ToString().Equals(nombreCompra.ToLower())
+                                                            || x.Proveedor.Nombre.ToLower().Equals(nombreCompra.ToLower()));
+                if (!compraInsumoList.Any())
+                    compraInsumoList = compraInsumoList.Where(x => x.Id.ToString().Contains(nombreCompra.ToLower())
+                                            || x.NroRemito.ToString().Contains(nombreCompra.ToLower())
+                                            || x.MontoTotal.ToString().Contains(nombreCompra.ToLower())
+                                            || x.Proveedor.Nombre.ToLower().Contains(nombreCompra.ToLower()));
+            }
 
             return PartialView("_CompraInsumoIndexTable", compraInsumoList);
         }
@@ -196,6 +203,11 @@ namespace Web.Site.Areas
                 var resp = await _compraInsumoService.RecibirCompra(idCompra, nroRemito, tiempoCalificacion, distanciaCalificacion, precioCalificacion, calidadCalificacion);
 
                 var compraInsumoList = await _compraInsumoService.GetCompras();
+
+                ViewBag.TypeaheadNumCompra = compraInsumoList.Select(x => x.Id.ToString()).Distinct();
+                ViewBag.TypeaheadRemito = compraInsumoList.Where(x => !string.IsNullOrWhiteSpace(x.NroRemito.ToString())).Select(x => x.NroRemito.ToString()).Distinct();
+                ViewBag.TypeaheadTotal = compraInsumoList.Select(x => x.MontoTotal.ToString()).Distinct();
+                ViewBag.TypeaheadProveedor = compraInsumoList.Select(x => x.Proveedor.Nombre).Distinct();
 
                 return PartialView("_CompraInsumoIndexTable", compraInsumoList);
 

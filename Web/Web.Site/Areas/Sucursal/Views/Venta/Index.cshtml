@@ -214,6 +214,15 @@
                 }
             });
         }
+
+        $('#ModalDetalle').on('hidden.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+            $("#VentasPartialView").html(""); //clear the records content
+        })
+        $('#ModalVenta').on('hidden.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+
+        })
     </script>
 
     <script type="text/javascript">
