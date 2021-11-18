@@ -25,10 +25,10 @@ namespace LightFoot.Api.Publica.Controllers.v1
         private readonly ILogger<VentaController> _logger;
         private readonly IVentaService _ventaService;
 
-        public VentaController(ILogger<VentaController> logger, ExtendedAppDbContext extendedAppDbContext, IVentaService ventaService)
+        public VentaController(ILogger<VentaController> logger, AppDbContext db, IVentaService ventaService)
         {
             _logger = logger;
-            _db = extendedAppDbContext.context;
+            _db = db;
             _ventaService = ventaService;
         }
 

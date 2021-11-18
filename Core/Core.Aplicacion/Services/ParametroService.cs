@@ -18,9 +18,9 @@ namespace Core.Aplicacion.Services
         private readonly AppDbContext _db;
         private readonly ILogger<ParametroService> _logger;
 
-        public ParametroService(ExtendedAppDbContext extendedAppDbContext, ILogger<ParametroService> logger)
+        public ParametroService(AppDbContext db, ILogger<ParametroService> logger)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
         }
 

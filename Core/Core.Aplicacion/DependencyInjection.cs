@@ -32,7 +32,6 @@ namespace Core.Infraestructura
             serviceCollection.AddScoped<IVentaService, VentaService>();
 
             serviceCollection.AddScoped<UserResolverService>();
-            serviceCollection.AddTransient<ExtendedAppDbContext>();
         }
         public static void AddSecurityServices(this IServiceCollection serviceCollection)
         {

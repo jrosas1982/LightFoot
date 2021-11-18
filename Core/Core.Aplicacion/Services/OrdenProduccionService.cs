@@ -21,9 +21,9 @@ namespace Core.Aplicacion.Services
         private readonly IHubContext<NotificationsHub> _hubContext;
         private readonly IFabricacionService _fabricacionService;
 
-        public OrdenProduccionService(ExtendedAppDbContext extendedAppDbContext, ILogger<OrdenProduccionService> logger, IHubContext<NotificationsHub> hubContext, IFabricacionService fabricacionService)
+        public OrdenProduccionService(AppDbContext db, ILogger<OrdenProduccionService> logger, IHubContext<NotificationsHub> hubContext, IFabricacionService fabricacionService)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
             _hubContext = hubContext;
             _fabricacionService = fabricacionService;

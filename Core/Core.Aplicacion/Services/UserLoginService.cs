@@ -15,9 +15,9 @@ namespace Core.Aplicacion.Services
         private readonly ILogger<UserLoginService> _logger;
         private readonly PasswordHasher _PasswordHasher;
 
-        public UserLoginService(ExtendedAppDbContext extendedAppDbContext, ILogger<UserLoginService> logger, PasswordHasher passwordHasher)
+        public UserLoginService(AppDbContext db, ILogger<UserLoginService> logger, PasswordHasher passwordHasher)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
             _PasswordHasher = passwordHasher;
         }

@@ -16,9 +16,9 @@ namespace Core.Aplicacion.Helpers
         private readonly AppDbContext _db;
         private readonly ILogger<FabricacionService> _logger;
 
-        public FabricacionService(ExtendedAppDbContext extendedAppDbContext, ILogger<FabricacionService> logger)
+        public FabricacionService(AppDbContext db, ILogger<FabricacionService> logger)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
         }
 

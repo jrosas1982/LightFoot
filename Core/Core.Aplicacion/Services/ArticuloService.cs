@@ -16,9 +16,9 @@ namespace Core.Aplicacion.Services
         private readonly AppDbContext _db;
         private readonly ILogger<ArticuloService> _logger;
 
-        public ArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<ArticuloService> logger)
+        public ArticuloService(AppDbContext db, ILogger<ArticuloService> logger)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
         }
 

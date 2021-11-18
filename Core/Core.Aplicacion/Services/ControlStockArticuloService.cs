@@ -14,10 +14,10 @@ namespace Core.Aplicacion.Services
     {
         private readonly AppDbContext _db;
         private readonly ILogger<ControlStockArticuloService> _logger;
-        public ControlStockArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<ControlStockArticuloService> logger)
+        public ControlStockArticuloService(AppDbContext db, ILogger<ControlStockArticuloService> logger)
         {
             _logger = logger;
-            _db = extendedAppDbContext.context;            
+            _db = db;            
         }
         public async Task<ArticuloStock> BuscarPorId(int IdArticuloStock)
         {

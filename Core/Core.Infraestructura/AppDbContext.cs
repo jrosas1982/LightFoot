@@ -78,8 +78,13 @@ namespace Core.Infraestructura
                 relationship.DeleteBehavior = DeleteBehavior.NoAction;
             }
 
-            modelBuilder.ApplyGlobalFilters<EntityBase>(e => _httpContextAccessor.HttpContext.User.GetUsername().ToLower() == "super"? e.Eliminado == false : true);
-
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                var username = _httpContextAccessor.HttpContext.User.GetUsername().ToLower();
+                if (username != "super")
+                    //modelBuilder.Entity<EntityBase>().HasQueryFilter(e => e.Eliminado == false);
+                    modelBuilder.ApplyGlobalFilters<EntityBase>(e => e.Eliminado == false);
+            }
             //modelBuilder.Entity<Sucursal>().HasMany(x => x.MovimientoStockOrigen).WithOne(x => x.SucursalOrigen).HasForeignKey(x => x.IdSucursalOrigen).IsRequired();
             //modelBuilder.Entity<Sucursal>().HasMany(x => x.MovimientoStockDestino).WithOne(x => x.SucursalDestino).HasForeignKey(x => x.IdSucursalDestino).IsRequired();
 

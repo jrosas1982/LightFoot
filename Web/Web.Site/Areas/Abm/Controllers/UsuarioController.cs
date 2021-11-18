@@ -82,9 +82,9 @@ namespace Web.Site.Areas
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Eliminar(UsuarioModel usuarioModel)
+        public async Task<IActionResult> Eliminar(int idUsuario)
         {
-            var result = await _usuarioService.EliminarUsuario(usuarioModel.Usuario);
+            var result = await _usuarioService.EliminarUsuario(idUsuario);
             return Ok(result);
         }
     }

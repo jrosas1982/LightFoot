@@ -17,9 +17,9 @@ namespace Core.Aplicacion.Services
         private readonly AppDbContext _db;
         private readonly ILogger<AdministracionDeCajaService> _logger;
 
-        public AdministracionDeCajaService(ExtendedAppDbContext extendedAppDbContext, ILogger<AdministracionDeCajaService> logger)
+        public AdministracionDeCajaService(AppDbContext db, ILogger<AdministracionDeCajaService> logger)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
         }
 

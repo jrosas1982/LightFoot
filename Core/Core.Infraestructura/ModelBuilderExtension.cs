@@ -13,11 +13,17 @@ namespace Core.Infraestructura
     {
         public static void ApplyGlobalFilters<TInterface>(this ModelBuilder modelBuilder, Expression<Func<TInterface, bool>> expression)
         {
-            var entities = modelBuilder.Model
+            //var entities = modelBuilder.Model
+            //    .GetEntityTypes()
+            //    .Where(e => e.ClrType.GetInterface(typeof(TInterface).Name) != null)
+            //    .Select(e => e.ClrType);
+
+            var entities2 = modelBuilder.Model
                 .GetEntityTypes()
-                .Where(e => e.ClrType.GetInterface(typeof(TInterface).Name) != null)
+                .Where(e => typeof(TInterface).IsAssignableFrom(e.ClrType))
                 .Select(e => e.ClrType);
-            foreach (var entity in entities)
+
+            foreach (var entity in entities2)
             {
                 //if (entity.GetCustomAttribute<SkipGlobalFilterAttribute>() != null) continue;
                 var newParam = Expression.Parameter(entity);

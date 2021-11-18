@@ -24,9 +24,9 @@ namespace Core.Aplicacion.Services
         private readonly IControlStockArticuloService _controlStockArticuloService;
         private readonly IConfiguration _Configuration;
 
-        public VentaService( ExtendedAppDbContext extendedAppDbContext, ILogger<VentaService> logger, IArticuloService articuloService, IProveedorService proveedorService, IProveedorArticuloService proveedorArticuloService, IControlStockArticuloService controlStockArticuloService, IConfiguration configuration)
+        public VentaService( AppDbContext db, ILogger<VentaService> logger, IArticuloService articuloService, IProveedorService proveedorService, IProveedorArticuloService proveedorArticuloService, IControlStockArticuloService controlStockArticuloService, IConfiguration configuration)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
             _articuloService = articuloService;
             _proveedorService = proveedorService;

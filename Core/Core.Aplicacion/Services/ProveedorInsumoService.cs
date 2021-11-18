@@ -15,10 +15,10 @@ namespace Core.Aplicacion.Services
     {
         private readonly AppDbContext _db;
         private readonly ILogger<ProveedorInsumoService> _logger;
-        public ProveedorInsumoService(ExtendedAppDbContext extendedAppDbContext, ILogger<ProveedorInsumoService> logger)
+        public ProveedorInsumoService(AppDbContext db, ILogger<ProveedorInsumoService> logger)
         {
             _logger = logger;
-            _db = extendedAppDbContext.context;
+            _db = db;
         }
         public async Task<int> AgregarInsumoAProveedor(ProveedorInsumo insumoProveedor)
         {

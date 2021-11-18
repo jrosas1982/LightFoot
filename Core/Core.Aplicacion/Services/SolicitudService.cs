@@ -20,9 +20,9 @@ namespace Core.Aplicacion.Services
         private readonly ILogger<SolicitudService> _logger;
         private readonly IFabricacionService _fabricacion;
 
-        public SolicitudService(ExtendedAppDbContext extendedAppDbContext, ILogger<SolicitudService> logger, IFabricacionService fabricacion)
+        public SolicitudService(AppDbContext db, ILogger<SolicitudService> logger, IFabricacionService fabricacion)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
             _fabricacion = fabricacion;
         }
