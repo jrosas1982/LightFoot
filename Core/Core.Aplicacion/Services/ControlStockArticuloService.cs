@@ -14,12 +14,10 @@ namespace Core.Aplicacion.Services
     {
         private readonly AppDbContext _db;
         private readonly ILogger<ControlStockArticuloService> _logger;
-        private readonly int IdSucursal;
-        public ControlStockArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<ControlStockArticuloService> logger)
+        public ControlStockArticuloService(AppDbContext db, ILogger<ControlStockArticuloService> logger)
         {
             _logger = logger;
-            _db = extendedAppDbContext.context;
-            IdSucursal = int.Parse(_db.GetSucursalId());
+            _db = db;            
         }
         public async Task<ArticuloStock> BuscarPorId(int IdArticuloStock)
         {
@@ -65,9 +63,11 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<ArticuloStock>> GetArticuloStock()
         {
-           // var articuloStockList = await _db.ArticulosStock.ToListAsync();
+            int idSucursal = int.Parse(_db.GetSucursalId());
+
+            // var articuloStockList = await _db.ArticulosStock.ToListAsync();
             var articuloStockList = await _db.ArticulosStock
-                .Where(x => x.IdSucursal == IdSucursal)
+                .Where(x => x.IdSucursal == idSucursal)
                 .Include(p => p.Articulo)
                     .ThenInclude(p => p.ArticuloCategoria)
                 .OrderBy(x => x.Articulo.ArticuloCategoria)

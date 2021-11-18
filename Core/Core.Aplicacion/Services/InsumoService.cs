@@ -14,10 +14,10 @@ namespace Core.Aplicacion.Services
     {
         private readonly AppDbContext _db;
         private readonly ILogger<InsumoService> _logger;
-        public InsumoService(ExtendedAppDbContext extendedAppDbContext, ILogger<InsumoService> logger)
+        public InsumoService(AppDbContext db, ILogger<InsumoService> logger)
         {
             _logger = logger;
-            _db = extendedAppDbContext.context;
+            _db = db;
         }
 
         public async Task<Insumo> BuscarPorId(int IdInsumo)

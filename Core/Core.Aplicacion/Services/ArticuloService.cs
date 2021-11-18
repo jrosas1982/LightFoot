@@ -22,7 +22,7 @@ namespace Core.Aplicacion.Services
 
         public ArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<ArticuloService> logger, IConfiguration configuration)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
             _Configuration = configuration;
         }

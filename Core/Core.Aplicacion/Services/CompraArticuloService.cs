@@ -27,9 +27,9 @@ namespace Core.Aplicacion.Services
         private readonly IConfiguration _Configuration;
         private readonly int IdSucursal;
 
-        public CompraArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraArticuloService> logger, IArticuloService articuloService, IProveedorService proveedorService, IProveedorArticuloService proveedorArticuloService, IConfiguration configuration, ISolicitudService solicitudService, IControlStockArticuloService controlStockArticuloService)
+        public CompraArticuloService(AppDbContext db, ILogger<CompraArticuloService> logger, IArticuloService articuloService, IProveedorService proveedorService, IProveedorArticuloService proveedorArticuloService, IConfiguration configuration, ISolicitudService solicitudService, IControlStockArticuloService controlStockArticuloService)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
             _articuloService = articuloService;
             _proveedorService = proveedorService;

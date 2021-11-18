@@ -20,9 +20,9 @@ namespace Core.Aplicacion.Services
         private readonly ILogger<UsuarioService> _logger;
         private readonly PasswordHasher _PasswordHasher; 
         private readonly IHubContext<NotificationsHub> _hubContext;
-        public UsuarioService(ExtendedAppDbContext extendedAppDbContext, ILogger<UsuarioService> logger, PasswordHasher passwordHasher, IHubContext<NotificationsHub> hubContext)
+        public UsuarioService(AppDbContext db, ILogger<UsuarioService> logger, PasswordHasher passwordHasher, IHubContext<NotificationsHub> hubContext)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
             _PasswordHasher = passwordHasher;
             _hubContext = hubContext;
@@ -30,11 +30,12 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Usuario>> GetUsuarios()
         {
-            var usuariosList = await _db.Usuarios
-                .OrderByDescending(x => x.NombreUsuario)
-                .ToListAsync();
+            var usuariosList = _db.Usuarios
+                .OrderByDescending(x => x.NombreUsuario);
+
+            var asd = usuariosList.ToString();
             await _hubContext.Clients.All.SendAsync($"GetUsuarios", $"Se solicito la lista de usuarios");
-            return usuariosList;
+            return await usuariosList.ToListAsync();
         }
 
         public async Task<Usuario> BuscarPorId(int IdUsuario)
@@ -82,18 +83,20 @@ namespace Core.Aplicacion.Services
             await _hubContext.Clients.All.SendAsync($"UsuarioEditado", $"El usuario {_db.GetUsername()} edito el usuario {usuarioDb.NombreUsuario}", usuario.Id);
         }
 
-        public async Task<bool> EliminarUsuario(Usuario usuario)
+        public async Task<bool> EliminarUsuario(int idUsuario)
         {
             try
             {
-                var usuarioDb = await _db.Usuarios.FindAsync(usuario.Id);
+                var usuarioDb = await _db.Usuarios.FindAsync(idUsuario);
 
-                _db.Remove(usuarioDb);
+                usuarioDb.Eliminado = true;
+
+                _db.Usuarios.Update(usuarioDb);
                 await _db.SaveChangesAsync();
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
                 return false;
             }

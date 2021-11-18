@@ -168,12 +168,11 @@ namespace Web.Site.Areas
                 return Redirect($"/fabrica/Solicitud/Index?error=true&msj= {ex.Message}");
             }
         }
-        
+
 
         public async Task<IActionResult> Filtrar(SolicitudFilter solicitudFilter)
         {
-            solicitudFilter.FechaHasta.AddDays(1);
-             var result = await _solicitudService.GetSolicitudes(solicitudFilter);
+            var result = await _solicitudService.GetSolicitudes(solicitudFilter);
             return PartialView("_SolicitudTable", result);
 
         }

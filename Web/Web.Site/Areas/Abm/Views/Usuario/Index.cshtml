@@ -149,7 +149,7 @@
                 $.ajax({
                     type: "post",
                     url: "/abm/Usuario/Eliminar",
-                    data: { Id: Id },
+                    data: { idUsuario: Id },
                     success: function (result) {
                         if (result == true) {
                             swal("Baja Exitosa!", "El Usuario ha sido dado de baja correctamente.", "success");

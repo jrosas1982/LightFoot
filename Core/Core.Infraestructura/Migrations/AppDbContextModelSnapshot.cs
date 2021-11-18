@@ -43,6 +43,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("Descripcion")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -96,6 +99,9 @@ namespace Core.Infraestructura.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -119,6 +125,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("EsReposicionAutomatica")
                         .HasColumnType("bit");
@@ -171,8 +180,14 @@ namespace Core.Infraestructura.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Comentario")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -219,6 +234,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("Direccion")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -253,6 +271,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -296,6 +317,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -355,6 +379,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -396,6 +423,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -450,6 +480,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -499,6 +532,9 @@ namespace Core.Infraestructura.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -522,7 +558,8 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Cortado",
-                            FechaCreacion = new DateTime(2021, 11, 16, 22, 41, 40, 80, DateTimeKind.Local).AddTicks(4107),
+                            Eliminado = false,
+                            FechaCreacion = new DateTime(2021, 11, 18, 11, 4, 18, 772, DateTimeKind.Local).AddTicks(1299),
                             Orden = 1
                         },
                         new
@@ -531,7 +568,8 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Aparado",
-                            FechaCreacion = new DateTime(2021, 11, 16, 22, 41, 40, 80, DateTimeKind.Local).AddTicks(4325),
+                            Eliminado = false,
+                            FechaCreacion = new DateTime(2021, 11, 18, 11, 4, 18, 772, DateTimeKind.Local).AddTicks(1494),
                             Orden = 2
                         },
                         new
@@ -540,7 +578,8 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Preparacion",
-                            FechaCreacion = new DateTime(2021, 11, 16, 22, 41, 40, 80, DateTimeKind.Local).AddTicks(4334),
+                            Eliminado = false,
+                            FechaCreacion = new DateTime(2021, 11, 18, 11, 4, 18, 772, DateTimeKind.Local).AddTicks(1502),
                             Orden = 3
                         },
                         new
@@ -549,7 +588,8 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Montado",
-                            FechaCreacion = new DateTime(2021, 11, 16, 22, 41, 40, 80, DateTimeKind.Local).AddTicks(4337),
+                            Eliminado = false,
+                            FechaCreacion = new DateTime(2021, 11, 18, 11, 4, 18, 772, DateTimeKind.Local).AddTicks(1506),
                             Orden = 4
                         },
                         new
@@ -558,7 +598,8 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Pegado",
-                            FechaCreacion = new DateTime(2021, 11, 16, 22, 41, 40, 80, DateTimeKind.Local).AddTicks(4340),
+                            Eliminado = false,
+                            FechaCreacion = new DateTime(2021, 11, 18, 11, 4, 18, 772, DateTimeKind.Local).AddTicks(1509),
                             Orden = 5
                         },
                         new
@@ -567,7 +608,8 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Terminado ",
-                            FechaCreacion = new DateTime(2021, 11, 16, 22, 41, 40, 80, DateTimeKind.Local).AddTicks(4343),
+                            Eliminado = false,
+                            FechaCreacion = new DateTime(2021, 11, 18, 11, 4, 18, 772, DateTimeKind.Local).AddTicks(1512),
                             Orden = 6
                         });
                 });
@@ -584,6 +626,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("Descripcion")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -620,6 +665,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("Descripcion")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -670,6 +718,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -714,6 +765,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<int>("EstadoEtapaOrdenProduccion")
                         .HasColumnType("int");
@@ -766,6 +820,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<int>("EstadoEtapaOrdenProduccion")
                         .HasColumnType("int");
 
@@ -817,6 +874,9 @@ namespace Core.Infraestructura.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -853,9 +913,10 @@ namespace Core.Infraestructura.Migrations
                             Calificacion = 0m,
                             CreadoPor = "Initial",
                             Direccion = "4562 Hazy Panda Limits, Chair Crossing, Kentucky, US, 607898",
+                            Eliminado = false,
                             Email = "TrifulcaLightFoot@gmail.com",
                             EsFabrica = true,
-                            FechaCreacion = new DateTime(2021, 11, 16, 22, 41, 40, 81, DateTimeKind.Local).AddTicks(5517),
+                            FechaCreacion = new DateTime(2021, 11, 18, 11, 4, 18, 773, DateTimeKind.Local).AddTicks(2677),
                             Nombre = "Fabrica LightFoot",
                             Telefono = "+541136558997"
                         });
@@ -870,6 +931,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -907,6 +971,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -948,6 +1015,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -985,6 +1055,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -1021,6 +1094,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -1062,6 +1138,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -1102,6 +1181,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -1136,6 +1218,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -1179,6 +1264,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<int>("EstadoSolicitud")
                         .HasColumnType("int");
 
@@ -1213,6 +1301,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -1253,6 +1344,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<int>("EstadoSolicitud")
                         .HasColumnType("int");
@@ -1296,6 +1390,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("Direccion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -1342,6 +1439,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("Direccion")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -1393,6 +1493,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -1422,13 +1525,19 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
-                    b.Property<double>("Descuento")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Descuento")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("FechaModificacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaPagado")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("IdCliente")
@@ -1445,6 +1554,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<decimal>("MontoTotal")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("Pagado")
+                        .HasColumnType("bit");
 
                     b.Property<int>("VentaTipo")
                         .HasColumnType("int");
@@ -1473,6 +1585,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -1488,7 +1603,7 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("ModificadoPor")
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("Monto")
+                    b.Property<decimal>("PrecioUnitario")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");

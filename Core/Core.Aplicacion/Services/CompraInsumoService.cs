@@ -25,9 +25,9 @@ namespace Core.Aplicacion.Services
         private readonly IParametroService _parametroService;
         private readonly IConfiguration _Configuration;
 
-        public CompraInsumoService(ExtendedAppDbContext extendedAppDbContext, ILogger<CompraInsumoService> logger, IConfiguration configuration, IInsumoService insumoService, IProveedorService proveedorService, IProveedorInsumoService proveedorInsumoService, IParametroService parametroService)
+        public CompraInsumoService(AppDbContext db, ILogger<CompraInsumoService> logger, IConfiguration configuration, IInsumoService insumoService, IProveedorService proveedorService, IProveedorInsumoService proveedorInsumoService, IParametroService parametroService)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
             _Configuration = configuration;
             _insumoService = insumoService;

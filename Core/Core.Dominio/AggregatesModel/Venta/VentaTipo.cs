@@ -4,11 +4,11 @@ namespace Core.Dominio.AggregatesModel
 {
     public enum VentaTipo
     {
-        [Display(Description = "")]
+        [Display(Description = "Mayorista")]
         Mayorista = 1,
-        [Display(Description = "")]
+        [Display(Description = "Minorista")]
         Minorista = 2,
-        [Display(Description = "")]
+        [Display(Description = "Electronica")]
         Electronica = 3,
     }
     //VentaTipo - {Mayorista, Minorista, Electronica}

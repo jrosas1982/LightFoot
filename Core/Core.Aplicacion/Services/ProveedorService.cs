@@ -16,9 +16,9 @@ namespace Core.Aplicacion.Services
         private readonly AppDbContext _db;
         private readonly ILogger<ProveedorService> _logger;
 
-        public ProveedorService(ExtendedAppDbContext extendedAppDbContext, ILogger<ProveedorService> logger)
+        public ProveedorService(AppDbContext db, ILogger<ProveedorService> logger)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
         }
 

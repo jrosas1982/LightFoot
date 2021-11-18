@@ -15,10 +15,10 @@ namespace Core.Aplicacion.Services
     {
         private readonly AppDbContext _db;
         private readonly ILogger<RecetaDetalleService> _logger;
-        public RecetaDetalleService(ExtendedAppDbContext extendedAppDbContext, ILogger<RecetaDetalleService> logger)
+        public RecetaDetalleService(AppDbContext db, ILogger<RecetaDetalleService> logger)
         {
             _logger = logger;
-            _db = extendedAppDbContext.context;
+            _db = db;
         }
         public async Task<int> AgregarInsumoAReceta(RecetaDetalle detalle)
         {

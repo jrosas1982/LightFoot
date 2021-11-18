@@ -15,10 +15,10 @@ namespace Core.Aplicacion.Services
     {
         private readonly AppDbContext _db;
         private readonly ILogger<ClienteService> _logger;
-        public ClienteService(ExtendedAppDbContext extendedAppDbContext, ILogger<ClienteService> logger)
+        public ClienteService(AppDbContext db, ILogger<ClienteService> logger)
         {
             _logger = logger;
-            _db = extendedAppDbContext.context;
+            _db = db;
         }
         public async Task<Cliente> BuscarPorId(int IdCliente)
         {

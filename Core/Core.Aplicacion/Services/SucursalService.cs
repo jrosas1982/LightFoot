@@ -12,9 +12,9 @@ namespace Core.Aplicacion.Services
     {
         private readonly AppDbContext _db;
 
-        public SucursalService(ExtendedAppDbContext extendedAppDbContext)
+        public SucursalService(AppDbContext db)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
         }
 
         public async Task<IEnumerable<Sucursal>> GetSucursales()

@@ -15,14 +15,11 @@ namespace Core.Infraestructura
     public class AppDbContext : DbContext
     {
         public IHttpContextAccessor _httpContextAccessor;
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        private string username;
+        public AppDbContext(DbContextOptions<AppDbContext> options, IHttpContextAccessor httpContextAccessor) : base(options)
         {
-
-        }
-
-        protected AppDbContext()
-        {
-
+            _httpContextAccessor = httpContextAccessor;
+            username = _httpContextAccessor.HttpContext.User.GetUsername();
         }
 
         public DbSet<Articulo> Articulos { get; set; }
@@ -76,12 +73,14 @@ namespace Core.Infraestructura
 
             modelBuilder.ApplyConfiguration(new EtapaOrdenProduccionEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new ProveedorEntityTypeConfiguration());
-            //modelBuilder.Entity<Sucursal>(x => x.);
 
             foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
                 relationship.DeleteBehavior = DeleteBehavior.NoAction;
             }
+
+            //modelBuilder.Entity<EntityBase>().HasQueryFilter(e => e.Eliminado == false);
+            modelBuilder.ApplyGlobalFilters<EntityBase>(e => username != null && username.ToLower() != "super" ? e.Eliminado == false : true);
 
             //modelBuilder.Entity<Sucursal>().HasMany(x => x.MovimientoStockOrigen).WithOne(x => x.SucursalOrigen).HasForeignKey(x => x.IdSucursalOrigen).IsRequired();
             //modelBuilder.Entity<Sucursal>().HasMany(x => x.MovimientoStockDestino).WithOne(x => x.SucursalDestino).HasForeignKey(x => x.IdSucursalDestino).IsRequired();
@@ -90,16 +89,12 @@ namespace Core.Infraestructura
             //modelBuilder.Entity<MovimientoStock>().HasOne(x => x.SucursalDestino).WithOne().IsRequired().OnDelete(DeleteBehavior.NoAction);
         }
 
-        private string GetUsername(IPrincipal user)
-        {
-            var claim = ((ClaimsIdentity)user.Identity).FindFirst(ClaimTypes.Name);
-            return claim?.Value;
-        }
+
 
         public override int SaveChanges()
         {
             this.ChangeTracker.DetectChanges();
-            var currentUsername = GetUsername(_httpContextAccessor.HttpContext.User);
+            var currentUsername = _httpContextAccessor.GetUsername();
 
             var added = this.ChangeTracker.Entries()
                         .Where(t => t.Entity is EntityBase && t.State == EntityState.Added)
@@ -131,7 +126,7 @@ namespace Core.Infraestructura
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             this.ChangeTracker.DetectChanges();
-            var currentUsername = GetUsername(_httpContextAccessor.HttpContext.User);
+            var currentUsername = _httpContextAccessor.GetUsername();
 
             var added = this.ChangeTracker.Entries()
                         .Where(t => t.Entity is EntityBase && t.State == EntityState.Added)

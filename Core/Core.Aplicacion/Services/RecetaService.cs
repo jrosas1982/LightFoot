@@ -18,10 +18,10 @@ namespace Core.Aplicacion.Services
         private readonly IRecetaDetalleService _recetaDetalleService;
         private readonly ILogger<SolicitudService> _logger;
 
-        public RecetaService(ExtendedAppDbContext extendedAppDbContext, ILogger<SolicitudService> logger ,
+        public RecetaService(AppDbContext db, ILogger<SolicitudService> logger ,
             IRecetaDetalleService recetaDetalleService)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
             _recetaDetalleService = recetaDetalleService;
         }
