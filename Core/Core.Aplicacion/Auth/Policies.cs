@@ -1,5 +1,6 @@
 ﻿using Core.Aplicacion.Helpers;
 using Core.Dominio.AggregatesModel;
+using Core.Infraestructura;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Core.Aplicacion.Auth

@@ -10,7 +10,7 @@ namespace Core.Infraestructura
         public ExtendedAppDbContext(AppDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             this.context = context;
-            this.context._httpContextAccessor = httpContextAccessor;
+            //this.context._httpContextAccessor = httpContextAccessor;
         }
     }
 }

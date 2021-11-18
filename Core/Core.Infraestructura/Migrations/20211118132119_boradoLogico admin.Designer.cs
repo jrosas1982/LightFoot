@@ -4,14 +4,16 @@ using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Infraestructura.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211118132119_boradoLogico admin")]
+    partial class boradoLogicoadmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -559,7 +561,7 @@ namespace Core.Infraestructura.Migrations
                             CreadoPor = "Initial",
                             Descripcion = "Cortado",
                             Eliminado = false,
-                            FechaCreacion = new DateTime(2021, 11, 18, 10, 25, 19, 776, DateTimeKind.Local).AddTicks(6759),
+                            FechaCreacion = new DateTime(2021, 11, 18, 10, 21, 19, 227, DateTimeKind.Local).AddTicks(2661),
                             Orden = 1
                         },
                         new
@@ -569,7 +571,7 @@ namespace Core.Infraestructura.Migrations
                             CreadoPor = "Initial",
                             Descripcion = "Aparado",
                             Eliminado = false,
-                            FechaCreacion = new DateTime(2021, 11, 18, 10, 25, 19, 776, DateTimeKind.Local).AddTicks(6956),
+                            FechaCreacion = new DateTime(2021, 11, 18, 10, 21, 19, 227, DateTimeKind.Local).AddTicks(2854),
                             Orden = 2
                         },
                         new
@@ -579,7 +581,7 @@ namespace Core.Infraestructura.Migrations
                             CreadoPor = "Initial",
                             Descripcion = "Preparacion",
                             Eliminado = false,
-                            FechaCreacion = new DateTime(2021, 11, 18, 10, 25, 19, 776, DateTimeKind.Local).AddTicks(6965),
+                            FechaCreacion = new DateTime(2021, 11, 18, 10, 21, 19, 227, DateTimeKind.Local).AddTicks(2863),
                             Orden = 3
                         },
                         new
@@ -589,7 +591,7 @@ namespace Core.Infraestructura.Migrations
                             CreadoPor = "Initial",
                             Descripcion = "Montado",
                             Eliminado = false,
-                            FechaCreacion = new DateTime(2021, 11, 18, 10, 25, 19, 776, DateTimeKind.Local).AddTicks(6968),
+                            FechaCreacion = new DateTime(2021, 11, 18, 10, 21, 19, 227, DateTimeKind.Local).AddTicks(2867),
                             Orden = 4
                         },
                         new
@@ -599,7 +601,7 @@ namespace Core.Infraestructura.Migrations
                             CreadoPor = "Initial",
                             Descripcion = "Pegado",
                             Eliminado = false,
-                            FechaCreacion = new DateTime(2021, 11, 18, 10, 25, 19, 776, DateTimeKind.Local).AddTicks(6971),
+                            FechaCreacion = new DateTime(2021, 11, 18, 10, 21, 19, 227, DateTimeKind.Local).AddTicks(2870),
                             Orden = 5
                         },
                         new
@@ -609,7 +611,7 @@ namespace Core.Infraestructura.Migrations
                             CreadoPor = "Initial",
                             Descripcion = "Terminado ",
                             Eliminado = false,
-                            FechaCreacion = new DateTime(2021, 11, 18, 10, 25, 19, 776, DateTimeKind.Local).AddTicks(6974),
+                            FechaCreacion = new DateTime(2021, 11, 18, 10, 21, 19, 227, DateTimeKind.Local).AddTicks(2873),
                             Orden = 6
                         });
                 });
@@ -916,7 +918,7 @@ namespace Core.Infraestructura.Migrations
                             Eliminado = false,
                             Email = "TrifulcaLightFoot@gmail.com",
                             EsFabrica = true,
-                            FechaCreacion = new DateTime(2021, 11, 18, 10, 25, 19, 777, DateTimeKind.Local).AddTicks(7432),
+                            FechaCreacion = new DateTime(2021, 11, 18, 10, 21, 19, 228, DateTimeKind.Local).AddTicks(3321),
                             Nombre = "Fabrica LightFoot",
                             Telefono = "+541136558997"
                         });
