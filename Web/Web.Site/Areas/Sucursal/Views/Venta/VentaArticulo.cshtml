@@ -2,7 +2,7 @@
     ViewData["Title"] = "Venta";
     Layout = "_Layout";
 
-    var idCliente = Model.Cliente.Id;
+
 }
 
 @model VentaModel
@@ -46,7 +46,7 @@
                 <div class="form-group">
                     <label class="font-normal">Cliente</label>
                     <select class="form-control" id="NOTdropdownCliente" data-placeholder="" onclick="" disabled>
-                        <option value="" selected>@Model.Cliente.Nombre</option>
+                        <option value="" selected>@Model.Cliente.Nombre - @Model.VentaTipo</option>
                     </select>
                 </div>
             </div>
@@ -109,10 +109,9 @@
                         </div>
                     </div>
                     <div class="modal-body py-2">
-                        @*<div class="form-floating">*@
                         <div class="form-group">
                             <label class="font-normal">Articulo</label>
-                            <select class="form-control  chosen-select " id="dropdownArticulo" data-placeholder="Seleccione Articulo" required>
+                            <select class="form-control chosen-select " id="dropdownArticulo" data-placeholder="Seleccione Articulo" required>
                                 <option value=""> -- Seleccionar Articulo --</option>
                                 @foreach (var articulo in Model.Articulos)
                                 {
@@ -120,21 +119,16 @@
                                 }
                             </select>
                         </div>
-                        @*</div>*@
                     </div>
-                    <div class="modal-body py-2">
-                        @*<div class="form-floating">*@
+                    <div class="modal-body p-0" style="height:0px; margin:0px;">
+                        <div class="form-floating">
                         <div class="form-group">
-                            <label class="font-normal">Articulo</label>
-                            <select class="form-control  chosen-select " id="dropdownArticulo" data-placeholder="Seleccione Articulo" required>
-                                <option value=""> -- Seleccionar Articulo --</option>
-                                @foreach (var tipo in Model.VentaTipos)
-                                {
-                                    <option value="@tipo"> @tipo</option>
-                                }
+                            @*<label class="font-normal">Tipo de Venta</label>*@
+                            <select class="form-control p-0" id="dropdownTipoVenta" data-placeholder="" style="width:0px;" required>
+                                <option selected value="@Model.VentaTipo"> @Model.VentaTipo</option>
                             </select>
                         </div>
-                        @*</div>*@
+                        </div>
                     </div>
                     <div class="modal-body py-2">
                         <div class="form-group">
@@ -185,39 +179,14 @@
         });
 
         function ArticuloSeleccionadoOnChange() {
-            FiltrarProveedores();
-            //ProveedorPreferidoSugerido();
             ActualizarPrecio();
             $("#ArticuloCantidad").val("");
-            //ComentarioChange();
+            $("#Precio").val("");
         }
 
-        //function ObligarComentario() {
-        //    $("#ComentarioLabel").empty();
-        //    if ($("#IdProveedorSugerido").val() != $("#dropdownProveedor :selected").val())
-        //    {
-        //        $("#Comentario").prop('required', true);
-        //        $("#ComentarioLabel").append("Motivo por el que no se selecciono el proveedor sugerido");
-        //    }
-        //    else
-        //    {
-        //        $("#Comentario").prop('required', false);
-        //        $("#ComentarioLabel").append("Comentario");
-        //    }
-        //}
-
-        function FiltrarProveedores() {
-            $.ajax({
-                type: "post",
-                url: "/sucursal/Venta/FiltrarProveedores",
-                data: {
-                    IdArticulo: $("#dropdownArticulo :selected").val()
-                },
-            }).done(function (partialView) {
-                $("#dropdownProveedorPartialView").html(""); //clear the records content
-                $("#dropdownProveedorPartialView").html(partialView);  //add the updated content.
-                $('#dropdownProveedor').chosen();
-            });
+        function TipoVentaSeleccionadoOnChange() {
+            ActualizarPrecio();
+            $("#Precio").val("");
         }
 
         function ActualizarPrecio() {
@@ -226,7 +195,8 @@
                 url: "/sucursal/Venta/ActualizarPrecio",
                 data: {
                     IdArticulo: $("#dropdownArticulo :selected").val(),
-                    Cantidad: $("#ArticuloCantidad").val(),
+                    VentaTipo: $("#dropdownTipoVenta :selected").val(),
+                    Cantidad: $("#ArticuloCantidad").val()
                 },
             }).done(function (precio) {
                 $("#Precio").val(precio);
@@ -245,36 +215,15 @@
             $('#dropdownArticulo').change(function () {
                 ArticuloSeleccionadoOnChange();
             });
-            //$('#dropdownProveedor').change(function () {
-            //    ComentarioChange();
+            //$('#dropdownTipoVenta').change(function () {
+            //    TipoVentaSeleccionadoOnChange();
             //});
+
         });
-
-        //function ComentarioChange() {
-        //    $.ajax({
-        //        type: "post",
-        //        url: "/fabrica/comprainsumo/ActualizarComentario",
-        //        data: {
-        //            IdInsumo: $("#dropdownArticulo :selected").val(),
-        //            IdProveedor: $('#dropdownProveedor :selected').val()
-        //        },
-        //    }).done(function (bool) {
-        //        if (bool) {
-        //            document.getElementById("Comentario").setAttribute('disabled', 'disabled');
-        //            document.getElementById("Comentario").removeAttribute('required');
-        //        }
-        //        else {
-        //            document.getElementById("Comentario").removeAttribute('disabled');
-        //            document.getElementById("Comentario").setAttribute('required', 'required');
-        //        }
-
-
-        //        //console.log(bool);
-        //    });
-        //}
 
         function ClearModal() {
             $("#dropdownArticulo").prop("selectedIndex", 0);
+            //$("#dropdownTipoVenta").prop("selectedIndex", 0);
             $("#ArticuloCantidad").val("");
             $("#Precio").val("");
         //    $("#Comentario").val("");

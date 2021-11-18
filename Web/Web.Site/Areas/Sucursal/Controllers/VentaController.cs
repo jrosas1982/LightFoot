@@ -32,16 +32,21 @@ namespace Web.Site.Areas
         public async Task<IActionResult> Index()
         {
             var ventasList = await _ventaService.GetVentas();
-
+            var ventaTiposListTask = _ventaService.GetTiposVenta();
             var clienteListTask = _clienteService.GetClientes();
-            await Task.WhenAll(clienteListTask);
+
+            await Task.WhenAll(clienteListTask, ventaTiposListTask, clienteListTask);
+
             var clienteList = clienteListTask.Result;
+            var ventasTipoList = ventaTiposListTask.Result;
+
             ViewBag.Clientes = clienteList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" });
+            ViewBag.VentaTipos = ventasTipoList.ToArray();
 
             return View(ventasList);
         }
 
-        public async Task<IActionResult> VentaArticulo(int IdCliente)
+        public async Task<IActionResult> VentaArticulo(int IdCliente, VentaTipo ventaTipo)
         {
             var articulosListTask = _articuloService.GetArticulos();
             var ventaTiposListTask = _ventaService.GetTiposVenta();
@@ -54,7 +59,8 @@ namespace Web.Site.Areas
             Cliente cliente = await _clienteService.BuscarPorId(IdCliente);
             VentaModel ventaModel = new VentaModel()
             {
-                Cliente = cliente
+                Cliente = cliente,
+                VentaTipo = ventaTipo
             };
             ventaModel.Articulos = articulosList.Select(x => new SelectListItem() { Text = $"{x.ArticuloCategoria.Descripcion} - {x.CodigoArticulo} - {x.Nombre} - {x.Color} - Talle {x.TalleArticulo} ", Value = $"{x.Id}" });
             ventaModel.VentaTipos = ventasTipoList.ToArray();
@@ -62,13 +68,21 @@ namespace Web.Site.Areas
             return View(ventaModel);
         }
 
-        public async Task<IActionResult> ActualizarPrecio(int idArticulo, decimal cantidad)
+        public async Task<IActionResult> ActualizarPrecio(int idArticulo, VentaTipo ventatipo, decimal cantidad)
         {
             if (idArticulo == 0)
                 return Json(0);
 
             var Articulo = await _articuloService.BuscarPorId(idArticulo);
-            var ArticuloPrecio = Articulo.PrecioMinorista;
+
+            var ArticuloPrecio= new decimal(1);
+            if (ventatipo == VentaTipo.Mayorista)
+            {
+                ArticuloPrecio = Articulo.PrecioMayorista;
+            }
+            else {
+                ArticuloPrecio = Articulo.PrecioMinorista;
+            }
 
             return Json(ArticuloPrecio * cantidad);
         }

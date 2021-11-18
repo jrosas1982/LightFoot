@@ -149,6 +149,17 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label class="font-normal">Cliente</label>
+                            <select required class="form-control chosen-select" id="dropdownVentaTipo" data-placeholder="" onclick="">
+                                <option value=""> -- Seleccionar Tipo de Venta --</option>
+                                @foreach (var tipo in ViewBag.VentaTipos)
+                                {
+                                    <option value=@tipo> @tipo</option>
+                                }
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
@@ -208,9 +219,10 @@
 
         function refVenta() {
             Id = $('#dropdownCliente :selected').val();
+            VentaTipo = $('#dropdownVentaTipo :selected').val();
             if (modalForm.checkValidity()) {
                 //window.location.href = '@Url.Action("VentaArticulo", "Venta", 0)';
-                window.location = '/sucursal/Venta/VentaArticulo?IdCliente='+Id;
+                window.location = '/sucursal/Venta/VentaArticulo?IdCliente=' + Id + '&&VentaTipo=' + VentaTipo;
             }
         }
 
