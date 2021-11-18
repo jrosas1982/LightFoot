@@ -13,7 +13,7 @@
 
 @model IEnumerable<RecetaModel>
 
-<div class="row wrapper border-bottom white-bg page-heading">
+<div class="row wrapper border-bottom white-bg page-heading d-print-none">
     <div class="col-lg-8">
         <h2>@controlador</h2>
         <ol class="breadcrumb">
@@ -41,9 +41,15 @@
     </div>
 </div>
 
+<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        Reporte de Receta @DateTime.Now
+    </div>
+</div>
+
 <div class="wrapper wrapper-content animated fadeInRight ecommerce">
 
-    <div class="ibox-content m-b-sm border-bottom  d-print-none">
+    <div class="ibox-content m-b-sm border-bottom d-print-none">
         <div class="row">
             <div class="col-sm-12">
                 <div class="form-group">
