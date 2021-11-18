@@ -1,32 +1,49 @@
 ﻿
 @model Venta
 
-
-@if (@Model == null)
-{
-    <tr>
-        <td><i class="fa fa-spinner fa-spin"></i></td>
-        <td><i class="fa fa-spinner fa-spin"></i></td>
-        <td><i class="fa fa-spinner fa-spin"></i></td>
-        <td><i class="fa fa-spinner fa-spin"></i></td>
-        <td><i class="fa fa-spinner fa-spin"></i></td>
-        <td><i class="fa fa-spinner fa-spin"></i></td>
-        <td><i class="fa fa-spinner fa-spin"></i></td>
-    </tr>
-}
-else
-{
-    @foreach (var detalle in Model.VentaDetalles)
-    {
-    <tr>
-        <td>@detalle.Articulo.CodigoArticulo</td>
-        <td>@detalle.Articulo.Nombre</td>
-        <td>@detalle.Articulo.Descripcion</td>
-        <td>@detalle.Articulo.Color</td>
-        <td>@detalle.Articulo.TalleArticulo</td>
-        <td>@detalle.Cantidad</td>
-        <td>@(detalle.PrecioUnitario*detalle.Cantidad)</td>
-
-    </tr>
-    }
-}
+<div class="table-responsive">
+    <table class="footable table table-stripped table-hover table-bordered no-paging toggle-arrow-tiny">
+        <thead>
+            <tr>
+                <th>Cod. Articulo</th>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Color</th>
+                <th>Talle</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Precio Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (@Model == null)
+            {
+                <tr>
+                    <td><i class="fa fa-spinner fa-spin"></i></td>
+                    <td><i class="fa fa-spinner fa-spin"></i></td>
+                    <td><i class="fa fa-spinner fa-spin"></i></td>
+                    <td><i class="fa fa-spinner fa-spin"></i></td>
+                    <td><i class="fa fa-spinner fa-spin"></i></td>
+                    <td><i class="fa fa-spinner fa-spin"></i></td>
+                    <td><i class="fa fa-spinner fa-spin"></i></td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var detalle in Model.VentaDetalles)
+                {
+                    <tr>
+                        <td>@detalle.Articulo.CodigoArticulo</td>
+                        <td>@detalle.Articulo.Nombre</td>
+                        <td>@detalle.Articulo.Descripcion</td>
+                        <td>@detalle.Articulo.Color</td>
+                        <td>@detalle.Articulo.TalleArticulo</td>
+                        <td>@detalle.Cantidad</td>
+                        <td>@detalle.PrecioUnitario</td>
+                        <td>@(detalle.PrecioUnitario*detalle.Cantidad)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

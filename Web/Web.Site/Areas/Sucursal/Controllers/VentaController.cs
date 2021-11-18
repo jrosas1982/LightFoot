@@ -29,34 +29,59 @@ namespace Web.Site.Areas
             _articuloService = articuloService;
             _articuloCategoriaService = articuloCategoriaService;
         }
+
+        public async Task<IActionResult> FiltrarVentas(string nombreVenta)
+        {
+            var ventaList = await _ventaService.GetVentas();
+
+            if (!string.IsNullOrWhiteSpace(nombreVenta))
+            {
+                ventaList = ventaList.Where(x => x.Id.ToString().Equals(nombreVenta.ToLower())
+                                                            || x.CreadoPor.ToString().Equals(nombreVenta.ToLower())
+                                                            || x.Cliente.Nombre.ToLower().Equals(nombreVenta.ToLower())
+                                                            || x.VentaTipo.ToString().Equals(nombreVenta.ToLower())
+                                                            || x.MontoTotal.ToString().Equals(nombreVenta.ToLower()));
+                if (!ventaList.Any())
+                    ventaList = ventaList.Where(x => x.Id.ToString().Contains(nombreVenta.ToLower())
+                                                            || x.CreadoPor.ToString().Contains(nombreVenta.ToLower())
+                                                            || x.Cliente.Nombre.ToLower().Contains(nombreVenta.ToLower())
+                                                            || x.VentaTipo.ToString().Contains(nombreVenta.ToLower())
+                                                            || x.MontoTotal.ToString().Contains(nombreVenta.ToLower()));
+            }
+            return PartialView("_VentaIndexTable", ventaList);
+        }
+
         public async Task<IActionResult> Index()
         {
-            var ventasList = await _ventaService.GetVentas();
+            var ventasListTask = _ventaService.GetVentas();
             var ventaTiposListTask = _ventaService.GetTiposVenta();
             var clienteListTask = _clienteService.GetClientes();
 
-            await Task.WhenAll(clienteListTask, ventaTiposListTask, clienteListTask);
+            await Task.WhenAll(ventasListTask, clienteListTask, ventaTiposListTask);
 
+            var ventasList = ventasListTask.Result;
             var clienteList = clienteListTask.Result;
             var ventasTipoList = ventaTiposListTask.Result;
 
             ViewBag.Clientes = clienteList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" });
-            ViewBag.VentaTipos = ventasTipoList.ToArray();
+            ViewBag.VentaTipos = ventasTipoList;
+
+
+            ViewBag.TypeaheadNumVenta = ventasList.Select(x => x.Id.ToString()).Distinct();
+            ViewBag.TypeaheadVendedor = ventasList.Select(x => x.CreadoPor).Distinct();
+            ViewBag.TypeaheadCliente = ventasList.Select(x => x.Cliente.Nombre).Distinct();
+            ViewBag.TypeaheadTipoVenta = ventasList.Select(x => x.VentaTipo.ToString()).Distinct();
+            ViewBag.TypeaheadTipoMontoTotal = ventasList.Select(x => x.MontoTotal.ToString()).Distinct();
 
             return View(ventasList);
         }
 
         public async Task<IActionResult> VentaArticulo(int IdCliente, VentaTipo ventaTipo)
         {
-            var articulosListTask = _articuloService.GetArticulos();
-            var ventaTiposListTask = _ventaService.GetTiposVenta();
-
-            await Task.WhenAll(articulosListTask, ventaTiposListTask);
-
-            var articulosList = articulosListTask.Result;
-            var ventasTipoList = ventaTiposListTask.Result;
+            var articulosList = await _articuloService.GetArticulos();
 
             Cliente cliente = await _clienteService.BuscarPorId(IdCliente);
+
             VentaModel ventaModel = new VentaModel()
             {
                 Cliente = cliente,
@@ -64,7 +89,6 @@ namespace Web.Site.Areas
                 VentaTipo = ventaTipo
             };
             ventaModel.Articulos = articulosList.Select(x => new SelectListItem() { Text = $"{x.ArticuloCategoria.Descripcion} - {x.CodigoArticulo} - {x.Nombre} - {x.Color} - Talle {x.TalleArticulo} ", Value = $"{x.Id}" });
-            ventaModel.VentaTipos = ventasTipoList.ToArray();
 
             return View(ventaModel);
         }
@@ -109,16 +133,16 @@ namespace Web.Site.Areas
         {
             try
             {
-                IEnumerable<NuevaVentaDetalleModel> venta = new List<NuevaVentaDetalleModel>();
+                var ventaDetalles = new List<NuevaVentaDetalleModel>();
                 foreach (var detalle in ventaModel.VentaDetalleModels)
                 {
-                    venta.Append(new NuevaVentaDetalleModel()
+                    ventaDetalles.Add(new NuevaVentaDetalleModel()
                     {
                         IdArticulo = detalle.IdArticulo,
                         Cantidad = detalle.Cantidad
                     });
                 }
-                await _ventaService.CrearVenta(ventaModel.IdCliente, ventaModel.VentaTipo, 0, venta);
+                await _ventaService.CrearVenta(ventaModel.IdCliente, ventaModel.VentaTipo, ventaDetalles);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)

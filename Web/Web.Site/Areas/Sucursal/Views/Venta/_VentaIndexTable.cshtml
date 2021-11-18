@@ -3,22 +3,19 @@
 @model IEnumerable<Venta>
 
 @{
-    IEnumerable<string> TypeaheadNumCompra = ViewBag.TypeaheadNumCompra;
-    IEnumerable<string> TypeaheadRemito = ViewBag.TypeaheadRemito;
-    IEnumerable<string> TypeaheadTotal = ViewBag.TypeaheadTotal;
-    IEnumerable<string> TypeaheadProveedor = ViewBag.TypeaheadProveedor;
+
 }
 
-@if(@Model != null || true)
+@if (@Model != null)
 {
     <div class="table-responsive">
         <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
             <thead>
                 <tr>
-                    <th style="background-color: #caeee982; ">#Venta</th>
+                    <th style="background-color: #caeee982;">#Venta</th>
                     <th style="background-color: #caeee982;">Vendedor</th>
                     <th style="background-color: #caeee982;">Cliente</th>
-                    <th style="background-color: #caeee982;">Tipo de Pago</th>
+                    <th style="background-color: #caeee982;">Tipo de Venta</th>
                     <th style="background-color: #caeee982;">Monto Total</th>
                     <th style="background-color: #caeee982;">Fecha</th>
                     <th style="background-color: #caeee982;" data-sort-ignore="true" class="d-print-none">Acciones</th>
@@ -36,7 +33,7 @@
                     <td>@venta.FechaCreacion</td>
                     <td class="d-print-none">
                         <button class="btn btn-outline btn-success btn-xs" type="button"
-                                @*onclick="verDetalle(@compra.Id)"*@
+                                onclick="verDetalle(@venta.Id)"
                                 data-toggle="modal"
                                 data-target="#ModalDetalle">
                             Ver Detalles
@@ -58,23 +55,5 @@
 }
 
 <script type="text/javascript">
-
-    var typeaheadNumCompra = @Html.Raw(Json.Serialize(TypeaheadNumCompra));
-    var typeaheadRemito = @Html.Raw(Json.Serialize(TypeaheadRemito));
-    var typeaheadTotal = @Html.Raw(Json.Serialize(TypeaheadTotal));
-    var typeaheadProveedor = @Html.Raw(Json.Serialize(TypeaheadProveedor));
-
-    $.typeahead({
-        input: '.js-typeahead',
-        order: "desc",
-        template: "{{display}} <small style='color:#999;'>{{group}}</small>",
-        minLength: 1,
-        source: {
-            Compra: { data: typeaheadNumCompra },
-            Remito: { data: typeaheadRemito },
-            Total: { data: typeaheadTotal },
-            Proveedor: { data: typeaheadProveedor }
-        }
-    });
 
 </script>

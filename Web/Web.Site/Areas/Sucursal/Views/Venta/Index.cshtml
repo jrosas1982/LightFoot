@@ -4,6 +4,12 @@
 
     var title = "Ventas";
 
+    IEnumerable<string> TypeaheadNumVenta = ViewBag.TypeaheadNumVenta;
+    IEnumerable<string> TypeaheadVendedor = ViewBag.TypeaheadVendedor;
+    IEnumerable<string> TypeaheadCliente = ViewBag.TypeaheadCliente;
+    IEnumerable<string> TypeaheadTipoVenta = ViewBag.TypeaheadTipoVenta;
+    IEnumerable<string> TypeaheadTipoMontoTotal = ViewBag.TypeaheadTipoMontoTotal;
+
     //IEnumerable<Cliente> Clientes = ViewBag.Clientes;
 }
 
@@ -44,7 +50,7 @@
                     <div class="typeahead__container">
                         <div class="typeahead__field">
                             <div class="typeahead__query">
-                                <input class="js-typeahead typeaheadCustom " id="typeCompras" placeholder="Buscar Venta" autocomplete="on" />
+                                <input class="js-typeahead typeaheadCustom " id="typeVentas" placeholder="Buscar Venta" autocomplete="on" />
                             </div>
                         </div>
                     </div>
@@ -67,7 +73,7 @@
                     <h5>Ventas de Sucursal</h5>
                 </div>
                 <div class="ibox-content">
-                    <div id="ComprasPartialView">
+                    <div id="VentasPartialView">
                         <partial name="_VentaIndexTable.cshtml" model="Model" />
                     </div>
                 </div>
@@ -89,23 +95,8 @@
                     </div>
                 </div>
                 <div class="modal-body py-2">
-                    <div class="table-responsive">
-                        <table class="footable table table-stripped table-hover table-bordered no-paging toggle-arrow-tiny">
-                            <thead>
-                                <tr>
-                                    <th>Cod. Articulo</th>
-                                    <th>Nombre</th>
-                                    <th>Descripcion</th>
-                                    <th>Color</th>
-                                    <th>Talle</th>
-                                    <th>Cantidad</th>
-                                    <th>Precio</th>
-                                </tr>
-                            </thead>
-                            <tbody id="partialViewEventos">
-                                <partial name="_VentaIndexDetalle.cshtml" model="null" />
-                            </tbody>
-                        </table>
+                    <div id="partialViewEventos">
+                        <partial name="_VentaIndexDetalle.cshtml" model="null" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -156,7 +147,7 @@
                                 <option value=""> -- Seleccionar Tipo de Venta --</option>
                                 @foreach (var tipo in ViewBag.VentaTipos)
                                 {
-                                    <option value=@tipo> @tipo</option>
+                                    <option value=@((int)tipo)> @tipo</option>
                                 }
                             </select>
                         </div>
@@ -184,16 +175,53 @@
     </script>
 
     <script type="text/javascript">
-       
+        var typeaheadNumVenta = @Html.Raw(Json.Serialize(TypeaheadNumVenta));
+        var typeaheadVendedor = @Html.Raw(Json.Serialize(TypeaheadVendedor));
+        var typeaheadCliente = @Html.Raw(Json.Serialize(TypeaheadCliente));
+        var typeaheadTipoVenta = @Html.Raw(Json.Serialize(TypeaheadTipoVenta));
+        var typeaheadTipoMontoTotal = @Html.Raw(Json.Serialize(TypeaheadTipoMontoTotal));
 
+        $.typeahead({
+            input: '.js-typeahead',
+            order: "desc",
+            template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+            minLength: 1,
+            source: {
+                Venta: { data: typeaheadNumVenta },
+                Vendedor: { data: typeaheadVendedor },
+                Cliente: { data: typeaheadCliente },
+                Tipo: { data: typeaheadTipoVenta },
+                MontoTotal: { data: typeaheadTipoMontoTotal }
+            }
+        });
+
+        function Filtrar() {
+            var venta = $("#typeVentas").val();
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("FiltrarVentas", "Venta", new { area = "sucursal" })',
+                traditional: true,
+                data: //formData,
+                {
+                    NombreVenta: venta,
+                },
+                contentType: "application/json",
+                success: function (partial) {
+                    $("#VentasPartialView").html(""); //clear the records content
+                    $("#VentasPartialView").html(partial);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
     </script>
 
     <script type="text/javascript">
         function verDetalle(id) {
-            ActualizarDetalleCompra(id);
+            ActualizarDetalleVenta(id);
         }
 
-        function ActualizarDetalleCompra(id) {
+        function ActualizarDetalleVenta(id) {
             $.ajax({
                 type: "Get",
                 url: "/sucursal/Venta/ActualizarDetalleVenta?IdVenta=" + id,
@@ -205,6 +233,8 @@
                 success: function (response) {
                     $("#partialViewEventos").html(""); //clear the records content
                     $("#partialViewEventos").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
                 }
             });
         }

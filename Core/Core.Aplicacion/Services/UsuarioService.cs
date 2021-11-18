@@ -46,7 +46,7 @@ namespace Core.Aplicacion.Services
 
         public async Task CrearUsuario(Usuario usuario)
         {
-            if (_db.Usuarios.Any(x => x.NombreUsuario == usuario.NombreUsuario))
+            if (_db.Usuarios.Any(x => x.Eliminado == false && x.NombreUsuario == usuario.NombreUsuario))
                 throw new Exception($"El nombre de usuario {usuario.NombreUsuario} ya existe");
 
             if (string.IsNullOrEmpty(usuario.Contraseña))

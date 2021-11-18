@@ -84,7 +84,7 @@ namespace Core.Aplicacion.Services
             return venta;
         }
 
-        public async Task<Venta> CrearVenta(int idCliente, VentaTipo ventaTipo, decimal descuentoRealizado, IEnumerable<NuevaVentaDetalleModel> detalles)
+        public async Task<Venta> CrearVenta(int idCliente, VentaTipo ventaTipo, IEnumerable<NuevaVentaDetalleModel> detalles)
         {
             IEnumerable<ArticuloPrecio> articuloPrecioList;
             if (ventaTipo == VentaTipo.Mayorista)
@@ -107,7 +107,6 @@ namespace Core.Aplicacion.Services
                 montoTotalAcum += detalle.PrecioUnitario;
             }
 
-
             int idSucursal = int.Parse(_db.GetSucursalId());
 
             var venta = new Venta()
@@ -115,9 +114,10 @@ namespace Core.Aplicacion.Services
                 IdSucursal = idSucursal,
                 IdCliente = idCliente,
                 IdUsuario = _db.Usuarios.Single(x => x.NombreUsuario == _db.GetUsername()).Id,
-                MontoTotal = montoTotalAcum  - descuentoRealizado,
-                Descuento = descuentoRealizado,
-                VentaDetalles = ventaDetalles
+                MontoTotal = montoTotalAcum,//  - descuentoRealizado,
+                VentaTipo = ventaTipo,
+                //Descuento = descuentoRealizado,
+                VentaDetalles = ventaDetalles,                
             };
 
             _db.Ventas.Add(venta);
@@ -134,12 +134,12 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<TipoPago>> GetTiposPago()
         {
-            return await Task.FromResult(new List<TipoPago>() { TipoPago.Cheque, TipoPago.Transferencia });
+            return await Task.FromResult(EnumExtensions.GetValues<TipoPago>());
         }
 
         public async Task<IEnumerable<VentaTipo>> GetTiposVenta()
         {
-            return await Task.FromResult(EnumExtensions.GetValues<VentaTipo>());
+            return await Task.FromResult(new List<VentaTipo>() { VentaTipo.Mayorista, VentaTipo.Minorista });
         }
 
         public async Task<IEnumerable<VentaDetalle>> GetVentaDetalles(int idVenta)

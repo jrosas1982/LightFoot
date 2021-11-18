@@ -13,8 +13,8 @@
     @using (Html.BeginCollectionItem("VentaDetalleModels"))
     {
         @Html.HiddenFor(x => x.IdArticulo)
-        @Html.HiddenFor(x => x.CodigoArticulo)
         @Html.HiddenFor(x => x.Cantidad)
+        <td>@Html.DisplayFor(x => x.CodigoArticulo)</td>
         <td>@Html.DisplayFor(x => x.NombreArticulo)</td>
         <td>@Html.DisplayFor(x => x.DescripcionArticulo)</td>
         <td>@Html.DisplayFor(x => x.ColorArticulo)</td>
