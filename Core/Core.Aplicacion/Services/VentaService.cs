@@ -27,7 +27,6 @@ namespace Core.Aplicacion.Services
 
         public VentaService( ExtendedAppDbContext extendedAppDbContext, ILogger<VentaService> logger, IArticuloService articuloService, IProveedorService proveedorService, IProveedorArticuloService proveedorArticuloService, IControlStockArticuloService controlStockArticuloService, IConfiguration configuration)
         {
-            IdSucursal = int.Parse(_db.GetSucursalId());
             _db = extendedAppDbContext.context;
             _logger = logger;
             _articuloService = articuloService;
@@ -35,6 +34,7 @@ namespace Core.Aplicacion.Services
             _proveedorArticuloService = proveedorArticuloService;
             _controlStockArticuloService = controlStockArticuloService;
             _Configuration = configuration;
+            IdSucursal = int.Parse(_db.GetSucursalId());
         }
 
         public async Task AgregarPagoVenta(int idVenta, TipoPago tipoPago, decimal montoPercibido)
