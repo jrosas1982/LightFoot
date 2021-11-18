@@ -2,7 +2,7 @@
     ViewData["Title"] = "Venta";
     Layout = "_Layout";
 
-    var idCliente = ViewBag.IdCliente;
+    var idCliente = Model.Cliente.Id;
 }
 
 @model VentaModel
@@ -38,15 +38,16 @@
 
     @using (Html.BeginForm("Crear", "Venta", FormMethod.Post))
     {
-        @Html.AntiForgeryToken()
-        <div class="ibox-content m-b-sm border-bottom">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        @*
-                            @Html.LabelFor(m => m, "Cliente")
-                            @Html.DropDownListFor(m => m.IdCliente, new List<SelectListItem>(ViewBag.Cliente), new { @class = "form-control chosen-select", @id = "dropdownCliente", @disabled = "disabled" })
-                    *@
+
+    @Html.AntiForgeryToken()
+    <div class="ibox-content m-b-sm border-bottom">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="font-normal">Cliente</label>
+                    <select class="form-control" id="NOTdropdownCliente" data-placeholder="" onclick="" disabled>
+                        <option value="" selected>@Model.Cliente.Nombre</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -54,27 +55,29 @@
 
     <div class="wrapper wrapper-content animated fadeInRight ecommerce">
         <div class="ibox-content m-b-sm border-bottom">
-            <table id="ListaDetalleCompra" class="table table-bordered">
+            <table id="ListaDetalleVenta" class="table table-bordered">
                 <tr>
                     @*<th>#</th>*@
                     <th>Articulo</th>
-                    <th>Proveedor</th>
+                    <th>Descripcion</th>
+                    <th>Color</th>
+                    <th>Talle</th>
+                    <th>Categoria</th>
                     <th>Cantidad</th>
                     <th>Precio</th>
-                    <th>Comentario</th>
                     <th>Acciones</th>
                 </tr>
                 <tbody>
-                    @*@if (Model.CompraArticuloDetalleModels != null)
-                        {
-                            @foreach (var Adds in Model.CompraArticuloDetalleModels)
+                     @if (Model.VentaDetalleModels != null)
+                     {
+                            @foreach (var Adds in Model.VentaDetalleModels)
                             {
                                 if (Adds != null)
                                 {
-                                    @await Html.PartialAsync("_CompraArticuloDetalle", Adds)
+                                    @await Html.PartialAsync("_VentaArticuloDetalle", Adds)
                                 }
                             }
-                        }*@
+                     }
                 </tbody>
             </table>
             <div class="ibox-content border-0 pt-0 pr-0">
@@ -111,23 +114,28 @@
                             <label class="font-normal">Articulo</label>
                             <select class="form-control  chosen-select " id="dropdownArticulo" data-placeholder="Seleccione Articulo" required>
                                 <option value=""> -- Seleccionar Articulo --</option>
-                                @*@foreach (var insumo in Model.Articulos)
-                                    {
-                                        <option value="@insumo.Value"> @insumo.Text</option>
-                                    }*@
+                                @foreach (var articulo in Model.Articulos)
+                                {
+                                    <option value="@articulo.Value"> @articulo.Text</option>
+                                }
                             </select>
                         </div>
                         @*</div>*@
                     </div>
                     <div class="modal-body py-2">
+                        @*<div class="form-floating">*@
                         <div class="form-group">
-                            <label class="font-normal">Proveedor</label>
-                            <div id="dropdownProveedorPartialView">
-                                @* <partial name="_CompraArticuloProveedores.cshtml" model="null" />*@
-                            </div>
+                            <label class="font-normal">Articulo</label>
+                            <select class="form-control  chosen-select " id="dropdownArticulo" data-placeholder="Seleccione Articulo" required>
+                                <option value=""> -- Seleccionar Articulo --</option>
+                                @foreach (var tipo in Model.VentaTipos)
+                                {
+                                    <option value="@tipo"> @tipo</option>
+                                }
+                            </select>
                         </div>
+                        @*</div>*@
                     </div>
-
                     <div class="modal-body py-2">
                         <div class="form-group">
                             <label class="font-normal">Cantidad</label>
@@ -140,15 +148,9 @@
                             <input class="form-control" id="Precio" placeholder="" disabled>
                         </div>
                     </div>
-                    <div class="modal-body py-2">
-                        <div class="form-group">
-                            <label class="font-normal" id="ComentarioLabel">Comentario</label>
-                            <input class="form-control" id="Comentario" placeholder="Ingrese un comentario">
-                        </div>
-                    </div>
                     <div class="modal-footer">
                         <button type="button" onclick="ClearModal()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" onclick="addArticuloToCompra()" class="btn btn-primary">Agregar Articulo</button>
+                        <button type="submit" onclick="addArticuloToVenta()" class="btn btn-primary">Agregar Articulo</button>
                     </div>
                 </form>
             </div>
@@ -190,11 +192,6 @@
             //ComentarioChange();
         }
 
-        function ProveeorOnChange() {
-            ActualizarPrecio();
-            //ObligarComentario();
-        }
-
         //function ObligarComentario() {
         //    $("#ComentarioLabel").empty();
         //    if ($("#IdProveedorSugerido").val() != $("#dropdownProveedor :selected").val())
@@ -212,7 +209,7 @@
         function FiltrarProveedores() {
             $.ajax({
                 type: "post",
-                url: "/sucursal/VentaArticulo/FiltrarProveedores",
+                url: "/sucursal/Venta/FiltrarProveedores",
                 data: {
                     IdArticulo: $("#dropdownArticulo :selected").val()
                 },
@@ -223,26 +220,12 @@
             });
         }
 
-        //function ProveedorPreferidoSugerido() {
-        //    $.ajax({
-        //        type: "post",
-        //        url: "/fabrica/comprainsumo/ActualizarProveedorPreferidoSugerido",
-        //        data: {
-        //            IdInsumo: $("#dropdownArticulo :selected").val()
-        //        },
-        //    }).done(function (partialView) {
-        //        $("#proveedorPreferidoSugeridoPartialView").html(""); //clear the records content
-        //        $("#proveedorPreferidoSugeridoPartialView").html(partialView);  //add the updated content.
-        //    });
-        //}
-
         function ActualizarPrecio() {
             $.ajax({
                 type: "post",
-                url: "/sucursal/VentaArticulo/ActualizarPrecio",
+                url: "/sucursal/Venta/ActualizarPrecio",
                 data: {
                     IdArticulo: $("#dropdownArticulo :selected").val(),
-                    IdProveedor: $("#dropdownProveedor :selected").val(),
                     Cantidad: $("#ArticuloCantidad").val(),
                 },
             }).done(function (precio) {
@@ -290,35 +273,31 @@
         //    });
         //}
 
-        //function ClearModal() {
-        //    $("#dropdownArticulo").prop("selectedIndex", 0);
-        //    $("#ArticuloCantidad").val("");
-        //    $("#Precio").val("");
+        function ClearModal() {
+            $("#dropdownArticulo").prop("selectedIndex", 0);
+            $("#ArticuloCantidad").val("");
+            $("#Precio").val("");
         //    $("#Comentario").val("");
-        //}
+        }
 
         $('#agregarArticuloModal').on('hidden.bs.modal', function () {
             $(this).find('form').trigger('reset');
         })
 
-        function addArticuloToCompra() {
+        function addArticuloToVenta() {
             if (modalForm.checkValidity()) {
                 $.ajax({
                     type: "post",
-                    url: "/sucursal/VentaArticulo/agregardetalle",
+                    url: "/sucursal/Venta/agregardetalle",
                     data: {
                         IdArticulo: $("#dropdownArticulo :selected").val(),
-                        ArticuloNombre: $("#dropdownArticulo :selected").text(),
-                        IdProveedor: $("#dropdownProveedor :selected").val(),
-                        ProveedorNombre: $("#dropdownProveedor :selected").text(),
                         Cantidad: $("#ArticuloCantidad").val(),
                         Precio: $("#Precio").val(),
-                        Comentario: $("#Comentario").val()
                     }
                 }).done(function (partialView) {
-                    $('#ListaDetalleCompra tbody:last-child').after().append(partialView);
+                    $('#ListaDetalleVenta tbody:last-child').after().append(partialView);
                     $("#agregarArticuloModal").modal('hide');
-                    //ClearModal();
+                    ClearModal();
                 });
             }
         }

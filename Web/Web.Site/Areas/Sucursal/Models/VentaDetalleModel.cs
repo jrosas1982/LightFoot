@@ -5,6 +5,7 @@ namespace Web.Site.Areas
     public class VentaDetalleModel
     {
         public int IdArticulo { get; set; }
+        public string ArticuloCategoria { get; set; }
         public string CodigoArticulo { get; set; }
         public string NombreArticulo { get; set; }
         public string DescripcionArticulo { get; set; }

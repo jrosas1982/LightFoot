@@ -9,12 +9,12 @@ namespace Web.Site.Areas
 {
     public class VentaModel
     {
-        public Cliente Cliente{ get; set; }
+        public Cliente Cliente { get; set; }
+        public VentaTipo VentaTipo { get; set; }
+        public decimal DescuentoRealizado { get; set; }
+        public IEnumerable<VentaTipo> VentaTipos { get; set; }
         public IEnumerable<VentaDetalleModel> VentaDetalleModels { get; set; }
         public IEnumerable<SelectListItem> Articulos { get; set; }
-        public IEnumerable<SelectListItem> Talles { get; set; }
-        public IEnumerable<SelectListItem> Colores { get; set; }
-        public IEnumerable<SelectListItem> Proveedores { get; set; }
 
     }
 }
