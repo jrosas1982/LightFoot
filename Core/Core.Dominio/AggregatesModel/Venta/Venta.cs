@@ -16,7 +16,7 @@ namespace Core.Dominio.AggregatesModel
         public VentaTipo VentaTipo { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal MontoTotal { get; set; }
-        public double Descuento { get; set; }
+        public decimal Descuento { get; set; }
         public bool Pagado { get; set; }
         public DateTime? FechaPagado { get; set; }
 

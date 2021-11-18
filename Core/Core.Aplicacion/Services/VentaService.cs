@@ -83,15 +83,46 @@ namespace Core.Aplicacion.Services
             return venta;
         }
 
-        public async Task CrearVenta(NuevaVentaModel cabecera, IEnumerable<NuevaVentaDetalleModel> detalles)
+        public async Task CrearVenta(int idCliente, VentaTipo ventaTipo, decimal descuentoRealizado, IEnumerable<NuevaVentaDetalleModel> detalles)
         {
+            IEnumerable<ArticuloPrecio> articuloPrecioList;
+            if (ventaTipo == VentaTipo.Mayorista)
+                articuloPrecioList = _db.Articulos.Select(x => new ArticuloPrecio (){ IdArticulo = x.Id, Precio = x.PrecioMayorista }).ToList();
+            else
+                articuloPrecioList = _db.Articulos.Select(x => new ArticuloPrecio() { IdArticulo = x.Id, Precio = x.PrecioMinorista }).ToList();
 
-            //var ventaDetalles = detalles.Select(x => new VentaDetalle()
-            //{
-            //    IdArticulo = x.IdArticulo,
-            //    Cantidad = x.Cantidad,
-            //    Monto = 
-            //}
+            IList<VentaDetalle> ventaDetalles = new List<VentaDetalle>();
+            decimal montoTotalAcum = 0;
+            foreach (var item in detalles)
+            {
+                var detalle = new VentaDetalle()
+                {
+                    IdArticulo = item.IdArticulo,
+                    Cantidad = item.Cantidad,
+                    Monto = articuloPrecioList.Single(x => x.IdArticulo == item.IdArticulo).Precio
+                };
+                ventaDetalles.Add(detalle);
+                montoTotalAcum += detalle.Monto;
+            }
+
+            var venta = new Venta()
+            {
+                IdSucursal = IdSucursal,
+                IdCliente = idCliente,
+                IdUsuario = _db.Usuarios.Single(x => x.NombreUsuario == _db.GetUsername()).Id,
+                MontoTotal = montoTotalAcum  - descuentoRealizado,
+                Descuento = descuentoRealizado,
+                VentaDetalles = ventaDetalles
+            };
+
+            _db.Ventas.Add(venta);
+            await _db.SaveChangesAsync();
+        }
+
+        private class ArticuloPrecio
+        {
+            public int IdArticulo { get; set; }
+            public decimal Precio { get; set; }
         }
 
         public async Task<IEnumerable<TipoPago>> GetTiposPago()
