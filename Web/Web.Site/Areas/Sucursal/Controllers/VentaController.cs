@@ -60,6 +60,7 @@ namespace Web.Site.Areas
             VentaModel ventaModel = new VentaModel()
             {
                 Cliente = cliente,
+                IdCliente = IdCliente,
                 VentaTipo = ventaTipo
             };
             ventaModel.Articulos = articulosList.Select(x => new SelectListItem() { Text = $"{x.ArticuloCategoria.Descripcion} - {x.CodigoArticulo} - {x.Nombre} - {x.Color} - Talle {x.TalleArticulo} ", Value = $"{x.Id}" });
@@ -117,8 +118,22 @@ namespace Web.Site.Areas
                         Cantidad = detalle.Cantidad
                     });
                 }
-                await _ventaService.CrearVenta(ventaModel.Cliente.Id, ventaModel.VentaTipo, ventaModel.DescuentoRealizado, venta);
+                await _ventaService.CrearVenta(ventaModel.IdCliente, ventaModel.VentaTipo, 0, venta);
                 return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+        public async Task<IActionResult> ActualizarDetalleVenta(int idVenta)
+        {
+            try
+            {
+                var venta = await _ventaService.BuscarPorId(idVenta);
+
+                return PartialView("_VentaIndexDetalle", venta);
             }
             catch (Exception ex)
             {

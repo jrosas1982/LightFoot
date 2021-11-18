@@ -40,61 +40,61 @@
     {
 
     @Html.AntiForgeryToken()
-    <div class="ibox-content m-b-sm border-bottom">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <label class="font-normal">Cliente</label>
-                    <select class="form-control" id="NOTdropdownCliente" data-placeholder="" onclick="" disabled>
-                        <option value="" selected>@Model.Cliente.Nombre - @Model.VentaTipo</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="wrapper wrapper-content animated fadeInRight ecommerce">
         <div class="ibox-content m-b-sm border-bottom">
-            <table id="ListaDetalleVenta" class="table table-bordered">
-                <tr>
-                    @*<th>#</th>*@
-                    <th>Articulo</th>
-                    <th>Descripcion</th>
-                    <th>Color</th>
-                    <th>Talle</th>
-                    <th>Categoria</th>
-                    <th>Cantidad</th>
-                    <th>Precio</th>
-                    <th>Acciones</th>
-                </tr>
-                <tbody>
-                     @if (Model.VentaDetalleModels != null)
-                     {
-                            @foreach (var Adds in Model.VentaDetalleModels)
-                            {
-                                if (Adds != null)
-                                {
-                                    @await Html.PartialAsync("_VentaArticuloDetalle", Adds)
-                                }
-                            }
-                     }
-                </tbody>
-            </table>
-            <div class="ibox-content border-0 pt-0 pr-0">
-                <div class="text-center d-flex justify-content-end">
-                    <button type="button" class="btn btn-outline btn-default btn-lg mr-1" data-toggle="modal" data-target="#agregarArticuloModal">
-                        <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Agregar Articulo
-                    </button>
-                    <button type="Submit" class="btn btn-primary btn-lg" id="comprar">
-                        Comprar
-                    </button>
-
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="font-normal">Cliente</label>
+                        @Html.HiddenFor(x => x.IdCliente)
+                        @Html.HiddenFor(x => x.VentaTipo)
+                        <select class="form-control" id="NOTdropdownCliente" data-placeholder="" onclick="" disabled>
+                            <option value="" selected>@Model.Cliente.Nombre - @Model.VentaTipo</option>
+                        </select>
+                    </div>
                 </div>
-
             </div>
         </div>
-    </div>
-}
+
+        <div class="wrapper wrapper-content animated fadeInRight ecommerce">
+            <div class="ibox-content m-b-sm border-bottom">
+                <table id="ListaDetalleVenta" class="table table-bordered">
+                    <tr>
+                        @*<th>#</th>*@
+                        <th>Articulo</th>
+                        <th>Descripcion</th>
+                        <th>Color</th>
+                        <th>Talle</th>
+                        <th>Categoria</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Acciones</th>
+                    </tr>
+                    <tbody>
+                         @if (Model.VentaDetalleModels != null)
+                         {
+                                @foreach (var Adds in Model.VentaDetalleModels)
+                                {
+                                    if (Adds != null)
+                                    {
+                                        @await Html.PartialAsync("_VentaArticuloDetalle", Adds)
+                                    }
+                                }
+                         }
+                    </tbody>
+                </table>
+                <div class="ibox-content border-0 pt-0 pr-0">
+                    <div class="text-center d-flex justify-content-end">
+                        <button type="button" class="btn btn-outline btn-default btn-lg mr-1" data-toggle="modal" data-target="#agregarArticuloModal">
+                            <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Agregar Articulo
+                        </button>
+                        <button type="Submit" class="btn btn-primary btn-lg" id="comprar">
+                            Registrar Venta
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }   
 
     @* MODAL NEW COMMENT *@
     <div class="modal inmodal fade" id="agregarArticuloModal" tabindex="-1" role="dialog" style="display: none;">
