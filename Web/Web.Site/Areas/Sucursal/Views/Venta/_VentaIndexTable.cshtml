@@ -35,17 +35,18 @@
                     <td>@venta.FechaCreacion</td>
                     @if (@venta.Pagado)
                     {
-                        <td>Pagado</td>
+                        <td class="text-success">Pagado</td>
                     }
                     else
                     {
                         @*<td style="background: #ffc8c8;">No Pagado</td>*@
                         <td class="text-danger">No Pagado</td>
                     }
+
                     @if (@venta.FechaPagado != null)
                     {
                         @*<td style="background: #2cdd0029;">@venta.FechaPagado</td>*@
-                        <td class="text-success">Pagado</td>
+                        <td>@venta.FechaPagado</td>
                     }
                     else
                     {

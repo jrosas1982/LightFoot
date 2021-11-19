@@ -172,7 +172,7 @@ namespace Web.Site.Areas
         {
             try
             {
-                //await _ventaService.AgregarPagoVenta(idVenta, tipoPago, montoPagado);
+                await _ventaService.AgregarPagoVenta(idVenta, tipoPago, montoPagado);
                 var VentasList = await _ventaService.GetVentas();
 
                 return PartialView("_VentaIndexTable", VentasList);

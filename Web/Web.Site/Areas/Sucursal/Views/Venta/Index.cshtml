@@ -170,7 +170,7 @@
         <div class="modal-dialog modal-lg" style="max-width: 900px !important;">
             <div class="modal-content">
                 <form class="validateDontSubmit" id="modalFormCobro" name="modalFormCobro">
-                    <input type="text" id="hiddenModalCobrarVenta" hidden>
+                    <input type="text" id="hiddenModalCobrarVenta" hidden disabled>
                     <div class="modal-header pb-1">
                         <div class="row">
                             <div class="col-sm-12 d-flex justify-content-center">
@@ -328,25 +328,23 @@
             verDetalle(id);
             $('#modalFormCobro h1').html('Cobrar Venta #' + id);
             $('#hiddenModalCobrarVenta').val(id);
-            
         }
 
         function btnCobrarVenta() {
             console.log("cobrar");
-            
-            var ventaId = $('#hiddenModalCobrarVenta').val();
-            var montoPagado = $("#Pagando").val(); 
-            var tipoPago = $("#metodo_pago :selected").val(); console.log(tipoPago);
-            CobrarVenta(ventaId, montoPagado, tipoPago);
+            var ventaId = $('#hiddenModalCobrarVenta').val(); console.log(typeof ventaId);
+            var tipoPago = $("#metodo_pago :selected").val(); console.log(typeof tipoPago);
+            var montoPagado = $("#Pagando").val();            console.log(typeof montoPagado);
+            CobrarVenta(ventaId, tipoPago, montoPagado);
         }
 
-        function CobrarVenta(ventaId, pagado, tipoPago) {
+        function CobrarVenta(ventaId, tipoPago, pagado) {
             if (modalFormCobro.checkValidity()) {
                 $.ajax({
                     type: "post",
                     url: "/sucursal/Venta/CobrarVenta",
                     data: {
-                        ventaId: ventaId,
+                        idVenta: ventaId,
                         tipoPago: tipoPago,
                         montoPagado: pagado
                     },
