@@ -26,10 +26,10 @@
         </ol>
     </div>
     <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
-        <button type="button" class="btn btn-default w-100"
+        @*<button type="button" class="btn btn-default w-100"
                 onclick="location.href='@Url.Action("Index", "Clientes", 0)'">
             <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
-        </button>
+        </button>*@
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight ecommerce">
@@ -42,7 +42,7 @@
         @if (!esEdicion)
         {
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                     <div class="form-group">
                         @Html.LabelFor(m => m.Nombre)
                         @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @id = "Nombre", @class = "form-control", @placeholder = "Nombre Cliente" } })
@@ -56,7 +56,7 @@
             @Html.HiddenFor(x => x.Nombre)
         }
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.CUIT)
                     @Html.EditorFor(model => model.CUIT, new { htmlAttributes = new { @id = "cuit", @class = "form-control", @placeholder = "# Cuit", @onkeypress = "return valideKey(event);", @maxlength = "11" } })
@@ -65,7 +65,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Direccion)
                     @Html.EditorFor(model => model.Direccion, new { htmlAttributes = new { @id = "direccion", @class = "form-control", @placeholder = "Dirección" } })
@@ -74,44 +74,57 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Telefono)
-                    @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @id = "telefono", @class = "form-control", @placeholder = "Telefono", @onkeypress = "return valideKey(event);",} })
+                    @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @id = "telefono", @class = "form-control", @placeholder = "Telefono", @onkeypress = "return valideKey(event);", } })
                     @Html.ValidationMessageFor(model => model.Telefono, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Email)
-                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @id = "email", @class = "form-control", @placeholder = "Email " , @type = "email" } })
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @id = "email", @class = "form-control", @placeholder = "Email ", @type = "email" } })
                     @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Contacto)
-                    @Html.EditorFor(model => model.Contacto, new { htmlAttributes = new { @id = "Contacto", @class = "form-control", @placeholder = "Nombre Contacto", @type = "text"} })
+                    @Html.EditorFor(model => model.Contacto, new { htmlAttributes = new { @id = "Contacto", @class = "form-control", @placeholder = "Nombre Contacto", @type = "text" } })
                     @Html.ValidationMessageFor(model => model.Contacto, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Activo)
                     @Html.CheckBoxFor(m => m.Activo, new { @id = "Activo", @class = "js-switch_3" })
                 </div>
             </div>
         </div>
-    </div>
-        <div style="text-align:right">
-            <button type="Submit" class="btn btn-w-m btn-primary">@(esEdicion ? "Modificar" : "Crear") Cliente </button>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <button type="Submit" class="btn btn-w-m btn-primary w-100">@(esEdicion ? "Modificar" : "Crear") Cliente </button>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <button type="button" class="btn btn-default w-100"
+                            onclick="location.href='@Url.Action("Index", "Clientes", 0)'">
+                        <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+                    </button>
+                </div>
+            </div>
         </div>
+
+    </div>
     }
 </div>
 

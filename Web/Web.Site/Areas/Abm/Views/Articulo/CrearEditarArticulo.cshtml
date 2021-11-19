@@ -26,10 +26,10 @@
         </ol>
     </div>
     <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
-        <button type="button" class="btn btn-default w-100"
+        @*<button type="button" class="btn btn-default w-100"
                 onclick="location.href='@Url.Action("Index", "Articulo", 0)'">
             <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
-        </button>
+        </button>*@
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight ecommerce">
@@ -40,7 +40,7 @@
         @Html.HiddenFor(x => x.Articulo.Id)
     <div class="ibox-content m-b-sm border-bottom">
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Articulo.CodigoArticulo)
                     @Html.EditorFor(model => model.Articulo.CodigoArticulo, new { htmlAttributes = new { @id = "CodigoArticulo", @class = "form-control", @placeholder = "Codigo de Articulo" } })
@@ -49,7 +49,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Articulo.Nombre)
                     @Html.EditorFor(model => model.Articulo.Nombre, new { htmlAttributes = new { @id = "Nombre", @class = "form-control", @placeholder = "Nombre de Articulo" } })
@@ -58,16 +58,16 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Articulo.IdArticuloCategoria)
-                    @Html.DropDownListFor(m => m.Articulo.IdArticuloCategoria, new SelectList(Model.ArticuloCategorias, "Id", "Descripcion", Model.ArticuloCategorias.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownCategorias" })                 
+                    @Html.DropDownListFor(m => m.Articulo.IdArticuloCategoria, new SelectList(Model.ArticuloCategorias, "Id", "Descripcion", Model.ArticuloCategorias.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownCategorias" })
                     @*@Html.DropDownListFor(m => m.ArticuloEstado, new SelectList(Model.ArticuloEstados, "Id", "Nombre", Model.ArticuloEstados.First()), new { @class = "form-control m-b", @id = "dropdownSucursales" })*@
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Articulo.Descripcion)
                     @Html.EditorFor(model => model.Articulo.Descripcion, new { htmlAttributes = new { @id = "Descripcion", @class = "form-control", @placeholder = "Descripcion" } })
@@ -76,7 +76,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Articulo.Color)
                     @Html.EditorFor(model => model.Articulo.Color, new { htmlAttributes = new { @id = "Color", @class = "form-control", @placeholder = "Color" } })
@@ -85,7 +85,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Articulo.TalleArticulo)
                     @Html.EditorFor(model => model.Articulo.TalleArticulo, new { htmlAttributes = new { @id = "TalleArticulo", @class = "form-control", @placeholder = "Talle" } })
@@ -94,18 +94,30 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Articulo.ArticuloEstado)
-                    @Html.DropDownListFor(m => m.Articulo.ArticuloEstado, new SelectList(Model.ArticuloEstados, "Id", "Descripcion", Model.ArticuloEstados.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownArticuloEstado" })                    
+                    @Html.DropDownListFor(m => m.Articulo.ArticuloEstado, new SelectList(Model.ArticuloEstados, "Id", "Descripcion", Model.ArticuloEstados.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownArticuloEstado" })
                 </div>
             </div>
         </div>
-        <div style="text-align:right">
-            <button type="Submit" class="btn btn-w-m btn-primary">@(esEdicion ? "Modificar" : "Crear") Articulo </button>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group" style="text-align:right">
+                    <button type="Submit" class="btn btn-w-m btn-primary w-100">@(esEdicion ? "Modificar" : "Crear") Articulo </button>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <button type="button" class="btn btn-w-m btn-default w-100"
+                            onclick="location.href='@Url.Action("Index", "Articulo", 0)'">
+                        <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
-        
+
+    </div>  
     }
 </div>
 

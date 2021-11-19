@@ -26,10 +26,10 @@
         </ol>
     </div>
     <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
-        <button type="button" class="btn btn-default btn-rounded w-100"
+        @*<button type="button" class="btn btn-default w-100"
                 onclick="location.href='@Url.Action("Index", "ControlStockArticulo", 0)'">
             <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
-        </button>
+        </button>*@
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight ecommerce">
@@ -38,80 +38,94 @@
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(x => x.Id)
-        <div class="ibox-content m-b-sm border-bottom">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.Articulo.Nombre)
-                        @Html.HiddenFor(x => x.IdArticulo)
-                        <h1><strong> @ViewBag.ArticuloNombre</strong></h1>
-                    </div>
-                </div>
-            </div>
-            <hr />
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.StockTotal)
-                        @Html.EditorFor(model => model.StockTotal, new { htmlAttributes = new { @id = "StockTotal", @class = "form-control", @placeholder = "Stock Total de Articulo" , @onkeypress = "return valideKey(event);" , @maxlength = "8" } })
-                        @Html.ValidationMessageFor(model => model.StockTotal, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-            <hr />
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.EsReposicionAutomatica)
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        @Html.CheckBoxFor(m => m.EsReposicionAutomatica, new { @id = "EsReposicionAutomatica", @class = "js-switch_2" })
-                    </div>
-                </div>
-            </div>
-            <hr />
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.StockMinimo)
-                        @Html.EditorFor(model => model.StockMinimo, new { htmlAttributes = new { @id = "StockMinimo", @class = "form-control", @placeholder = "Stock Minimo de Articulo", @onkeypress = "return valideKey(event);" , @maxlength = "8" } })
-                        @Html.ValidationMessageFor(model => model.StockMinimo, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.TamañoLote)
-                        @Html.EditorFor(model => model.TamañoLote, new { htmlAttributes = new { @id = "TamañoLote", @class = "form-control", @placeholder = "Tamaño de Lote" ,  @onkeypress = "return valideKey(event);", @maxlength = "8" } })
-                        @Html.ValidationMessageFor(model => model.TamañoLote, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-            <hr />
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.EsReposicionPorLote)
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        @Html.CheckBoxFor(m => m.EsReposicionPorLote, new { @id = "EsReposicionPorLote", @class = "js-switch_3" })
-                    </div>
+    <div class="ibox-content m-b-sm border-bottom">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Articulo.Nombre)
+                    @Html.HiddenFor(x => x.IdArticulo)
+                    <h1><strong> @ViewBag.ArticuloNombre</strong></h1>
                 </div>
             </div>
         </div>
         <hr />
-        <div style="text-align:right">
-            <button type="Submit" class="btn btn-w-m btn-primary">@(esEdicion ? "Modificar" : "Crear") Articulo </button>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.StockTotal)
+                    @Html.EditorFor(model => model.StockTotal, new { htmlAttributes = new { @id = "StockTotal", @class = "form-control", @placeholder = "Stock Total de Articulo", @onkeypress = "return valideKey(event);", @maxlength = "8" } })
+                    @Html.ValidationMessageFor(model => model.StockTotal, "", new { @class = "text-danger" })
+                </div>
+            </div>
         </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.EsReposicionAutomatica)
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    @Html.CheckBoxFor(m => m.EsReposicionAutomatica, new { @id = "EsReposicionAutomatica", @class = "js-switch_2" })
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.StockMinimo)
+                    @Html.EditorFor(model => model.StockMinimo, new { htmlAttributes = new { @id = "StockMinimo", @class = "form-control", @placeholder = "Stock Minimo de Articulo", @onkeypress = "return valideKey(event);", @maxlength = "8" } })
+                    @Html.ValidationMessageFor(model => model.StockMinimo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.TamañoLote)
+                    @Html.EditorFor(model => model.TamañoLote, new { htmlAttributes = new { @id = "TamañoLote", @class = "form-control", @placeholder = "Tamaño de Lote", @onkeypress = "return valideKey(event);", @maxlength = "8" } })
+                    @Html.ValidationMessageFor(model => model.TamañoLote, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.EsReposicionPorLote)
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    @Html.CheckBoxFor(m => m.EsReposicionPorLote, new { @id = "EsReposicionPorLote", @class = "js-switch_3" })
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <button type="Submit" class="btn btn-w-m btn-primary w-100">@(esEdicion ? "Modificar" : "Crear") Articulo </button>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <button type="button" class="btn btn-default w-100"
+                            onclick="location.href='@Url.Action("Index", "ControlStockArticulo", 0)'">
+                        <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+        
     }
 </div>
 
