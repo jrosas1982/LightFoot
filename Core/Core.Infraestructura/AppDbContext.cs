@@ -15,11 +15,11 @@ namespace Core.Infraestructura
     public class AppDbContext : DbContext
     {
         public IHttpContextAccessor _httpContextAccessor;
-        private string username;
+        //private string username;
         public AppDbContext(DbContextOptions<AppDbContext> options, IHttpContextAccessor httpContextAccessor) : base(options)
         {
             _httpContextAccessor = httpContextAccessor;
-            username = _httpContextAccessor.HttpContext.User.GetUsername();
+            //username = _httpContextAccessor.HttpContext.User.GetUsername();
         }
 
         public DbSet<Articulo> Articulos { get; set; }
@@ -80,7 +80,7 @@ namespace Core.Infraestructura
             }
 
             //modelBuilder.Entity<EntityBase>().HasQueryFilter(e => e.Eliminado == false);
-            modelBuilder.ApplyGlobalFilters<EntityBase>(e => username != null && username.ToLower() != "super" ? e.Eliminado == false : true);
+            //modelBuilder.ApplyGlobalFilters<EntityBase>(e => username != null && username.ToLower() != "super" ? e.Eliminado == false : true);
 
             //modelBuilder.Entity<Sucursal>().HasMany(x => x.MovimientoStockOrigen).WithOne(x => x.SucursalOrigen).HasForeignKey(x => x.IdSucursalOrigen).IsRequired();
             //modelBuilder.Entity<Sucursal>().HasMany(x => x.MovimientoStockDestino).WithOne(x => x.SucursalDestino).HasForeignKey(x => x.IdSucursalDestino).IsRequired();

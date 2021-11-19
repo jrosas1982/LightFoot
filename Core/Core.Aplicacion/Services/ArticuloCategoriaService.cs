@@ -25,6 +25,7 @@ namespace Core.Aplicacion.Services
         public async Task<IEnumerable<ArticuloCategoria>> GetCategorias()
         {
             var categoriasList = await _db.ArticulosCategoria
+                .Where(x => !x.Eliminado)
                 .OrderByDescending(x => x.Descripcion)
                 .ToListAsync();
             return categoriasList;
@@ -59,7 +60,10 @@ namespace Core.Aplicacion.Services
             try
             {
                 var categoriaDb = await _db.ArticulosCategoria.FindAsync(categoria.Id);
-                _db.Remove(categoriaDb);
+
+                categoriaDb.Eliminado = true;
+
+                _db.Update(categoriaDb);
                 await _db.SaveChangesAsync();
 
                 return true;

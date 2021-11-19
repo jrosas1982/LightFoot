@@ -30,6 +30,7 @@ namespace Core.Aplicacion.Services
         public async Task<IEnumerable<Articulo>> GetArticulos()
         {
             var articulosList = await _db.Articulos
+                .Where(x => !x.Eliminado)
                 .Include(x => x.ArticuloCategoria)
                 .OrderBy(x => x.ArticuloCategoria.Descripcion)
                 .ToListAsync();
@@ -40,6 +41,7 @@ namespace Core.Aplicacion.Services
         public async Task<IEnumerable<Articulo>> GetArticulosFabrica()
         {
             var articulosList = await _db.Articulos
+                .Where(x => !x.Eliminado)
                 .Where(x => x.ProveedoresArticulo.Any(z => z.Proveedor.EsFabrica == true))
                 .Include(x => x.ArticuloCategoria)
                 .OrderBy(x => x.ArticuloCategoria.Descripcion)
@@ -92,7 +94,9 @@ namespace Core.Aplicacion.Services
             {
                 var articuloDb = await _db.Articulos.FindAsync(articulo.Id);
 
-                _db.Remove(articuloDb);
+                articuloDb.Eliminado = true;
+
+                _db.Articulos.Update(articuloDb);
                 await _db.SaveChangesAsync();
 
                 return true;
@@ -111,7 +115,7 @@ namespace Core.Aplicacion.Services
 
         public async Task CambioPrecio(NuevoCambioPrecioModel modelo)
         {
-            var articulosDb = _db.Articulos.Where(x => modelo.Detalle.Select(a => a.IdArticulo).Contains(x.Id));
+            var articulosDb = _db.Articulos.Where(x => !x.Eliminado).Where(x => modelo.Detalle.Select(a => a.IdArticulo).Contains(x.Id));
 
          
              decimal precio;

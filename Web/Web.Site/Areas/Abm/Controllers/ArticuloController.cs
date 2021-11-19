@@ -33,13 +33,21 @@ namespace Web.Site.Areas
             var articulosList = await _articuloService.GetArticulos();
 
             if (!string.IsNullOrWhiteSpace(nombreArticulo))
-                articulosList = articulosList.Where(x => x.Nombre.ToLower().Contains(nombreArticulo.ToLower())
-                                                      || x.ArticuloCategoria.Descripcion.ToLower().Contains(nombreArticulo.ToLower())
-                                                      || x.CodigoArticulo.ToLower().Contains(nombreArticulo.ToLower())
-                                                      || x.Color.ToLower().Contains(nombreArticulo.ToLower())
-                                                      || x.TalleArticulo.ToLower().Contains(nombreArticulo.ToLower()));
+            {
+                articulosList = articulosList.Where(x => x.Nombre.ToLower().Equals(nombreArticulo.ToLower())
+                                                      || x.ArticuloCategoria.Descripcion.ToLower().Equals(nombreArticulo.ToLower())
+                                                      || x.CodigoArticulo.ToLower().Equals(nombreArticulo.ToLower())
+                                                      || x.Color.ToLower().Equals(nombreArticulo.ToLower())
+                                                      || x.TalleArticulo.ToLower().Equals(nombreArticulo.ToLower()));
+                if (!articulosList.Any())
+                    articulosList = articulosList.Where(x => x.Nombre.ToLower().Contains(nombreArticulo.ToLower())
+                                               || x.ArticuloCategoria.Descripcion.ToLower().Contains(nombreArticulo.ToLower())
+                                               || x.CodigoArticulo.ToLower().Contains(nombreArticulo.ToLower())
+                                               || x.Color.ToLower().Contains(nombreArticulo.ToLower())
+                                               || x.TalleArticulo.ToLower().Contains(nombreArticulo.ToLower()));
+            }
 
-            return PartialView("_ArticuloIndexTable", articulosList);
+                return PartialView("_ArticuloIndexTable", articulosList);
         }
 
         public void LlenarViewBagsFiltro(IEnumerable<Articulo> articulosList)

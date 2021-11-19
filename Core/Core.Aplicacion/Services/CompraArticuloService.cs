@@ -160,6 +160,7 @@ namespace Core.Aplicacion.Services
         public async Task<IEnumerable<CompraArticulo>> GetCompras()
         {
             var comprasList = await _db.ComprasArticulos
+                .Where(x => !x.Eliminado)
                 .AsNoTracking()
                 .Include(x => x.CompraArticuloDetalles)
                     .ThenInclude(x => x.Articulo)
@@ -232,14 +233,14 @@ namespace Core.Aplicacion.Services
         public async Task EnviarMailCompra(int IdCompra)
         {
             var compraRealizada = await _db.ComprasArticulos
-                    .Include(x => x.CompraArticuloDetalles)
-                        .ThenInclude(x => x.Articulo)
-                        .ThenInclude(x => x.ArticuloCategoria)
-                    .Include(x => x.CompraArticuloDetalles)
-                        .ThenInclude(x => x.Articulo)
-                        .ThenInclude(x => x.ProveedoresArticulo)
-                    .Include(x => x.Proveedor)
-                    .SingleAsync(x => x.Id == IdCompra);
+                .Include(x => x.CompraArticuloDetalles)
+                    .ThenInclude(x => x.Articulo)
+                    .ThenInclude(x => x.ArticuloCategoria)
+                .Include(x => x.CompraArticuloDetalles)
+                    .ThenInclude(x => x.Articulo)
+                    .ThenInclude(x => x.ProveedoresArticulo)
+                .Include(x => x.Proveedor)
+                .SingleAsync(x => x.Id == IdCompra);
 
             byte[] dataRow = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CompraItem")["EmailTableRow"]);
             string templateBaseRow = Encoding.UTF8.GetString(dataRow);

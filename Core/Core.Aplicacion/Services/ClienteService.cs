@@ -55,8 +55,13 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                _db.Clientes.Remove(cliente);
+                var entidad = await _db.Clientes.FindAsync(cliente.Id);
+
+                entidad.Eliminado = true;
+
+                _db.Clientes.Update(entidad);
                 await _db.SaveChangesAsync();
+
                 return true;
             }
             catch (Exception ex)
@@ -69,9 +74,10 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Cliente>> GetClientes()
         {
-            return await _db.Clientes.
-            OrderByDescending(x => x.Id)
-            .ToListAsync();
+            return await _db.Clientes
+                .Where(x => !x.Eliminado)
+                .OrderByDescending(x => x.Id)
+                .ToListAsync();
         }
     }
 }

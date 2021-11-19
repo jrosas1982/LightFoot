@@ -31,6 +31,7 @@ namespace Core.Aplicacion.Services
         public async Task<IEnumerable<Usuario>> GetUsuarios()
         {
             var usuariosList = _db.Usuarios
+                .Where(x => !x.Eliminado)
                 .OrderByDescending(x => x.NombreUsuario);
 
             var asd = usuariosList.ToString();

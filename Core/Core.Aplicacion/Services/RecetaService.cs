@@ -53,10 +53,14 @@ namespace Core.Aplicacion.Services
             try
             {
                 var recetas = await _db.Recetas
+                    .Where(x => !x.Eliminado)
                     .AsNoTracking()
                     .Include(x => x.Articulo)
                         .ThenInclude(x => x.ArticuloCategoria)
-                    .Include(x => x.RecetaDetalles.OrderBy(x => x.EtapaOrdenProduccion.Orden).ThenBy(x => x.Insumo.Nombre))                    
+                    .Include(x => x.RecetaDetalles)
+                        .ThenInclude(x => x.EtapaOrdenProduccion)
+                    .Include(x => x.RecetaDetalles.OrderBy(x => x.EtapaOrdenProduccion.Orden).ThenBy(x => x.Insumo.Nombre))
+                        .ThenInclude(x => x.Insumo)
                     .OrderByDescending(x => x.Activo)
                     .ToListAsync();
                     //   .ThenInclude(x => x.Insumo)
@@ -97,10 +101,13 @@ namespace Core.Aplicacion.Services
 
                 foreach (var item in receta.RecetaDetalles)
                 {
-                    _db.RecetaDetalles.Remove(item);
+                    item.Eliminado = true;
+                    //_db.RecetaDetalles.Remove(item);
                 }
 
-                _db.Recetas.Remove(receta);
+                receta.Eliminado = true;
+
+                _db.Recetas.Update(receta);
 
                 await _db.SaveChangesAsync();
 

@@ -156,6 +156,7 @@ namespace Core.Aplicacion.Services
             int idSucursal = int.Parse(_db.GetSucursalId());
 
             var ventasList = await _db.Ventas
+                .Where(x => !x.Eliminado)
                 .AsNoTracking()
                 .Where(x => x.IdSucursal == idSucursal)
                 .Include(x => x.VentaDetalles)

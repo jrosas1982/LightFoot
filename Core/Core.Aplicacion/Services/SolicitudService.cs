@@ -69,6 +69,9 @@ namespace Core.Aplicacion.Services
             if (solicitudDB == null)
                 throw new Exception($"La solicitud {idSolicitud} no existe");
 
+            if(solicitudDB.SolicitudDetalles.Any(x => x.Articulo.Eliminado))
+                throw new Exception($"Al menos un articulo perteneciente a la solicitud {idSolicitud} no existe o fue eliminado");
+
             //TODO agregar validacion receta; UPDATE creo que era esto
             var articulosConReceta = await _db.Recetas.Where(x => x.Activo).Select(x => x.IdArticulo).ToListAsync();
             if (solicitudDB.SolicitudDetalles.Any(x => !articulosConReceta.Contains(x.IdArticulo)))
@@ -206,6 +209,7 @@ namespace Core.Aplicacion.Services
             var options = new MemoryCacheEntryOptions() { SlidingExpiration = TimeSpan.FromSeconds(10) };
 
             var solicitudesList = _db.Solicitudes
+                .Where(x => !x.Eliminado)
                 .OrderByDescending(x => x.EstadoSolicitud == EstadoSolicitud.PendienteAprobacion)
                 .ThenByDescending(x => x.FechaModificacion.HasValue)
                 .ThenByDescending(x => x.FechaCreacion)
@@ -243,6 +247,7 @@ namespace Core.Aplicacion.Services
             try
             {
                 var solicitudesList = _db.Solicitudes
+                    .Where(x => !x.Eliminado)
                     .OrderByDescending(x => x.EstadoSolicitud == EstadoSolicitud.PendienteAprobacion)
                     .ThenByDescending(x => x.FechaModificacion.HasValue)
                     .ThenByDescending(x => x.FechaCreacion)

@@ -20,6 +20,7 @@ namespace Core.Aplicacion.Services
         public async Task<IEnumerable<Sucursal>> GetSucursales()
         {
             var sucursalesList = await _db.Sucursales
+                .Where(x => !x.Eliminado)
                 .OrderBy(x => x.Nombre)
                 .ToListAsync();
             return sucursalesList;
@@ -54,9 +55,11 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var sucursalDb = await _db.Sucursales.FindAsync(sucursal.Id);
+                var entidad = await _db.Sucursales.FindAsync(sucursal.Id);
 
-                _db.Remove(sucursalDb);
+                entidad.Eliminado = true;
+
+                _db.Sucursales.Update(entidad);
                 await _db.SaveChangesAsync();
 
                 return true;

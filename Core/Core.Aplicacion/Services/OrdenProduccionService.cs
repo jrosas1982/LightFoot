@@ -32,7 +32,10 @@ namespace Core.Aplicacion.Services
         public async Task<bool> IniciarEtapa(int idOrdenProduccion, string comentario = "")
         {
             //reanuda la etapa si no estaba reanudada
-            var ordenDb = await _db.OrdenesProduccion.Include(x => x.EtapaOrdenProduccion).ThenInclude(x => x.RecetaDetalle).SingleAsync(x => x.Id == idOrdenProduccion);
+            var ordenDb = await _db.OrdenesProduccion.Include(x => x.Articulo).Include(x => x.EtapaOrdenProduccion).ThenInclude(x => x.RecetaDetalle).SingleAsync(x => x.Id == idOrdenProduccion);
+
+            if (ordenDb.Articulo.Eliminado)
+                throw new Exception($"El articulo perteneciente a la orden de produccion {ordenDb.Id} no existe o fue eliminado");
 
             if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Pendiente)
                 throw new Exception("La etapa de la orden debe encontrarse en estado Pendiente para poder ser Iniciada");
@@ -247,6 +250,7 @@ namespace Core.Aplicacion.Services
         public async Task<IEnumerable<OrdenProduccion>> GetOrdenes()
         {
             var ordenesList = _db.OrdenesProduccion
+                .Where(x => !x.Eliminado)
                 .Include(x => x.Articulo)
                     .ThenInclude(x => x.ArticuloCategoria)
                 .Include(x => x.EtapaOrdenProduccion)

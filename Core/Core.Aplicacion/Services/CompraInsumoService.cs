@@ -149,6 +149,7 @@ namespace Core.Aplicacion.Services
         public async Task<IEnumerable<CompraInsumo>> GetCompras()
         {
             var comprasList = await _db.ComprasInsumos
+                .Where(x => !x.Eliminado)
                 .AsNoTracking()
                 .Include(x => x.CompraInsumoDetalles)
                     .ThenInclude(x => x.Insumo)

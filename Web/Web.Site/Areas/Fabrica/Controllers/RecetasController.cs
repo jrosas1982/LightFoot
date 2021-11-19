@@ -53,27 +53,10 @@ namespace Web.Site.Areas.Fabrica.Controllers
         public async Task<IActionResult> IndexAsync()
         { 
             var recetas = await _recetaService.GetRecetas();
-            var insumos = await _insumoService.GetInsumos();
-            var ordenes = await _ordenesProduccionService.GetEtapasOrden();
+
             LlenarViewBagsFiltro(recetas);
-            var recetasTask = _recetaService.GetRecetas();
-            var insumosTask = _insumoService.GetInsumos();
-            var ordenesTask = _ordenesProduccionService.GetEtapasOrden();
 
-            await Task.WhenAll(recetasTask, insumosTask, ordenesTask);
-
-            var modeloReceta = _mapper.Map<IEnumerable<RecetaModel>>(recetas);
-
-            Parallel.ForEach(modeloReceta, receta =>
-            {
-                Parallel.ForEach(receta.RecetaDetalles, detalle =>
-                {
-                    detalle.NombreEtapaOrdenProduccion = ordenes.Where(x => x.Id == detalle.IdEtapaOrdenProduccion).Select(d => d.Descripcion).Single();
-                    detalle.NombreInsumo = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Nombre).Single();
-                    detalle.UnidadDeMedida = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Unidad).Single();
-                });
-            });
-            return View(modeloReceta);
+            return View(recetas);
         }
 
         /// <summary>
@@ -194,12 +177,20 @@ namespace Web.Site.Areas.Fabrica.Controllers
             IEnumerable<RecetaModel> modeloReceta;
 
             if (!string.IsNullOrWhiteSpace(NombreReceta))
-                recetas = recetas.Where(x => x.Articulo.Nombre.ToLower().Contains(NombreReceta.ToLower())
-                                          || x.Articulo.ArticuloCategoria.Descripcion.ToLower().Contains(NombreReceta.ToLower())
-                                          || x.Articulo.CodigoArticulo.ToLower().Contains(NombreReceta.ToLower())
-                                          || x.Articulo.Color.ToLower().Contains(NombreReceta.ToLower())
-                                          || x.Articulo.TalleArticulo.ToLower().Contains(NombreReceta.ToLower()));
+            {
+                recetas = recetas.Where(x => x.Articulo.Nombre.ToLower().Equals(NombreReceta.ToLower())
+                                          || x.Articulo.ArticuloCategoria.Descripcion.ToLower().Equals(NombreReceta.ToLower())
+                                          || x.Articulo.CodigoArticulo.ToLower().Equals(NombreReceta.ToLower())
+                                          || x.Articulo.Color.ToLower().Equals(NombreReceta.ToLower())
+                                          || x.Articulo.TalleArticulo.ToLower().Equals(NombreReceta.ToLower()));
 
+                if (!recetas.Any())
+                    recetas = recetas.Where(x => x.Articulo.Nombre.ToLower().Contains(NombreReceta.ToLower())
+                            || x.Articulo.ArticuloCategoria.Descripcion.ToLower().Contains(NombreReceta.ToLower())
+                            || x.Articulo.CodigoArticulo.ToLower().Contains(NombreReceta.ToLower())
+                            || x.Articulo.Color.ToLower().Contains(NombreReceta.ToLower())
+                            || x.Articulo.TalleArticulo.ToLower().Contains(NombreReceta.ToLower()));
+            }
             modeloReceta = _mapper.Map<IEnumerable<RecetaModel>>(recetas);
             foreach (var receta in modeloReceta)
             {

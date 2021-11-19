@@ -54,9 +54,14 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var insumoDb = await _db.Insumos.FindAsync(insumo.Id);
-                _db.Remove(insumoDb);
+
+                var entidad = await _db.Insumos.FindAsync(insumo.Id);
+
+                entidad.Eliminado = true;
+
+                _db.Insumos.Update(entidad);
                 await _db.SaveChangesAsync();
+
                 return true;
             }
             catch
@@ -67,14 +72,14 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Insumo>> GetInsumos()
         {
-            var insumosList = await _db.Insumos.AsNoTracking().Include(x => x.Proveedor).OrderByDescending(x => x.Nombre).ToListAsync();
+            var insumosList = await _db.Insumos.AsNoTracking().Where(x => !x.Eliminado).Include(x => x.Proveedor).OrderByDescending(x => x.Nombre).ToListAsync();
             _logger.LogInformation("Se buscaron los insumos");
             return insumosList;
         }
 
         public async Task<IEnumerable<Proveedor>> GetProveedoresInsumo(int idInsumo)
         {
-            var proveedoresList = await _db.Proveedores.Where(x => x.ProveedorInsumos.Any(x => x.IdInsumo == idInsumo)).ToListAsync();
+            var proveedoresList = await _db.Proveedores.Where(x => !x.Eliminado).Where(x => x.ProveedorInsumos.Any(x => x.IdInsumo == idInsumo)).ToListAsync();
             return proveedoresList;
         }
     }

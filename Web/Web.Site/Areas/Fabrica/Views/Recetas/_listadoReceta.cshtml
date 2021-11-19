@@ -1,5 +1,5 @@
 ﻿@using Web.Site.Areas.Fabrica
-@model IEnumerable<RecetaModel>
+@model IEnumerable<Receta>
 
     <div class="ibox-content">
         <div class="table-responsive">
@@ -44,9 +44,9 @@
                                                     {
                                                         <tr>
                                                             <td>@detalle.IdInsumo</td>
-                                                            <td>@detalle.NombreInsumo</td>
-                                                            <td>@(detalle.Cantidad + detalle.UnidadDeMedida)</td>
-                                                            <td>@detalle.NombreEtapaOrdenProduccion</td>
+                                                            <td>@detalle.Insumo.Nombre</td>
+                                                            <td>@(detalle.Cantidad + detalle.Insumo.Unidad)</td>
+                                                            <td>@detalle.EtapaOrdenProduccion.Descripcion</td>
                                                         </tr>
                                                     }
                                                 </tbody>

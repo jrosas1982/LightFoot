@@ -58,9 +58,13 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var proveedorDb = await _db.Proveedores.FindAsync(proveedor.Id);
-                _db.Remove(proveedorDb);
+                var entidad = await _db.Proveedores.FindAsync(proveedor.Id);
+
+                entidad.Eliminado = true;
+
+                _db.Proveedores.Update(entidad);
                 await _db.SaveChangesAsync();
+
                 return true;
             }
             catch
@@ -71,6 +75,7 @@ namespace Core.Aplicacion.Services
         public async Task<IEnumerable<Proveedor>> GetProveedores()
         {
             var proveedoresList = await _db.Proveedores
+                .Where(x => !x.Eliminado)
                 .Include(x => x.ProveedorInsumos.OrderBy(x => x.Insumo.Nombre))
                     .ThenInclude(x => x.Insumo)
                 .Include(x => x.ProveedorArticulos.OrderBy(x => x.Articulo.Nombre))
