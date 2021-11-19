@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Core.Aplicacion.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +14,26 @@ namespace Web.Site.Areas
     [Route("[area]/[controller]/[action]")]
     public class CuentaCorrienteController : CustomController
     {
-
-        public IActionResult Index() 
+        public ICuentaCorrienteService _cuentaCorrienteService;
+        public IMapper _mapper;
+        public CuentaCorrienteController(ICuentaCorrienteService cuentaCorrienteService, IMapper mapper)
         {
-            return View();
+            _cuentaCorrienteService = cuentaCorrienteService;
+            _mapper = mapper;
         }
+        public async Task<IActionResult> IndexAsync()
+        {
+            var cuentaCorriente = await _cuentaCorrienteService.GetCuentaCorrientes();
+            var cuentasCorrientes = new List<CuentaCorrienteModel>();
+            foreach (var item in cuentaCorriente)
+            {
+                var clienteCuentasCorriente = new CuentaCorrienteModel();
+                cuentasCorrientes.Add(_mapper.Map<CuentaCorrienteModel>(item));
+            }
+
+            return View(cuentasCorrientes);
+        }
+
+
     }
 }

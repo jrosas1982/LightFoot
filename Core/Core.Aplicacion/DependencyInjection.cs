@@ -30,6 +30,7 @@ namespace Core.Infraestructura
             serviceCollection.AddScoped<IProveedorArticuloService, ProveedorArticuloService>();
             serviceCollection.AddScoped<IClienteService, ClienteService>();
             serviceCollection.AddScoped<IVentaService, VentaService>();
+            serviceCollection.AddScoped<ICuentaCorrienteService, CuentaCorrienteService>();
 
             serviceCollection.AddScoped<UserResolverService>();
         }
