@@ -18,6 +18,8 @@
                     <th style="background-color: #caeee982;">Tipo de Venta</th>
                     <th style="background-color: #caeee982;">Monto Total</th>
                     <th style="background-color: #caeee982;">Fecha</th>
+                    <th style="background-color: #caeee982;">Pagado</th>
+                    <th style="background-color: #caeee982;">Fecha Pago</th>
                     <th style="background-color: #caeee982;" data-sort-ignore="true" class="d-print-none">Acciones</th>
                 </tr>
             </thead>
@@ -31,6 +33,24 @@
                     <td>@venta.VentaTipo</td>
                     <td>@venta.MontoTotal</td>
                     <td>@venta.FechaCreacion</td>
+                    @if (@venta.Pagado)
+                    {
+                        <td>Pagado</td>
+                    }
+                    else
+                    {
+                        @*<td style="background: #ffc8c8;">No Pagado</td>*@
+                        <td class="text-danger">No Pagado</td>
+                    }
+                    @if (@venta.FechaPagado != null)
+                    {
+                        @*<td style="background: #2cdd0029;">@venta.FechaPagado</td>*@
+                        <td class="text-success">Pagado</td>
+                    }
+                    else
+                    {
+                        <td class="text-center">-</td>
+                    }
                     <td class="d-print-none">
                         <button class="btn btn-outline btn-success btn-xs" type="button"
                                 onclick="verDetalle(@venta.Id)"
@@ -39,13 +59,22 @@
                             Ver Detalles
                         </button>
 
+                        @if (!@venta.Pagado)
+                        {
+                            <button class="btn btn-outline btn-primary btn-xs font-weight-bold " type="button"
+                                    onclick="cobrarModal(@venta.Id)"
+                                    data-toggle="modal"
+                                    data-target="#ModalCobro">
+                                COBRAR
+                            </button>
+                        }
                     </td>
                 </tr>
                 }
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="7">
+                    <td colspan="9">
                         <ul class="pagination float-right"></ul>
                     </td>
                 </tr>

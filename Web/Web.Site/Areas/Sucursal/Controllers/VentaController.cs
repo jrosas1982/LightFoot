@@ -21,7 +21,7 @@ namespace Web.Site.Areas
         private IClienteService _clienteService;
         private IArticuloService _articuloService;
         private IArticuloCategoriaService _articuloCategoriaService;
-        
+
         public VentaController(IVentaService ventaService, IClienteService clienteService, IArticuloService articuloService, IArticuloCategoriaService articuloCategoriaService)
         {
             _ventaService = ventaService;
@@ -56,16 +56,18 @@ namespace Web.Site.Areas
             var ventasListTask = _ventaService.GetVentas();
             var ventaTiposListTask = _ventaService.GetTiposVenta();
             var clienteListTask = _clienteService.GetClientes();
+            var tipoPagoTask = _ventaService.GetTiposPago();
 
-            await Task.WhenAll(ventasListTask, clienteListTask, ventaTiposListTask);
+            await Task.WhenAll(ventasListTask, clienteListTask, ventaTiposListTask, tipoPagoTask);
 
             var ventasList = ventasListTask.Result;
             var clienteList = clienteListTask.Result;
             var ventasTipoList = ventaTiposListTask.Result;
+            var tipoPagoList = tipoPagoTask.Result;
 
             ViewBag.Clientes = clienteList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" });
             ViewBag.VentaTipos = ventasTipoList;
-
+            ViewBag.TiposPago = tipoPagoList;
 
             ViewBag.TypeaheadNumVenta = ventasList.Select(x => x.Id.ToString()).Distinct();
             ViewBag.TypeaheadVendedor = ventasList.Select(x => x.CreadoPor).Distinct();
@@ -100,12 +102,13 @@ namespace Web.Site.Areas
 
             var Articulo = await _articuloService.BuscarPorId(idArticulo);
 
-            var ArticuloPrecio= new decimal(1);
+            var ArticuloPrecio = new decimal(1);
             if (ventatipo == VentaTipo.Mayorista)
             {
                 ArticuloPrecio = Articulo.PrecioMayorista;
             }
-            else {
+            else
+            {
                 ArticuloPrecio = Articulo.PrecioMinorista;
             }
 
@@ -158,6 +161,21 @@ namespace Web.Site.Areas
                 var venta = await _ventaService.BuscarPorId(idVenta);
 
                 return PartialView("_VentaIndexDetalle", venta);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> CobrarVenta(int idVenta, TipoPago tipoPago, decimal montoPagado)
+        {
+            try
+            {
+                //await _ventaService.AgregarPagoVenta(idVenta, tipoPago, montoPagado);
+                var VentasList = await _ventaService.GetVentas();
+
+                return PartialView("_VentaIndexTable", VentasList);
             }
             catch (Exception ex)
             {
