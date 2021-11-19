@@ -15,7 +15,5 @@ namespace Web.Site.Areas
         public decimal DeudaTotal { get; set; }
         public bool PagoAcreditado { get; set; }
         public string NombreCliente { get; set; }
-
-
     }
 }

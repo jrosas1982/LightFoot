@@ -17,6 +17,7 @@ namespace Web.Site.Helpers
             CreateMap<RecetaDetalleModel, RecetaDetalle>().ReverseMap();
             CreateMap<ArticuloModel, Articulo>().ReverseMap();
             CreateMap<Areas.Abm.ClienteModel, Cliente>().ReverseMap();
+            CreateMap<CuentaCorrienteModel, ClienteCuentaCorriente>().ReverseMap();
             //CreateMap<IEnumerable<RecetaDetalleModel>,IEnumerable<RecetaDetalle>>().ReverseMap();
         }
     }

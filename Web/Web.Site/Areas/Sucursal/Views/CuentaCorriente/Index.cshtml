@@ -52,10 +52,9 @@
                         <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
                             <thead>
                                 <tr>
-                                    @*<th># Cta Corriente</th>*@
                                     <th>Ciente</th>
                                     <th>Pagado</th>
-                                    <th>Debe</th>
+                                    @*<th>Debe</th>*@
                                     <th data-sort-ignore="true" class="d-print-none">Acciones</th>
                                 </tr>
                             </thead>
@@ -65,10 +64,9 @@
                                     foreach (var item in Model)
                                     {
                                         <tr>
-                                            @*<td>@item.Id</td>*@
-                                            <td>@item.NombreCliente</td>
-                                            <td>@item.TotalPagado</td>
-                                            <td>@item.DeudaTotal</td>
+                                            <td>@item.IdCliente</td>
+                                            <td>@item.PagoAcreditado</td>
+                                            @*<td>@item.DeudaTotal</td>*@
                                             <td class="d-print-none">
                                                 <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="VerDetalle('@item.Id')">Ver Detalle</button>
                                             </td>
