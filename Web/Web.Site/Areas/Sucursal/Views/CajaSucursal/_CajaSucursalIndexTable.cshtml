@@ -1,0 +1,54 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+@using Web.Site.Areas
+@model IEnumerable<CajaSucursal>
+
+@{
+
+}
+
+@if (@Model != null)
+{
+    <div class="table-responsive">
+        <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
+            <thead>
+                <tr>
+                    <th style="background-color: #caeee982;">#Movimiento</th>
+                    <th style="background-color: #caeee982;">Movimiento</th>
+                    <th style="background-color: #caeee982;">Monto</th>
+                    <th style="background-color: #caeee982;">Comentario</th>
+                    <th style="background-color: #caeee982;">Fecha</th>
+                    <th style="background-color: #caeee982;">Creado Por</th>
+                    @*<th style="background-color: #caeee982;" data-sort-ignore="true" class="d-print-none">Acciones</th>*@
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var venta in @Model)
+                {
+                <tr>
+                    <td>@venta.Id</td>
+                    <td>@venta.TipoMovimiento</td>
+                    <td>@venta.Monto</td>
+                    <td>@venta.Comentario</td>
+                    <td>@venta.FechaCreacion</td>
+                    <td>@venta.CreadoPor</td>
+                    @*<td class="d-print-none">
+                        <button class="btn btn-outline btn-success btn-xs" type="button"
+                                onclick="verDetalle(@venta.Id)"
+                                data-toggle="modal"
+                                data-target="#ModalDetalle">
+                            Ver Detalles
+                        </button>
+                    </td>*@
+                </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6">
+                        <ul class="pagination float-right"></ul>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}

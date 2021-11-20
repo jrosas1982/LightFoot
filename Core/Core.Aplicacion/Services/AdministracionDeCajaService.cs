@@ -25,6 +25,8 @@ namespace Core.Aplicacion.Services
 
         public async Task AgregarMovimiento(CajaSucursal cajaSucursal)
         {
+            int idSucursal = int.Parse(_db.GetSucursalId());
+            cajaSucursal.IdSucursal = idSucursal;
             _db.CajaSucursales.Add(cajaSucursal);
 
             await _db.SaveChangesAsync();
