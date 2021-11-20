@@ -356,6 +356,9 @@
                                 'success'
                             );
                         }
+                    },
+                    error: function (error) {
+                        MensajeError('Ocurrio un error!', error.statusText);
                     }
                 }).done(function (response) {
                     $("#VentasPartialView").html(""); //clear the records content

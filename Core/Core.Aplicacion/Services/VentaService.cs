@@ -104,7 +104,7 @@ namespace Core.Aplicacion.Services
                     
                 };
                 ventaDetalles.Add(detalle);
-                montoTotalAcum += detalle.PrecioUnitario;
+                montoTotalAcum += (detalle.PrecioUnitario*item.Cantidad);
             }
 
             int idSucursal = int.Parse(_db.GetSucursalId());
