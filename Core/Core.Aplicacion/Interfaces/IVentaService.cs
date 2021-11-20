@@ -14,6 +14,7 @@ namespace Core.Aplicacion.Interfaces
         public Task<Venta> BuscarPorId(int idVenta);
         public Task<Venta> CrearVenta(int idCliente, VentaTipo ventaTipo, IEnumerable<NuevaVentaDetalleModel> detalles);
         public Task AgregarPagoVenta(int idVenta, TipoPago tipoPago, decimal montoPagado);
+        public Task<IEnumerable<Venta>> GetVentasPorCliente(int IdCliente);
         //public Task<bool> AcreditarPago (...); TODO desafectar de ventas
     }
 }

@@ -170,6 +170,14 @@ namespace Core.Aplicacion.Services
                 .ToListAsync();
             return ventasList;
         }
+        public async Task<IEnumerable<Venta>> GetVentasPorCliente(int IdCliente)
+        {
+
+            var ventasList = await _db.Ventas
+                .Where(x => !x.Eliminado && x.IdCliente == IdCliente)            
+                .ToListAsync();
+            return ventasList;
+        }
 
     }
 }
