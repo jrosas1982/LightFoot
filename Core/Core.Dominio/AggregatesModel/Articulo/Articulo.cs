@@ -10,7 +10,7 @@ namespace Core.Dominio.AggregatesModel
         [Key]
         public int Id { get; set; }        
         public ArticuloEstado ArticuloEstado { get; set; }
-        [Display(Name = "Receta Artículo")]
+        [Display(Name = "Categoria Artículo")]
         public int IdArticuloCategoria { get; set; }
         [Display(Name = "Código Artículo")]
         [Required]

@@ -26,10 +26,10 @@
         </ol>
     </div>
     <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
-        <button type="button" class="btn btn-default w-100"
+        @*<button type="button" class="btn btn-default w-100"
                 onclick="location.href='@Url.Action("Index", "Proveedor", 0)'">
             <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
-        </button>
+        </button>*@
     </div>
 </div>
 
@@ -41,7 +41,7 @@
         @Html.HiddenFor(x => x.Id)
     <div class="ibox-content m-b-sm border-bottom">
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.CUIT)
                     @Html.EditorFor(model => model.CUIT, new { htmlAttributes = new { @id = "CUIT", @class = "form-control", @placeholder = "CUIT de Proveedor", @onkeypress = "return valideKey(event);", @maxlength = "11" } })
@@ -50,7 +50,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Nombre)
                     @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @id = "Nombre", @class = "form-control", @placeholder = "Nombre" } })
@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Direccion)
                     @Html.EditorFor(model => model.Direccion, new { htmlAttributes = new { @id = "Direccion", @class = "form-control", @placeholder = "Direccion" } })
@@ -68,7 +68,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Telefono)
                     @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @id = "Telefono", @class = "form-control", @placeholder = "Telefono" } })
@@ -77,7 +77,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Email)
                     @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @id = "Email", @class = "form-control", @placeholder = "ejemplo@email.com", @type = "email" } })
@@ -85,8 +85,20 @@
                 </div>
             </div>
         </div>
-        <div style="text-align:right">
-            <button type="Submit" class="btn btn-w-m btn-primary">@(esEdicion ? "Modificar" : "Crear") Proveedor</button>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <button type="Submit" class="btn btn-w-m btn-primary w-100">@(esEdicion ? "Modificar" : "Crear") Proveedor</button>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <button type="button" class="btn btn-default w-100"
+                            onclick="location.href='@Url.Action("Index", "Proveedor", 0)'">
+                        <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
         

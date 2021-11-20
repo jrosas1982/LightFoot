@@ -26,10 +26,10 @@
         </ol>
     </div>
     <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
-        <button type="button" class="btn btn-default w-100"
+        @*<button type="button" class="btn btn-default w-100"
                 onclick="location.href='@Url.Action("Index", "Insumo", 0)'">
             <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
-        </button>
+        </button>*@
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight ecommerce">
@@ -40,7 +40,7 @@
         @Html.HiddenFor(x => x.Insumo.Id)
     <div class="ibox-content m-b-sm border-bottom">
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Insumo.Nombre)
                     @Html.EditorFor(model => model.Insumo.Nombre, new { htmlAttributes = new { @id = "Nombre", @class = "form-control", @placeholder = "Nombre de Insumo" } })
@@ -49,7 +49,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Insumo.Descripcion)
                     @Html.EditorFor(model => model.Insumo.Descripcion, new { htmlAttributes = new { @id = "Descripcion", @class = "form-control", @placeholder = "Descripcion" } })
@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Insumo.Unidad)
                     @Html.EditorFor(model => model.Insumo.Unidad, new { htmlAttributes = new { @id = "Unidad", @class = "form-control", @placeholder = "Unidad" } })
@@ -69,7 +69,7 @@
         @if (esEdicion)
         {
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                     @if (Model.Proveedores == null || !Model.Proveedores.Any())
                     {
                         //TODO corregir onclick abm/Proveedor/AsignarProveedorInsumo?idProveedor=1
@@ -90,7 +90,7 @@
             </div>
         }
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Insumo.StockTotal)
                     @Html.EditorFor(model => model.Insumo.StockTotal, new { htmlAttributes = new { @id = "Unidad", @class = "form-control", @placeholder = "Stock", @onkeypress = "return valideKey(event);", @maxlength = "8" } })
@@ -98,9 +98,22 @@
                 </div>
             </div>
         </div>
-        <div style="text-align:right">
-            <button type="Submit" class="btn btn-w-m btn-primary">@(esEdicion ? "Modificar" : "Crear") Insumo </button>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <button type="Submit" class="btn btn-w-m btn-primary w-100">@(esEdicion ? "Modificar" : "Crear") Insumo </button>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <button type="button" class="btn btn-w-m btn-default w-100"
+                            onclick="location.href='@Url.Action("Index", "Insumo", 0)'">
+                        <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+                    </button>
+                </div>
+            </div>
         </div>
+
     </div>
                 
     }

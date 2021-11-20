@@ -60,7 +60,7 @@
                             Ver Detalles
                         </button>
 
-                        @if (!@venta.Pagado)
+                        @if (!@venta.Pagado || true)
                         {
                             <button class="btn btn-outline btn-primary btn-xs font-weight-bold " type="button"
                                     onclick="cobrarModal(@venta.Id)"
