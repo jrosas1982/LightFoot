@@ -63,7 +63,7 @@ namespace LightFoot.Api.Publica.Controllers.v1
                 IdArticulo = x.IdArticulo
             });
 
-            var venta = await _ventaService.CrearVenta(request.IdCliente, request.VentaTipo, request.DescuentoRealizado, detalles);
+            var venta = await _ventaService.CrearVenta(request.IdCliente, request.VentaTipo, detalles);
 
             _logger.LogInformation($"Se registro la venta {venta.Id} ");
 
