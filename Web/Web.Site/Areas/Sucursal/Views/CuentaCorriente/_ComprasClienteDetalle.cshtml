@@ -1,0 +1,41 @@
+﻿@{
+    var totalFacturado = Model?.Sum(x => x.MontoTotal);
+}
+
+@model IEnumerable<Venta>
+
+
+@if (Model != null && Model.Any())
+{
+    <h3>Compras</h3>
+    <div class="table-responsive">
+        <table class="footable table table-stripped table-hover table-bordered no-paging toggle-arrow-tiny" data-page-size="4">
+            <thead>
+                <tr>
+                    <th># Venta</th>
+                    <th>Monto Total Factura</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pago in Model)
+                {
+                    <tr>
+                        <td>@pago.Id</td>
+                        <td>@pago.MontoTotal</td>
+                        <td>@(pago.FechaModificacion != null ? pago.FechaModificacion : pago.FechaCreacion)</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="7">
+                        <ul class="pagination float-right"></ul>
+                    </td>
+                </tr>
+
+            </tfoot>
+        </table>
+        <h4>Total Facturado: $@totalFacturado</h4>
+    </div>
+}

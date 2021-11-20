@@ -52,9 +52,11 @@
                         <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
                             <thead>
                                 <tr>
-                                    <th>Ciente</th>
-                                    <th>Pagado</th>
-                                    @*<th>Debe</th>*@
+                                    <th># Ciente</th>
+                                    <th>Nombre </th>
+                                    <th>Total Facturado</th>
+                                    <th>Total Pagado</th>
+                                    <th>Estado de Cuenta</th>
                                     <th data-sort-ignore="true" class="d-print-none">Acciones</th>
                                 </tr>
                             </thead>
@@ -65,10 +67,13 @@
                                     {
                                         <tr>
                                             <td>@item.IdCliente</td>
-                                            <td>@item.PagoAcreditado</td>
-                                            @*<td>@item.DeudaTotal</td>*@
+                                            <td>@item.NombreCliente</td>
+                                            <td>@item.TotalFacturado</td>
+                                            <td>@item.TotalCobrado</td>
+                                            <td>@item.DeudaTotal</td>
                                             <td class="d-print-none">
-                                                <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="VerDetalle('@item.Id')">Ver Detalle</button>
+                                                <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="verDetalle('@item.IdCliente')" data-toggle="modal"
+                                    data-target="#ModalDetalle">Ver Detalle</button>
                                             </td>
                                         </tr>
                                     }
@@ -88,3 +93,83 @@
         </div>
     </div>
 </div>
+@*MODAL detalle*@
+
+<div class="modal inmodal fade" id="ModalDetalle" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header pb-1">
+                <div class="row">
+                    <div class="col-sm-12 d-flex justify-content-center">
+                        <h1 style="font-size:30px;">Detalle Cuenta Corriente</h1>
+                    </div>
+                </div>
+            </div>
+     
+        <div class="modal-body py-2">
+            <div id="partialViewEventos">
+                <partial name="_ComprasClienteDetalle.cshtml" model="null" />
+            </div>
+            <div id="partialViewModalDetalle">
+                <partial name="_PagosClienteDetalle.cshtml" model="null" />
+            </div>
+        </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+
+}
+
+@section Scripts {
+
+    <script type="text/javascript">
+        function verDetalle(id) {
+            ActualizarDetalleCompra(id);
+            $.ajax({
+                type: "Get",
+                url: "/sucursal/CuentaCorriente/CargarPagosRecibidos",
+                traditional: true,
+                data: {
+                    IdCliente: id
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#partialViewModalDetalle").html(""); //clear the records content
+                    $("#partialViewModalDetalle").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw');
+                    //$('#ModalrecibirCompra').modal('hide');
+                },
+                error: function () {
+                    swal("Error", "Intente más tarde", "error");
+                }
+            });
+        }
+
+        function ActualizarDetalleCompra(id) {
+            $.ajax({
+                type: "Get",
+                url: "/sucursal/CuentaCorriente/CargarComprasCliente?IdCliente=" + id,
+                traditional: true,
+                data: {
+                    IdCliente: id
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#partialViewEventos").html(""); //clear the records content
+                    $("#partialViewEventos").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw');
+                },
+                error: function () {
+                    swal("Error", "Intente más tarde", "error");
+                }
+            });
+        }
+    </script>
+}
