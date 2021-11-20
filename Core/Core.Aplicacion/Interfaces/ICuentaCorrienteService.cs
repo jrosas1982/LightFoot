@@ -13,5 +13,6 @@ namespace Core.Aplicacion.Interfaces
         public Task<IEnumerable<ClienteCuentaCorriente>> GetCuentaCorrientes();
         public Task<ClienteCuentaCorriente> BuscarPorId(int IdCliente);
         public Task<IEnumerable<ClienteCuentaCorriente>> GetCuentaCorrientesPorCliente(int IdCliente);
+        public Task<IEnumerable<ClienteCuentaCorriente>> GetCuentaCorrientesPorVenta(int IdVenta);
     }
 }

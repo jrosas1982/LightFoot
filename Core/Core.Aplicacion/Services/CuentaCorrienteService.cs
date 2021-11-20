@@ -42,5 +42,11 @@ namespace Core.Aplicacion.Services
 
         }
 
+        public async Task<IEnumerable<ClienteCuentaCorriente>> GetCuentaCorrientesPorVenta(int IdVenta)
+        {
+            return await _db.ClientesCuentaCorriente.Where(x => !x.Eliminado && x.IdVenta == IdVenta).Include(v => v.Venta).ToListAsync();
+
+        }
+
     }
 }

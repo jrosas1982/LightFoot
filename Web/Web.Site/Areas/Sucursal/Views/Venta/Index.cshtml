@@ -95,9 +95,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-body py-2">
+                <div class="modal-body py-2 border-bottom border-1">
                     <div class="partialViewDetalle">
                         <partial name="_VentaIndexDetalle.cshtml" model="null" />
+                    </div>
+                </div>
+                <div class="modal-body py-2 ">
+                    <div class="partialViewPagos">
+                        <partial name="_VentaIndexPagos.cshtml" model="null" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -179,8 +184,8 @@
                         </div>
                     </div>
                     <div class="modal-body py-2">
-                        <div class="partialViewDetalle">
-                            <partial name="_VentaIndexDetalle.cshtml" model="null" />
+                        <div class="partialViewPagos">
+                            <partial name="_VentaIndexPagos.cshtml" model="null" />
                         </div>
                     </div>
                     <div class="modal-body py-2">
@@ -268,20 +273,24 @@
 
         $('#ModalDetalle').on('hidden.bs.modal', function () {
             $(this).find('form').trigger('reset');
-            $("#PartialViewEventos").html(""); //clear the records content
+            $(".partialViewPagos").html(""); //clear the records content
+            $(".partialViewDetalle").html(""); //clear the records content
         })
         $('#ModalVenta').on('hidden.bs.modal', function () {
             $(this).find('form').trigger('reset');
         })
         $('#ModalCobro').on('hidden.bs.modal', function () {
             $(this).find('form').trigger('reset');
+            $(".partialViewPagos").html(""); //clear the records content
         })
 
     </script>
 
     <script type="text/javascript">
         function verDetalle(id) {
+            $('#ModalDetalle h1').html('Detalle Venta #' + id);
             ActualizarDetalleVenta(id);
+            ActualizarPagosVenta(id);
         }
 
         function ActualizarDetalleVenta(id) {
@@ -305,6 +314,31 @@
     </script>
 
     <script type="text/javascript">
+        function verPagos(id) {
+            ActualizarPagosVenta(id);
+        }
+
+        function ActualizarPagosVenta(id) {
+            $.ajax({
+                type: "Get",
+                url: "/sucursal/Venta/ActualizarDetallePagos?IdVenta=" + id,
+                traditional: true,
+                data: {
+                    Id: id
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $(".partialViewPagos").html(""); //clear the records content
+                    $(".partialViewPagos").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
+
+    </script>
+
+    <script type="text/javascript">
         //prevent the form from doing a submit
         $(document).on('submit', '.validateDontSubmit', function (e) {
             e.preventDefault();
@@ -315,7 +349,6 @@
             Id = $('#dropdownCliente :selected').val();
             VentaTipo = $('#dropdownVentaTipo :selected').val();
             if (modalFormCrear.checkValidity()) {
-                //window.location.href = '@Url.Action("VentaArticulo", "Venta", 0)';
                 window.location = '/sucursal/Venta/VentaArticulo?IdCliente=' + Id + '&&VentaTipo=' + VentaTipo;
             }
         }
@@ -325,7 +358,7 @@
     <script type="text/javascript">
 
         function cobrarModal(id) {
-            verDetalle(id);
+            verPagos(id);
             $('#modalFormCobro h1').html('Cobrar Venta #' + id);
             $('#hiddenModalCobrarVenta').val(id);
         }
@@ -334,7 +367,7 @@
             console.log("cobrar");
             var ventaId = $('#hiddenModalCobrarVenta').val(); console.log(typeof ventaId);
             var tipoPago = $("#metodo_pago :selected").val(); console.log(typeof tipoPago);
-            var montoPagado = $("#Pagando").val();            console.log(typeof montoPagado);
+            var montoPagado = $("#Pagando").val(); console.log(typeof montoPagado);
             CobrarVenta(ventaId, tipoPago, montoPagado);
         }
 
@@ -376,7 +409,7 @@
 
 
     </script>
-        
+
 }
-        
+
 
