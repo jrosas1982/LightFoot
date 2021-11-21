@@ -159,15 +159,15 @@
                         <div class="step-content w-100">
                             <div class="">
                                 <div class="table-responsive">
-                                    <table class="table table-hover ">
+                                    <table class="footable table table-stripped table-hover table-bordered" data-sorting="true" data-paging="true" data-page-size="15">
                                         <thead class="">
                                             <tr>
-                                                <th colspan="1" class="text-left"><h3>Estado Orden</h3></th>
-                                                <th colspan="1" class="text-left"><h3>Etapa Orden</h3></th>
-                                                <th colspan="1" class="text-left"><h3>Descripcion Etapa</h3></th>
-                                                <th colspan="1" class="text-left"><h3>Fecha Evento</h3></th>
-                                                <th colspan="1" class="text-left"><h3>Usuario</h3></th>
-                                                <th colspan="1" class="text-left"><h3>Comentario</h3></th>
+                                                <th colspan="1" class="text-left"><h5>Estado Orden</h5></th>
+                                                <th colspan="1" class="text-left"><h5>Etapa Orden</h5></th>
+                                                <th colspan="1" class="text-left"><h5>Descripcion Etapa</h5></th>
+                                                <th colspan="1" class="text-left"><h5>Fecha Evento</h5></th>
+                                                <th colspan="1" class="text-left"><h5>Usuario</h5></th>
+                                                <th colspan="1" class="text-left"><h5>Comentario</h5></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -192,15 +192,16 @@
             </div>
 
 
-                @*Reporte*@
-                <div class="d-none d-print-block">
-                    @foreach (var etapa in EtapasOrdenProduccion)
+            @*Reporte*@
+            <div class="d-none d-print-block">
+                @foreach (var etapa in EtapasOrdenProduccion)
+                {
+                    if (Model.OrdenProduccionEventos.Where(x => x.IdEtapaOrdenProduccion == etapa.Id).Any())
                     {
-                        if (Model.OrdenProduccionEventos.Where(x => x.IdEtapaOrdenProduccion == etapa.Id).Any())
-                        {
 
-                            <h3>@etapa.Descripcion</h3>
-                            <table class="table table-hover ">
+                        <h3>@etapa.Descripcion</h3>
+                        <div class="table-responsive">
+                            <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
                                 <thead class="">
                                     <tr>
                                         <th colspan="1" class="text-left"><h4>Estado Orden</h4></th>
@@ -225,16 +226,16 @@
                                     }
                                 </tbody>
                             </table>
-                        }
-                    }
+                        </div>
+                            }
+                            }
+                    </div>
+
+
                 </div>
-
-
+            </div>
 
         </div>
-    </div>
-
-</div>
 
 
 

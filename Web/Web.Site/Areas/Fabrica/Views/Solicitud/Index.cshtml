@@ -160,19 +160,46 @@
 
     <script type="text/javascript">
         function RechazarSolicitud(Id) {
-            alerta(Id);
+            swal({
+                title: "Seguro que desea rechazar la solicitud?",
+                text: "La Solicitud será rechazada definitivamente. Esta accion no se puede deshacer",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Si, rechazar!",
+                cancelButtonText: "Cancelar",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    type: "post",
+                    url: "/fabrica/Solicitud/Rechazar",
+                    data: { idSolicitud: Id },
+                    success: function (result) {
+                        Filtrar();
+                    }
+                })
+            });
         }
 
         function AprobarSolicitud(Id) {
-            window.location = '/fabrica/Solicitud/AprobarSolicitud?idSolicitud=' + Id;
-        }
-
-        function VerOrdenAsociada(Id) {
-            window.location = '/fabrica/OrdenProduccion/DetallesOrdenProduccion?IdOrdenProduccion=' + Id;
+            $.ajax({
+                type: "post",
+                url: '/fabrica/Solicitud/AprobarSolicitud',
+                data: {
+                    idSolicitud: id
+                },
+                success: function (result) {
+                    Filtrar();
+                }
+            });
         }
 
         function VerDetalles(Id) {
             window.location = '/fabrica/Solicitud/SolicitudDetalle?IdSolicitud=' + Id;
+        }
+
+        function VerOrdenAsociada(Id) {
+            window.location = '/fabrica/OrdenProduccion/DetallesOrdenProduccion?IdOrdenProduccion=' + Id;
         }
 
         function Reporte() {
@@ -212,33 +239,7 @@
                     console.log("end");
                 }
             });
-        }
-
-        function alerta(Id) {
-            swal({
-                title: "Seguro que desea rechazar la solicitud?",
-                text: "La Solicitud será rechazada definitivamente. Esta accion no se puede deshacer",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Si, rechazar!",
-                cancelButtonText: "Cancelar",
-                closeOnConfirm: false
-            }, function () {
-                $.ajax({
-                    type: "post",
-                    url: "/fabrica/Solicitud/Rechazar",
-                    data: { idSolicitud: Id },
-                    success: function (result) {
-                        $("#tablaContenido").html(""); //clear the records content
-                        $("#tablaContenido").html(result);  //add the updated content.
-                        $('.footable').footable();
-                        $('.footable').trigger('footable_redraw'); //reaplicar formato footable
-                        swal("Exito!", "La solicitud ha sido rechazada correctamente", "success");           
-                    }
-                })
-            });
-        };        
+        }     
     </script>
 
 }

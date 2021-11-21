@@ -136,6 +136,7 @@
 
             $.blockUI.defaults.message = '<h1><img src="/recursos/ajax-loader.gif" /> Procesando...</h1>';
             $.blockUI.defaults.ignoreIfBlocked = true;
+            $.blockUI.defaults.baseZ = 10000;
             $.blockUI.defaults.fadeIn = 400;
             $.blockUI.defaults.fadeOut = 600;
             $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
