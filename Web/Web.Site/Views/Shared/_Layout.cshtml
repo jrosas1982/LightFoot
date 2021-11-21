@@ -42,7 +42,7 @@
             <!-- Top Navbar -->
             <partial name="_TopNavbar" />
 
-            <!-- Main view  -->          
+            <!-- Main view  -->
             @RenderBody()
 
             <!-- Footer -->
@@ -56,7 +56,7 @@
     </div>
     <!-- End wrapper-->
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/custom/jquery-3.6.0.min.js"></script>
     <script src="~/lib/Popper/popper.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="~/lib/metisMenu/dist/jquery.metisMenu.js"></script>
@@ -129,7 +129,11 @@
                     $.ajax({
                         url: this.action,
                         type: this.method,
-                        data: $(this).serialize()
+                        data: $(this).serialize(),
+                        success: function (response) {
+                            if (response.redirectToUrl)
+                                window.location.href = response.redirectToUrl;
+                        }
                     });
                 });
             });
@@ -141,20 +145,6 @@
             $.blockUI.defaults.fadeOut = 600;
             $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
         });
-    </script>
-
-    <script>
-        @if(ViewBag.CatchError == true){
-
-        <text>
-        swal("Error", "@ViewBag.MensajeError" , "error");
-
-        @*swal({
-            title: "Error al procesar",
-            text: '@ViewBag.MensajeError' + ', por favor intente mas tarde'
-        });*@
-        </text>
-    }
     </script>
 
     <script type="text/javascript">

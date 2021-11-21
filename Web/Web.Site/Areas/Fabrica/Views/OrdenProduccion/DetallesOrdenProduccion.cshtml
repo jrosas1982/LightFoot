@@ -80,7 +80,6 @@
 
 @section Scripts {
     <environment names="Development,Staging,Production">
-        <script src="~/lib/iCheck/icheck.min.js"></script>
         <script src="~/lib/steps/jquery.steps.min.js"></script>
         <script src="~/lib/validate/jquery.validate.min.js"></script>
     </environment>
@@ -108,25 +107,16 @@
         function ActualizarInfo(id, metodo) {
             $.ajax({
                 type: "Get",
-                url: '/fabrica/OrdenProduccion/' + metodo + '?IdOrdenProduccion=' + id,
-                traditional: true,
+                url: '/fabrica/OrdenProduccion/' + metodo,
                 data: //formData,
                 {
-                    OrdenId: id,
+                    idOrdenProduccion: id,
                 },
                 contentType: "application/json",
-                success: function (response) {             
+                success: function (response) {
                     $("#partialViewEventos").html(""); //clear the records content
                     $("#partialViewEventos").html(response);  //add the updated content.
-                    $("#wizard").steps({ //reaplicar formato wizard
-                        startIndex: @(Model.EtapaOrdenProduccion.Orden - 1),
-                        onStepChanging: function (event, currentIndex, newIndex) { if (newIndex > @(Model.EtapaOrdenProduccion.Orden - 1)) return false; return true; },
-                        enableFinishButton: false,
-                        transitionEffect: 1,
-                        transitionEffectSpeed: 200,
-                        next: "Siguiente",
-                        previous: "Anterior"
-                    });
+                    partialViewEventosScript();
                 }
             });
         }

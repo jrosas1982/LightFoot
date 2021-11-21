@@ -216,10 +216,11 @@
                 data: {
                     IdInsumo: $("#dropdownInsumo :selected").val()
                 },
-            }).done(function (partialView) {
-                $("#dropdownProveedorPartialView").html(""); //clear the records content
-                $("#dropdownProveedorPartialView").html(partialView);  //add the updated content.
-                $('#dropdownProveedor').chosen();
+                success(partialView) {
+                    $("#dropdownProveedorPartialView").html(""); //clear the records content
+                    $("#dropdownProveedorPartialView").html(partialView);  //add the updated content.
+                    $('#dropdownProveedor').chosen();
+                }
             });
         }
 
@@ -230,10 +231,11 @@
                 data: {
                     IdInsumo: $("#dropdownInsumo :selected").val()
                 },
-            }).done(function (partialView) {
-                $("#proveedorPreferidoSugeridoPartialView").html(""); //clear the records content
-                $("#proveedorPreferidoSugeridoPartialView").html(partialView);  //add the updated content.
-                ObligarComentario();
+                success(partialView) {
+                    $("#proveedorPreferidoSugeridoPartialView").html(""); //clear the records content
+                    $("#proveedorPreferidoSugeridoPartialView").html(partialView);  //add the updated content.
+                    ObligarComentario();
+                }
             });
         }
        
@@ -246,9 +248,10 @@
                     IdProveedor: $("#dropdownProveedor :selected").val(),
                     Cantidad: $("#InsumoCantidad").val(),
                 },
-            }).done(function (precio) {
-                $("#Precio").val(precio);
-                //ObligarComentario();
+                success(precio) {
+                    $("#Precio").val(precio);
+                    //ObligarComentario();
+                }
             });
         };
 
@@ -268,18 +271,16 @@
                     IdInsumo: $("#dropdownInsumo :selected").val(),
                     IdProveedor: $('#dropdownProveedor :selected').val()
                 },
-            }).done(function (bool) {
-                if (bool) {
-                    document.getElementById("Comentario").setAttribute('disabled', 'disabled');
-                    document.getElementById("Comentario").removeAttribute('required');
+                success(bool) {
+                    if (bool) {
+                        document.getElementById("Comentario").setAttribute('disabled', 'disabled');
+                        document.getElementById("Comentario").removeAttribute('required');
+                    }
+                    else {
+                        document.getElementById("Comentario").removeAttribute('disabled');
+                        document.getElementById("Comentario").setAttribute('required', 'required');
+                        }
                 }
-                else {
-                    document.getElementById("Comentario").removeAttribute('disabled');
-                    document.getElementById("Comentario").setAttribute('required', 'required');
-                }
-                    
-
-                //console.log(bool);
             });
         }
 
@@ -303,12 +304,12 @@
                         Cantidad: $("#InsumoCantidad").val(),
                         Precio: $("#Precio").val(),
                         Comentario: $("#Comentario").val()
+                    },
+                    success(partialView) {
+                        $('#ListaDetalleCompra tbody:last-child').after().append(partialView);
+                        $("#agregarInsumoModal").modal('hide');
+                        ClearModal();
                     }
-                }).done(function (partialView) {
-                    $('#ListaDetalleCompra tbody:last-child').after().append(partialView);
-                    $("#agregarInsumoModal").modal('hide');
-                    ClearModal();
-
                 });
             }
         }

@@ -102,9 +102,8 @@
     </div>
 }
 
-
 <script type="text/javascript">
-
+    function ComprasPartialViewScript() {
         var typeaheadNumCompra = @Html.Raw(Json.Serialize(TypeaheadNumCompra));
         var typeaheadRemito = @Html.Raw(Json.Serialize(TypeaheadRemito));
         var typeaheadTotal = @Html.Raw(Json.Serialize(TypeaheadTotal));
@@ -122,4 +121,5 @@
                 Proveedor: { data: typeaheadProveedor }
             }
         });
+    }
 </script>

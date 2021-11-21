@@ -416,6 +416,7 @@
                         );
                         $("#ComprasPartialView").html(""); //clear the records content
                         $("#ComprasPartialView").html(response);  //add the updated content.
+                        ComprasPartialViewScript();
                         $('.footable').footable();
                         $('.footable').trigger('footable_redraw');
                         $('#ModalrecibirCompra').modal('hide');
@@ -461,6 +462,8 @@
                         );
                         $("#ComprasPartialView").html(""); //clear the records content
                         $("#ComprasPartialView").html(response);  //add the updated content.
+                        console.log("father " + @Html.Raw(Json.Serialize(TypeaheadRemito)));
+                        ComprasPartialViewScript();
                         $('.footable').footable();
                         $('.footable').trigger('footable_redraw');
                         $('#ModalPagarCompra').modal('hide');
