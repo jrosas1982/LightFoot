@@ -82,6 +82,8 @@ namespace Core.Aplicacion.Services
             articuloDb.ArticuloEstado = articulo.ArticuloEstado;
             articuloDb.TalleArticulo = articulo.TalleArticulo;
             articuloDb.Descripcion = articulo.Descripcion;
+            articuloDb.PrecioMinorista = articulo.PrecioMinorista;
+            articuloDb.PrecioMayorista = articulo.PrecioMayorista;
             articuloDb.Color = articulo.Color;
 
             _db.Update(articuloDb);

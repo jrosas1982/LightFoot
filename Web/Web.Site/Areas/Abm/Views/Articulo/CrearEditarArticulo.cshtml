@@ -46,92 +46,110 @@
             @Html.HiddenFor(x => x.Articulo.Color)
             @Html.HiddenFor(x => x.Articulo.TalleArticulo)
         }
-        <div class="ibox-content m-b-sm border-bottom">
-            @if (!esEdicion)
-            {
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                            @Html.LabelFor(m => m.Articulo.CodigoArticulo)
-                            @Html.EditorFor(model => model.Articulo.CodigoArticulo, new { htmlAttributes = new { @id = "CodigoArticulo", @class = "form-control", @placeholder = "Codigo de Articulo", @required = true } })
-                            @Html.ValidationMessageFor(model => model.Articulo.CodigoArticulo, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                            @Html.LabelFor(m => m.Articulo.Nombre)
-                            @Html.EditorFor(model => model.Articulo.Nombre, new { htmlAttributes = new { @id = "Nombre", @class = "form-control", @placeholder = "Nombre de Articulo", @required = true } })
-                            @Html.ValidationMessageFor(model => model.Articulo.Nombre, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                            @Html.LabelFor(m => m.Articulo.IdArticuloCategoria)
-                            @Html.DropDownListFor(m => m.Articulo.IdArticuloCategoria, new SelectList(Model.ArticuloCategorias, "Id", "Descripcion", Model.ArticuloCategorias.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownCategorias", @required = true })
-                            @*@Html.DropDownListFor(m => m.ArticuloEstado, new SelectList(Model.ArticuloEstados, "Id", "Nombre", Model.ArticuloEstados.First()), new { @class = "form-control m-b", @id = "dropdownSucursales" })*@
-                        </div>
-                    </div>
-                </div>
-            }
+    <div class="ibox-content m-b-sm border-bottom">
+        @if (!esEdicion)
+        {
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        @Html.LabelFor(m => m.Articulo.Descripcion)
-                        @Html.EditorFor(model => model.Articulo.Descripcion, new { htmlAttributes = new { @id = "Descripcion", @class = "form-control", @placeholder = "Descripcion" } })
-                        @Html.ValidationMessageFor(model => model.Articulo.Descripcion, "", new { @class = "text-danger" })
+                        @Html.LabelFor(m => m.Articulo.CodigoArticulo)
+                        @Html.EditorFor(model => model.Articulo.CodigoArticulo, new { htmlAttributes = new { @id = "CodigoArticulo", @class = "form-control", @placeholder = "Codigo de Articulo", @required = true } })
+                        @Html.ValidationMessageFor(model => model.Articulo.CodigoArticulo, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
-            @if (!esEdicion)
-            {
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                            @Html.LabelFor(m => m.Articulo.Color)
-                            @Html.EditorFor(model => model.Articulo.Color, new { htmlAttributes = new { @id = "Color", @class = "form-control", @placeholder = "Color", @required = true } })
-                            @Html.ValidationMessageFor(model => model.Articulo.Color, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                            @Html.LabelFor(m => m.Articulo.TalleArticulo)
-                            @Html.EditorFor(model => model.Articulo.TalleArticulo, new { htmlAttributes = new { @id = "TalleArticulo", @class = "form-control", @placeholder = "Talle", @required = true } })
-                            @Html.ValidationMessageFor(model => model.Articulo.TalleArticulo, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                </div>
-            }
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        @Html.LabelFor(m => m.Articulo.ArticuloEstado)
-                        @Html.DropDownListFor(m => m.Articulo.ArticuloEstado, new SelectList(Model.ArticuloEstados, "Id", "Descripcion", Model.ArticuloEstados.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownArticuloEstado" })
+                        @Html.LabelFor(m => m.Articulo.Nombre)
+                        @Html.EditorFor(model => model.Articulo.Nombre, new { htmlAttributes = new { @id = "Nombre", @class = "form-control", @placeholder = "Nombre de Articulo", @required = true } })
+                        @Html.ValidationMessageFor(model => model.Articulo.Nombre, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group" style="text-align:right">
-                        <button type="Submit" class="btn btn-w-m btn-primary w-100">@(esEdicion ? "Modificar" : "Crear") Articulo </button>
-                    </div>
-                </div>
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                     <div class="form-group">
-                        <button type="button" class="btn btn-w-m btn-default w-100"
-                                onclick="location.href='@Url.Action("Index", "Articulo", 0)'">
-                            <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
-                        </button>
+                        @Html.LabelFor(m => m.Articulo.IdArticuloCategoria)
+                        @Html.DropDownListFor(m => m.Articulo.IdArticuloCategoria, new SelectList(Model.ArticuloCategorias, "Id", "Descripcion", Model.ArticuloCategorias.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownCategorias", @required = true })
+                        @*@Html.DropDownListFor(m => m.ArticuloEstado, new SelectList(Model.ArticuloEstados, "Id", "Nombre", Model.ArticuloEstados.First()), new { @class = "form-control m-b", @id = "dropdownSucursales" })*@
                     </div>
                 </div>
             </div>
-
+        }
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Articulo.Descripcion)
+                    @Html.EditorFor(model => model.Articulo.Descripcion, new { htmlAttributes = new { @id = "Descripcion", @class = "form-control", @placeholder = "Descripcion" } })
+                    @Html.ValidationMessageFor(model => model.Articulo.Descripcion, "", new { @class = "text-danger" })
+                </div>
+            </div>
         </div>
+        @if (!esEdicion)
+        {
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Articulo.Color)
+                        @Html.EditorFor(model => model.Articulo.Color, new { htmlAttributes = new { @id = "Color", @class = "form-control", @placeholder = "Color", @required = true } })
+                        @Html.ValidationMessageFor(model => model.Articulo.Color, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Articulo.TalleArticulo)
+                        @Html.EditorFor(model => model.Articulo.TalleArticulo, new { htmlAttributes = new { @id = "TalleArticulo", @class = "form-control", @placeholder = "Talle", @required = true } })
+                        @Html.ValidationMessageFor(model => model.Articulo.TalleArticulo, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        }
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(m => m.Articulo.PrecioMayorista)
+                @Html.EditorFor(model => model.Articulo.PrecioMayorista, new { htmlAttributes = new { @id = "precioMayorista", @class = "form-control", @placeholder = "0.00", @required = true } })
+                @Html.ValidationMessageFor(model => model.Articulo.PrecioMayorista, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(m => m.Articulo.PrecioMinorista)
+                @Html.EditorFor(model => model.Articulo.PrecioMinorista, new { htmlAttributes = new { @id = "precioMinorista", @class = "form-control", @placeholder = "0.00", @required = true } })
+                @Html.ValidationMessageFor(model => model.Articulo.PrecioMinorista, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Articulo.ArticuloEstado)
+                    @Html.DropDownListFor(m => m.Articulo.ArticuloEstado, new SelectList(Model.ArticuloEstados, "Id", "Descripcion", Model.ArticuloEstados.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownArticuloEstado" })
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group" style="text-align:right">
+                    <button type="Submit" class="btn btn-w-m btn-primary w-100">@(esEdicion ? "Modificar" : "Crear") Articulo </button>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <button type="button" class="btn btn-w-m btn-default w-100"
+                            onclick="location.href='@Url.Action("Index", "Articulo", 0)'">
+                        <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
     }
 </div>
 

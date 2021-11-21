@@ -28,9 +28,11 @@ namespace Core.Dominio.AggregatesModel
         public string Color { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         [Required]
+        [Display(Name = "Precio Minorista")]
         public decimal PrecioMinorista { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         [Required]
+        [Display(Name = "Precio Mayorista")]
         public decimal PrecioMayorista { get; set; }
 
         public virtual ICollection<ArticuloStock> ArticuloStock { get; set; } = new HashSet<ArticuloStock>();
