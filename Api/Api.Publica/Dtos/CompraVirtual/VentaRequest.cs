@@ -8,7 +8,6 @@ namespace LightFoot.Api.Publica.Dtos.CompraVirtual
     public class VentaRequest
     {
         public int IdCliente { get; set; }
-        public int IdSucursal { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public VentaTipo VentaTipo { get; set; }
         public IEnumerable<VentaDetalleRequest> Detalles { get; set; }

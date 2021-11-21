@@ -57,7 +57,7 @@ namespace Core.Aplicacion.Services
             };
 
             venta.Pagado = true;
-            venta.FechaPagado = DateTime.Now;
+            venta.FechaUltimoPago = DateTime.Now;
 
             _db.Ventas.Update(venta);
             _db.ClientesCuentaCorriente.Add(clienteCuentaCorriente);
@@ -102,19 +102,19 @@ namespace Core.Aplicacion.Services
                     IdArticulo = item.IdArticulo,
                     Cantidad = item.Cantidad,
                     PrecioUnitario = articuloPrecioList.Single(x => x.IdArticulo == item.IdArticulo).Precio,
-                    
+
                 };
                 ventaDetalles.Add(detalle);
-                montoTotalAcum += (detalle.PrecioUnitario*item.Cantidad);
+                montoTotalAcum += (detalle.PrecioUnitario * item.Cantidad);
             }
 
-            int idSucursal = int.Parse(_db.GetSucursalId());
+            var idSucursal = int.Parse(_db.GetSucursalId());
 
             var venta = new Venta()
             {
                 IdSucursal = idSucursal,
                 IdCliente = idCliente,
-                IdUsuario = _db.Usuarios.Single(x => x.NombreUsuario == _db.GetUsername()).Id,
+                UsuarioVenta = _db.GetUsername(),
                 MontoTotal = montoTotalAcum,//  - descuentoRealizado,
                 VentaTipo = ventaTipo,
                 //Descuento = descuentoRealizado,

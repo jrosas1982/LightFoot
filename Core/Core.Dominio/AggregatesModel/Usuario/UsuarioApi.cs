@@ -14,11 +14,12 @@ namespace Core.Dominio.AggregatesModel
 
         [Key]
         public int Id { get; set; }
+        public int IdSucursal { get; set; }
         [Required]
-        [MaxLength(100)]
+        [MaxLength(200)]
         public string ApiKey { get; set; }
         [Required]
-        [StringLength(50)]
+        [StringLength(100)]
         public string Nombre { get; set; }
         public Boolean Activo { get; set; }
 

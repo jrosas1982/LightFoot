@@ -19,6 +19,7 @@ namespace LightFoot.Api.Publica.Dtos.CompraVirtual
         public bool Pagado { get; set; }
         public DateTime? FechaPagado { get; set; }
         public IEnumerable<VentaDetalleResponse> Detalles { get; set; }
+        public IEnumerable<VentaPagoResponse> Pagos { get; set; }
     }
 
     public class VentaDetalleResponse
@@ -27,5 +28,11 @@ namespace LightFoot.Api.Publica.Dtos.CompraVirtual
         public int Cantidad { get; set; }
         public decimal PrecioUnitario { get; set; }
         public decimal PrecioTotal { get; set; }
+    }
+
+    public class VentaPagoResponse
+    {
+        public decimal MontoPercibido { get; set; }
+        public TipoPago TipoPago { get; set; }
     }
 }

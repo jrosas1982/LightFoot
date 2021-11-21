@@ -4,14 +4,16 @@ using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Infraestructura.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211121130316_usuario venta")]
+    partial class usuarioventa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -559,7 +561,7 @@ namespace Core.Infraestructura.Migrations
                             CreadoPor = "Initial",
                             Descripcion = "Cortado",
                             Eliminado = false,
-                            FechaCreacion = new DateTime(2021, 11, 21, 10, 5, 44, 392, DateTimeKind.Local).AddTicks(3431),
+                            FechaCreacion = new DateTime(2021, 11, 21, 10, 3, 16, 133, DateTimeKind.Local).AddTicks(4603),
                             Orden = 1
                         },
                         new
@@ -569,7 +571,7 @@ namespace Core.Infraestructura.Migrations
                             CreadoPor = "Initial",
                             Descripcion = "Aparado",
                             Eliminado = false,
-                            FechaCreacion = new DateTime(2021, 11, 21, 10, 5, 44, 392, DateTimeKind.Local).AddTicks(3722),
+                            FechaCreacion = new DateTime(2021, 11, 21, 10, 3, 16, 133, DateTimeKind.Local).AddTicks(4878),
                             Orden = 2
                         },
                         new
@@ -579,7 +581,7 @@ namespace Core.Infraestructura.Migrations
                             CreadoPor = "Initial",
                             Descripcion = "Preparacion",
                             Eliminado = false,
-                            FechaCreacion = new DateTime(2021, 11, 21, 10, 5, 44, 392, DateTimeKind.Local).AddTicks(3732),
+                            FechaCreacion = new DateTime(2021, 11, 21, 10, 3, 16, 133, DateTimeKind.Local).AddTicks(4887),
                             Orden = 3
                         },
                         new
@@ -589,7 +591,7 @@ namespace Core.Infraestructura.Migrations
                             CreadoPor = "Initial",
                             Descripcion = "Montado",
                             Eliminado = false,
-                            FechaCreacion = new DateTime(2021, 11, 21, 10, 5, 44, 392, DateTimeKind.Local).AddTicks(3735),
+                            FechaCreacion = new DateTime(2021, 11, 21, 10, 3, 16, 133, DateTimeKind.Local).AddTicks(4890),
                             Orden = 4
                         },
                         new
@@ -599,7 +601,7 @@ namespace Core.Infraestructura.Migrations
                             CreadoPor = "Initial",
                             Descripcion = "Pegado",
                             Eliminado = false,
-                            FechaCreacion = new DateTime(2021, 11, 21, 10, 5, 44, 392, DateTimeKind.Local).AddTicks(3738),
+                            FechaCreacion = new DateTime(2021, 11, 21, 10, 3, 16, 133, DateTimeKind.Local).AddTicks(4893),
                             Orden = 5
                         },
                         new
@@ -609,7 +611,7 @@ namespace Core.Infraestructura.Migrations
                             CreadoPor = "Initial",
                             Descripcion = "Terminado ",
                             Eliminado = false,
-                            FechaCreacion = new DateTime(2021, 11, 21, 10, 5, 44, 392, DateTimeKind.Local).AddTicks(3742),
+                            FechaCreacion = new DateTime(2021, 11, 21, 10, 3, 16, 133, DateTimeKind.Local).AddTicks(4896),
                             Orden = 6
                         });
                 });
@@ -916,7 +918,7 @@ namespace Core.Infraestructura.Migrations
                             Eliminado = false,
                             Email = "TrifulcaLightFoot@gmail.com",
                             EsFabrica = true,
-                            FechaCreacion = new DateTime(2021, 11, 21, 10, 5, 44, 393, DateTimeKind.Local).AddTicks(4529),
+                            FechaCreacion = new DateTime(2021, 11, 21, 10, 3, 16, 134, DateTimeKind.Local).AddTicks(6036),
                             Nombre = "Fabrica LightFoot",
                             Telefono = "+541136558997"
                         });
@@ -1540,7 +1542,7 @@ namespace Core.Infraestructura.Migrations
                     b.Property<DateTime?>("FechaModificacion")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("FechaUltimoPago")
+                    b.Property<DateTime?>("FechaPagado")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("IdCliente")

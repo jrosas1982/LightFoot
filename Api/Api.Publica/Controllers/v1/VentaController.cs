@@ -9,6 +9,7 @@ using LightFoot.Api.Publica.Dtos.CompraVirtual;
 using LightFoot.Api.Publica.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -16,7 +17,7 @@ namespace LightFoot.Api.Publica.Controllers.v1
 {
     [ApiController]
     [Route("v1/[Controller]")]
-    //[ServiceFilter(typeof(ApiKeyAuth))]
+    [ServiceFilter(typeof(ApiKeyAuth))]
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
     public class VentaController : ControllerBase
@@ -36,17 +37,13 @@ namespace LightFoot.Api.Publica.Controllers.v1
         [ProducesResponseType(typeof(VentaResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [SwaggerOperation("Registra una nueva venta en el sistema")]
-        public async Task<IActionResult> Post(VentaRequest request)
+        public async Task<IActionResult> PostNuevaVenta(VentaRequest request)
         {
-            return CreatedAtAction(nameof(Get), new { idVenta = 12 }, new VentaResponse());
+            //return CreatedAtAction(nameof(Get), new { idVenta = 12 }, new VentaResponse());
 
             var cliente = _db.Clientes.SingleOrDefault(x => x.Id == request.IdCliente);
             if (cliente == null)
                 return BadRequest("El cliente no existe");
-
-            var sucursal = _db.Sucursales.SingleOrDefault(x => x.Id == request.IdSucursal);
-            if (sucursal == null)
-                return BadRequest("La sucursal no existe");
 
             if (!Enum.IsDefined(typeof(VentaTipo), request.VentaTipo))
                 return BadRequest("El tipo de venta elegido no existe"); 
@@ -67,7 +64,32 @@ namespace LightFoot.Api.Publica.Controllers.v1
 
             _logger.LogInformation($"Se registro la venta {venta.Id} ");
 
-            return CreatedAtAction(nameof(Get), new { idVenta = venta.Id }, venta);
+            return CreatedAtAction(nameof(Get), new { idVenta = venta.Id }, request);
+        }
+
+        [HttpPost("{idVenta}/RegistrarPago")]
+        [ProducesResponseType(typeof(VentaResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation("Registra el pago de una venta en el sistema")]
+        public async Task<IActionResult> PostPagoVenta(int idVenta, TipoPago tipoPago, decimal montoPagado)
+        {
+            //return CreatedAtAction(nameof(Get), new { idVenta = 12 }, new VentaResponse());
+
+            var venta = await _ventaService.BuscarPorId(idVenta);
+            if (venta == null)
+                return BadRequest("La venta no existe");
+
+            if (montoPagado < 0)
+                return BadRequest("El monto pagado no puede ser menor a 0");
+
+            if (!Enum.IsDefined(typeof(TipoPago), tipoPago))
+                return BadRequest("El tipo de pago elegido no existe");
+
+            await _ventaService.AgregarPagoVenta(idVenta, tipoPago, montoPagado);
+
+            _logger.LogInformation($"Se registro un pago de la venta {venta.Id} ");
+
+            return Ok();
         }
 
 
@@ -77,8 +99,16 @@ namespace LightFoot.Api.Publica.Controllers.v1
         [SwaggerOperation("Retorna una venta a partir de su id")]
         public async Task<IActionResult> Get(int idVenta)
         {
-            var venta = _db.Ventas.SingleOrDefault(x => x.Id == idVenta); // Busco la venta en la db
+            var venta = _db.Ventas
+                .Include(x => x.Sucursal)
+                .Include(x => x.Cliente)
+                .Include(x => x.Usuario)
+                .Include(x => x.VentaDetalles)
+                .ThenInclude(x => x.Articulo)
+                .SingleOrDefault(x => x.Id == idVenta); // Busco la venta en la db
             if (venta == null) return NotFound($"No se encontro la venta {idVenta}");
+
+            var pagos = await _db.ClientesCuentaCorriente.Where(x => x.IdVenta == venta.Id).ToListAsync();
 
             var response = new VentaResponse()
             {
@@ -90,13 +120,18 @@ namespace LightFoot.Api.Publica.Controllers.v1
                 MontoTotal = venta.MontoTotal,
                 DescuentoRealizado = venta.Descuento,
                 Fecha = venta.FechaCreacion,
-                FechaPagado = venta.FechaPagado,
+                FechaPagado = venta.FechaUltimoPago,
                 Detalles = venta.VentaDetalles.Select(x => new VentaDetalleResponse()
                 {
                     Articulo = x.Articulo.Nombre,
                     Cantidad = x.Cantidad,
                     PrecioUnitario = x.PrecioUnitario,
                     PrecioTotal = x.Cantidad * x.PrecioUnitario
+                }),
+                Pagos = pagos.Select(x => new VentaPagoResponse()
+                {
+                    MontoPercibido = x.MontoPercibido,
+                    TipoPago = x.TipoPago
                 })
             };
 
