@@ -181,19 +181,6 @@
             //ObligarComentario();
         }
 
-        //function ObligarComentario() {
-        //    $("#ComentarioLabel").empty();
-        //    if ($("#IdProveedorSugerido").val() != $("#dropdownProveedor :selected").val())
-        //    {
-        //        $("#Comentario").prop('required', true);
-        //        $("#ComentarioLabel").append("Motivo por el que no se selecciono el proveedor sugerido");
-        //    }
-        //    else
-        //    {
-        //        $("#Comentario").prop('required', false);
-        //        $("#ComentarioLabel").append("Comentario");
-        //    }
-        //}
 
         function FiltrarProveedores() {
             $.ajax({
@@ -202,25 +189,13 @@
                 data: {
                     IdArticulo: $("#dropdownArticulo :selected").val()
                 },
-            }).done(function (partialView) {
-                $("#dropdownProveedorPartialView").html(""); //clear the records content
-                $("#dropdownProveedorPartialView").html(partialView);  //add the updated content.
-                $('#dropdownProveedor').chosen();
+                success: function (partialView) {
+                    $("#dropdownProveedorPartialView").html(""); //clear the records content
+                    $("#dropdownProveedorPartialView").html(partialView);  //add the updated content.
+                    $('#dropdownProveedor').chosen();
+                }
             });
         }
-
-        //function ProveedorPreferidoSugerido() {
-        //    $.ajax({
-        //        type: "post",
-        //        url: "/fabrica/comprainsumo/ActualizarProveedorPreferidoSugerido",
-        //        data: {
-        //            IdInsumo: $("#dropdownArticulo :selected").val()
-        //        },
-        //    }).done(function (partialView) {
-        //        $("#proveedorPreferidoSugeridoPartialView").html(""); //clear the records content
-        //        $("#proveedorPreferidoSugeridoPartialView").html(partialView);  //add the updated content.
-        //    });
-        //}
 
         function ActualizarPrecio() {
             $.ajax({
@@ -231,8 +206,9 @@
                     IdProveedor: $("#dropdownProveedor :selected").val(),
                     Cantidad: $("#ArticuloCantidad").val(),
                 },
-            }).done(function (precio) {
-                $("#Precio").val(precio);
+                success: function (precio) {
+                    $("#Precio").val(precio);
+                }
             });
         };
 
@@ -253,35 +229,6 @@
             //});
         });
 
-        //function ComentarioChange() {
-        //    $.ajax({
-        //        type: "post",
-        //        url: "/fabrica/comprainsumo/ActualizarComentario",
-        //        data: {
-        //            IdInsumo: $("#dropdownArticulo :selected").val(),
-        //            IdProveedor: $('#dropdownProveedor :selected').val()
-        //        },
-        //    }).done(function (bool) {
-        //        if (bool) {
-        //            document.getElementById("Comentario").setAttribute('disabled', 'disabled');
-        //            document.getElementById("Comentario").removeAttribute('required');
-        //        }
-        //        else {
-        //            document.getElementById("Comentario").removeAttribute('disabled');
-        //            document.getElementById("Comentario").setAttribute('required', 'required');
-        //        }
-
-
-        //        //console.log(bool);
-        //    });
-        //}
-
-        //function ClearModal() {
-        //    $("#dropdownArticulo").prop("selectedIndex", 0);
-        //    $("#ArticuloCantidad").val("");
-        //    $("#Precio").val("");
-        //    $("#Comentario").val("");
-        //}
 
         $('#agregarArticuloModal').on('hidden.bs.modal', function () {
             $(this).find('form').trigger('reset');
@@ -300,11 +247,12 @@
                         Cantidad: $("#ArticuloCantidad").val(),
                         Precio: $("#Precio").val(),
                         Comentario: $("#Comentario").val()
+                    },
+                    success: function (partialView) {
+                        $('#ListaDetalleCompra tbody:last-child').after().append(partialView);
+                        $("#agregarArticuloModal").modal('hide');
+                        //ClearModal();
                     }
-                }).done(function (partialView) {
-                    $('#ListaDetalleCompra tbody:last-child').after().append(partialView);
-                    $("#agregarArticuloModal").modal('hide');
-                    //ClearModal();
                 });
             }
         }

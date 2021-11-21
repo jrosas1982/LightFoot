@@ -67,7 +67,7 @@ namespace Web.Site.Areas
         }
 
         public async Task<IActionResult> ComprarArticulos()
-        {            
+        {
             var proveedoresListTask = _proveedorService.GetProveedores();
             var articulosListTask = _articuloService.GetArticulos();
 
@@ -110,111 +110,61 @@ namespace Web.Site.Areas
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear(CompraArticuloModel compraArticuloModel)
         {
-            try
+            IList<NuevaCompraArticuloModel> compra = new List<NuevaCompraArticuloModel>();
+            foreach (var detalle in compraArticuloModel.CompraArticuloDetalleModels)
             {
-                    IList<NuevaCompraArticuloModel> compra = new List<NuevaCompraArticuloModel>();
-                    foreach (var detalle in compraArticuloModel.CompraArticuloDetalleModels)
-                    {
-                        compra.Add(new NuevaCompraArticuloModel()
-                        {
-                            Cantidad = detalle.Cantidad,
-                            Comentario = detalle.Comentario,
-                            IdArticulo = detalle.IdArticulo,
-                            IdProveedor = detalle.IdProveedor
-                        });
-                    }
-                    await _compraArticuloService.CrearCompra(compra);
-                    return RedirectToAction("Index");
+                compra.Add(new NuevaCompraArticuloModel()
+                {
+                    Cantidad = detalle.Cantidad,
+                    Comentario = detalle.Comentario,
+                    IdArticulo = detalle.IdArticulo,
+                    IdProveedor = detalle.IdProveedor
+                });
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            await _compraArticuloService.CrearCompra(compra);
+            return Json(new { redirectToUrl = @Url.Action("Index", "CompraArticulo", new { area = "sucursal" }) });
+            //return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> ActualizarDetalleCompra(int idCompra)
         {
-            try
-            {
-                var compra = await _compraArticuloService.BuscarPorId(idCompra);
+            var compra = await _compraArticuloService.BuscarPorId(idCompra);
 
-                return PartialView("_CompraArticuloIndexDetalle", compra);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return PartialView("_CompraArticuloIndexDetalle", compra);
         }
 
         public async Task<IActionResult> RecibirCompra(int idCompra, long nroRemito, int tiempoCalificacion, int distanciaCalificacion, int precioCalificacion, int calidadCalificacion)
         {
-            try
-            {
-                var resp = await _compraArticuloService.RecibirCompra(idCompra, nroRemito);
+            var resp = await _compraArticuloService.RecibirCompra(idCompra, nroRemito);
 
-                var compraArticulosList = await _compraArticuloService.GetCompras();
+            var compraArticulosList = await _compraArticuloService.GetCompras();
 
-                ViewBag.TypeaheadNumCompra = compraArticulosList.Select(x => x.Id.ToString()).Distinct();
-                ViewBag.TypeaheadRemito = compraArticulosList.Where(x => !string.IsNullOrWhiteSpace(x.NroRemito.ToString())).Select(x => x.NroRemito.ToString()).Distinct();
-                ViewBag.TypeaheadTotal = compraArticulosList.Select(x => x.MontoTotal.ToString()).Distinct();
-                ViewBag.TypeaheadProveedor = compraArticulosList.Select(x => x.Proveedor.Nombre).Distinct();
+            ViewBag.TypeaheadNumCompra = compraArticulosList.Select(x => x.Id.ToString()).Distinct();
+            ViewBag.TypeaheadRemito = compraArticulosList.Where(x => !string.IsNullOrWhiteSpace(x.NroRemito.ToString())).Select(x => x.NroRemito.ToString()).Distinct();
+            ViewBag.TypeaheadTotal = compraArticulosList.Select(x => x.MontoTotal.ToString()).Distinct();
+            ViewBag.TypeaheadProveedor = compraArticulosList.Select(x => x.Proveedor.Nombre).Distinct();
 
-                return PartialView("_CompraArticuloIndexTable", compraArticulosList);
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return PartialView("_CompraArticuloIndexTable", compraArticulosList);
         }
 
         public async Task<IActionResult> PagarCompra(int idCompra, TipoPago tipoPago, decimal montoPagado)
         {
-            try
-            {
-                var resp = await _compraArticuloService.AgregarPagoCompra(idCompra, tipoPago, montoPagado);
-                var compraArticuloList = await _compraArticuloService.GetCompras();
+            var resp = await _compraArticuloService.AgregarPagoCompra(idCompra, tipoPago, montoPagado);
+            var compraArticuloList = await _compraArticuloService.GetCompras();
 
-                return PartialView("_CompraArticuloIndexTable", compraArticuloList);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
+            return PartialView("_CompraArticuloIndexTable", compraArticuloList);
         }
 
 
         public async Task<IActionResult> CargarPagosRealizados(int idCompra)
         {
-            try
-            {
-                var resp = await _compraArticuloService.GetPagosRealizados(idCompra);
+            var resp = await _compraArticuloService.GetPagosRealizados(idCompra);
 
-                return PartialView("_CompraArticuloIndexPagos", resp);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return PartialView("_CompraArticuloIndexPagos", resp);
         }
 
         public async Task<IActionResult> AgregarDetalle(CompraArticuloDetalleModel data)
         {
-            //var insumosList = await _insumosService.GetInsumos();
-            //var insumo = insumosList.FirstOrDefault(x => x.Nombre == data.Insumo.Nombre);
-
-            //var proveedoresList = await _proveedorService.GetProveedores();
-            //var proveedor = proveedoresList.FirstOrDefault(x => x.Nombre == data.Proveedor.Nombre);
-
-
-            //var insumo = await _insumosService.BuscarPorId(data.IdInsumo);
-            //var proveedor = await _proveedorService.BuscarPorId(data.IdProveedor);
-
-            //data.IdInsumo = insumo.Id;
-            //data.Insumo = insumo;
-            //data.Proveedor = proveedor;
-
             return PartialView("_CompraArticuloDetalle", data);
         }
 

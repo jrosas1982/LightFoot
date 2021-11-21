@@ -382,27 +382,17 @@
                         montoPagado: pagado
                     },
                     success: function (response) {
-                        if (response) {
-                            swal(
-                                'Venta #' + ventaId + ' pagada',
-                                'Se pago ' + pagado + ' (' + tipoPago + ')',
-                                'success'
-                            );
-                        }
-                    },
-                    error: function (error) {
-                        MensajeError('Ocurrio un error!', error.statusText);
+                        swal(
+                            'Venta #' + ventaId + ' pagada',
+                            'Se pago ' + pagado + ' (' + tipoPago + ')',
+                            'success'
+                        );
+                        $("#VentasPartialView").html(""); //clear the records content
+                        $("#VentasPartialView").html(response);  //add the updated content.
+                        $('.footable').footable();
+                        $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                        $('#ModalCobro').modal('hide');
                     }
-                }).done(function (response) {
-                    $("#VentasPartialView").html(""); //clear the records content
-                    $("#VentasPartialView").html(response);  //add the updated content.
-                    $('.footable').footable();
-                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
-                    $('#ModalCobro').modal('hide');
-
-                    //window.setTimeout(function () {
-                    //    location.reload();
-                    //}, 600);
                 });
             }
         }

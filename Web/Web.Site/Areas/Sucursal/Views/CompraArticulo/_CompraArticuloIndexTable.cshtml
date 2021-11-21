@@ -104,23 +104,23 @@
 }
 
 <script type="text/javascript">
+    function ComprasPartialViewScript() {
+        var typeaheadNumCompra = @Html.Raw(Json.Serialize(TypeaheadNumCompra));
+        var typeaheadRemito = @Html.Raw(Json.Serialize(TypeaheadRemito));
+        var typeaheadTotal = @Html.Raw(Json.Serialize(TypeaheadTotal));
+        var typeaheadProveedor = @Html.Raw(Json.Serialize(TypeaheadProveedor));
 
-    var typeaheadNumCompra = @Html.Raw(Json.Serialize(TypeaheadNumCompra));
-    var typeaheadRemito = @Html.Raw(Json.Serialize(TypeaheadRemito));
-    var typeaheadTotal = @Html.Raw(Json.Serialize(TypeaheadTotal));
-    var typeaheadProveedor = @Html.Raw(Json.Serialize(TypeaheadProveedor));
-
-    $.typeahead({
-        input: '.js-typeahead',
-        order: "desc",
-        template: "{{display}} <small style='color:#999;'>{{group}}</small>",
-        minLength: 1,
-        source: {
-            Compra: { data: typeaheadNumCompra },
-            Remito: { data: typeaheadRemito },
-            Total: { data: typeaheadTotal },
-            Proveedor: { data: typeaheadProveedor }
-        }
-    });
-
+        $.typeahead({
+            input: '.js-typeahead',
+            order: "desc",
+            template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+            minLength: 1,
+            source: {
+                Compra: { data: typeaheadNumCompra },
+                Remito: { data: typeaheadRemito },
+                Total: { data: typeaheadTotal },
+                Proveedor: { data: typeaheadProveedor }
+            }
+        });
+    }
 </script>

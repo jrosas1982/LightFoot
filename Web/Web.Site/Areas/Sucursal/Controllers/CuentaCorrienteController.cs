@@ -53,42 +53,25 @@ namespace Web.Site.Areas
                 DeudaTotal = v.MontoTotalCompras - c.TotalRecibido
             }).ToList();
 
-
-            //var cuentasCorrientes = new List<CuentaCorrienteModel>();
-
-            //foreach (var item in cuentasModelo)
-            //{
-            //    var clienteCuentasCorriente = new CuentaCorrienteModel();
-            //    clienteCuentasCorriente.IdCliente = item.IdCliente;
-            //    clienteCuentasCorriente.NombreCliente = item.NombreCliente;
-            //    clienteCuentasCorriente.TotalPagado = item.TotalPagado;
-            //    clienteCuentasCorriente.TotalFacturado = item.TotalFacturado;
-            //    clienteCuentasCorriente.TotalCobrado = item.TotalCobrado;
-            //    clienteCuentasCorriente.DeudaTotal = item.DeudaTotal;
-            //    cuentasCorrientes.Add(clienteCuentasCorriente);
-            //}
-
             return View(cuentasModelo);
         }
 
         public async Task<IActionResult> CargarPagosRecibidos(int IdCliente)
         {
             var cuentaCorrienteCliente = await _cuentaCorrienteService.GetCuentaCorrientesPorCliente(IdCliente);
-            return PartialView("_PagosClienteDetalle", cuentaCorrienteCliente);
-          
+            return PartialView("_PagosClienteDetalle", cuentaCorrienteCliente);          
         }
+
         public async Task<IActionResult> CargarComprasCliente(int IdCliente)
         {
             var cuentaCorrienteCliente = await _ventaService.GetVentasPorCliente(IdCliente);
             return PartialView("_ComprasClienteDetalle", cuentaCorrienteCliente);
-
         }
 
         public async Task<IActionResult> CargarInfoCLiente(int IdCliente)
         {
             var response = await _clienteService.BuscarPorId(IdCliente);
             return PartialView("_ComprasClienteCabeceraDetalle", response);
-
         }
 
 

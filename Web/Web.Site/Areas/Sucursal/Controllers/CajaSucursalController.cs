@@ -36,23 +36,15 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Crear(int monto, string comentario)
         {
-            try
+            var cajaSucursal = new CajaSucursal()
             {
-                var cajaSucursal = new CajaSucursal()
-                {
-                    Monto = monto,
-                    Comentario = comentario,
-                };
-                await _cajaService.AgregarMovimiento(cajaSucursal);
+                Monto = monto,
+                Comentario = comentario,
+            };
+            await _cajaService.AgregarMovimiento(cajaSucursal);
 
-                var caja = await _cajaService.GetMovimientos();
-                return PartialView("_CajaSucursalIndexTable", caja);
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            var caja = await _cajaService.GetMovimientos();
+            return PartialView("_CajaSucursalIndexTable", caja);
         }
 
 

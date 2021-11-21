@@ -136,24 +136,18 @@ namespace Web.Site.Areas
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear(VentaModel ventaModel)
         {
-            try
+            var ventaDetalles = new List<NuevaVentaDetalleModel>();
+            foreach (var detalle in ventaModel.VentaDetalleModels)
             {
-                var ventaDetalles = new List<NuevaVentaDetalleModel>();
-                foreach (var detalle in ventaModel.VentaDetalleModels)
+                ventaDetalles.Add(new NuevaVentaDetalleModel()
                 {
-                    ventaDetalles.Add(new NuevaVentaDetalleModel()
-                    {
-                        IdArticulo = detalle.IdArticulo,
-                        Cantidad = detalle.Cantidad
-                    });
-                }
-                await _ventaService.CrearVenta(ventaModel.IdCliente, ventaModel.VentaTipo, ventaDetalles);
-                return RedirectToAction("Index");
+                    IdArticulo = detalle.IdArticulo,
+                    Cantidad = detalle.Cantidad
+                });
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            await _ventaService.CrearVenta(ventaModel.IdCliente, ventaModel.VentaTipo, ventaDetalles);
+            return Json(new { redirectToUrl = @Url.Action("Index", "Venta", new { area = "sucursal" }) });
+            //return RedirectToAction("Index");
 
         }
         public async Task<IActionResult> ActualizarDetalleVenta(int idVenta)
@@ -172,34 +166,20 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> ActualizarDetallePagos(int idVenta)
         {
-            try
-            {
-                var cuentaCorrienteCliente = await _cuentaCorrienteService.GetCuentaCorrientesPorVenta(idVenta);
-                var venta = await _ventaService.BuscarPorId(idVenta);
-                var dato = venta.MontoTotal;
-                ViewBag.TotalVenta = venta.MontoTotal;
+            var cuentaCorrienteCliente = await _cuentaCorrienteService.GetCuentaCorrientesPorVenta(idVenta);
+            var venta = await _ventaService.BuscarPorId(idVenta);
+            var dato = venta.MontoTotal;
+            ViewBag.TotalVenta = venta.MontoTotal;
 
-                return PartialView("_VentaIndexPagos", cuentaCorrienteCliente);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return PartialView("_VentaIndexPagos", cuentaCorrienteCliente);
         }
 
         public async Task<IActionResult> CobrarVenta(int idVenta, TipoPago tipoPago, decimal montoPagado)
         {
-            try
-            {
-                await _ventaService.AgregarPagoVenta(idVenta, tipoPago, montoPagado);
-                var VentasList = await _ventaService.GetVentas();
+            await _ventaService.AgregarPagoVenta(idVenta, tipoPago, montoPagado);
+            var VentasList = await _ventaService.GetVentas();
 
-                return PartialView("_VentaIndexTable", VentasList);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return PartialView("_VentaIndexTable", VentasList);
         }
 
     }
