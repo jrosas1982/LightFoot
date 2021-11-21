@@ -91,6 +91,9 @@ namespace Core.Aplicacion.Services
             {
                 var usuarioDb = await _db.Usuarios.FindAsync(idUsuario);
 
+                if (usuarioDb.NombreUsuario == "super")
+                    throw new ExcepcionControlada("No se puede eliminar el usuario super");
+
                 usuarioDb.Eliminado = true;
 
                 _db.Usuarios.Update(usuarioDb);
