@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Caja";
+    ViewData["Title"] = "Sucursal";
     Layout = "_Layout";
 
     var title = "Bienvenido";
@@ -26,20 +26,44 @@
 
 <div class="wrapper wrapper-content animated fadeInRight">
 
+    @*detalle
+        nombre
+        direccion*@
+
     <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5>En Desarrollo</h5>
-                </div>
-                <div class="ibox-content">
-                    @*<div id="MovimientosPartialView">
-                        <partial name="_CajaSucursalIndexTable.cshtml" model="Model" />
-                    </div>*@
-                </div>
+        <div class="col-lg-4">
+            <div id="InfoSucursalPartialView">
+                <partial name="_InfoSucursalIndexTable.cshtml" model="null" />
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div id="MasVendidoPartialView">
+                <partial name="_MasVendidoIndexTable.cshtml" model="null" />
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div id="StockBajoArticulosPartialView">
+                <partial name="_StockBajoArticulosIndexTable.cshtml" model="null" />
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div id="UltimmosMovimientosPartialView">
+                <partial name="_UltimmosMovimientosIndexTable.cshtml" model="null" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div id="MasVendidoPartialView">
+                <partial name="_UltimasVentasIndexTable.cshtml" model="null" />
+            </div>
+        </div>
+    </div>
+
 
     @*MODAL Movimiento*@
 
@@ -88,6 +112,10 @@
 
     <script type="text/javascript">
 
+        var minheight_InfoSucursal = $('#MasVendidoPartialView').height();
+        $('#InfoSucursalPartialView .ibox .ibox-content').attr('style', 'height:' + minheight_InfoSucursal * 0.8 + 'px;')
+
+
         $('#ModalDetalle').on('hidden.bs.modal', function () {
             $(this).find('form').trigger('reset');
             $("#PartialViewEventos").html(""); //clear the records content
@@ -95,10 +123,6 @@
         $('#ModalMovimiento').on('hidden.bs.modal', function () {
             $(this).find('form').trigger('reset');
         })
-
-        function Reporte() {
-            window.print();
-        }
 
     </script>
 

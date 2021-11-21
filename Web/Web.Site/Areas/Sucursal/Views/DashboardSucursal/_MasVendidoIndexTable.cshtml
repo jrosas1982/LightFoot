@@ -1,0 +1,46 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+@using Web.Site.Areas
+@model IEnumerable<Venta>
+@{
+
+}
+@if (@Model != null)
+{
+}
+<div class="ibox ">
+    <div class="ibox-title">
+        <h5>Mas vendidos del <strong>mes</strong> </h5>
+    </div>
+    <div class="ibox-content">
+        <div class="table-responsive">
+            <table class="table table-stripped table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Codigo</th>
+                        <th>Nombre</th>
+                        <th>Categoria</th>
+                        <th>Precio Unitario</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @*@foreach (var venta in @Model)
+                    {*@
+                    <tr>
+                        <td>1</td>
+                        <td>ASF353</td>
+                        <td>running plaz</td>
+                        <td>calzado</td>
+                        <td>29.00</td>
+                        <td>2000 unidades</td>
+                    </tr>
+                    @*}*@
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+</div>
