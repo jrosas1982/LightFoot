@@ -78,12 +78,11 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Eliminar(Proveedor proveedor)
         {
-            var result = false;
             if (ModelState.IsValid)
             {
-                result = await _proveedorService.EliminarProveedor(proveedor);
+                await _proveedorService.EliminarProveedor(proveedor);
             }
-            return Ok(result);
+            return Ok();
         }
 
         public async Task<IActionResult> AsignarProveedorArticulo(int idProveedor)

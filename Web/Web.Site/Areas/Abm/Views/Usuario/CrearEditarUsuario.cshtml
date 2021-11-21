@@ -71,7 +71,7 @@
             <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Usuario.Contraseña)
-                    @Html.EditorFor(model => model.Usuario.Contraseña, new { htmlAttributes = new { @id = "Contrasenia", @class = "form-control", @placeholder = "Contraseña", @minlength = "6", @type = "password", @required = true } })
+                    @Html.EditorFor(model => model.Usuario.Contraseña, new { htmlAttributes = new { @id = "Contrasenia", @class = "form-control", @placeholder = "Mantener contraseña actual", @minlength = "6", @type = "password", @required = true } })
                     @Html.ValidationMessageFor(model => model.Usuario.Contraseña, "", new { @class = "text-danger" })
                 </div>
             </div>

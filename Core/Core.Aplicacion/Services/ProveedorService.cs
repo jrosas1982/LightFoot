@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
+using Core.Dominio;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
@@ -54,23 +55,17 @@ namespace Core.Aplicacion.Services
             _db.Proveedores.Update(proveedorDb);
             await _db.SaveChangesAsync();
         }
-        public async Task<bool> EliminarProveedor(Proveedor proveedor)
+        public async Task EliminarProveedor(Proveedor proveedor)
         {
-            try
-            {
                 var entidad = await _db.Proveedores.FindAsync(proveedor.Id);
+
+                if (entidad.EsFabrica)
+                    throw new ExcepcionControlada("No se puede eliminar un proveedor Fabrica");
 
                 entidad.Eliminado = true;
 
                 _db.Proveedores.Update(entidad);
                 await _db.SaveChangesAsync();
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
         }
         public async Task<IEnumerable<Proveedor>> GetProveedores()
         {

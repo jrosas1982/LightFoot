@@ -66,13 +66,13 @@ namespace Core.Aplicacion.Services
 
         public async Task EditarUsuario(Usuario usuario)
         {
-            if (string.IsNullOrEmpty(usuario.Contraseña))
-                throw new ExcepcionControlada($"La contraeña no puede estar vacia");
-
             var usuarioDb = await _db.Usuarios.FindAsync(usuario.Id);
 
             usuarioDb.Nombre = usuario.Nombre;
-            usuarioDb.Contraseña = _PasswordHasher.HashPassword(usuario.Contraseña);
+
+            if (!string.IsNullOrEmpty(usuario.Contraseña))
+                usuarioDb.Contraseña = _PasswordHasher.HashPassword(usuario.Contraseña);
+
             usuarioDb.Apellido = usuario.Apellido;
             usuarioDb.DNI = usuario.DNI;
             usuarioDb.Email = usuario.Email;

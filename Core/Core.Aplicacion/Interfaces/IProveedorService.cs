@@ -12,7 +12,7 @@ namespace Core.Aplicacion.Interfaces
         public Task<Proveedor> BuscarPorId(int IdProveedor);
         public Task CrearProveedor(Proveedor proveedor);
         public Task EditarProveedor(Proveedor proveedor);
-        public Task<bool> EliminarProveedor(Proveedor proveedor);
+        public Task EliminarProveedor(Proveedor proveedor);
         public Task CalificarProveedor(double calificacion);
     }
 }
