@@ -199,8 +199,9 @@
                     VentaTipo: $("#dropdownTipoVenta :selected").val(),
                     Cantidad: $("#ArticuloCantidad").val()
                 },
-            }).done(function (precio) {
-                $("#Precio").val(precio);
+                success: function (response) {
+                    $("#Precio").val(precio);
+                }
             });
         };
 
@@ -243,11 +244,12 @@
                         IdArticulo: $("#dropdownArticulo :selected").val(),
                         Cantidad: $("#ArticuloCantidad").val(),
                         Precio: $("#Precio").val(),
+                    },
+                    success: function (response) {
+                        $('#ListaDetalleVenta tbody:last-child').after().append(partialView);
+                        $("#agregarArticuloModal").modal('hide');
+                        ClearModal();
                     }
-                }).done(function (partialView) {
-                    $('#ListaDetalleVenta tbody:last-child').after().append(partialView);
-                    $("#agregarArticuloModal").modal('hide');
-                    ClearModal();
                 });
             }
         }

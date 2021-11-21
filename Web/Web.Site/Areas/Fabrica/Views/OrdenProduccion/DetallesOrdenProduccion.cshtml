@@ -112,7 +112,7 @@
                     OrdenId: id,
                 },
                 contentType: "application/json",
-                success: function (response) {
+                success: function (response) {             
                     $("#partialViewEventos").html(""); //clear the records content
                     $("#partialViewEventos").html(response);  //add the updated content.
                     $("#wizard").steps({ //reaplicar formato wizard

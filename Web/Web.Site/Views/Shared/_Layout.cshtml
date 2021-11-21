@@ -42,7 +42,7 @@
             <!-- Top Navbar -->
             <partial name="_TopNavbar" />
 
-            <!-- Main view  -->
+            <!-- Main view  -->          
             @RenderBody()
 
             <!-- Footer -->
@@ -71,6 +71,7 @@
     <script src="~/custom/Personalizado.js"></script>
     <script src="~/lib/footable/dist/footable.all.min.js"></script>
     <script src="~/custom/jquery.typeahead.min.js"></script>
+    <script src="~/custom/blockUI.js"></script>
     @*<script type="text/javascript">@Html.Raw(ViewBag.JsFunction);</script>*@
     <!-- LightFoot End -->
     <!-- _JsInteropPartial Begin-->
@@ -111,8 +112,34 @@
             $('.footable').data('page-size', numberOfRows);
             $('.footable').trigger('footable_redraw');
         }
+    </script>
 
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajaxSetup({
+                error: function (error) {
+                    MensajeError("Ocurrio un error", error.responseJSON.message);
+                }
+            });
 
+            $("form").each(function (index) {
+                $(this).on('submit', function (e) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    $.ajax({
+                        url: this.action,
+                        type: this.method,
+                        data: $(this).serialize()
+                    });
+                });
+            });
+
+            $.blockUI.defaults.message = '<h1><img src="/recursos/ajax-loader.gif" /> Procesando...</h1>';
+            $.blockUI.defaults.ignoreIfBlocked = true;
+            $.blockUI.defaults.fadeIn = 400;
+            $.blockUI.defaults.fadeOut = 600;
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+        });
     </script>
 
     <script>

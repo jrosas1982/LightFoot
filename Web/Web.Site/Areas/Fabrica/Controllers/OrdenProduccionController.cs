@@ -115,7 +115,11 @@ namespace Web.Site.Areas
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
+                //Response.StatusCode = 500;
+                ////Response.TrySkipIisCustomErrors = true;
+                //return Json(new { message = ex.Message });
+                ////return MensajeError(ex.Message);
             }
         }
 

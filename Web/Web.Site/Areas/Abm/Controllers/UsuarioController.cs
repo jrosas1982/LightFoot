@@ -58,17 +58,20 @@ namespace Web.Site.Areas
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear(UsuarioModel usuarioModel)
         {
-            if (!ModelState.IsValid)
-                return View("CrearEditarUsuario", usuarioModel);
 
             try
             {
+                if (!ModelState.IsValid)
+                    return View("CrearEditarUsuario", usuarioModel);
                 await _usuarioService.CrearUsuario(usuarioModel.Usuario);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
+                //Response.StatusCode = 500;
+                ////Response.TrySkipIisCustomErrors = true;
+                //return Json(new { message = ex.Message });
             }
         }
 

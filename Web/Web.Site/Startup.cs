@@ -5,6 +5,7 @@ using Core.Aplicacion.Hubs;
 using Core.Infraestructura;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -13,7 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using Newtonsoft.Json;
+using Web.Site.Helpers;
 
 namespace LightFoot.Web.Site
 {
@@ -109,9 +111,19 @@ namespace LightFoot.Web.Site
             }
             else
             {
-                app.UseExceptionHandler("/Auth/LogIn");
+                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+
+            //app.UseExceptionHandler(a => a.Run(async context =>
+            //{
+            //    var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+            //    var exception = exceptionHandlerPathFeature.Error;
+
+            //    var result = JsonConvert.SerializeObject(new { error = exception.Message });
+            //    context.Response.ContentType = "application/json";
+            //    await context.Response.WriteAsync(result);
+            //}));
 
             app.Use(async (context, next) =>
             {
@@ -149,6 +161,8 @@ namespace LightFoot.Web.Site
             //{
             //    routes.MapHub<NotificationsHub>("/NotificationsHub");
             //});
+
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 
             app.UseMvc(routes =>
             {
