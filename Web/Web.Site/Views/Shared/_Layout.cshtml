@@ -118,7 +118,10 @@
         $(document).ready(function () {
             $.ajaxSetup({
                 error: function (error) {
-                    MensajeError("Ocurrio un error", error.responseJSON.message);
+                    if (error.responseJSON)
+                        MensajeError("Ocurrio un error", error.responseJSON.message);
+                    else
+                        MensajeError("Ups!", "Ocurrio un error inesperado. Comuniquese con sistemas");
                 }
             });
 
@@ -140,11 +143,25 @@
 
             $.blockUI.defaults.message = '<h1><img src="/recursos/ajax-loader.gif" /> Procesando...</h1>';
             $.blockUI.defaults.ignoreIfBlocked = true;
-            $.blockUI.defaults.baseZ = 10000;
+            $.blockUI.defaults.baseZ = 100000;
             $.blockUI.defaults.fadeIn = 400;
             $.blockUI.defaults.fadeOut = 600;
-            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI).ajaxError($.unblockUI).ajaxComplete($.unblockUI);
         });
+    </script>
+
+    <script>
+        @if(ViewBag.CatchError == true){
+
+        <text>
+        swal("Error", "@ViewBag.MensajeError" , "error");
+
+        @*swal({
+            title: "Error al procesar",
+            text: '@ViewBag.MensajeError' + ', por favor intente mas tarde'
+        });*@
+        </text>
+    }
     </script>
 
     <script type="text/javascript">

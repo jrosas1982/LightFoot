@@ -64,7 +64,8 @@ namespace Web.Site.Areas
                 if (!ModelState.IsValid)
                     return View("CrearEditarUsuario", usuarioModel);
                 await _usuarioService.CrearUsuario(usuarioModel.Usuario);
-                return RedirectToAction("Index");
+                return Json(new { redirectToUrl = @Url.Action("Index", "Usuario", new { area = "abm" }) });
+                //return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -82,7 +83,8 @@ namespace Web.Site.Areas
                 return View("CrearEditarUsuario", usuarioModel);
 
             await _usuarioService.EditarUsuario(usuarioModel.Usuario);
-            return RedirectToAction("Index");
+            return Json(new { redirectToUrl = @Url.Action("Index", "Usuario", new { area = "abm" }) });
+            //return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Eliminar(int idUsuario)

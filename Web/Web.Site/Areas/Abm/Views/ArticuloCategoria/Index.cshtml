@@ -119,14 +119,10 @@
             }, function () {
                 $.ajax({
                     type: "post",
-                    url: "/abm/Categoria/Eliminar",
+                    url: "/abm/ArticuloCategoria/Eliminar",
                     data: { Id: Id },
                     success: function (result) {
-                        if (result == true) {
-                            swal("Baja Exitosa!", "La Categoria ha sido dado de baja correctamente.", "success");
-                        } else {
-                            swal("Error", "Ocurrió un error intente mas tarde", "error");
-                        }
+                        swal("Baja Exitosa!", "La Categoria ha sido dado de baja correctamente.", "success");
                     }
                 }).done(function () {
                     window.setTimeout(function () {
@@ -134,15 +130,6 @@
                     }, 600);
                 });
             });
-        };
-        $(document).ready(function () {
-      
-            $('.dataTables-example').DataTable({
-                pageLength: 25,
-                dom: 'gitp',
-               
-
-            });
-        });
+        };      
     </script>
 }

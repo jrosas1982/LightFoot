@@ -177,13 +177,12 @@
                             'Se modifico el precio correctamente',
                             'success'
                         );
+                        $("#partialViewTable").html(""); //clear the records content
+                        $("#partialViewTable").html(response);  //add the updated content.
+                        $('.footable').footable();
+                        $('.footable').trigger('footable_redraw');
+                        $('#ModalModificarPrecio').modal('hide');
                     }
-                }).done(function (response) {
-                    $("#partialViewTable").html(""); //clear the records content
-                    $("#partialViewTable").html(response);  //add the updated content.
-                    $('.footable').footable();
-                    $('.footable').trigger('footable_redraw');
-                    $('#ModalModificarPrecio').modal('hide');
                 });
             }
         }
@@ -230,23 +229,14 @@
                         } else {
                             swal("Error", "Ocurrió un error intente mas tarde", "error");
                         }
+                        $("#ComprasPartialView").html(""); //clear the records content
+                        $("#ComprasPartialView").html(response);  //add the updated content.
+                        $('.footable').footable();
+                        $('.footable').trigger('footable_redraw');
+                        $('#ModalrecibirCompra').modal('hide');
                     }
-                }).done(function () {
-                    $("#ComprasPartialView").html(""); //clear the records content
-                    $("#ComprasPartialView").html(response);  //add the updated content.
-                    $('.footable').footable();
-                    $('.footable').trigger('footable_redraw');
-                    $('#ModalrecibirCompra').modal('hide');
                 });
             });
         };
-
-        $(document).ready(function () {
-
-            $('.dataTables-example').DataTable({
-                pageLength: 25,
-                dom: 'gitp'
-            });
-        });
     </script>
 }

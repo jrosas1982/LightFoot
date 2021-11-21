@@ -56,13 +56,15 @@ namespace Web.Site.Areas
                 return View(insumo);
             }
             await _insumoService.CrearInsumo(insumo);
-            return RedirectToAction("Index");
+            return Json(new { redirectToUrl = @Url.Action("Index", "Insumo", new { area = "abm" }) });
+            //return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Editar(Insumo insumo)
         {
             await _insumoService.EditarInsumo(insumo);
-            return RedirectToAction("Index");
+            return Json(new { redirectToUrl = @Url.Action("Index", "Insumo", new { area = "abm" }) });
+            //return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Eliminar(Insumo insumo)

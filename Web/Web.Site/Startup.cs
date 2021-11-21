@@ -125,20 +125,20 @@ namespace LightFoot.Web.Site
             //    await context.Response.WriteAsync(result);
             //}));
 
-            app.Use(async (context, next) =>
-            {
-                await next();
-                if (context.Response.StatusCode == 401)
-                {
-                    context.Request.Path = "/Auth/LogIn";
-                    await next();
-                }
-                if (context.Response.StatusCode == 404)
-                {
-                    context.Request.Path = "/Pages/NotFoundError";
-                    await next();
-                }
-            });
+            //app.Use(async (context, next) =>
+            //{
+            //    await next();
+            //    if (context.Response.StatusCode == 401)
+            //    {
+            //        context.Request.Path = "/Auth/LogIn";
+            //        await next();
+            //    }
+            //    if (context.Response.StatusCode == 404)
+            //    {
+            //        context.Request.Path = "/Pages/NotFoundError";
+            //        await next();
+            //    }
+            //});
 
             app.UseHttpsRedirection();
 

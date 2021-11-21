@@ -34,12 +34,14 @@ namespace Web.Site.Areas.Abm.Controllers
         } 
         public async Task<IActionResult> EditarParametro(FabricaParametro fabricaParametro) {
 
-            if (_parametroService.EditarParamtro(fabricaParametro).Result) {
+            var result = await _parametroService.EditarParamtro(fabricaParametro);
+            if (result) {
                 IEnumerable<FabricaParametro> parame = await _parametroService.GetParametros();
                 return PartialView("_listadoParametro", parame);
             }
             else {
-                return RedirectToAction("Index");
+                return Json(new { redirectToUrl = @Url.Action("Index", "FabricaParametros", new { area = "abm" }) });
+                //return RedirectToAction("Index");
             }
         }  
 
@@ -60,16 +62,18 @@ namespace Web.Site.Areas.Abm.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CrearEditarParametro(FabricaParametro fabricaParametro)
+        public async Task<IActionResult> CrearEditarParametro(FabricaParametro fabricaParametro)
         {
             ViewBag.ListParametros = ToListSelectListItem<Parametro>();
 
             try
             {
-                if (!_parametroService.CrearParamtro(fabricaParametro).Result) { 
+                var result = await _parametroService.CrearParamtro(fabricaParametro);
+                if (!result) { 
                     return View(fabricaParametro); }
                 else
-                return RedirectToAction("Index");
+                    return Json(new { redirectToUrl = @Url.Action("Index", "FabricaParametros", new { area = "abm" }) });
+                    //return RedirectToAction("Index");
             }
             catch (Exception)
             {

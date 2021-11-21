@@ -44,7 +44,8 @@ namespace Web.Site.Areas
             {
                 await _sucursalService.CrearSucursal(sucursal);
             }
-            return RedirectToAction("Index");
+            return Json(new { redirectToUrl = @Url.Action("Index", "Sucursal", new { area = "abm" }) });
+            //return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Editar(Sucursal sucursal)
@@ -53,7 +54,8 @@ namespace Web.Site.Areas
             {
                 await _sucursalService.EditarSucursal(sucursal);
             }
-            return RedirectToAction("Index");
+            return Json(new { redirectToUrl = @Url.Action("Index", "Sucursal", new { area = "abm" }) });
+            //return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Eliminar(Sucursal sucursal)

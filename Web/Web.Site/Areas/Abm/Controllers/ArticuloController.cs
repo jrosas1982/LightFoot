@@ -90,13 +90,15 @@ namespace Web.Site.Areas
         public async Task<IActionResult> Crear(Articulo articulo)
         {
             await _articuloService.CrearArticulo(articulo);
-            return RedirectToAction("Index");
+            return Json(new { redirectToUrl = @Url.Action("Index", "Articulo", new { area = "abm" }) });
+            //return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Editar(Articulo articulo)
         {
             await _articuloService.EditarArticulo(articulo);
-            return RedirectToAction("Index");
+            return Json(new { redirectToUrl = @Url.Action("Index", "Articulo", new { area = "abm" }) });
+            //return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Eliminar(Articulo articulo)

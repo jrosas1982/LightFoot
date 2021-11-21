@@ -57,7 +57,8 @@ namespace Web.Site.Areas.Abm.Controllers
             {
                 cliente = _mapper.Map<Cliente>(clientemodel);
                 await _clienteService.CrearCliente(cliente);
-                return RedirectToAction("Index","Clientes");
+                return Json(new { redirectToUrl = @Url.Action("Index", "Clientes", new { area = "abm" }) });
+                //return RedirectToAction("Index","Clientes");
             }
             catch (Exception ex)
             {
@@ -77,8 +78,9 @@ namespace Web.Site.Areas.Abm.Controllers
             try
             {
                 cliente = _mapper.Map<Cliente>(clientemodel);
-            await _clienteService.EditarCliente(cliente);
-                return RedirectToAction("Index", "Clientes");
+                await _clienteService.EditarCliente(cliente);
+                return Json(new { redirectToUrl = @Url.Action("Index", "Clientes", new { area = "abm" }) });
+                //return RedirectToAction("Index", "Clientes");
             }
             catch (Exception ex)
             {

@@ -52,14 +52,16 @@ namespace Web.Site.Areas
         {
             articuloStock.IdSucursal = int.Parse(User.GetUserIdSucursal());
             await _controlStockArticuloService.CrearArticuloStock(articuloStock);
-            return RedirectToAction("Index");
+            return Json(new { redirectToUrl = @Url.Action("Index", "ControlStockArticulo", new { area = "abm" }) });
+            //return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Editar(ArticuloStock articuloStock)
         {
             articuloStock.IdSucursal = int.Parse(User.GetUserIdSucursal());
             await _controlStockArticuloService.EditarArticuloStock(articuloStock);
-            return RedirectToAction("Index");
+            return Json(new { redirectToUrl = @Url.Action("Index", "ControlStockArticulo", new { area = "abm" }) });
+            //return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Eliminar(ArticuloStock articuloStock)

@@ -60,7 +60,8 @@ namespace Web.Site.Areas
                 return View("CrearEditarProveedor", proveedor);
 
             await _proveedorService.CrearProveedor(proveedor);
-            return RedirectToAction("Index");
+            return Json(new { redirectToUrl = @Url.Action("Index", "Proveedor", new { area = "abm" }) });
+            //return RedirectToAction("Index");
         }
 
         [ValidateAntiForgeryToken]
@@ -70,7 +71,8 @@ namespace Web.Site.Areas
                 return View("CrearEditarProveedor", proveedor);
 
             await _proveedorService.EditarProveedor(proveedor);
-            return RedirectToAction("Index");
+            return Json(new { redirectToUrl = @Url.Action("Index", "Proveedor", new { area = "abm" }) });
+            //return RedirectToAction("Index");
         }
 
 

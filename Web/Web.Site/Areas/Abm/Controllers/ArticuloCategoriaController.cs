@@ -61,8 +61,10 @@ namespace Web.Site.Areas.Abm.Controllers
         {
             try
             {
+                throw new NotImplementedException();
                 await _articuloCategoriaService.CrearCategoria(articuloCategoria);
-                return RedirectToAction("Index");
+                return Json(new { redirectToUrl = @Url.Action("Index", "ArticuloCategoria", new { area = "abm" }) });
+                //return RedirectToAction("Index");
             }
             catch(Exception ex)
             {
@@ -73,16 +75,10 @@ namespace Web.Site.Areas.Abm.Controllers
 
         public async Task<IActionResult> Editar(ArticuloCategoria articuloCategoria)
         {
-            try
-            {
-                await _articuloCategoriaService.EditarCategoria(articuloCategoria);
-                return RedirectToAction("Index");
-
-            }
-            catch (Exception ex)
-            {
-                return Redirect($"/abm/ArticuloCategoria/Index?error=true&msj= {ex.Message}");
-            }
+       
+            await _articuloCategoriaService.EditarCategoria(articuloCategoria);
+            return Json(new { redirectToUrl = @Url.Action("Index", "ArticuloCategoria", new { area = "abm" }) });
+            //return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Eliminar(ArticuloCategoria articuloCategoria)
