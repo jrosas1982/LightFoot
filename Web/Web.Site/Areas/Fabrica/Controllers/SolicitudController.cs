@@ -65,108 +65,78 @@ namespace Web.Site.Areas
         {
             SolicitudModel solicitudModel = new SolicitudModel();
             Solicitud solicitud;
-            try
-            {
-                var estadoSolicitudListTask = _solicitudService.GetEstadosSolicitud();
-                var sucursalesListTask = _sucursalService.GetSucursales();
-                var articulosListTask = _articuloService.GetArticulosFabrica();
 
-                await Task.WhenAll(estadoSolicitudListTask, sucursalesListTask, articulosListTask);
+            var estadoSolicitudListTask = _solicitudService.GetEstadosSolicitud();
+            var sucursalesListTask = _sucursalService.GetSucursales();
+            var articulosListTask = _articuloService.GetArticulosFabrica();
 
-                var estadoSolicitudList = estadoSolicitudListTask.Result;
-                var sucursalesList = sucursalesListTask.Result;
-                var articulosList = articulosListTask.Result;
+            await Task.WhenAll(estadoSolicitudListTask, sucursalesListTask, articulosListTask);
 
-                if (IdSolicitud != 0) // 0 = crear
-                    solicitud = await _solicitudService.BuscarPorId(IdSolicitud);
-                else
-                    solicitud = new Solicitud();
-                solicitudModel = new SolicitudModel(solicitud, estadoSolicitudList);
+            var estadoSolicitudList = estadoSolicitudListTask.Result;
+            var sucursalesList = sucursalesListTask.Result;
+            var articulosList = articulosListTask.Result;
 
-                solicitudModel.Sucursales = sucursalesList.Select(x => new DesplegableModel() { Id = x.Id, Descripcion = $"{x.Nombre} - {x.Descripcion}" });
-                solicitudModel.Articulos = articulosList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Nombre}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
-                solicitudModel.Colores = articulosList.Select(x => new SelectListItem() { Text = $"{x.Color}", Value = $"{x.Color}" });
-                solicitudModel.Talles = articulosList.Select(x => new SelectListItem() { Text = $"{x.TalleArticulo}", Value = $"{x.TalleArticulo}" });
-                return View(solicitudModel);
-            }
-            catch (Exception ex)
-            {
-                ViewBag.CatchError = true;
-                ViewBag.MensajeError = $"Error al CrearEditarSolicitud Error: {ex.Message}";
-                return View(solicitudModel);
-            }
-       
+            if (IdSolicitud != 0) // 0 = crear
+                solicitud = await _solicitudService.BuscarPorId(IdSolicitud);
+            else
+                solicitud = new Solicitud();
+            solicitudModel = new SolicitudModel(solicitud, estadoSolicitudList);
+
+            solicitudModel.Sucursales = sucursalesList.Select(x => new DesplegableModel() { Id = x.Id, Descripcion = $"{x.Nombre} - {x.Descripcion}" });
+            solicitudModel.Articulos = articulosList.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Nombre}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
+            solicitudModel.Colores = articulosList.Select(x => new SelectListItem() { Text = $"{x.Color}", Value = $"{x.Color}" });
+            solicitudModel.Talles = articulosList.Select(x => new SelectListItem() { Text = $"{x.TalleArticulo}", Value = $"{x.TalleArticulo}" });
+            return View(solicitudModel);
         }
 
-        public async Task<IActionResult> ColoresPorArticulo(string NumeroTalle , string NombreArticulo) 
+        public async Task<IActionResult> ColoresPorArticulo(string NumeroTalle, string NombreArticulo)
         {
-                var articulosList = await _articuloService.GetArticulos();
-                SolicitudModel solicitudModel = new SolicitudModel();
-                solicitudModel.Colores = articulosList.Where(x => x.TalleArticulo == NumeroTalle && x.Nombre == NombreArticulo).Select(c => new SelectListItem() { Text = $"{c.Color}", Value = $"{c.Color}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); ;
-                return Json(solicitudModel.Colores);
+            var articulosList = await _articuloService.GetArticulos();
+            SolicitudModel solicitudModel = new SolicitudModel();
+            solicitudModel.Colores = articulosList.Where(x => x.TalleArticulo == NumeroTalle && x.Nombre == NombreArticulo).Select(c => new SelectListItem() { Text = $"{c.Color}", Value = $"{c.Color}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); ;
+            return Json(solicitudModel.Colores);
         }
-        
+
         public async Task<IActionResult> TallesPorArticulo(string NombreArticulo)
         {
             var articulosList = await _articuloService.GetArticulos();
             SolicitudModel solicitudModel = new SolicitudModel();
-            solicitudModel.Talles = articulosList.Where(x => x.Nombre == NombreArticulo).Select(c => new SelectListItem() { Text = c.TalleArticulo , Value = c.TalleArticulo }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); 
+            solicitudModel.Talles = articulosList.Where(x => x.Nombre == NombreArticulo).Select(c => new SelectListItem() { Text = c.TalleArticulo, Value = c.TalleArticulo }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
             return Json(solicitudModel.Talles);
         }
 
         public async Task<IActionResult> Crear(SolicitudModel solicitudModel)
         {
-            try
+            var solicitud = new Solicitud()
             {
-                var solicitud = new Solicitud()
-                {
-                    IdSucursal = solicitudModel.IdSucursal,
-                    EstadoSolicitud = solicitudModel.EstadoSolicitud,
-                    Comentario = solicitudModel.Comentario
-                };
+                IdSucursal = solicitudModel.IdSucursal,
+                EstadoSolicitud = solicitudModel.EstadoSolicitud,
+                Comentario = solicitudModel.Comentario
+            };
 
-                var solicitudDetalles = solicitudModel.SolicitudDetalle.Select(x => new SolicitudDetalle()
-                {
-                    IdArticulo = x.IdArticulo,
-                    CantidadSolicitada = x.CantidadSolicitada,
-                    Motivo = x.Motivo
-                });
-
-                await _solicitudService.CrearSolicitud(solicitud, solicitudDetalles);
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
+            var solicitudDetalles = solicitudModel.SolicitudDetalle.Select(x => new SolicitudDetalle()
             {
-                return Redirect($"/fabrica/Solicitud/Index?error=true&msj= {ex.Message}");
-            }
+                IdArticulo = x.IdArticulo,
+                CantidadSolicitada = x.CantidadSolicitada,
+                Motivo = x.Motivo
+            });
+
+            await _solicitudService.CrearSolicitud(solicitud, solicitudDetalles);
+            return RedirectToAction("Index");
 
         }
 
         public async Task<IActionResult> AprobarSolicitud(int idSolicitud)
         {
-            try
-            {
-                await _solicitudService.AprobarSolicitud(idSolicitud);
-                return RedirectToAction("Index");
-            }
-             catch (Exception ex)
-            {
-                return Redirect($"/fabrica/Solicitud/Index?error=true&msj= {ex.Message}");
-            }
+            await _solicitudService.AprobarSolicitud(idSolicitud);
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Rechazar(int idSolicitud)
         {
-            try
-            {
-                await _solicitudService.RechazarSolicitud(idSolicitud);
-                var result = await _solicitudService.GetSolicitudes();
-                return PartialView("_SolicitudTable", result);
-            }
-            catch (Exception ex)
-            {
-                return Redirect($"/fabrica/Solicitud/Index?error=true&msj= {ex.Message}");
-            }
+            await _solicitudService.RechazarSolicitud(idSolicitud);
+            var result = await _solicitudService.GetSolicitudes();
+            return PartialView("_SolicitudTable", result);
         }
 
 
@@ -183,7 +153,7 @@ namespace Web.Site.Areas
             var articulo = articulosList.FirstOrDefault(x => x.Nombre == data.Articulo.Nombre && x.Color == data.Articulo.Color && x.TalleArticulo == data.Articulo.TalleArticulo);
 
             data.IdArticulo = articulo.Id;
-            return PartialView("_SolicitudDetalle", data );
+            return PartialView("_SolicitudDetalle", data);
         }
 
     }

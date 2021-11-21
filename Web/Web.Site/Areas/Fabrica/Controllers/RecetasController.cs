@@ -95,41 +95,35 @@ namespace Web.Site.Areas.Fabrica.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CrearEditarReceta(RecetaModel recetaModel)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
-                {
-                    var articulos = await _articuloService.GetArticulos();
-                    var insumos = await _insumoService.GetInsumos();
-                    var ordenes = await _ordenesProduccionService.GetEtapasOrden();
+                var articulos = await _articuloService.GetArticulos();
+                var insumos = await _insumoService.GetInsumos();
+                var ordenes = await _ordenesProduccionService.GetEtapasOrden();
 
-                    ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id} - {x.TalleArticulo} - {x.Color}" });
-                    //ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
-                    ViewBag.Insumos = insumos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
-                    ViewBag.EtapasOrden = ordenes.Select(x => new SelectListItem() { Text = $"{x.Descripcion}", Value = $"{x.Orden}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
+                ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id} - {x.TalleArticulo} - {x.Color}" });
+                //ViewBag.Articulos = articulos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
+                ViewBag.Insumos = insumos.Select(x => new SelectListItem() { Text = $"{x.Nombre}", Value = $"{x.Id}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
+                ViewBag.EtapasOrden = ordenes.Select(x => new SelectListItem() { Text = $"{x.Descripcion}", Value = $"{x.Orden}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList();
 
-                    return View(recetaModel);
-                }
-                else {
-                    var recetaNueva = _mapper.Map<Receta>(recetaModel);
-                    recetaNueva.CreadoPor = User.GetUserIdSucursal();
-                    await _recetaService.CrearReceta(recetaNueva);
-                    return RedirectToAction("Index", "Recetas",new { @area = "fabrica" });
-                }
+                return View(recetaModel);
             }
-            catch(Exception ex)
+            else
             {
-             MensajeError(ex.Message);
-                return RedirectToAction("CrearEditarReceta", "Recetas", new { @area = "fabrica" });
+                var recetaNueva = _mapper.Map<Receta>(recetaModel);
+                recetaNueva.CreadoPor = User.GetUserIdSucursal();
+                await _recetaService.CrearReceta(recetaNueva);
+                return RedirectToAction("Index", "Recetas", new { @area = "fabrica" });
             }
         }
 
         [HttpPost]
-        public ActionResult ActivarDesactivar(int id)
+        public async Task<IActionResult> ActivarDesactivarAsync(int id)
         {
             // TODO: definir si debemos registrar el usuartio que activa desactiva
             // User.GetUserIdSucursal();
-            return Ok(_recetaService.ActivarDesactivarReceta(id).Result);
+            await _recetaService.ActivarDesactivarReceta(id);
+            return Ok();
         }
 
         /// <summary>
@@ -139,9 +133,10 @@ namespace Web.Site.Areas.Fabrica.Controllers
         /// <returns></returns>
         // GET: RecetasController/Delete/5
         [HttpPost]
-        public ActionResult Eliminar(int id)
-        { 
-            return Ok(_recetaService.EliminarReceta(id).Result);
+        public async Task<IActionResult> EliminarAsync(int id)
+        {
+            await _recetaService.EliminarReceta(id);
+            return Ok();
         }
 
         [HttpPost]
@@ -171,10 +166,9 @@ namespace Web.Site.Areas.Fabrica.Controllers
         public async Task<IActionResult> BuscarReceta(string NombreReceta)
         {
             var recetas = await _recetaService.GetRecetas();
-            var insumos = await _insumoService.GetInsumos();
-            var ordenes = await _ordenesProduccionService.GetEtapasOrden();
+            //var insumos = await _insumoService.GetInsumos();
+            //var ordenes = await _ordenesProduccionService.GetEtapasOrden();
             ViewBag.ListadoRecetaType = recetas.Select(x => x.Articulo.Id);
-            IEnumerable<RecetaModel> modeloReceta;
 
             if (!string.IsNullOrWhiteSpace(NombreReceta))
             {
@@ -191,19 +185,21 @@ namespace Web.Site.Areas.Fabrica.Controllers
                             || x.Articulo.Color.ToLower().Contains(NombreReceta.ToLower())
                             || x.Articulo.TalleArticulo.ToLower().Contains(NombreReceta.ToLower()));
             }
-            modeloReceta = _mapper.Map<IEnumerable<RecetaModel>>(recetas);
-            foreach (var receta in modeloReceta)
-            {
-                foreach (var detalle in receta.RecetaDetalles)
-                {
-                    detalle.NombreEtapaOrdenProduccion = ordenes.Where(x => x.Orden == detalle.IdEtapaOrdenProduccion)
-                        .Select(d => d.Descripcion).FirstOrDefault();
-                    detalle.NombreInsumo = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Nombre).FirstOrDefault();
-                    detalle.UnidadDeMedida = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Unidad).FirstOrDefault();
-                }
-            }
 
-            return PartialView("_listadoReceta", modeloReceta);
+           //var modeloReceta = _mapper.Map<IEnumerable<RecetaModel>>(recetas);
+
+           // foreach (var receta in modeloReceta)
+           // {
+           //     foreach (var detalle in receta.RecetaDetalles)
+           //     {
+           //         detalle.NombreEtapaOrdenProduccion = ordenes.Where(x => x.Orden == detalle.IdEtapaOrdenProduccion)
+           //             .Select(d => d.Descripcion).FirstOrDefault();
+           //         detalle.NombreInsumo = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Nombre).FirstOrDefault();
+           //         detalle.UnidadDeMedida = insumos.Where(x => x.Id == detalle.IdInsumo).Select(d => d.Unidad).FirstOrDefault();
+           //     }
+           // }
+
+            return PartialView("_listadoReceta", recetas);
         }
     }
 }

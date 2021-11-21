@@ -177,24 +177,16 @@
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "Si,"+ accion +"!",
                 cancelButtonText: "Cancelar",
-                closeOnConfirm: false
+                closeOnConfirm: true
             }, function () {
                 $.ajax({
                     type: "post",
                     url: "@url_base" + ruta + "/",
                     data: { id: Id },
                     success: function (result) {
-                        if (result == true) {
-                            swal("Exito!", "La acción ha sido procesada correctamente", "success");
-                        } else {
-                            swal("Error", "Ocurrió un error inesperado", "error");
-                        }
+                        //swal("Exito!", "La acción ha sido procesada correctamente", "success");
+                        BuscarReceta();
                     }
-                }).done(function () {
-                    //window.setTimeout(function () {
-                    //    location.reload();
-                    //}, 200);
-                    BuscarReceta();
                 });
             });
         };

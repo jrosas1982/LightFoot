@@ -210,10 +210,6 @@
                     $('.footable').footable();
                     $('.footable').trigger('footable_redraw'); //reaplicar formato footable
                     console.log("end");
-                },
-                error: function () {
-                    console.log("error");
-                    swal("Error", "Ocurrió un error inesperado", "error");
                 }
             });
         }
@@ -239,9 +235,6 @@
                         $('.footable').footable();
                         $('.footable').trigger('footable_redraw'); //reaplicar formato footable
                         swal("Exito!", "La solicitud ha sido rechazada correctamente", "success");           
-                    },
-                    error: function () {
-                        swal("Error", "Ocurrió un error inesperado", "error");
                     }
                 })
             });

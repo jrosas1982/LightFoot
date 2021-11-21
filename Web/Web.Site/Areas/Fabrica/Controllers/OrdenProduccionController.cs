@@ -38,7 +38,7 @@ namespace Web.Site.Areas
 
             if (filter.Articulo != null)
                 ordenesList = ordenesList.Where(x => x.Articulo.Nombre.ToLower().Contains(filter.Articulo.ToLower())
-                                                  || x.Articulo.ArticuloCategoria.Descripcion.ToLower().Contains(filter.Articulo.ToLower()) 
+                                                  || x.Articulo.ArticuloCategoria.Descripcion.ToLower().Contains(filter.Articulo.ToLower())
                                                   || x.Articulo.CodigoArticulo.ToLower().Contains(filter.Articulo.ToLower())
                                                   || x.Articulo.Color.ToLower().Contains(filter.Articulo.ToLower())
                                                   || x.Articulo.TalleArticulo.ToLower().Contains(filter.Articulo.ToLower()));
@@ -52,7 +52,7 @@ namespace Web.Site.Areas
 
             ViewData["parametroExpedicion"] = await _parametroService.GetValorByParametro(Parametro.TiempoExpedicion);
 
-            return PartialView("_IndexTable", ordenesList );
+            return PartialView("_IndexTable", ordenesList);
         }
 
         private async Task RellenarViewBags(int idOrdenProduccion)
@@ -103,150 +103,90 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> IniciarEtapa(int idOrdenProduccion)
         {
-            try
-            {
-                await _ordenProduccionService.IniciarEtapa(idOrdenProduccion);
+            await _ordenProduccionService.IniciarEtapa(idOrdenProduccion);
 
-                var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
+            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
 
-                await RellenarViewBags(idOrdenProduccion);
+            await RellenarViewBags(idOrdenProduccion);
 
-                return PartialView("_DetallesOrdenProduccionPartial", orden);
-            }
-            catch (Exception ex)
-            {
-                throw;
-                //Response.StatusCode = 500;
-                ////Response.TrySkipIisCustomErrors = true;
-                //return Json(new { message = ex.Message });
-                ////return MensajeError(ex.Message);
-            }
+            return PartialView("_DetallesOrdenProduccionPartial", orden);
         }
 
         public async Task<IActionResult> PausarEtapa(int idOrdenProduccion)
         {
-            try
-            {
-                await _ordenProduccionService.PausarEtapa(idOrdenProduccion, "");
+            await _ordenProduccionService.PausarEtapa(idOrdenProduccion, "");
 
-                var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
+            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
 
-                await RellenarViewBags(idOrdenProduccion);
+            await RellenarViewBags(idOrdenProduccion);
 
-                return PartialView("_DetallesOrdenProduccionPartial", orden);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return PartialView("_DetallesOrdenProduccionPartial", orden);
         }
 
         public async Task<IActionResult> FinalizarEtapa(int idOrdenProduccion)
         {
-            try
-            {
-                await _ordenProduccionService.FinalizarEtapa(idOrdenProduccion);
+            await _ordenProduccionService.FinalizarEtapa(idOrdenProduccion);
 
-                var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
+            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
 
-                await RellenarViewBags(idOrdenProduccion);
+            await RellenarViewBags(idOrdenProduccion);
 
-                return PartialView("_DetallesOrdenProduccionPartial", orden);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return PartialView("_DetallesOrdenProduccionPartial", orden);
         }
 
         public async Task<IActionResult> ReanudarEtapa(int idOrdenProduccion)
         {
-            try
-            {
-                await _ordenProduccionService.ReanudarEtapa(idOrdenProduccion);
+            await _ordenProduccionService.ReanudarEtapa(idOrdenProduccion);
 
-                var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
+            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
 
-                await RellenarViewBags(idOrdenProduccion);
+            await RellenarViewBags(idOrdenProduccion);
 
-                return PartialView("_DetallesOrdenProduccionPartial", orden);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }           
+            return PartialView("_DetallesOrdenProduccionPartial", orden);
         }
 
         public async Task<IActionResult> RetrabajarEtapa(int idOrdenProduccion)
         {
-            try
-            {
-                await _ordenProduccionService.RetrabajarEtapa(idOrdenProduccion, "");
+            await _ordenProduccionService.RetrabajarEtapa(idOrdenProduccion, "");
 
-                var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
+            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
 
-                await RellenarViewBags(idOrdenProduccion);
+            await RellenarViewBags(idOrdenProduccion);
 
-                return PartialView("_DetallesOrdenProduccionPartial", orden);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return PartialView("_DetallesOrdenProduccionPartial", orden);
         }
 
         public async Task<IActionResult> AvanzarSiguienteEtapa(int idOrdenProduccion)
         {
-            try
-            {
-                await _ordenProduccionService.AvanzarSiguienteEtapa(idOrdenProduccion);
+            await _ordenProduccionService.AvanzarSiguienteEtapa(idOrdenProduccion);
 
-                var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
+            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
 
-                await RellenarViewBags(idOrdenProduccion);
+            await RellenarViewBags(idOrdenProduccion);
 
-                return PartialView("_DetallesOrdenProduccionPartial", orden);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return PartialView("_DetallesOrdenProduccionPartial", orden);
         }
 
         public async Task<IActionResult> FinalizarOrden(int idOrdenProduccion)
         {
-            try
-            {
-                await _ordenProduccionService.FinalizarOrden(idOrdenProduccion);
+            await _ordenProduccionService.FinalizarOrden(idOrdenProduccion);
 
-                var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
+            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
 
-                await RellenarViewBags(idOrdenProduccion);
+            await RellenarViewBags(idOrdenProduccion);
 
-                return PartialView("_DetallesOrdenProduccionPartial", orden);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }        
-        
+            return PartialView("_DetallesOrdenProduccionPartial", orden);
+        }
+
         public async Task<IActionResult> CancelarOrden(int idOrdenProduccion)
         {
-            try
-            {
-                await _ordenProduccionService.CancelarOrden(idOrdenProduccion, "");
+            await _ordenProduccionService.CancelarOrden(idOrdenProduccion, "");
 
-                var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
+            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
 
-                await RellenarViewBags(idOrdenProduccion);
+            await RellenarViewBags(idOrdenProduccion);
 
-                return PartialView("_DetallesOrdenProduccionPartial", orden);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return PartialView("_DetallesOrdenProduccionPartial", orden);
         }
 
     }

@@ -19,7 +19,7 @@ namespace Core.Aplicacion.Services
         private readonly IRecetaDetalleService _recetaDetalleService;
         private readonly ILogger<SolicitudService> _logger;
 
-        public RecetaService(AppDbContext db, ILogger<SolicitudService> logger ,
+        public RecetaService(AppDbContext db, ILogger<SolicitudService> logger,
             IRecetaDetalleService recetaDetalleService)
         {
             _db = db;
@@ -64,9 +64,9 @@ namespace Core.Aplicacion.Services
                         .ThenInclude(x => x.Insumo)
                     .OrderByDescending(x => x.Activo)
                     .ToListAsync();
-                    //   .ThenInclude(x => x.Insumo)
-                    //.Include(x => x.RecetaDetalles)
-                    //   .ThenInclude(x => x.EtapaOrdenProduccion);
+                //   .ThenInclude(x => x.Insumo)
+                //.Include(x => x.RecetaDetalles)
+                //   .ThenInclude(x => x.EtapaOrdenProduccion);
 
                 return recetas;
             }
@@ -94,75 +94,41 @@ namespace Core.Aplicacion.Services
 
         }
 
-        public async Task<bool> EliminarReceta(int IdReceta)
+        public async Task EliminarReceta(int IdReceta)
         {
-            try
+            var receta = _db.Recetas.Include(x => x.RecetaDetalles).Where(x => x.Id == IdReceta).Single();
+
+            foreach (var item in receta.RecetaDetalles)
             {
-                var receta = _db.Recetas.Include(x => x.RecetaDetalles).Where(x => x.Id == IdReceta).Single();
-
-                foreach (var item in receta.RecetaDetalles)
-                {
-                    item.Eliminado = true;
-                    //_db.RecetaDetalles.Remove(item);
-                }
-
-                receta.Eliminado = true;
-
-                _db.Recetas.Update(receta);
-
-                await _db.SaveChangesAsync();
-
-                return true;
+                item.Eliminado = true;
+                //_db.RecetaDetalles.Remove(item);
             }
-            catch (Exception ex)
-            {
-                _logger.LogInformation($" Error al EliminarReceta { ex.Message }");
-                return false;
-            }
+
+            receta.Eliminado = true;
+
+            _db.Recetas.Update(receta);
+
+            await _db.SaveChangesAsync();
         }
 
-        public async Task<bool> ActivarDesactivarReceta(int IdReceta)
+        public async Task ActivarDesactivarReceta(int IdReceta)
         {
-            try
-            {
-                var item = await _db.Recetas.FindAsync(IdReceta); //returns a single item.
-                item.Activo = !item.Activo;
+            var item = await _db.Recetas.FindAsync(IdReceta); //returns a single item.
+            item.Activo = !item.Activo;
 
-                if (_db.Recetas.Any(x => x.IdArticulo == item.IdArticulo && x.Activo && x.Id != item.Id))
-                    throw new ExcepcionControlada("Solo puede haber una receta actva por articulo a la vez");
+            if (_db.Recetas.Any(x => x.IdArticulo == item.IdArticulo && x.Activo && x.Id != item.Id))
+                throw new ExcepcionControlada("Solo puede haber una receta actva por articulo a la vez");
 
-                _db.Recetas.Update(item);
+            _db.Recetas.Update(item);
 
-                await _db.SaveChangesAsync();
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogInformation($" Error al ActivarDesactivarReceta { ex.Message }");
-                return false;
-            }    
+            await _db.SaveChangesAsync();
         }
 
-        public async Task<bool> CrearReceta(Receta receta)
+        public async Task CrearReceta(Receta receta)
         {
-           try
-           {
-                _db.Recetas.Add(receta);
-                await _db.SaveChangesAsync();
-                return true;
+            _db.Recetas.Add(receta);
 
-                //var articulo = await _db.Articulos.FindAsync(receta.IdArticulo);
-                ////if (articulo.Receta != null)
-                ////    throw new Exception("el articulo ya posee una receta asociada");
-                //articulo.Receta = receta;
-                //_db.Articulos.Update(articulo);
-           }
-           catch (Exception ex)
-           {
-               _logger.LogInformation($"  { ex.Message }");
-               return false;
-           }
+            await _db.SaveChangesAsync();
         }
     }
 }

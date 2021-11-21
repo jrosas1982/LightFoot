@@ -30,7 +30,7 @@ namespace Core.Aplicacion.Services
             _fabricacionService = fabricacionService;
         }
 
-        public async Task<bool> IniciarEtapa(int idOrdenProduccion, string comentario = "")
+        public async Task IniciarEtapa(int idOrdenProduccion, string comentario = "")
         {
             //reanuda la etapa si no estaba reanudada
             var ordenDb = await _db.OrdenesProduccion.Include(x => x.Articulo).Include(x => x.EtapaOrdenProduccion).ThenInclude(x => x.RecetaDetalle).SingleAsync(x => x.Id == idOrdenProduccion);
@@ -61,10 +61,9 @@ namespace Core.Aplicacion.Services
             await GuardarEventoAsync(ordenDb, comentario);
 
             await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
-            return true;
         }
 
-        public async Task<bool> PausarEtapa(int idOrdenProduccion, string comentario)
+        public async Task PausarEtapa(int idOrdenProduccion, string comentario)
         {
             //pausa la etapa si no estaba pausada
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
@@ -80,10 +79,9 @@ namespace Core.Aplicacion.Services
             await GuardarEventoAsync(ordenDb, comentario);
 
             await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
-            return true;
         }
 
-        public async Task<bool> ReanudarEtapa(int idOrdenProduccion, string comentario = "")
+        public async Task ReanudarEtapa(int idOrdenProduccion, string comentario = "")
         {
             //reanuda la etapa si no estaba reanudada
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
@@ -99,10 +97,9 @@ namespace Core.Aplicacion.Services
             await GuardarEventoAsync(ordenDb, comentario);
 
             await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
-            return true;
         }
 
-        public async Task<bool> FinalizarEtapa(int idOrdenProduccion, string comentario = "")
+        public async Task FinalizarEtapa(int idOrdenProduccion, string comentario = "")
         {
             //pausa la etapa si no estaba pausada
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
@@ -119,10 +116,9 @@ namespace Core.Aplicacion.Services
 
             
             await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
-            return true;
         }
 
-        public async Task<bool> RetrabajarEtapa(int idOrdenProduccion, string comentario)
+        public async Task RetrabajarEtapa(int idOrdenProduccion, string comentario)
         {
             //marca la orden como retrabajo
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
@@ -138,7 +134,6 @@ namespace Core.Aplicacion.Services
             await GuardarEventoAsync(ordenDb, comentario);
 
             await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
-            return true;
         }
 
         //public async Task<bool> CompletarRetrabado(int idOrdenProduccion, string comentario)
@@ -161,7 +156,7 @@ namespace Core.Aplicacion.Services
         //    return true;
         //}
 
-        public async Task<bool> AvanzarSiguienteEtapa(int idOrdenProduccion, string comentario = "")
+        public async Task AvanzarSiguienteEtapa(int idOrdenProduccion, string comentario = "")
         {
             var ordenDb = await _db.OrdenesProduccion.Include(x => x.EtapaOrdenProduccion).SingleOrDefaultAsync(x => x.Id == idOrdenProduccion);
 
@@ -185,10 +180,9 @@ namespace Core.Aplicacion.Services
             await GuardarEventoAsync(ordenDb, comentario);
 
             await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
-            return true;
         }
 
-        public async Task<bool> FinalizarOrden(int idOrdenProduccion, string comentario = "")
+        public async Task FinalizarOrden(int idOrdenProduccion, string comentario = "")
         {
             //marca la orden como finalizada si esta todo bien
             var ordenDb = await _db.OrdenesProduccion.Include(x => x.EtapaOrdenProduccion).SingleOrDefaultAsync(x => x.Id == idOrdenProduccion);
@@ -211,10 +205,9 @@ namespace Core.Aplicacion.Services
 
             await _hubContext.Clients.All.SendAsync("OrdenProduccionFinalizada", $"La Orden {idOrdenProduccion} fue marcada como finalizada", idOrdenProduccion);
             await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
-            return true;
         }
 
-        public async Task<bool> CancelarOrden(int idOrdenProduccion, string comentario)
+        public async Task CancelarOrden(int idOrdenProduccion, string comentario)
         {
             // TODO liberar todos los insumos que quedaban reservados => no se hace
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
@@ -226,7 +219,6 @@ namespace Core.Aplicacion.Services
             await GuardarEventoAsync(ordenDb, comentario);
 
             await _hubContext.Clients.All.SendAsync("OrdenProduccionUpdate");
-            return true;
         }
 
         public async Task<OrdenProduccion> BuscarPorId(int idOrdenProduccion)

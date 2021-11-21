@@ -85,20 +85,6 @@ namespace Web.Site.Areas
             return View(compraInsumoModel);
         }
 
-        //public async Task<IActionResult> PrecioCompra(string idInsumo, string idProveedor, string Cantidad)
-        //{
-        //    //var articulosList = await _articuloService.GetArticulos();
-        //    var IdInsumo = int.Parse(idInsumo);
-        //    var IdProveedor = int.Parse(idProveedor);
-
-        //    var proveedor = await _proveedorService.BuscarPorId(IdProveedor);
-
-
-        //    string precio = "22";
-        //    //solicitudModel.Colores = articulosList.Where(x => x.TalleArticulo == NumeroTalle).Select(c => new SelectListItem() { Text = $"{c.Color}", Value = $"{c.Color}" }).GroupBy(p => new { p.Text }).Select(g => g.First()).ToList(); ;
-        //    return Json(precio);
-        //}
-
         public async Task<IActionResult> FiltrarProveedores(int idInsumo)
         {
             var proveedores = await _proveedorService.GetProveedores();
@@ -158,119 +144,68 @@ namespace Web.Site.Areas
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear(CompraInsumoModel comprainsumoModel)
         {
-            try
+            IList<NuevaCompraInsumoModel> compra = new List<NuevaCompraInsumoModel>();
+            foreach (var detalle in comprainsumoModel.CompraInsumoDetalleModels)
             {
-
-                IList<NuevaCompraInsumoModel> compra = new List<NuevaCompraInsumoModel>();
-                foreach (var detalle in comprainsumoModel.CompraInsumoDetalleModels)
+                compra.Add(new NuevaCompraInsumoModel()
                 {
-                    compra.Add(new NuevaCompraInsumoModel()
-                    {
-                        Cantidad = detalle.Cantidad,
-                        Comentario = detalle.Comentario,
-                        IdInsumo = detalle.IdInsumo,
-                        IdProveedor = detalle.IdProveedor
-                    });
-                }
-                await _compraInsumoService.CrearCompra(compra);
-                return RedirectToAction("Index");
+                    Cantidad = detalle.Cantidad,
+                    Comentario = detalle.Comentario,
+                    IdInsumo = detalle.IdInsumo,
+                    IdProveedor = detalle.IdProveedor
+                });
             }
-
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            await _compraInsumoService.CrearCompra(compra);
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> ActualizarDetalleCompra(int idCompra)
         {
-            try
-            {
-                var compra = await _compraInsumoService.BuscarPorId(idCompra);
+            var compra = await _compraInsumoService.BuscarPorId(idCompra);
 
-                return PartialView("_CompraInsumoIndexDetalle", compra);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return PartialView("_CompraInsumoIndexDetalle", compra);
         }
 
         public async Task<IActionResult> RecibirCompra(int idCompra, long nroRemito, int tiempoCalificacion, int distanciaCalificacion, int precioCalificacion, int calidadCalificacion)
         {
-            try
-            {
-                var resp = await _compraInsumoService.RecibirCompra(idCompra, nroRemito, tiempoCalificacion, distanciaCalificacion, precioCalificacion, calidadCalificacion);
+            await _compraInsumoService.RecibirCompra(idCompra, nroRemito, tiempoCalificacion, distanciaCalificacion, precioCalificacion, calidadCalificacion);
 
-                var compraInsumoList = await _compraInsumoService.GetCompras();
+            var compraInsumoList = await _compraInsumoService.GetCompras();
 
-                ViewBag.TypeaheadNumCompra = compraInsumoList.Select(x => x.Id.ToString()).Distinct();
-                ViewBag.TypeaheadRemito = compraInsumoList.Where(x => !string.IsNullOrWhiteSpace(x.NroRemito.ToString())).Select(x => x.NroRemito.ToString()).Distinct();
-                ViewBag.TypeaheadTotal = compraInsumoList.Select(x => x.MontoTotal.ToString()).Distinct();
-                ViewBag.TypeaheadProveedor = compraInsumoList.Select(x => x.Proveedor.Nombre).Distinct();
+            ViewBag.TypeaheadNumCompra = compraInsumoList.Select(x => x.Id.ToString()).Distinct();
+            ViewBag.TypeaheadRemito = compraInsumoList.Where(x => !string.IsNullOrWhiteSpace(x.NroRemito.ToString())).Select(x => x.NroRemito.ToString()).Distinct();
+            ViewBag.TypeaheadTotal = compraInsumoList.Select(x => x.MontoTotal.ToString()).Distinct();
+            ViewBag.TypeaheadProveedor = compraInsumoList.Select(x => x.Proveedor.Nombre).Distinct();
 
-                return PartialView("_CompraInsumoIndexTable", compraInsumoList);
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return PartialView("_CompraInsumoIndexTable", compraInsumoList);
         }
 
         public async Task<IActionResult> PagarCompra(int idCompra, TipoPago tipoPago, decimal montoPagado)
         {
-            try
-            {
-                var resp = await _compraInsumoService.AgregarPagoCompra(idCompra, tipoPago, montoPagado);
-                var compraInsumoList = await _compraInsumoService.GetCompras();
 
-                return PartialView("_CompraInsumoIndexTable", compraInsumoList);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            await _compraInsumoService.AgregarPagoCompra(idCompra, tipoPago, montoPagado);
+            var compraInsumoList = await _compraInsumoService.GetCompras();
+
+            return PartialView("_CompraInsumoIndexTable", compraInsumoList);
         }
 
         public async Task<IActionResult> CargarPagosRealizados(int idCompra)
         {
-            try
-            {
-                var resp = await _compraInsumoService.GetPagosRealizados(idCompra);              
+            var resp = await _compraInsumoService.GetPagosRealizados(idCompra);
 
-                return PartialView("_CompraInsumoIndexPagos", resp);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return PartialView("_CompraInsumoIndexPagos", resp);
         }
 
         public async Task<IActionResult> AgregarDetalle(CompraInsumoDetalleModel data)
         {
-            //var insumosList = await _insumosService.GetInsumos();
-            //var insumo = insumosList.FirstOrDefault(x => x.Nombre == data.Insumo.Nombre);
-
-            //var proveedoresList = await _proveedorService.GetProveedores();
-            //var proveedor = proveedoresList.FirstOrDefault(x => x.Nombre == data.Proveedor.Nombre);
-
-
-            //var insumo = await _insumosService.BuscarPorId(data.IdInsumo);
-            //var proveedor = await _proveedorService.BuscarPorId(data.IdProveedor);
-
-            //data.IdInsumo = insumo.Id;
-            //data.Insumo = insumo;
-            //data.Proveedor = proveedor;
-                        
             return PartialView("_CompraInsumoDetalle", data);
         }
 
         public async Task<IActionResult> CargarInfoProveedor(int idCompra)
         {
             var response = await _compraInsumoService.BuscarPorId(idCompra);
-            return PartialView("_CompraInsumoProveedorCabeceraDetalle", response.Proveedor);
 
+            return PartialView("_CompraInsumoProveedorCabeceraDetalle", response.Proveedor);
         }
 
     }

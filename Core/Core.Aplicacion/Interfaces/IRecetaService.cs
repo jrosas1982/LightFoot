@@ -11,8 +11,8 @@ namespace Core.Aplicacion.Interfaces
         public Task<Receta> BuscarPorId(int IdReceta);
         public Task<IEnumerable<Receta>> GetRecetas();
         public Task<IEnumerable<RecetaDetalle>> GetRecetaDetalles(int IdSolicitud);
-        public Task<bool> EliminarReceta(int IdReceta);
-        public Task<bool> ActivarDesactivarReceta(int IdReceta);
-        public Task<bool> CrearReceta(Receta Receta);
+        public Task EliminarReceta(int IdReceta);
+        public Task ActivarDesactivarReceta(int IdReceta);
+        public Task CrearReceta(Receta Receta);
     }
 }

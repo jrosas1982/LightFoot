@@ -409,24 +409,18 @@
                         calidadCalificacion: calidadCalificacion
                     },
                     success: function (response) {
-                        if (response) {
-                            swal(
-                                'Compra #' + id + ' recibida',
-                                'Remito: ' + nroRemito,
-                                'success'
-                            );
-                        }
+                        swal(
+                            'Compra #' + id + ' recibida',
+                            'Remito: ' + nroRemito,
+                            'success'
+                        );
+                        $("#ComprasPartialView").html(""); //clear the records content
+                        $("#ComprasPartialView").html(response);  //add the updated content.
+                        $('.footable').footable();
+                        $('.footable').trigger('footable_redraw');
+                        $('#ModalrecibirCompra').modal('hide');
                     }
-                }).done(function (response) {
-                    $("#ComprasPartialView").html(""); //clear the records content
-                    $("#ComprasPartialView").html(response);  //add the updated content.
-                    $('.footable').footable();
-                    $('.footable').trigger('footable_redraw');
-                    $('#ModalrecibirCompra').modal('hide');
                 });
-            }
-            else {
-                console.log("checkValidity false");
             }
         }
     </script>
@@ -460,20 +454,17 @@
                         montoPagado: pagado
                     },
                     success: function (response) {
-                        if (response) {
-                            swal(
-                                'Compra #' + idCompra + ' pagada',
-                                'Se pagado ' + pagado,
-                                'success'
-                            );
-                        }
+                        swal(
+                            'Compra #' + idCompra + ' pagada',
+                            'Se pagado ' + pagado,
+                            'success'
+                        );
+                        $("#ComprasPartialView").html(""); //clear the records content
+                        $("#ComprasPartialView").html(response);  //add the updated content.
+                        $('.footable').footable();
+                        $('.footable').trigger('footable_redraw');
+                        $('#ModalPagarCompra').modal('hide');
                     }
-                }).done(function (response) {
-                    $("#ComprasPartialView").html(""); //clear the records content
-                    $("#ComprasPartialView").html(response);  //add the updated content.
-                    $('.footable').footable();
-                    $('.footable').trigger('footable_redraw');
-                    $('#ModalPagarCompra').modal('hide');
                 });
             }
         }

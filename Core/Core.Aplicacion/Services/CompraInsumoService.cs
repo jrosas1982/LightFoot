@@ -37,10 +37,8 @@ namespace Core.Aplicacion.Services
             _parametroService = parametroService;
         }
 
-        public async Task<bool> AgregarPagoCompra(int idCompra, TipoPago tipoPago, decimal montoPagado)
+        public async Task AgregarPagoCompra(int idCompra, TipoPago tipoPago, decimal montoPagado)
         {
-            try
-            {
                 var compra = await _db.ComprasInsumos.SingleOrDefaultAsync(x => x.Id == idCompra);
                 if (compra == null)
                     throw new ExcepcionControlada("No existe la compra");
@@ -66,12 +64,6 @@ namespace Core.Aplicacion.Services
                 _db.ProveedoresInsumosCuentaCorriente.Add(proveedorCuentaCorriente);
 
                 await _db.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
 
         public async Task<CompraInsumo> BuscarPorId(int IdCompra)
@@ -171,38 +163,30 @@ namespace Core.Aplicacion.Services
             return await Task.FromResult(EnumExtensions.GetValues<TipoPago>());
         }
 
-        public async Task<bool> RecibirCompra(int idCompra, long nroRemito, int tiempoCalificacion, int distanciaCalificacion, int precioCalificacion, int calidadCalificacion)
+        public async Task RecibirCompra(int idCompra, long nroRemito, int tiempoCalificacion, int distanciaCalificacion, int precioCalificacion, int calidadCalificacion)
         {
-            try
+            var compra = await _db.ComprasInsumos.Include(x => x.CompraInsumoDetalles).SingleOrDefaultAsync(x => x.Id == idCompra);
+            if (compra == null)
+                throw new ExcepcionControlada("No existe la compra");
+
+            compra.Recibido = true;
+            compra.FechaRecibido = DateTime.Now;
+            compra.NroRemito = nroRemito;
+
+            foreach (var detalle in compra.CompraInsumoDetalles)
             {
-                var compra = await _db.ComprasInsumos.Include(x => x.CompraInsumoDetalles).SingleOrDefaultAsync(x => x.Id == idCompra);
-                if (compra == null)
-                    throw new ExcepcionControlada("No existe la compra");
-
-                compra.Recibido = true;
-                compra.FechaRecibido = DateTime.Now;
-                compra.NroRemito = nroRemito;
-
-                foreach (var detalle in compra.CompraInsumoDetalles)
-                {
-                    var insumo = await _insumoService.BuscarPorId(detalle.IdInsumo);
-                    insumo.StockTotal += detalle.Cantidad;
-                    _db.Insumos.Update(insumo);
-                }
-
-                _db.ComprasInsumos.Update(compra);
-
-                var proveedor = await _db.Proveedores.FindAsync(compra.IdProveedor);                
-                proveedor.Calificacion = await ObtenerCalificacion(tiempoCalificacion, distanciaCalificacion, precioCalificacion, calidadCalificacion);
-                _db.Proveedores.Update(proveedor);
-
-                await _db.SaveChangesAsync();
-                return true;
+                var insumo = await _insumoService.BuscarPorId(detalle.IdInsumo);
+                insumo.StockTotal += detalle.Cantidad;
+                _db.Insumos.Update(insumo);
             }
-            catch (Exception)
-            {
-                return false;
-            }
+
+            _db.ComprasInsumos.Update(compra);
+
+            var proveedor = await _db.Proveedores.FindAsync(compra.IdProveedor);
+            proveedor.Calificacion = await ObtenerCalificacion(tiempoCalificacion, distanciaCalificacion, precioCalificacion, calidadCalificacion);
+            _db.Proveedores.Update(proveedor);
+
+            await _db.SaveChangesAsync();
         }
 
         private async Task<double> ObtenerCalificacion(int tiempoCalificacion, int distanciaCalificacion, int precioCalificacion, int calidadCalificacion)

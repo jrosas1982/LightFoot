@@ -10,7 +10,7 @@ namespace Core.Aplicacion.Interfaces
         public Task CrearSolicitud(Solicitud solicitud, IEnumerable<SolicitudDetalle> solicitudDetalles);
         public Task AprobarSolicitud(int idSolicitud);
         public Task RechazarSolicitud(int idSolicitud, string comentario);
-        public Task<bool> RechazarSolicitud(int idSolicitud);
+        public Task RechazarSolicitud(int idSolicitud);
         public Task<Solicitud> BuscarPorId(int IdSolicitud);
         public Task<IEnumerable<Solicitud>> GetSolicitudes();
         public Task<IEnumerable<Solicitud>> GetSolicitudes(SolicitudFilter filter);

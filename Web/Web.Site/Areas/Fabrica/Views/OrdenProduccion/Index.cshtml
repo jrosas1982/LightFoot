@@ -262,39 +262,9 @@
 
     <script type="text/javascript">
         //Pagina
-
         $(document).ready(function () {
             $('.footable').footable();
         });
-
-        @*function Reporte() {
-            var numberOfRows = @Model.Count();
-
-            $('.footable').footable();
-            $('.footable').data('page-size', numberOfRows);
-            $('.footable').trigger('footable_redraw');
-
-            window.print();
-
-            $('.footable').data('page-size', 2);
-            $('.footable').trigger('footable_redraw');
-        }*@
-
-        @*window.onbeforeprint = function () {
-            $('.dataTables_filter').addClass("d-print-none");
-            var numberOfRows = @Model.Count();
-            $('.footable').footable();
-            $('.footable').data('page-size', numberOfRows);
-            $('.footable').trigger('footable_redraw');
-        }
-
-        window.onafterprint = function () {
-            $('.dataTables_filter').removeClass("d-print-none");
-            var numberOfRows = 15;
-            $('.footable').footable();
-            $('.footable').data('page-size', numberOfRows);
-            $('.footable').trigger('footable_redraw');
-        }*@
 
         function RechazarSolicitud(Id) {
             alert(Id);
@@ -324,16 +294,10 @@
                     url: "/fabrica/Solicitud/Rechazar",
                     data: { Id: Id },
                     success: function (result) {
-                        if (result == true) {
-                            swal("Exito!", "La solicitud ha sido rechazada correctamente", "success");
-                        } else {
-                            swal("Error", "Ocurrió un error inesperado", "error");
-                        }
+                        swal("Exito!", "La solicitud ha sido rechazada correctamente", "success");
                     }
                 }).done(function () {
-                    window.setTimeout(function () {
-                        location.reload();
-                    }, 600);
+                    Filtrar();
                 });
             });
         };
@@ -351,22 +315,6 @@
         //Accion
         connection.on("OrdenProduccionUpdate", function () {
             Filtrar();
-           @*$.ajax({
-                type: "Get",
-                url: '@Url.Action("FiltrarOrdenes", "OrdenProduccion", new { area = "fabrica" })',
-                //data: //formData,
-                //{
-                //    FromDate: from,
-                //    ToDate: to,
-                //    SearchType: type,
-                //    SearchText: text
-                //},
-                contentType: "application/json",
-                success: function (response) {
-                    $("#tablaContenido").html(""); //clear the records content
-                    $("#tablaContenido").html(response);  //add the updated content.
-                }
-            });*@
         });
     </script>
 
