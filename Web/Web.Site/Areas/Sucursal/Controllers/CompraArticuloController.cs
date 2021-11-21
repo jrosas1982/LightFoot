@@ -218,6 +218,13 @@ namespace Web.Site.Areas
             return PartialView("_CompraArticuloDetalle", data);
         }
 
+        public async Task<IActionResult> CargarInfoProveedor(int idCompra)
+        {
+            var response = await _compraArticuloService.BuscarPorId(idCompra);
+            return PartialView("_CompraArticuloProveedorCabeceraDetalle", response.Proveedor);
+
+        }
+
     }
 
 }

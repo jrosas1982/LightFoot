@@ -2,35 +2,48 @@
 @model CompraInsumo
 
 
-    @if (@Model == null)
-    {
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    }
-    else
-    {
-        @foreach (var detalle in Model.CompraInsumoDetalles)
-        {
-            <tr>
-                <td>@detalle.Insumo.Nombre</td>
-                <td>@Model.Proveedor.Nombre</td>
-                <td>@detalle.Cantidad</td>
-                <td>@detalle.Monto</td>
-                @if(detalle.Comentario == "" || detalle.Comentario == null)
+@if (Model != null)
+{
+    <h3>Insumos</h3>
+    <div class="table-responsive">
+        <table class="footable table table-stripped table-hover table-bordered no-paging toggle-arrow-tiny" data-page-size="3">
+            <thead>
+                <tr>
+                    <th>Insumo</th>
+                    <th>Proveedor</th>
+                    <th>Cantidad</th>
+                    <th>Monto</th>
+                    <th>Comentario</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var detalle in Model.CompraInsumoDetalles)
                 {
-                    <td>Sin Comentarios</td>
+                    <tr>
+                        <td>@detalle.Insumo.Nombre</td>
+                        <td>@Model.Proveedor.Nombre</td>
+                        <td>@detalle.Cantidad</td>
+                        <td>@detalle.Monto</td>
+                        @if (detalle.Comentario == "" || detalle.Comentario == null)
+                        {
+                            <td>Sin Comentarios</td>
+                        }
+                        else
+                        {
+                            <td>@detalle.Comentario</td>
+                        }
+
+                    </tr>
                 }
-                else
-                {
-                    <td>@detalle.Comentario</td>
-                }
-                    
-            </tr>
-        }
-    }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="7">
+                        <ul class="pagination float-right"></ul>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}
 

@@ -1,0 +1,23 @@
+﻿@{
+
+}
+
+@model Proveedor
+
+
+@if (Model != null)
+{
+    <h5></h5>
+    <div class="row">
+        <div class="col">
+            <h2>Proveedor: @Model.Nombre</h2>
+            <h3>CUIT: @Model.CUIT</h3>
+            <h3>Direccion: @Model.Direccion</h3>
+        </div>
+        <div class="col align-self-end">
+            <h3>Telefono: @Model.Telefono</h3>
+            <h3>Email: @Model.Email</h3>
+            <h3>Calificacion Actual: @Model.Calificacion</h3>
+        </div>
+    </div>
+}

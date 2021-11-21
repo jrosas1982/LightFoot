@@ -96,25 +96,12 @@
                     </div>
                 </div>
                 <div class="modal-body py-2">
-                    <h3>Insumos</h3>
-                    <div class="table-responsive">
-                        <table class="footable table table-stripped table-hover table-bordered no-paging toggle-arrow-tiny" data-page-size="3">
-                            <thead>
-                                <tr>
-                                    <th>Insumo</th>
-                                    <th>Proveedor</th>
-                                    <th>Cantidad</th>
-                                    <th>Monto</th>
-                                    <th>Comentario</th>
-                                </tr>
-                            </thead>
-                            <tbody id="partialViewEventos">
-                                <partial name="_CompraInsumoIndexDetalle.cshtml" model="null" />
-                            </tbody>
-                        </table>
+                    <div class="mb-3" id="partialViewCabeceraModalDetalle">
+                        <partial name="_CompraInsumoProveedorCabeceraDetalle.cshtml" model="null" />
                     </div>
-                </div>
-                <div class="modal-body py-2">
+                    <div id="partialViewEventos">
+                        <partial name="_CompraInsumoIndexDetalle.cshtml" model="null" />
+                    </div>
                     <div id="partialViewModalDetalle">
                         <partial name="_CompraInsumoIndexPagos.cshtml" model="null" />
                     </div>
@@ -141,57 +128,59 @@
                         </div>
                     </div>
 
-                    <div class="modal-body py-2 border-bottom">
-                        <h3>Califique su entrega</h3>
-
-                        <div class="row">
-                            <div class="modal-body border my-1 p-0 pr-1 d-flex justify-content-start align-items-end col-6">
-                                <label class="font-normal col-9">Tiempo de entrega</label>
-                                <select class="form-control col-3" id="dropdownTiempoCalificacion" required>
-                                    @*@foreach (var valor in ViewBag.CalificacionValores)*@
-                                    @for (int i = 1; i <= 10; i++)
-                                    {
-                                        <option value="@i">@i</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="modal-body border my-1 p-0 pl-1 d-flex justify-content-start align-items-end col-6">
-                                <label class="font-normal col-9">Distancia</label>
-                                <select class="form-control col-3" id="dropdownDistanciaCalificacion" required>
-                                    @*@foreach (var valor in ViewBag.CalificacionValores)*@
-                                    @for (int i = 1; i <= 10; i++)
-                                    {
-                                        <option value="@i">@i</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="modal-body border my-1 p-0 pr-1 d-flex justify-content-start align-items-end col-6">
-                                <label class="font-normal col-9">Precio</label>
-                                <select class="form-control col-3" id="dropdownPrecioCalificacion" required>
-                                    @*@foreach (var valor in ViewBag.CalificacionValores)*@
-                                    @for (int i = 1; i <= 10; i++)
-                                    {
-                                        <option value="@i">@i</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="modal-body border my-1 p-0 pl-1 d-flex justify-content-start align-items-end col-6">
-                                <label class="font-normal col-9">Calidad de entrega</label>
-                                <select class="form-control col-3" id="dropdownCalidadCalificacion" required>
-                                    @*@foreach (var valor in ViewBag.CalificacionValores)*@
-                                    @for (int i = 1; i <= 10; i++)
-                                    {
-                                        <option value="@i">@i</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
-
                     <div class="modal-body py-2">
+                        <div class="mb-3" id="partialViewCabeceraModalRecibir">
+                            <partial name="_CompraInsumoProveedorCabeceraDetalle.cshtml" model="null" />
+                        </div>
+                        <h3 class="mt-2" style="text-align: center;">Califique su entrega</h3>
+                        <div class="mx-4" style="background:white;">
+                            <div class="container my-3">
+                                <div class="row align-items-stretch">
+                                    <div class="form-group col d-flex justify-content-between align-items-end border m-0 mr-1 mb-1 pr-0">
+                                        <label class="d-inline-block">Tiempo de entrega</label>
+                                        <select class="form-control d-inline-block align-items-end" style="width: auto;" id="dropdownTiempoCalificacion" required>
+                                            @*@foreach (var valor in ViewBag.CalificacionValores)*@
+                                            @for (int i = 1; i <= 10; i++)
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="form-group col d-flex justify-content-between align-items-end border m-0 ml-1 mb-1 pr-0">
+                                        <label class="d-inline-block">Distancia</label>
+                                        <select class="form-control d-inline-block align-items-end" style="width: auto;" id="dropdownDistanciaCalificacion" required>
+                                            @*@foreach (var valor in ViewBag.CalificacionValores)*@
+                                            @for (int i = 1; i <= 10; i++)
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row align-items-stretch">
+                                    <div class="form-group col d-flex justify-content-between align-items-end border m-0 mr-1 pr-0">
+                                        <label class="d-inline-block">Precio</label>
+                                        <select class="form-control d-inline-block align-items-end" style="width: auto;" id="dropdownPrecioCalificacion" required>
+                                            @*@foreach (var valor in ViewBag.CalificacionValores)*@
+                                            @for (int i = 1; i <= 10; i++)
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="form-group col d-flex justify-content-between align-items-end border m-0 ml-1 pr-0">
+                                        <label class="d-inline-block">Calidad de entrega</label>
+                                        <select class="form-control d-inline-block align-items-end" style="width: auto;" id="dropdownCalidadCalificacion" required>
+                                            @*@foreach (var valor in ViewBag.CalificacionValores)*@
+                                            @for (int i = 1; i <= 10; i++)
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="font-normal">Remito</label>
                             <input class="form-control limitarLength" type="number" id="NroRemito" placeholder="Remito" maxlength="12" required>
@@ -221,6 +210,9 @@
                         </div>
                     </div>
                     <div class="modal-body py-2">
+                        <div class="mb-3" id="partialViewCabeceraModalPagar">
+                            <partial name="_CompraInsumoProveedorCabeceraDetalle.cshtml" model="null" />
+                        </div>
                         <div id="partialViewModalPagos">
                             <partial name="_CompraInsumoIndexPagos.cshtml" model="null" />
                         </div>
@@ -243,10 +235,6 @@
                             <label class="font-normal">A Pagar</label>
                             <input id="cantidadPagar" class="form-control" type="number" min="0" max="" value="0" placeholder="" required>
                         </div>
-                        @*<div class="form-group">
-                                <label class="font-normal">Pagado</label>
-                                <input class="form-control" id="Pagado" placeholder="" disabled>
-                            </div>*@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
@@ -272,24 +260,6 @@
     </script>
 
     <script type="text/javascript">
-        var typeaheadNumCompra = @Html.Raw(Json.Serialize(TypeaheadNumCompra));
-        var typeaheadRemito = @Html.Raw(Json.Serialize(TypeaheadRemito));
-        var typeaheadTotal = @Html.Raw(Json.Serialize(TypeaheadTotal));
-        var typeaheadProveedor = @Html.Raw(Json.Serialize(TypeaheadProveedor));
-
-        $.typeahead({
-            input: '.js-typeahead',
-            order: "desc",
-            template: "{{display}} <small style='color:#999;'>{{group}}</small>",
-            minLength: 1,
-            source: {
-                Compra: { data: typeaheadNumCompra },
-                Remito: { data: typeaheadRemito },
-                Total: { data: typeaheadTotal },
-                Proveedor: { data: typeaheadProveedor }
-            }
-        });
-
       function FiltrarCompras() {
             var compra = $("#typeCompras").val();
             $.ajax({
@@ -312,22 +282,44 @@
     </script>
 
     <script type="text/javascript">
+        var typeaheadNumCompra = @Html.Raw(Json.Serialize(TypeaheadNumCompra));
+        var typeaheadRemito = @Html.Raw(Json.Serialize(TypeaheadRemito));
+        var typeaheadTotal = @Html.Raw(Json.Serialize(TypeaheadTotal));
+        var typeaheadProveedor = @Html.Raw(Json.Serialize(TypeaheadProveedor));
+
+        $.typeahead({
+            input: '.js-typeahead',
+            order: "desc",
+            template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+            minLength: 1,
+            source: {
+                Compra: { data: typeaheadNumCompra },
+                Remito: { data: typeaheadRemito },
+                Total: { data: typeaheadTotal },
+                Proveedor: { data: typeaheadProveedor }
+            }
+        });
+
         function verDetalle(id) {
+            ActualizarCabeceraModal(id,'partialViewCabeceraModalDetalle');
             ActualizarDetalleCompra(id);
+            ActualizarPagosRealizados(id, 'partialViewModalDetalle');
+        }
+
+        function ActualizarCabeceraModal(id, partial) {
             $.ajax({
                 type: "Get",
-                url: "/fabrica/CompraInsumo/CargarPagosRealizados",
+                url: "/fabrica/CompraInsumo/CargarInfoProveedor",
                 traditional: true,
                 data: {
                     idCompra: id
                 },
                 contentType: "application/json",
                 success: function (response) {
-                    $("#partialViewModalDetalle").html(""); //clear the records content
-                    $("#partialViewModalDetalle").html(response);  //add the updated content.
-                    $('.footable').footable();
-                    $('.footable').trigger('footable_redraw');
-                    //$('#ModalrecibirCompra').modal('hide');
+                    $("#" + partial).html(""); //clear the records content
+                    $("#" + partial).html(response);  //add the updated content.
+                    //$('.footable').footable();
+                    //$('.footable').trigger('footable_redraw');
                 }
             });
         }
@@ -344,6 +336,24 @@
                 success: function (response) {
                     $("#partialViewEventos").html(""); //clear the records content
                     $("#partialViewEventos").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw');
+                }
+            });
+        }
+
+        function ActualizarPagosRealizados(id, partial) {
+            $.ajax({
+                type: "Get",
+                url: "/fabrica/CompraInsumo/CargarPagosRealizados",
+                traditional: true,
+                data: {
+                    idCompra: id
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#" + partial).html(""); //clear the records content
+                    $("#" + partial).html(response);  //add the updated content.
                     $('.footable').footable();
                     $('.footable').trigger('footable_redraw');
                 }
@@ -369,6 +379,7 @@
             console.log("recibirCompra con id");
             $('#tituloModalrecibirCompra').text('Recibir Compra #' + id);
             $('#hiddenModalrecibirCompra').val(id);
+            ActualizarCabeceraModal(id, 'partialViewCabeceraModalRecibir');
         }
 
         function BootonRecibirCompra() {
@@ -426,22 +437,8 @@
             console.log("pagarCompra con id");
             $('#tituloModalpagarCompra').text('Pagar Compra #' + id);
             $('#hiddenModalpagarCompra').val(id);
-            $.ajax({
-                type: "Get",
-                url: "/fabrica/CompraInsumo/CargarPagosRealizados",
-                traditional: true,
-                data: {
-                    idCompra: id
-                },
-                contentType: "application/json",
-                success: function (response) {
-                    $("#partialViewModalPagos").html(""); //clear the records content
-                    $("#partialViewModalPagos").html(response);  //add the updated content.
-                    $('.footable').footable();
-                    $('.footable').trigger('footable_redraw');
-                    //$('#ModalrecibirCompra').modal('hide');
-                }
-            });
+            ActualizarCabeceraModal(id, 'partialViewCabeceraModalPagar');
+            ActualizarPagosRealizados(id, 'partialViewModalPagos');
         }
 
         function btnPagarCompra() {
@@ -477,9 +474,6 @@
                     $('.footable').footable();
                     $('.footable').trigger('footable_redraw');
                     $('#ModalPagarCompra').modal('hide');
-                    //window.setTimeout(function () {
-                    //    location.reload();
-                    //}, 600);
                 });
             }
         }

@@ -9,6 +9,10 @@
     IEnumerable<string> TypeaheadProveedor = ViewBag.TypeaheadProveedor;
 }
 
+<head>
+    <link rel="stylesheet" href="~/custom/jquery.typeahead.min.css" />
+</head>
+
 @if (@Model != null)
 {
     <div class="table-responsive">
@@ -100,6 +104,7 @@
 
 
 <script type="text/javascript">
+
         var typeaheadNumCompra = @Html.Raw(Json.Serialize(TypeaheadNumCompra));
         var typeaheadRemito = @Html.Raw(Json.Serialize(TypeaheadRemito));
         var typeaheadTotal = @Html.Raw(Json.Serialize(TypeaheadTotal));
