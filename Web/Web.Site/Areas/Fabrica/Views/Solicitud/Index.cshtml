@@ -168,13 +168,13 @@
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "Si, rechazar!",
                 cancelButtonText: "Cancelar",
-                closeOnConfirm: false
+                closeOnConfirm: true
             }, function () {
                 $.ajax({
                     type: "post",
                     url: "/fabrica/Solicitud/Rechazar",
                     data: { idSolicitud: Id },
-                    success: function (result) {
+                    success: function () {
                         Filtrar();
                     }
                 })
@@ -186,9 +186,9 @@
                 type: "post",
                 url: '/fabrica/Solicitud/AprobarSolicitud',
                 data: {
-                    idSolicitud: id
+                    idSolicitud: Id
                 },
-                success: function (result) {
+                success: function () {
                     Filtrar();
                 }
             });

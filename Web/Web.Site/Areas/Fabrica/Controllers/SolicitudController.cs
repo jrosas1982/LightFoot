@@ -126,17 +126,14 @@ namespace Web.Site.Areas
 
         }
 
-        public async Task<IActionResult> AprobarSolicitud(int idSolicitud)
+        public async Task AprobarSolicitud(int idSolicitud)
         {
             await _solicitudService.AprobarSolicitud(idSolicitud);
-            return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Rechazar(int idSolicitud)
+        public async Task Rechazar(int idSolicitud)
         {
             await _solicitudService.RechazarSolicitud(idSolicitud);
-            var result = await _solicitudService.GetSolicitudes();
-            return PartialView("_SolicitudTable", result);
         }
 
 
