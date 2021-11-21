@@ -20,7 +20,7 @@
                     <a href="#"><i class="fa fa-building"></i> <span class="nav-label" data-i18n="nav.graphs">Fabrica</span><span class="fa arrow"></span></a>
                     <ul id="fabrica" class="nav nav-second-level collapse @Html.IsSelected(area: "fabrica", cssClass: "in")">
 
-                        <li class="@Html.IsSelected(controller: "a")"><a href="@Url.Action("Index", "Dashboard", new { area = "fabrica" })">Dashboard</a></li>
+                        <li class="@Html.IsSelected(controller: "DashboardFabrica")"><a href="@Url.Action("Index", "DashboardFabrica", new { area = "fabrica" })">Dashboard</a></li>
                         <li class="@Html.IsSelected(controller: "ControlStockArticulo") disabled"><a href="@Url.Action("Index", "ControlStockArticulo", new { area = "abm" })">Control de Stock</a></li>
                         <li class="@Html.IsSelected(controller: "CompraInsumo")"><a href="@Url.Action("Index", "CompraInsumo", new { area = "fabrica" })">Compras</a></li>
                         <li class="@Html.IsSelected(controller: "OrdenProduccion")"><a href="@Url.Action("Index", "OrdenProduccion", new { area = "fabrica" })">Ordenes de Produccion</a></li>
@@ -37,7 +37,7 @@
                     <a href="#"><i class="fa fa-sitemap"></i> <span class="nav-label" data-i18n="nav.graphs">Sucursal</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse @Html.IsSelected(area: "sucursal", cssClass: "in")">
 
-                        <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "sucursal" })">Dashboard</a></li>
+                        <li class="@Html.IsSelected(controller: "DashboardSucursal")"><a href="@Url.Action("Index", "DashboardSucursal", new { area = "sucursal" })">Dashboard</a></li>
                         <li class="@Html.IsSelected(controller: "CajaSucursal")"><a href="@Url.Action("Index", "CajaSucursal", new { area = "sucursal" })">Caja</a></li>
                         <li class="@Html.IsSelected(controller: "ControlStockArticulo") "><a href="@Url.Action("Index", "ControlStockArticulo", new { area = "abm" })">Control de Stock</a></li>
                         <li class="@Html.IsSelected(controller: "CompraArticulo")"><a href="@Url.Action("Index", "CompraArticulo", new { area = "sucursal" })">Compras</a></li>
