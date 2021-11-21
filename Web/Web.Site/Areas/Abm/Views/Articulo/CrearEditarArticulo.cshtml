@@ -53,7 +53,7 @@
                     <div class="col-sm-12">
                         <div class="form-group">
                             @Html.LabelFor(m => m.Articulo.CodigoArticulo)
-                            @Html.EditorFor(model => model.Articulo.CodigoArticulo, new { htmlAttributes = new { @id = "CodigoArticulo", @class = "form-control", @placeholder = "Codigo de Articulo" } })
+                            @Html.EditorFor(model => model.Articulo.CodigoArticulo, new { htmlAttributes = new { @id = "CodigoArticulo", @class = "form-control", @placeholder = "Codigo de Articulo", @required = true } })
                             @Html.ValidationMessageFor(model => model.Articulo.CodigoArticulo, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -62,7 +62,7 @@
                     <div class="col-sm-12">
                         <div class="form-group">
                             @Html.LabelFor(m => m.Articulo.Nombre)
-                            @Html.EditorFor(model => model.Articulo.Nombre, new { htmlAttributes = new { @id = "Nombre", @class = "form-control", @placeholder = "Nombre de Articulo" } })
+                            @Html.EditorFor(model => model.Articulo.Nombre, new { htmlAttributes = new { @id = "Nombre", @class = "form-control", @placeholder = "Nombre de Articulo", @required = true } })
                             @Html.ValidationMessageFor(model => model.Articulo.Nombre, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -71,7 +71,7 @@
                     <div class="col-sm-12">
                         <div class="form-group">
                             @Html.LabelFor(m => m.Articulo.IdArticuloCategoria)
-                            @Html.DropDownListFor(m => m.Articulo.IdArticuloCategoria, new SelectList(Model.ArticuloCategorias, "Id", "Descripcion", Model.ArticuloCategorias.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownCategorias" })
+                            @Html.DropDownListFor(m => m.Articulo.IdArticuloCategoria, new SelectList(Model.ArticuloCategorias, "Id", "Descripcion", Model.ArticuloCategorias.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownCategorias", @required = true })
                             @*@Html.DropDownListFor(m => m.ArticuloEstado, new SelectList(Model.ArticuloEstados, "Id", "Nombre", Model.ArticuloEstados.First()), new { @class = "form-control m-b", @id = "dropdownSucursales" })*@
                         </div>
                     </div>
@@ -92,7 +92,7 @@
                     <div class="col-sm-12">
                         <div class="form-group">
                             @Html.LabelFor(m => m.Articulo.Color)
-                            @Html.EditorFor(model => model.Articulo.Color, new { htmlAttributes = new { @id = "Color", @class = "form-control", @placeholder = "Color" } })
+                            @Html.EditorFor(model => model.Articulo.Color, new { htmlAttributes = new { @id = "Color", @class = "form-control", @placeholder = "Color", @required = true } })
                             @Html.ValidationMessageFor(model => model.Articulo.Color, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -101,7 +101,7 @@
                     <div class="col-sm-12">
                         <div class="form-group">
                             @Html.LabelFor(m => m.Articulo.TalleArticulo)
-                            @Html.EditorFor(model => model.Articulo.TalleArticulo, new { htmlAttributes = new { @id = "TalleArticulo", @class = "form-control", @placeholder = "Talle" } })
+                            @Html.EditorFor(model => model.Articulo.TalleArticulo, new { htmlAttributes = new { @id = "TalleArticulo", @class = "form-control", @placeholder = "Talle", @required = true } })
                             @Html.ValidationMessageFor(model => model.Articulo.TalleArticulo, "", new { @class = "text-danger" })
                         </div>
                     </div>

@@ -51,7 +51,7 @@
                     <div class="col-sm-12">
                         <div class="form-group">
                             @Html.LabelFor(m => m.Nombre)
-                            @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @id = "Nombre", @class = "form-control", @placeholder = "Nombre" } })
+                            @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @id = "Nombre", @class = "form-control", @placeholder = "Nombre", @required = true } })
                             @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -60,7 +60,7 @@
                     <div class="col-sm-12">
                         <div class="form-group">
                             @Html.LabelFor(m => m.CUIT)
-                            @Html.EditorFor(model => model.CUIT, new { htmlAttributes = new { @id = "CUIT", @class = "form-control", @placeholder = "CUIT de Proveedor", @onkeypress = "return valideKey(event);", @maxlength = "11" } })
+                            @Html.EditorFor(model => model.CUIT, new { htmlAttributes = new { @id = "CUIT", @class = "form-control", @placeholder = "CUIT de Proveedor", @onkeypress = "return valideKey(event);", @maxlength = "11", @required = true } })
                             @Html.ValidationMessageFor(model => model.CUIT, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                 <div class="col-sm-12">
                     <div class="form-group">
                         @Html.LabelFor(m => m.Direccion)
-                        @Html.EditorFor(model => model.Direccion, new { htmlAttributes = new { @id = "Direccion", @class = "form-control", @placeholder = "Direccion" } })
+                        @Html.EditorFor(model => model.Direccion, new { htmlAttributes = new { @id = "Direccion", @class = "form-control", @placeholder = "Direccion", @required = true } })
                         @Html.ValidationMessageFor(model => model.Direccion, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -79,7 +79,7 @@
                 <div class="col-sm-12">
                     <div class="form-group">
                         @Html.LabelFor(m => m.Telefono)
-                        @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @id = "Telefono", @class = "form-control", @placeholder = "Telefono" } })
+                        @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @id = "Telefono", @class = "form-control", @placeholder = "Telefono", @required = true } })
                         @Html.ValidationMessageFor(model => model.Telefono, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -88,7 +88,7 @@
                 <div class="col-sm-12">
                     <div class="form-group">
                         @Html.LabelFor(m => m.Email)
-                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @id = "Email", @class = "form-control", @placeholder = "ejemplo@email.com", @type = "email" } })
+                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @id = "Email", @class = "form-control", @placeholder = "ejemplo@email.com", @type = "email", @required = true } })
                         @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                     </div>
                 </div>

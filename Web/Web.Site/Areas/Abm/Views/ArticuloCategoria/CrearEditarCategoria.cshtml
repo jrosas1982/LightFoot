@@ -50,7 +50,7 @@
                     <div class="col-sm-12">
                         <div class="form-group">
                             @Html.LabelFor(m => m.Descripcion)
-                            @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @id = "Nombe", @class = "form-control", @placeholder = "Descripcion Categoria" } })
+                            @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @id = "Nombe", @class = "form-control", @placeholder = "Descripcion Categoria", @required = true } })
                             @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
                         </div>
                     </div>
