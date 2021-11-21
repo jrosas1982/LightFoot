@@ -49,7 +49,7 @@
                 <div class="col-sm-12">
                     <div class="form-group">
                         @Html.LabelFor(m => m.Usuario.NombreUsuario)
-                        @Html.EditorFor(model => model.Usuario.NombreUsuario, new { htmlAttributes = new { @id = "Nombe", @class = "form-control", @placeholder = "Nombre  de Usuario" } })
+                        @Html.EditorFor(model => model.Usuario.NombreUsuario, new { htmlAttributes = new { @id = "Nombe", @class = "form-control", @placeholder = "Nombre  de Usuario", @minlength = "4", @required = true } })
                         @Html.ValidationMessageFor(model => model.Usuario.NombreUsuario, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -63,7 +63,7 @@
             <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Usuario.UsuarioRol)
-                    @Html.DropDownListFor(m => m.Usuario.UsuarioRol, new SelectList(Model.usuarioRoles, "", "", Model.usuarioRoles.First()), new { @class = "form-control m-b", @id = "dropdownUsuario" })
+                    @Html.DropDownListFor(m => m.Usuario.UsuarioRol, new SelectList(Model.usuarioRoles, "", "", Model.usuarioRoles.First()), new { @class = "form-control m-b", @id = "dropdownUsuario", @required = true })
                 </div>
             </div>
         </div>
@@ -71,7 +71,7 @@
             <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Usuario.Contraseña)
-                    @Html.EditorFor(model => model.Usuario.Contraseña, new { htmlAttributes = new { @id = "Contrasenia", @class = "form-control", @placeholder = "Contraseña", @type = "password" } })
+                    @Html.EditorFor(model => model.Usuario.Contraseña, new { htmlAttributes = new { @id = "Contrasenia", @class = "form-control", @placeholder = "Contraseña", @minlength = "6", @type = "password", @required = true } })
                     @Html.ValidationMessageFor(model => model.Usuario.Contraseña, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -80,7 +80,7 @@
             <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Usuario.Nombre)
-                    @Html.EditorFor(model => model.Usuario.Nombre, new { htmlAttributes = new { @id = "Nombe", @class = "form-control", @placeholder = "Nombre " } })
+                    @Html.EditorFor(model => model.Usuario.Nombre, new { htmlAttributes = new { @id = "Nombe", @class = "form-control", @placeholder = "Nombre", @minlength = "3", @required = true } })
                     @Html.ValidationMessageFor(model => model.Usuario.Nombre, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -89,7 +89,7 @@
             <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Usuario.Apellido)
-                    @Html.EditorFor(model => model.Usuario.Apellido, new { htmlAttributes = new { @id = "Apellido", @class = "form-control", @placeholder = "Apellido " } })
+                    @Html.EditorFor(model => model.Usuario.Apellido, new { htmlAttributes = new { @id = "Apellido", @class = "form-control", @placeholder = "Apellido", @minlength = "3", @required = true } })
                     @Html.ValidationMessageFor(model => model.Usuario.Apellido, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -98,7 +98,7 @@
             <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Usuario.DNI)
-                    @Html.EditorFor(model => model.Usuario.DNI, new { htmlAttributes = new { @id = "DNI", @class = "form-control", @placeholder = "DNI", @type = "text", @onkeypress = "return valideKey(event);", @maxlength = "8" } })
+                    @Html.EditorFor(model => model.Usuario.DNI, new { htmlAttributes = new { @id = "DNI", @class = "form-control", @placeholder = "DNI", @type = "text", @onkeypress = "return valideKey(event);", @maxlength = "9", @required = true } })
                     @Html.ValidationMessageFor(model => model.Usuario.DNI, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -107,7 +107,7 @@
             <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Usuario.Email)
-                    @Html.EditorFor(model => model.Usuario.Email, new { htmlAttributes = new { @id = "Email", @class = "form-control", @placeholder = "ejemplo@email.com", @type = "email" } })
+                    @Html.EditorFor(model => model.Usuario.Email, new { htmlAttributes = new { @id = "Email", @class = "form-control", @placeholder = "ejemplo@email.com", @type = "email", @required = true } })
                     @Html.ValidationMessageFor(model => model.Usuario.Email, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -116,7 +116,7 @@
             <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Usuario.Direccion)
-                    @Html.EditorFor(model => model.Usuario.Direccion, new { htmlAttributes = new { @id = "Dirección", @class = "form-control", @placeholder = "Direccion" } })
+                    @Html.EditorFor(model => model.Usuario.Direccion, new { htmlAttributes = new { @id = "Dirección", @class = "form-control", @placeholder = "Direccion", @minlength = "10", @required = true } })
                     @Html.ValidationMessageFor(model => model.Usuario.Direccion, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -125,7 +125,7 @@
             <div class="col-sm-12">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Usuario.Telefono)
-                    @Html.EditorFor(model => model.Usuario.Telefono, new { htmlAttributes = new { @id = "Telefono", @class = "form-control", @placeholder = "Telefono" } })
+                    @Html.EditorFor(model => model.Usuario.Telefono, new { htmlAttributes = new { @id = "Telefono", @class = "form-control", @placeholder = "Telefono", @minlength = "10", @maxlength = "16", @type = "text", @onkeypress = "return valideKeyPlus(event);", @required = true } })
                     @Html.ValidationMessageFor(model => model.Usuario.Telefono, "", new { @class = "text-danger" })
                 </div>
             </div>
