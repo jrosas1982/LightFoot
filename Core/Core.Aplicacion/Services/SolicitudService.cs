@@ -32,6 +32,9 @@ namespace Core.Aplicacion.Services
         {
             if (!_db.Sucursales.Any(x => x.Id == solicitud.IdSucursal))
                 throw new ExcepcionControlada("No es posible procesar la solicitud. La sucursal especificada no existe");
+ 
+            if(!solicitudDetalles.Any())
+                throw new ExcepcionControlada("No es posible crear una solicitud sin articulos");
 
             var idArticulos = _db.Articulos.Select(x => x.Id);
             if (solicitudDetalles.Any(x => !idArticulos.Contains(x.IdArticulo)))
@@ -40,6 +43,7 @@ namespace Core.Aplicacion.Services
             var cantidadDeIdArticulos = solicitudDetalles.GroupBy(x => x.IdArticulo);
             if (cantidadDeIdArticulos.Any(x => x.Count() > 1))
                 throw new ExcepcionControlada("El detalle de una solicitud no pueden poseeer articulos repetidos");
+
 
             _db.Solicitudes.Add(solicitud);
 
