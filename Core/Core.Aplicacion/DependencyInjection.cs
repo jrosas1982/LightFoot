@@ -31,6 +31,7 @@ namespace Core.Infraestructura
             serviceCollection.AddScoped<IClienteService, ClienteService>();
             serviceCollection.AddScoped<IVentaService, VentaService>();
             serviceCollection.AddScoped<ICuentaCorrienteService, CuentaCorrienteService>();
+            serviceCollection.AddScoped<IAdministracionDeCajaService, AdministracionDeCajaService>();
 
             serviceCollection.AddScoped<UserResolverService>();
         }

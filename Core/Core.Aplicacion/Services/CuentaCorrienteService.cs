@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 
 namespace Core.Aplicacion.Services
 {
@@ -29,21 +30,23 @@ namespace Core.Aplicacion.Services
             throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<ClienteCuentaCorriente>> GetCuentaCorrientesPorCliente(int IdCliente)
+        {
+            return await _db.ClientesCuentaCorriente.Where(x => !x.Eliminado && x.IdCliente == IdCliente).Include(c => c.Cliente).Include(d => d.Venta).ToListAsync();
+
+        }
+
         public async Task<IEnumerable<ClienteCuentaCorriente>> GetCuentaCorrientes()
         {
-            try
-            {
-                var test = await _db.ClientesCuentaCorriente.Where(x => !x.Eliminado)
-                             .OrderByDescending(x => x.Id).ToListAsync();
+            return  await _db.ClientesCuentaCorriente.Where(x => !x.Eliminado).Include(c => c.Cliente).Include(d => d.Venta).ToListAsync();
 
-                return test;
-            }
-            catch (Exception ex)
-            {
-                var a = ex.Message;
-                throw;
-            }
-  
         }
+
+        public async Task<IEnumerable<ClienteCuentaCorriente>> GetCuentaCorrientesPorVenta(int IdVenta)
+        {
+            return await _db.ClientesCuentaCorriente.Where(x => !x.Eliminado && x.IdVenta == IdVenta).Include(v => v.Venta).ToListAsync();
+
+        }
+
     }
 }

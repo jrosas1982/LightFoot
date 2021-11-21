@@ -21,13 +21,15 @@ namespace Web.Site.Areas
         private IClienteService _clienteService;
         private IArticuloService _articuloService;
         private IArticuloCategoriaService _articuloCategoriaService;
+        public ICuentaCorrienteService _cuentaCorrienteService;
 
-        public VentaController(IVentaService ventaService, IClienteService clienteService, IArticuloService articuloService, IArticuloCategoriaService articuloCategoriaService)
+        public VentaController(IVentaService ventaService, IClienteService clienteService, IArticuloService articuloService, IArticuloCategoriaService articuloCategoriaService, ICuentaCorrienteService cuentaCorrienteService)
         {
             _ventaService = ventaService;
             _clienteService = clienteService;
             _articuloService = articuloService;
             _articuloCategoriaService = articuloCategoriaService;
+            _cuentaCorrienteService = cuentaCorrienteService;
         }
 
         public async Task<IActionResult> FiltrarVentas(string nombreVenta)
@@ -161,6 +163,23 @@ namespace Web.Site.Areas
                 var venta = await _ventaService.BuscarPorId(idVenta);
 
                 return PartialView("_VentaIndexDetalle", venta);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> ActualizarDetallePagos(int idVenta)
+        {
+            try
+            {
+                var cuentaCorrienteCliente = await _cuentaCorrienteService.GetCuentaCorrientesPorVenta(idVenta);
+                var venta = await _ventaService.BuscarPorId(idVenta);
+                var dato = venta.MontoTotal;
+                ViewBag.TotalVenta = venta.MontoTotal;
+
+                return PartialView("_VentaIndexPagos", cuentaCorrienteCliente);
             }
             catch (Exception ex)
             {

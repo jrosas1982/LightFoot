@@ -104,7 +104,7 @@ namespace Core.Aplicacion.Services
                     
                 };
                 ventaDetalles.Add(detalle);
-                montoTotalAcum += detalle.PrecioUnitario;
+                montoTotalAcum += (detalle.PrecioUnitario*item.Cantidad);
             }
 
             int idSucursal = int.Parse(_db.GetSucursalId());
@@ -167,6 +167,14 @@ namespace Core.Aplicacion.Services
                 .ThenBy(x => x.Descuento)
                 .ThenByDescending(x => x.FechaModificacion.HasValue)
                 .ThenByDescending(x => x.FechaCreacion)
+                .ToListAsync();
+            return ventasList;
+        }
+        public async Task<IEnumerable<Venta>> GetVentasPorCliente(int IdCliente)
+        {
+
+            var ventasList = await _db.Ventas
+                .Where(x => !x.Eliminado && x.IdCliente == IdCliente)            
                 .ToListAsync();
             return ventasList;
         }
