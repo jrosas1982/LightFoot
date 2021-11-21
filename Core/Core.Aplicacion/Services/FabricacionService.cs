@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
+using Core.Dominio;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
@@ -98,7 +99,7 @@ namespace Core.Aplicacion.Helpers
                 insumo.StockReservado += insumosNecesarios.Single(x => x.IdInsumo == insumo.Id).Cantidad;
 
                 if (insumo.StockTotal < insumo.StockReservado)
-                    throw new Exception("No hay suficiente stock disponible para reservar para la orden de produccion");
+                    throw new ExcepcionControlada("No hay suficiente stock disponible para reservar para la orden de produccion");
             }
 
             _db.Insumos.UpdateRange(insumosStock);

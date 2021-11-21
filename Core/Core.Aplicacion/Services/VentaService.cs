@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
+using Core.Dominio;
 using Core.Dominio.AggregatesModel;
 using Core.Dominio.CoreModelHelpers;
 using Core.Infraestructura;
@@ -40,12 +41,12 @@ namespace Core.Aplicacion.Services
             int idSucursal = int.Parse(_db.GetSucursalId());
             var venta = await _db.Ventas.Where(x => x.IdSucursal == idSucursal).SingleOrDefaultAsync(x => x.Id == idVenta);
             if (venta == null)
-                throw new Exception("No existe la compra");
+                throw new ExcepcionControlada("No existe la compra");
 
             var montoPercibidoTotal = await _db.ClientesCuentaCorriente.Where(x => x.IdVenta == idVenta).SumAsync(x => x.MontoPercibido);
 
             if (venta.MontoTotal < (montoPercibido + montoPercibidoTotal))
-                throw new Exception("No se puede cobrar mas del total de la venta");
+                throw new ExcepcionControlada("No se puede cobrar mas del total de la venta");
 
             var clienteCuentaCorriente = new ClienteCuentaCorriente()
             {

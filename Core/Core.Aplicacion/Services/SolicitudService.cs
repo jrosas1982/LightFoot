@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Core.Aplicacion.FIlters;
 using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
+using Core.Dominio;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
@@ -30,15 +31,15 @@ namespace Core.Aplicacion.Services
         public async Task CrearSolicitud(Solicitud solicitud, IEnumerable<SolicitudDetalle> solicitudDetalles)
         {
             if (!_db.Sucursales.Any(x => x.Id == solicitud.IdSucursal))
-                throw new Exception("No es posible procesar la solicitud. La sucursal especificada no existe");
+                throw new ExcepcionControlada("No es posible procesar la solicitud. La sucursal especificada no existe");
 
             var idArticulos = _db.Articulos.Select(x => x.Id);
             if (solicitudDetalles.Any(x => !idArticulos.Contains(x.IdArticulo)))
-                throw new Exception("No es posible procesar la solicitud. Al menos un detalle posee un articulo no existente");
+                throw new ExcepcionControlada("No es posible procesar la solicitud. Al menos un detalle posee un articulo no existente");
 
             var cantidadDeIdArticulos = solicitudDetalles.GroupBy(x => x.IdArticulo);
             if (cantidadDeIdArticulos.Any(x => x.Count() > 1))
-                throw new Exception("El detalle de una solicitud no pueden poseeer articulos repetidos");
+                throw new ExcepcionControlada("El detalle de una solicitud no pueden poseeer articulos repetidos");
 
             _db.Solicitudes.Add(solicitud);
 
@@ -67,15 +68,15 @@ namespace Core.Aplicacion.Services
                 .SingleOrDefault(x => x.Id == idSolicitud);
 
             if (solicitudDB == null)
-                throw new Exception($"La solicitud {idSolicitud} no existe");
+                throw new ExcepcionControlada($"La solicitud {idSolicitud} no existe");
 
             if(solicitudDB.SolicitudDetalles.Any(x => x.Articulo.Eliminado))
-                throw new Exception($"Al menos un articulo perteneciente a la solicitud {idSolicitud} no existe o fue eliminado");
+                throw new ExcepcionControlada($"Al menos un articulo perteneciente a la solicitud {idSolicitud} no existe o fue eliminado");
 
             //TODO agregar validacion receta; UPDATE creo que era esto
             var articulosConReceta = await _db.Recetas.Where(x => x.Activo).Select(x => x.IdArticulo).ToListAsync();
             if (solicitudDB.SolicitudDetalles.Any(x => !articulosConReceta.Contains(x.IdArticulo)))
-                throw new Exception($"Al menos un articulo perteneciente a la solicitud {idSolicitud} no posee una receta de fabricacion activa asociada");
+                throw new ExcepcionControlada($"Al menos un articulo perteneciente a la solicitud {idSolicitud} no posee una receta de fabricacion activa asociada");
 
             //if (solicitudDB.SolicitudDetalles.Any(x => !x.Articulo.Recetas.Any(x => x.Activo)))
             //    throw new Exception($"Al menos un articulo perteneciente a la solicitud {idSolicitud} no posee una receta de fabricacion activa asociada");
@@ -85,7 +86,7 @@ namespace Core.Aplicacion.Services
             var insumosVerificados = await _fabricacion.VerificarStockInsumos(insumosNecesarios);
 
             if (insumosVerificados.Any(x => x.CantidadDisponible < x.CantidadNecesaria))
-                throw new Exception("No hay suficiente stock disponible para aprobar la solicitud");
+                throw new ExcepcionControlada("No hay suficiente stock disponible para aprobar la solicitud");
 
             await _fabricacion.ReservarStockInsumos(insumosNecesarios);
 
@@ -101,7 +102,7 @@ namespace Core.Aplicacion.Services
 
             var PrimerEtapaOrdenProduccion = _db.EtapasOrdenProduccion.OrderBy(x => x.Orden).FirstOrDefault();
             if (PrimerEtapaOrdenProduccion == null)
-                throw new Exception("No existe una etapa inicial configurada en el sistema");
+                throw new ExcepcionControlada("No existe una etapa inicial configurada en el sistema");
 
             var ordenesProduccion = new List<OrdenProduccion>();
 
@@ -200,7 +201,7 @@ namespace Core.Aplicacion.Services
                         .ThenInclude(x => x.ArticuloCategoria)
                 .SingleOrDefaultAsync(x => x.Id == idSolicitud);
             if (solicitud == null)
-                throw new Exception("La solicitud solicitada no existe");
+                throw new ExcepcionControlada("La solicitud solicitada no existe");
             return solicitud;
         }
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
+using Core.Dominio;
 using Core.Dominio.AggregatesModel;
 using Core.Dominio.CoreModelHelpers;
 using Core.Infraestructura;
@@ -42,12 +43,12 @@ namespace Core.Aplicacion.Services
             {
                 var compra = await _db.ComprasInsumos.SingleOrDefaultAsync(x => x.Id == idCompra);
                 if (compra == null)
-                    throw new Exception("No existe la compra");
+                    throw new ExcepcionControlada("No existe la compra");
 
                 var montoPagadoTotal = await _db.ProveedoresInsumosCuentaCorriente.Where(x => x.IdCompraInsumo == idCompra).SumAsync(x => x.MontoPagado);
 
                 if (compra.MontoTotal < (montoPagado + montoPagadoTotal))
-                    throw new Exception("No se puede pagar mas del total de la compra");
+                    throw new ExcepcionControlada("No se puede pagar mas del total de la compra");
 
                 var proveedorCuentaCorriente = new ProveedorInsumoCuentaCorriente()
                 {
@@ -104,7 +105,7 @@ namespace Core.Aplicacion.Services
                     var proveedoresInsumoList = proveedores.Where(x => x.ProveedorInsumos.Any(y => y.IdInsumo == item.IdInsumo));
 
                     if (!proveedoresInsumoList.Any() || proveedorInsumo == null)
-                        throw new Exception($"No existe ningun proveedor asignado para el insumo {(await _insumoService.BuscarPorId(item.IdInsumo)).Nombre}");
+                        throw new ExcepcionControlada($"No existe ningun proveedor asignado para el insumo {(await _insumoService.BuscarPorId(item.IdInsumo)).Nombre}");
 
                     var proveedorSugerido = proveedoresInsumoList.OrderByDescending(x => x.Calificacion).First();
 
@@ -176,7 +177,7 @@ namespace Core.Aplicacion.Services
             {
                 var compra = await _db.ComprasInsumos.Include(x => x.CompraInsumoDetalles).SingleOrDefaultAsync(x => x.Id == idCompra);
                 if (compra == null)
-                    throw new Exception("No existe la compra");
+                    throw new ExcepcionControlada("No existe la compra");
 
                 compra.Recibido = true;
                 compra.FechaRecibido = DateTime.Now;

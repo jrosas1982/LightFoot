@@ -1,4 +1,5 @@
 ﻿using Core.Aplicacion.Interfaces;
+using Core.Dominio;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
@@ -41,7 +42,7 @@ namespace Core.Aplicacion.Services
         {
             var detalle = await _db.RecetaDetalles.SingleOrDefaultAsync(x => x.Id == idInsumo);
             if (detalle == null)
-                throw new Exception("La solicitud solicitada no existe");
+                throw new ExcepcionControlada("La solicitud solicitada no existe");
             return detalle;
         }
 

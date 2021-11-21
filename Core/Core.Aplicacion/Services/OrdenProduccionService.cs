@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Hubs;
 using Core.Aplicacion.Interfaces;
+using Core.Dominio;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
 using Microsoft.AspNetCore.SignalR;
@@ -35,10 +36,10 @@ namespace Core.Aplicacion.Services
             var ordenDb = await _db.OrdenesProduccion.Include(x => x.Articulo).Include(x => x.EtapaOrdenProduccion).ThenInclude(x => x.RecetaDetalle).SingleAsync(x => x.Id == idOrdenProduccion);
 
             if (ordenDb.Articulo.Eliminado)
-                throw new Exception($"El articulo perteneciente a la orden de produccion {ordenDb.Id} no existe o fue eliminado");
+                throw new ExcepcionControlada($"El articulo perteneciente a la orden de produccion {ordenDb.Id} no existe o fue eliminado");
 
             if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Pendiente)
-                throw new Exception("La etapa de la orden debe encontrarse en estado Pendiente para poder ser Iniciada");
+                throw new ExcepcionControlada("La etapa de la orden debe encontrarse en estado Pendiente para poder ser Iniciada");
             
             ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.EnProceso;
             ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Iniciada;
@@ -51,7 +52,7 @@ namespace Core.Aplicacion.Services
             var insumosVerificados = await _fabricacionService.VerificarStockInsumos(insumosNecesarios);
 
             if (insumosVerificados.Any(x => x.CantidadDisponible < x.CantidadNecesaria))
-                throw new Exception("No hay suficiente stock disponible para iniciar la etapa");
+                throw new ExcepcionControlada("No hay suficiente stock disponible para iniciar la etapa");
 
             await _fabricacionService.DescontarStockInsumosReservados(insumosNecesarios);
             
@@ -69,7 +70,7 @@ namespace Core.Aplicacion.Services
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
 
             if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Iniciada)
-                throw new Exception("La etapa de la orden debe encontrarse en estado Iniciada para poder ser Pausada");
+                throw new ExcepcionControlada("La etapa de la orden debe encontrarse en estado Iniciada para poder ser Pausada");
 
             ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.Pausada;
             ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Pausada;
@@ -88,7 +89,7 @@ namespace Core.Aplicacion.Services
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
 
             if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Pausada)
-                throw new Exception("La etapa de la orden debe encontrarse en estado Pausada para poder ser Reanudada");
+                throw new ExcepcionControlada("La etapa de la orden debe encontrarse en estado Pausada para poder ser Reanudada");
 
             ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.EnProceso;
             ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Iniciada;
@@ -107,7 +108,7 @@ namespace Core.Aplicacion.Services
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
 
             if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Iniciada && ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Retrabajo)
-                throw new Exception("La etapa de la orden debe encontrarse en estado Iniciada o retrabajo para poder ser Finalizada");
+                throw new ExcepcionControlada("La etapa de la orden debe encontrarse en estado Iniciada o retrabajo para poder ser Finalizada");
 
             ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.EnProceso;
             ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Finalizada;
@@ -127,7 +128,7 @@ namespace Core.Aplicacion.Services
             var ordenDb = await _db.OrdenesProduccion.FindAsync(idOrdenProduccion);
 
             if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Finalizada)
-                throw new Exception("La etapa de la orden debe encontrarse en estado Finalizada para poder ser Retrabajada");
+                throw new ExcepcionControlada("La etapa de la orden debe encontrarse en estado Finalizada para poder ser Retrabajada");
 
             ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.EnProceso;
             ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Retrabajo;
@@ -165,7 +166,7 @@ namespace Core.Aplicacion.Services
             var ordenDb = await _db.OrdenesProduccion.Include(x => x.EtapaOrdenProduccion).SingleOrDefaultAsync(x => x.Id == idOrdenProduccion);
 
             if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Finalizada)
-                throw new Exception("La etapa de la orden debe encontrarse en estado Finalizada para poder avanzar a la siguiente etapa");
+                throw new ExcepcionControlada("La etapa de la orden debe encontrarse en estado Finalizada para poder avanzar a la siguiente etapa");
 
             var etapaActual = ordenDb.EtapaOrdenProduccion;
             var siguienteEtapa = _db.EtapasOrdenProduccion.Where(x => x.Orden > etapaActual.Orden).MinBy(x => x.Orden).SingleOrDefault();
@@ -173,7 +174,7 @@ namespace Core.Aplicacion.Services
             //var siguienteEtapa = asd.Take(1).Single();
 
             if (siguienteEtapa == null)
-                throw new Exception("La orden se ya encuentra en la ultima etapa");
+                throw new ExcepcionControlada("La orden se ya encuentra en la ultima etapa");
 
             ordenDb.EtapaOrdenProduccion = siguienteEtapa;
             ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.EnProceso;
@@ -196,10 +197,10 @@ namespace Core.Aplicacion.Services
             var siguienteEtapa = _db.EtapasOrdenProduccion.Where(x => x.Orden > etapaActual.Orden).MinBy(x => x.Orden).SingleOrDefault();
 
             if (siguienteEtapa != null)
-                throw new Exception("Aun quedan etapas por realizar");
+                throw new ExcepcionControlada("Aun quedan etapas por realizar");
 
             if (ordenDb.EstadoEtapaOrdenProduccion != EstadoEtapaOrdenProduccion.Finalizada)
-                throw new Exception("La etapa de la orden debe encontrarse en estado Finalizada para poder ser finalizar la Orden");
+                throw new ExcepcionControlada("La etapa de la orden debe encontrarse en estado Finalizada para poder ser finalizar la Orden");
 
             ordenDb.EstadoOrdenProduccion = EstadoOrdenProduccion.Finalizada;
             ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Finalizada;
@@ -242,7 +243,7 @@ namespace Core.Aplicacion.Services
                 .Include(x => x.EtapaOrdenProduccion)
                 .SingleOrDefaultAsync(x => x.Id == idOrdenProduccion);
             if (orden == null)
-                throw new Exception("La orden de produccion solicitada no existe");
+                throw new ExcepcionControlada("La orden de produccion solicitada no existe");
 
             return orden;
         }

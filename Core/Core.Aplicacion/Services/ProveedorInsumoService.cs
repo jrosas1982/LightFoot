@@ -1,4 +1,5 @@
 ﻿using Core.Aplicacion.Interfaces;
+using Core.Dominio;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,7 @@ namespace Core.Aplicacion.Services
             {
                 var exists = _db.ProveedoresInsumos.Any(x => x.IdInsumo == insumoProveedor.IdInsumo && x.IdProveedor == insumoProveedor.IdProveedor);
                 if (exists)
-                    throw new Exception("Un proveedor no puede tener asignado el mismo insumo dos veces");
+                    throw new ExcepcionControlada("Un proveedor no puede tener asignado el mismo insumo dos veces");
                 _db.ProveedoresInsumos.Add(insumoProveedor);
                 //_logger.LogInformation($"Insumo creado para receta : {insumoProveedor.IdReceta}");
                 await _db.SaveChangesAsync();
@@ -43,14 +44,14 @@ namespace Core.Aplicacion.Services
         {
             var detalle = await _db.ProveedoresInsumos.Include(x => x.Insumo).SingleOrDefaultAsync(x => x.Id == idInsumo);
             if (detalle == null)
-                throw new Exception("El ProveedorInsumo solicitado no existe");
+                throw new ExcepcionControlada("El ProveedorInsumo solicitado no existe");
             return detalle;
         }
         public async Task<ProveedorInsumo> BuscarProveedorInsumo(int idInsumo, int idProveedor)
         {
             var detalle = await _db.ProveedoresInsumos.Include(x => x.Insumo).SingleOrDefaultAsync(x => x.IdInsumo == idInsumo && x.IdProveedor == idProveedor);
             if (detalle == null)
-                throw new Exception("No existe un proveedor que venda el insumo solicitado");
+                throw new ExcepcionControlada("No existe un proveedor que venda el insumo solicitado");
             return detalle;
         }
 
@@ -66,7 +67,7 @@ namespace Core.Aplicacion.Services
         {
             var proveedorInsumo = await _db.ProveedoresInsumos.SingleOrDefaultAsync(x => x.Id == idProveedorInsumo);
             if (proveedorInsumo == null)
-                throw new Exception("El ProveedorInsumo solicitado no existe");
+                throw new ExcepcionControlada("El ProveedorInsumo solicitado no existe");
             proveedorInsumo.Precio = precio;
             _db.ProveedoresInsumos.Update(proveedorInsumo);
             await _db.SaveChangesAsync();

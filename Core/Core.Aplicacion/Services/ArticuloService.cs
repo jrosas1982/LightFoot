@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
+using Core.Dominio;
 using Core.Dominio.AggregatesModel;
 using Core.Dominio.CoreModelHelpers;
 using Core.Infraestructura;
@@ -59,7 +60,7 @@ namespace Core.Aplicacion.Services
         public async Task CrearArticulo(Articulo articulo)
         {
             if (_db.Articulos.Any(x => x.Nombre == articulo.Nombre && x.Color == articulo.Color && x.TalleArticulo == articulo.TalleArticulo))
-                throw new Exception($"El articulo ya existe");
+                throw new ExcepcionControlada($"El articulo ya existe");
 
             //if (string.IsNullOrEmpty(usuario.Contraseña))
             //    throw new Exception($"La contraeña no puede estar vacia");           
@@ -103,7 +104,7 @@ namespace Core.Aplicacion.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error al CambioPrecio: {ex.Message }");
+                _logger.LogError($"Error al eliminar articulo: {ex.Message }");
                 return false;
             }
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
+using Core.Dominio;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,7 @@ namespace Core.Aplicacion.Services
             var insumo = await _db.Insumos.FindAsync(IdInsumo);
 
             if (insumo == null)
-                throw new Exception("El insumo solicitado no existe");
+                throw new ExcepcionControlada("El insumo solicitado no existe");
             
             return insumo;
         }

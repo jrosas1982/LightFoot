@@ -1,4 +1,5 @@
 ﻿using Core.Aplicacion.Interfaces;
+using Core.Dominio;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
@@ -128,7 +129,7 @@ namespace Core.Aplicacion.Services
                 item.Activo = !item.Activo;
 
                 if (_db.Recetas.Any(x => x.IdArticulo == item.IdArticulo && x.Activo && x.Id != item.Id))
-                    throw new Exception("Solo puede haber una receta actva por articulo a la vez");
+                    throw new ExcepcionControlada("Solo puede haber una receta actva por articulo a la vez");
 
                 _db.Recetas.Update(item);
 

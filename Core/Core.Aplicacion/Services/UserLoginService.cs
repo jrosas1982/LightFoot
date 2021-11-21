@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Core.Aplicacion.Auth;
 using Core.Aplicacion.Interfaces;
+using Core.Dominio;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +30,7 @@ namespace Core.Aplicacion.Services
                 Usuario userDb = await _db.Usuarios.SingleOrDefaultAsync(x => x.NombreUsuario == usuario.NombreUsuario);
 
                 if (userDb == null)
-                    throw new Exception("Problemas al ingresar al sistema.");
+                    throw new ExcepcionControlada("Problemas al ingresar al sistema.");
 
                 if (usuario.Contraseña.Equals(userDb.Contraseña))
                 {
@@ -40,16 +41,16 @@ namespace Core.Aplicacion.Services
                 else if (!_PasswordHasher.VerifyHashedPassword(userDb.Contraseña, usuario.Contraseña).Equals(PasswordVerificationResult.Success))
                 {
                     _logger.LogInformation($"El usuario {userDb.NombreUsuario}, Id: {userDb.Id} ingreso su contraseña incorrectamente.");
-                    throw new Exception("Problemas al ingresar al sistema.");
+                    throw new ExcepcionControlada("Problemas al ingresar al sistema.");
                 }
 
                 if (!userDb.Activo)
-                    throw new Exception($"La cuenta {userDb.NombreUsuario} se encuentra desactivada. Pida a un Administrador que la reactive o comuniquese con sistemas");
+                    throw new ExcepcionControlada($"La cuenta {userDb.NombreUsuario} se encuentra desactivada. Pida a un Administrador que la reactive o comuniquese con sistemas");
 
                 Sucursal sucursal = await _db.Sucursales.FindAsync(usuario.IdSucursal);
 
                 if (!sucursal.Activo)
-                    throw new Exception($"La sucursal {sucursal.Nombre} encuentra desactivada. Pida a un Administrador que la reactive o comuniquese con sistemas");
+                    throw new ExcepcionControlada($"La sucursal {sucursal.Nombre} encuentra desactivada. Pida a un Administrador que la reactive o comuniquese con sistemas");
 
                 return userDb;
             }

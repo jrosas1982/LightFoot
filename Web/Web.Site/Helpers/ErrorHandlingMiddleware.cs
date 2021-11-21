@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using Core.Dominio;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
@@ -21,8 +22,13 @@ namespace Web.Site.Helpers
                 await next(context);
             }
             catch (Exception ex)
-            {                
-               await HandleExceptionAsync(context, ex);
+            {
+                bool isAjaxCall = string.Equals("XMLHttpRequest", context.Request.Headers["x-requested-with"], StringComparison.OrdinalIgnoreCase);
+
+                if (isAjaxCall)
+                    await HandleExceptionAsync(context, ex);
+                else
+                    throw;
             }
         }
 
@@ -42,6 +48,7 @@ namespace Web.Site.Helpers
             context.Response.StatusCode = (int)code;
 
             return context.Response.WriteAsync(jsonResult);
+
         }
     }
 

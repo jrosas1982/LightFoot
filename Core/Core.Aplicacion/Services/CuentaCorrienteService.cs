@@ -32,19 +32,30 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<ClienteCuentaCorriente>> GetCuentaCorrientesPorCliente(int IdCliente)
         {
-            return await _db.ClientesCuentaCorriente.Where(x => !x.Eliminado && x.IdCliente == IdCliente).Include(c => c.Cliente).Include(d => d.Venta).ToListAsync();
+            return await _db.ClientesCuentaCorriente
+                .Where(x => !x.Eliminado && x.IdCliente == IdCliente)
+                .Include(c => c.Cliente)
+                .Include(d => d.Venta)
+                .ToListAsync();
 
         }
 
         public async Task<IEnumerable<ClienteCuentaCorriente>> GetCuentaCorrientes()
         {
-            return  await _db.ClientesCuentaCorriente.Where(x => !x.Eliminado).Include(c => c.Cliente).Include(d => d.Venta).ToListAsync();
+            return  await _db.ClientesCuentaCorriente
+                .Where(x => !x.Eliminado)
+                .Include(c => c.Cliente)
+                .Include(d => d.Venta)
+                .ToListAsync();
 
         }
 
         public async Task<IEnumerable<ClienteCuentaCorriente>> GetCuentaCorrientesPorVenta(int IdVenta)
         {
-            return await _db.ClientesCuentaCorriente.Where(x => !x.Eliminado && x.IdVenta == IdVenta).Include(v => v.Venta).ToListAsync();
+            return await _db.ClientesCuentaCorriente
+                .Where(x => !x.Eliminado && x.IdVenta == IdVenta)
+                .Include(v => v.Venta)
+                .ToListAsync();
 
         }
 

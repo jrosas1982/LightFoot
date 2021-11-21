@@ -6,6 +6,7 @@ using Core.Aplicacion.Auth;
 using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Hubs;
 using Core.Aplicacion.Interfaces;
+using Core.Dominio;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
 using Microsoft.AspNetCore.SignalR;
@@ -48,10 +49,10 @@ namespace Core.Aplicacion.Services
         public async Task CrearUsuario(Usuario usuario)
         {
             if (_db.Usuarios.Any(x => x.Eliminado == false && x.NombreUsuario == usuario.NombreUsuario))
-                throw new Exception($"El nombre de usuario {usuario.NombreUsuario} ya existe");
+                throw new ExcepcionControlada($"El nombre de usuario {usuario.NombreUsuario} ya existe");
 
             if (string.IsNullOrEmpty(usuario.Contraseña))
-                throw new Exception($"La contraeña no puede estar vacia");
+                throw new ExcepcionControlada($"La contraeña no puede estar vacia");
 
             usuario.Contraseña = _PasswordHasher.HashPassword(usuario.Contraseña);
 
@@ -66,7 +67,7 @@ namespace Core.Aplicacion.Services
         public async Task EditarUsuario(Usuario usuario)
         {
             if (string.IsNullOrEmpty(usuario.Contraseña))
-                throw new Exception($"La contraeña no puede estar vacia");
+                throw new ExcepcionControlada($"La contraeña no puede estar vacia");
 
             var usuarioDb = await _db.Usuarios.FindAsync(usuario.Id);
 
