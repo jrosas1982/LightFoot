@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Dominio.AggregatesModel;
 
 namespace Web.Site.Areas 
 { 
@@ -17,5 +18,6 @@ namespace Web.Site.Areas
         public decimal DeudaTotal { get; set; }
         public bool PagoAcreditado { get; set; }
         public string NombreCliente { get; set; }
+        public Cliente Cliente { get; set; }
     }
 }

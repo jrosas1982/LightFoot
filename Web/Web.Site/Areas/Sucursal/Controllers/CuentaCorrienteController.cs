@@ -16,12 +16,14 @@ namespace Web.Site.Areas
     {
         public ICuentaCorrienteService _cuentaCorrienteService;
         public IVentaService _ventaService;
+        public IClienteService _clienteService;
         public IMapper _mapper;
-        public CuentaCorrienteController(ICuentaCorrienteService cuentaCorrienteService, IMapper mapper, IVentaService ventaService)
+        public CuentaCorrienteController(ICuentaCorrienteService cuentaCorrienteService, IMapper mapper, IVentaService ventaService, IClienteService clienteService)
         {
             _cuentaCorrienteService = cuentaCorrienteService;
             _mapper = mapper;
             _ventaService = ventaService;
+            _clienteService = clienteService;
         }
         public async Task<IActionResult> IndexAsync()
         {
@@ -40,31 +42,33 @@ namespace Web.Site.Areas
                 MontoTotalCompras = sp.Sum(m => m.MontoTotal)
             }).ToList();
             
-            var CuentasModelo = cuentaAgrupada.Join(agrupaVenta, c => c.IdCliente, v => v.IdCliente, (c, v) => new CuentaCorrienteModel
+            var cuentasModelo = cuentaAgrupada.Join(agrupaVenta, c => c.IdCliente, v => v.IdCliente, (c, v) => new CuentaCorrienteModel
             {
                 IdCliente = v.IdCliente,
-                NombreCliente = cuentaCorriente.Where(x => x.Cliente.Id == v.IdCliente).Select(x => x.Cliente.Nombre).FirstOrDefault().ToString(),
+                //NombreCliente = cuentaCorriente.Where(x => x.Cliente.Id == v.IdCliente).Select(x => x.Cliente.Nombre).FirstOrDefault().ToString(),
+                NombreCliente = cuentaCorriente.FirstOrDefault(x => x.Cliente.Id == v.IdCliente).Cliente.Nombre,
+                Cliente = cuentaCorriente.FirstOrDefault(x => x.Cliente.Id == v.IdCliente).Cliente,
                 TotalFacturado = v.MontoTotalCompras,              
                 TotalCobrado = c.TotalRecibido,
                 DeudaTotal = v.MontoTotalCompras - c.TotalRecibido
             }).ToList();
 
 
-            var cuentasCorrientes = new List<CuentaCorrienteModel>();
+            //var cuentasCorrientes = new List<CuentaCorrienteModel>();
 
-            foreach (var item in CuentasModelo)
-            {
-                var clienteCuentasCorriente = new CuentaCorrienteModel();
-                clienteCuentasCorriente.IdCliente = item.IdCliente;
-                clienteCuentasCorriente.NombreCliente = item.NombreCliente;
-                clienteCuentasCorriente.TotalPagado = item.TotalPagado;
-                clienteCuentasCorriente.TotalFacturado = item.TotalFacturado;
-                clienteCuentasCorriente.TotalCobrado = item.TotalCobrado;
-                clienteCuentasCorriente.DeudaTotal = item.DeudaTotal;
-                cuentasCorrientes.Add(clienteCuentasCorriente);
-            }
+            //foreach (var item in cuentasModelo)
+            //{
+            //    var clienteCuentasCorriente = new CuentaCorrienteModel();
+            //    clienteCuentasCorriente.IdCliente = item.IdCliente;
+            //    clienteCuentasCorriente.NombreCliente = item.NombreCliente;
+            //    clienteCuentasCorriente.TotalPagado = item.TotalPagado;
+            //    clienteCuentasCorriente.TotalFacturado = item.TotalFacturado;
+            //    clienteCuentasCorriente.TotalCobrado = item.TotalCobrado;
+            //    clienteCuentasCorriente.DeudaTotal = item.DeudaTotal;
+            //    cuentasCorrientes.Add(clienteCuentasCorriente);
+            //}
 
-            return View(cuentasCorrientes);
+            return View(cuentasModelo);
         }
 
         public async Task<IActionResult> CargarPagosRecibidos(int IdCliente)
@@ -80,6 +84,13 @@ namespace Web.Site.Areas
 
         }
 
-        
+        public async Task<IActionResult> CargarInfoCLiente(int IdCliente)
+        {
+            var response = await _clienteService.BuscarPorId(IdCliente);
+            return PartialView("_ComprasClienteCabeceraDetalle", response);
+
+        }
+
+
     }
 }

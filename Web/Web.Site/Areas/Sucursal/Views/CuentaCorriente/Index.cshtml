@@ -53,7 +53,8 @@
                             <thead>
                                 <tr>
                                     <th># Ciente</th>
-                                    <th>Nombre </th>
+                                    <th>Nombre</th>
+                                    <th>CUIT</th>
                                     <th>Total Facturado</th>
                                     <th>Total Pagado</th>
                                     <th>Estado de Cuenta</th>
@@ -68,12 +69,22 @@
                                         <tr>
                                             <td>@item.IdCliente</td>
                                             <td>@item.NombreCliente</td>
+                                            <td>@item.Cliente.CUIT</td>
                                             <td>@item.TotalFacturado</td>
                                             <td>@item.TotalCobrado</td>
-                                            <td>@item.DeudaTotal</td>
+                                            @if (@item.DeudaTotal > 0)
+                                            {
+                                                <td class="text-danger">@item.DeudaTotal</td>
+                                            }
+                                            else
+                                            {
+                                                <td class="text-info">@item.DeudaTotal</td>
+                                            }
                                             <td class="d-print-none">
                                                 <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="verDetalle('@item.IdCliente')" data-toggle="modal"
-                                    data-target="#ModalDetalle">Ver Detalle</button>
+                                                        data-target="#ModalDetalle">
+                                                    Ver Detalle
+                                                </button>
                                             </td>
                                         </tr>
                                     }
@@ -105,15 +116,17 @@
                     </div>
                 </div>
             </div>
-     
-        <div class="modal-body py-2">
-            <div id="partialViewEventos">
-                <partial name="_ComprasClienteDetalle.cshtml" model="null" />
+            <div class="modal-body py-2">
+                <div class="mb-3" id="partialViewCabeceraModal">
+                    <partial name="_ComprasClienteCabeceraDetalle.cshtml" model="null" />
+                </div>
+                <div id="partialViewEventos">
+                    <partial name="_ComprasClienteDetalle.cshtml" model="null" />
+                </div>
+                <div id="partialViewModalDetalle">
+                    <partial name="_PagosClienteDetalle.cshtml" model="null" />
+                </div>
             </div>
-            <div id="partialViewModalDetalle">
-                <partial name="_PagosClienteDetalle.cshtml" model="null" />
-            </div>
-        </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
             </div>
@@ -129,24 +142,26 @@
 
     <script type="text/javascript">
         function verDetalle(id) {
+            ActualizarCabeceraModal(id)
             ActualizarDetalleCompra(id);
+            ActualizarPagosRealizados(id);
+
+        }
+
+        function ActualizarCabeceraModal(id) {
             $.ajax({
                 type: "Get",
-                url: "/sucursal/CuentaCorriente/CargarPagosRecibidos",
+                url: "/sucursal/CuentaCorriente/CargarInfoCLiente",
                 traditional: true,
                 data: {
                     IdCliente: id
                 },
                 contentType: "application/json",
                 success: function (response) {
-                    $("#partialViewModalDetalle").html(""); //clear the records content
-                    $("#partialViewModalDetalle").html(response);  //add the updated content.
-                    $('.footable').footable();
-                    $('.footable').trigger('footable_redraw');
-                    //$('#ModalrecibirCompra').modal('hide');
-                },
-                error: function () {
-                    swal("Error", "Intente más tarde", "error");
+                    $("#partialViewCabeceraModal").html(""); //clear the records content
+                    $("#partialViewCabeceraModal").html(response);  //add the updated content.
+                    //$('.footable').footable();
+                    //$('.footable').trigger('footable_redraw');
                 }
             });
         }
@@ -165,9 +180,24 @@
                     $("#partialViewEventos").html(response);  //add the updated content.
                     $('.footable').footable();
                     $('.footable').trigger('footable_redraw');
+                }
+            });
+        }
+
+        function ActualizarPagosRealizados(id) {
+            $.ajax({
+                type: "Get",
+                url: "/sucursal/CuentaCorriente/CargarPagosRecibidos",
+                traditional: true,
+                data: {
+                    IdCliente: id
                 },
-                error: function () {
-                    swal("Error", "Intente más tarde", "error");
+                contentType: "application/json",
+                success: function (response) {
+                    $("#partialViewModalDetalle").html(""); //clear the records content
+                    $("#partialViewModalDetalle").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw');
                 }
             });
         }
