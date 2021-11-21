@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Aplicacion.Interfaces;
+using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -28,11 +29,19 @@ namespace Web.Site.Areas
         public async Task<IActionResult> IndexAsync()
         {
             var cuentaCorriente = await _cuentaCorrienteService.GetCuentaCorrientes();
+            var cuentasModelo = await GetCuentaCorrienteModelsAsync(cuentaCorriente);
 
+            ViewBag.TypeaheadIdCliente = cuentasModelo.Select(r => r.IdCliente.ToString());
+            ViewBag.TypeaheadNombreCliente = cuentasModelo.Select(r => r.NombreCliente);
+
+            return View(cuentasModelo);
+        }
+
+        public async Task<IEnumerable<CuentaCorrienteModel>> GetCuentaCorrienteModelsAsync(IEnumerable<ClienteCuentaCorriente> ctmodel)
+        {
             var ventas = await _ventaService.GetVentas();
 
-
-            var cuentaAgrupada = cuentaCorriente.GroupBy(x => x.IdCliente).Select(b => new {
+            var cuentaAgrupada = ctmodel.GroupBy(x => x.IdCliente).Select(b => new {
                 IdCliente = b.Key,
                 TotalRecibido = b.Sum(x => x.MontoPercibido)
             }).ToList();
@@ -46,15 +55,15 @@ namespace Web.Site.Areas
             {
                 IdCliente = v.IdCliente,
                 //NombreCliente = cuentaCorriente.Where(x => x.Cliente.Id == v.IdCliente).Select(x => x.Cliente.Nombre).FirstOrDefault().ToString(),
-                NombreCliente = cuentaCorriente.FirstOrDefault(x => x.Cliente.Id == v.IdCliente).Cliente.Nombre,
-                Cliente = cuentaCorriente.FirstOrDefault(x => x.Cliente.Id == v.IdCliente).Cliente,
+                NombreCliente = ctmodel.FirstOrDefault(x => x.Cliente.Id == v.IdCliente).Cliente.Nombre,
+                Cliente = ctmodel.FirstOrDefault(x => x.Cliente.Id == v.IdCliente).Cliente,
                 TotalFacturado = v.MontoTotalCompras,              
                 TotalCobrado = c.TotalRecibido,
                 DeudaTotal = v.MontoTotalCompras - c.TotalRecibido
             }).ToList();
-
-            return View(cuentasModelo);
+            return cuentasModelo;
         }
+
 
         public async Task<IActionResult> CargarPagosRecibidos(int IdCliente)
         {
@@ -75,5 +84,24 @@ namespace Web.Site.Areas
         }
 
 
+        public async Task<IActionResult> FiltrarCuentas(string nombreCuenta)
+        {
+            var cuentaCorriente = await _cuentaCorrienteService.GetCuentaCorrientes();
+
+
+            if (!string.IsNullOrWhiteSpace(nombreCuenta))
+            {
+                cuentaCorriente = cuentaCorriente.Where(x => x.Id.ToString().Equals(nombreCuenta.ToLower())                                                 
+                                                            || x.Cliente.Nombre.ToLower().Equals(nombreCuenta.ToLower())).ToList();
+
+                if (!cuentaCorriente.Any())
+                    cuentaCorriente = cuentaCorriente.Where(x => x.Id.ToString().Contains(nombreCuenta.ToLower())
+                                                            || x.Cliente.Nombre.ToLower().Contains(nombreCuenta.ToLower()));
+            }
+            var cta = await GetCuentaCorrienteModelsAsync(cuentaCorriente);
+
+
+            return PartialView("_CuentaIndexTable", cta);
+        }
     }
 }
