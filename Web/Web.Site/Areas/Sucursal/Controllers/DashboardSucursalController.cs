@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using Core.Aplicacion.Auth;
+using Core.Aplicacion.FIlters;
 using Core.Aplicacion.Interfaces;
-using Microsoft.AspNetCore.Authorization;
+using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Web.Site.Dtos;
 using Web.Site.Helpers;
+using System;
+using Core.Dominio.CoreModelHelpers;
+using System.Collections.Generic;
 
 namespace Web.Site.Areas
 {
@@ -16,28 +18,26 @@ namespace Web.Site.Areas
     [Route("[area]/[controller]/[action]")]
     public class DashboardSucursalController : CustomController
     {
-        public ISolicitudService _solicitudService;
-        public IInsumoService _insumoService;
-        public IOrdenProduccionService _ordenProduccionService;
-        public IMapper _mapper;
-        public DashboardSucursalController(ISolicitudService solicitudService, IInsumoService insumoService ,
-           IOrdenProduccionService ordenProduccionService , IMapper mapper )
-        {
-            _solicitudService = solicitudService;
-            _insumoService = insumoService;
-            _ordenProduccionService = ordenProduccionService;
-            _mapper = mapper;
+        public IDashboardSucursalService _dashboardSucursalService;
 
+        public DashboardSucursalController(IDashboardSucursalService dashboardSucursalService)
+        {
+            _dashboardSucursalService = dashboardSucursalService;
         }
+
         public async Task<IActionResult> Index()
         {
-            var solicitudes = await _solicitudService.GetSolicitudes();
 
-            var CantSolHoy = solicitudes.Where(x => x.FechaCreacion > DateTime.Now.AddDays(-1)).Count();
+            DashboardSucursalModel dashboard = new DashboardSucursalModel()
+            {
+                Sucursal = await _dashboardSucursalService.GetSucursal(),
+                StockBajo = await _dashboardSucursalService.GetArticulosBajoStock(5),
+                MasVendidos = await _dashboardSucursalService.GetMasVendidos(5),
+                UltimosMovimientos = await _dashboardSucursalService.GetUltimosMovimientos(5),
+                UltimasVentas = await _dashboardSucursalService.GetUltimasVentas(5)
+            };
 
-            ViewBag.SolicitudesHoy = CantSolHoy;
-
-            return View();
+            return View(dashboard);
         }
 
     }

@@ -4,12 +4,10 @@
 @{
 
 }
-@if (@Model != null)
-{
-}
+
 <div class="ibox ">
     <div class="ibox-title">
-        <h5>Ultimas Ventas</h5>
+        <h5>Ultimas 5 Ventas</h5>
         <div class="ibox-tools">
             <a class="collapse-link">
                 <i class="fa fa-chevron-up"></i>
@@ -24,23 +22,34 @@
                         <th>#Venta</th>
                         <th>Cliente</th>
                         <th>Tipo de Venta</th>
-                        <th>Cantidad</th>
+                        <th>Cantidad de articulos</th>
                         <th>Precio Total</th>
                         <th>Fecha</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @*@foreach (var venta in @Model)
-                    {*@
-                    <tr>
-                        <td>54</td>
-                        <td>Pepe</td>
-                        <td>Minorista</td>
-                        <td>20</td>
-                        <td>400</td>
-                        <td>hoy?</td>
-                    </tr>
-                    @*}*@
+                    @if (Model != null && Model.Any())
+                    {
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Cliente.Nombre</td>
+                                <td>@item.VentaTipo</td>
+                                <td>@item.VentaDetalles.Count()</td>
+                                <td class="text-danger">@item.MontoTotal Unidades</td>
+                                <td class="text-danger">@(item.FechaModificacion != null ? item.FechaModificacion : item.FechaCreacion)</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+
+                        <tr class="my-4">
+                            <td colspan="7" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>

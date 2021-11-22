@@ -26,19 +26,15 @@
 
 <div class="wrapper wrapper-content animated fadeInRight">
 
-    @*detalle
-        nombre
-        direccion*@
-
     <div class="row">
         <div class="col-lg-4">
             <div id="InfoSucursalPartialView">
-                <partial name="_InfoSucursalIndexTable.cshtml" model="null" />
+                <partial name="_InfoSucursalIndexTable.cshtml" model="Model.Sucursal" />
             </div>
         </div>
         <div class="col-lg-8">
             <div id="MasVendidoPartialView">
-                <partial name="_MasVendidoIndexTable.cshtml" model="null" />
+                <partial name="_MasVendidoIndexTable.cshtml" model="Model.MasVendidos" />
             </div>
         </div>
     </div>
@@ -46,12 +42,12 @@
     <div class="row">
         <div class="col-lg-6">
             <div id="StockBajoArticulosPartialView">
-                <partial name="_StockBajoArticulosIndexTable.cshtml" model="null" />
+                <partial name="_StockBajoArticulosIndexTable.cshtml" model="Model.StockBajo" />
             </div>
         </div>
         <div class="col-lg-6">
             <div id="UltimmosMovimientosPartialView">
-                <partial name="_UltimmosMovimientosIndexTable.cshtml" model="null" />
+                <partial name="_UltimmosMovimientosIndexTable.cshtml" model="Model.UltimosMovimientos" />
             </div>
         </div>
     </div>
@@ -59,7 +55,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div id="MasVendidoPartialView">
-                <partial name="_UltimasVentasIndexTable.cshtml" model="null" />
+                <partial name="_UltimasVentasIndexTable.cshtml" model="Model.UltimasVentas" />
             </div>
         </div>
     </div>

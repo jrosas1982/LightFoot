@@ -105,83 +105,60 @@ namespace Web.Site.Areas
         {
             await _ordenProduccionService.IniciarEtapa(idOrdenProduccion);
 
-            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
-
-            await RellenarViewBags(idOrdenProduccion);
-
-            return PartialView("_DetallesOrdenProduccionPartial", orden);
+            return Ok();
         }
 
         public async Task<IActionResult> PausarEtapa(int idOrdenProduccion)
         {
             await _ordenProduccionService.PausarEtapa(idOrdenProduccion, "");
 
-            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
-
-            await RellenarViewBags(idOrdenProduccion);
-
-            return PartialView("_DetallesOrdenProduccionPartial", orden);
+            return Ok();
         }
 
         public async Task<IActionResult> FinalizarEtapa(int idOrdenProduccion)
         {
             await _ordenProduccionService.FinalizarEtapa(idOrdenProduccion);
 
-            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
-
-            await RellenarViewBags(idOrdenProduccion);
-
-            return PartialView("_DetallesOrdenProduccionPartial", orden);
+            return Ok();
         }
 
         public async Task<IActionResult> ReanudarEtapa(int idOrdenProduccion)
         {
             await _ordenProduccionService.ReanudarEtapa(idOrdenProduccion);
 
-            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
-
-            await RellenarViewBags(idOrdenProduccion);
-
-            return PartialView("_DetallesOrdenProduccionPartial", orden);
+            return Ok();
         }
 
         public async Task<IActionResult> RetrabajarEtapa(int idOrdenProduccion)
         {
             await _ordenProduccionService.RetrabajarEtapa(idOrdenProduccion, "");
 
-            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
-
-            await RellenarViewBags(idOrdenProduccion);
-
-            return PartialView("_DetallesOrdenProduccionPartial", orden);
+            return Ok();
         }
 
         public async Task<IActionResult> AvanzarSiguienteEtapa(int idOrdenProduccion)
         {
             await _ordenProduccionService.AvanzarSiguienteEtapa(idOrdenProduccion);
 
-            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
-
-            await RellenarViewBags(idOrdenProduccion);
-
-            return PartialView("_DetallesOrdenProduccionPartial", orden);
+            return Ok();
         }
 
         public async Task<IActionResult> FinalizarOrden(int idOrdenProduccion)
         {
             await _ordenProduccionService.FinalizarOrden(idOrdenProduccion);
 
-            var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
-
-            await RellenarViewBags(idOrdenProduccion);
-
-            return PartialView("_DetallesOrdenProduccionPartial", orden);
+            return Ok();
         }
 
         public async Task<IActionResult> CancelarOrden(int idOrdenProduccion)
         {
             await _ordenProduccionService.CancelarOrden(idOrdenProduccion, "");
 
+            return Ok();
+        }
+
+        public async Task<IActionResult> ActualizarInfo(int idOrdenProduccion)
+        {
             var orden = await _ordenProduccionService.BuscarPorId(idOrdenProduccion);
 
             await RellenarViewBags(idOrdenProduccion);

@@ -157,7 +157,7 @@ namespace Web.Site.Areas
             }
             await _compraInsumoService.CrearCompra(compra);
             return Json(new { redirectToUrl = @Url.Action("Index", "CompraInsumo", new { area = "fabrica" }) });
-            return RedirectToAction("Index");
+            //return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> ActualizarDetalleCompra(int idCompra)

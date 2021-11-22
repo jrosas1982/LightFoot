@@ -67,6 +67,7 @@ namespace Core.Aplicacion.Services
 
             // var articuloStockList = await _db.ArticulosStock.ToListAsync();
             var articuloStockList = await _db.ArticulosStock
+                .Where(x => !x.Eliminado)
                 .Where(x => x.IdSucursal == idSucursal)
                 .Include(p => p.Articulo)
                     .ThenInclude(p => p.ArticuloCategoria)

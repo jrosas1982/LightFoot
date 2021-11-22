@@ -33,11 +33,11 @@
             {
                 foreach (var orden in Model)
                 {
-                    var eventoExpedicion = orden.OrdenProduccionEventos.SingleOrDefault(x => x.EtapaOrdenProduccion.Descripcion == "Expedicion" && x.EstadoEtapaOrdenProduccion == EstadoEtapaOrdenProduccion.Iniciada);
+                    var eventoExpedicion = orden.OrdenProduccionEventos.FirstOrDefault(x => x.EtapaOrdenProduccion.Descripcion == "Expedicion" && x.EstadoEtapaOrdenProduccion == EstadoEtapaOrdenProduccion.Iniciada);
                     var customStyle = "";
-                    if (eventoExpedicion != null)
+                    if (eventoExpedicion != null && orden.EstadoOrdenProduccion != EstadoOrdenProduccion.Finalizada)
                     {
-                        @if (DateTime.Now > eventoExpedicion.FechaCreacion.AddHours(horasExpedicion))
+                        @if (DateTime.Now > eventoExpedicion.FechaCreacion.AddHours(horasExpedicion) )
                         {
                             customStyle = "background: #ffc8c8; !important";
                         }

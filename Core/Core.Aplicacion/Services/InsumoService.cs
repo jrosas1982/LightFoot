@@ -73,7 +73,7 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Insumo>> GetInsumos()
         {
-            var insumosList = await _db.Insumos.AsNoTracking().Where(x => !x.Eliminado).Include(x => x.Proveedor).OrderByDescending(x => x.Nombre).ToListAsync();
+            var insumosList = await _db.Insumos.AsNoTracking().Where(x => !x.Eliminado).Include(x => x.Proveedor).OrderBy(x => x.Nombre).ToListAsync();
             _logger.LogInformation("Se buscaron los insumos");
             return insumosList;
         }

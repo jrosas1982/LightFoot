@@ -1,15 +1,14 @@
 ﻿@using HtmlHelpers.BeginCollectionItemCore
 @using Web.Site.Areas
+
 @model IEnumerable<ArticuloStock>
 @{
 
 }
-@if (@Model != null)
-{
-}
+
 <div class="ibox">
     <div class="ibox-title">
-        <h5>Articulos con stock bajos</h5>
+        <h5>Articulos con bajo stock</h5>
         <div class="ibox-tools">
             <a class="collapse-link">
                 <i class="fa fa-chevron-up"></i>
@@ -20,20 +19,39 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>Id</th>
+                    <th>Codigo</th>
                     <th>Nombre</th>
                     <th>Descripcion</th>
-                    <th>Cantidad</th>
+                    <th>Categoria</th>
+                    <th>Stock Actual</th>
+                    <th>Stock Minimo</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>28</td>
-                    <td>Hilo Blanco</td>
-                    <td>Hilo nylon encerado color blanco</td>
-                    <td class="text-danger">20 metros</td>
-                </tr>
-            </tbody>
+                    @if (Model != null && Model.Any())
+                    {
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Articulo.CodigoArticulo</td>
+                                <td>@item.Articulo.Nombre</td>
+                                <td>@item.Articulo.Descripcion</td>
+                                <td>@item.Articulo.ArticuloCategoria.Descripcion</td>
+                                <td class="text-danger">@item.StockTotal Unidades</td>
+                                <td class="text-danger">@item.StockMinimo Unidades</td>
+                            </tr>
+                         }
+                    }
+                    else
+                    {
+
+                         <tr class="my-4">
+                             <td colspan="6" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
+                         </tr>
+                    }
+                </tbody>
         </table>
     </div>
 </div>
+

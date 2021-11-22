@@ -1,15 +1,13 @@
 ﻿@using HtmlHelpers.BeginCollectionItemCore
 @using Web.Site.Areas
-@model IEnumerable<Venta>
-@{
 
+@model IEnumerable<Tuple<Articulo, int>>
+@{
 }
-@if (@Model != null)
-{
-}
+
 <div class="ibox ">
     <div class="ibox-title">
-        <h5>Mas vendidos del <strong>mes</strong> </h5>
+        <h5>Top 5 Articulos Mas vendidos del <strong>mes</strong> </h5>
     </div>
     <div class="ibox-content">
         <div class="table-responsive">
@@ -20,22 +18,34 @@
                         <th>Codigo</th>
                         <th>Nombre</th>
                         <th>Categoria</th>
-                        <th>Precio Unitario</th>
+                        <th>Precio Minorista</th>
+                        <th>Precio Mayorista</th>
                         <th>Cantidad</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @*@foreach (var venta in @Model)
-                    {*@
+
+                    @if (@Model != null && Model.Any())
+                    {
+                        @foreach (var venta in @Model)
+                        {
                     <tr>
-                        <td>1</td>
-                        <td>ASF353</td>
-                        <td>running plaz</td>
-                        <td>calzado</td>
-                        <td>29.00</td>
-                        <td>2000 unidades</td>
+                        <td>@venta.Item1.Id</td>
+                        <td>@venta.Item1.CodigoArticulo</td>
+                        <td>@venta.Item1.Nombre</td>
+                        <td>@venta.Item1.ArticuloCategoria.Descripcion</td>
+                        <td>$ @venta.Item1.PrecioMinorista</td>
+                        <td>$ @venta.Item1.PrecioMayorista</td>
+                        <td>@venta.Item2</td>
                     </tr>
-                    @*}*@
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
+                        </tr>
+                    }
                 </tbody>
                 <tfoot>
                 </tfoot>
