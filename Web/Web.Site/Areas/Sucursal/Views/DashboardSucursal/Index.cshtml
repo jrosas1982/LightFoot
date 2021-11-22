@@ -60,39 +60,6 @@
         </div>
     </div>
 
-
-    @*MODAL Movimiento*@
-
-    <div class="modal inmodal fade" id="ModalMovimiento" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-        <div class="modal-dialog modal-lg" style="max-width: 900px !important;">
-            <div class="modal-content">
-                <form class="validateDontSubmit" id="modalFormMovimiento" name="modalFormMovimiento">
-                    <div class="modal-header pb-1">
-                        <div class="row">
-                            <div class="col-sm-12 d-flex justify-content-center">
-                                <h1 style="font-size:30px;">Registrar Venta</h1>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-body py-2">
-                        <div class="form-group">
-                            <label class="font-normal">Monto</label>
-                            <input id="Monto" class="form-control" type="number" value="" placeholder="Monto" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="font-normal">Comentario</label>
-                            <input id="Comentario" class="form-control" type="text" maxlength="250" value="" placeholder="Comentario" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" onclick="btnIngresarMovimiento()" class="btn btn-primary">Ingresar Movimiento</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 @section Styles {
@@ -111,15 +78,6 @@
         var minheight_InfoSucursal = $('#MasVendidoPartialView').height();
         $('#InfoSucursalPartialView .ibox .ibox-content').attr('style', 'height:' + minheight_InfoSucursal * 0.8 + 'px;')
 
-
-        $('#ModalDetalle').on('hidden.bs.modal', function () {
-            $(this).find('form').trigger('reset');
-            $("#PartialViewEventos").html(""); //clear the records content
-        })
-        $('#ModalMovimiento').on('hidden.bs.modal', function () {
-            $(this).find('form').trigger('reset');
-        })
-
     </script>
 
     <script type="text/javascript">
@@ -128,46 +86,6 @@
             e.preventDefault();
             return false;
         });
-
-        function btnIngresarMovimiento() {
-            var monto = $('#Monto').val();
-            var comentario = $('#Comentario').val();
-            //window.location = '/sucursal/CajaSucursal/Crear?IdCliente=' + Id + '&&VentaTipo=' + VentaTipo;
-            /*window.location = '/sucursal/CajaSucursal/Crear;*/
-            ingresarMovimineto(monto, comentario);
-        }
-
-        function ingresarMovimineto(monto, comentario) {
-            if (modalFormMovimiento.checkValidity()) {
-                console.log(monto + ' - ' + comentario);
-                $.ajax({
-                    type: "post",
-                    url: "/sucursal/CajaSucursal/Crear",
-                    data: {
-                        monto: monto,
-                        comentario: comentario
-                    },
-                    success: function (response) {
-                        if (response) {
-                            swal(
-                                'Nuevo movimiento realizado!',
-                                'Monto: ' + monto + ', Comentario:' + comentario,
-                                'success'
-                            );
-                        }
-                    },
-                    error: function (error) {
-                        MensajeError('Ocurrio un error!', error.responseText);
-                    }
-                }).done(function (response) {
-                    $("#MovimientosPartialView").html(""); //clear the records content
-                    $("#MovimientosPartialView").html(response);  //add the updated content.
-                    $('.footable').footable();
-                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
-                    $('#ModalMovimiento').modal('hide');
-                });
-            }
-        }
 
     </script>
 
