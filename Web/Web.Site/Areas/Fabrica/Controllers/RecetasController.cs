@@ -113,7 +113,9 @@ namespace Web.Site.Areas.Fabrica.Controllers
                 var recetaNueva = _mapper.Map<Receta>(recetaModel);
                 recetaNueva.CreadoPor = User.GetUserIdSucursal();
                 await _recetaService.CrearReceta(recetaNueva);
-                return RedirectToAction("Index", "Recetas", new { @area = "fabrica" });
+
+                return Json(new { redirectToUrl = @Url.Action("Index", "Recetas", new { area = "fabrica" }) });
+                //return RedirectToAction("Index", "Recetas", new { @area = "fabrica" });
             }
         }
 

@@ -122,7 +122,8 @@ namespace Web.Site.Areas
             });
 
             await _solicitudService.CrearSolicitud(solicitud, solicitudDetalles);
-            return RedirectToAction("Index");
+            return Json(new { redirectToUrl = @Url.Action("Index", "Solicitud", new { area = "fabrica" }) });
+            //return RedirectToAction("Index");
 
         }
 
