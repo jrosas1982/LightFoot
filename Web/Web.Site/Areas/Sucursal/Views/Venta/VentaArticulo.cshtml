@@ -199,7 +199,7 @@
                     VentaTipo: $("#dropdownTipoVenta :selected").val(),
                     Cantidad: $("#ArticuloCantidad").val()
                 },
-                success: function (response) {
+                success: function (precio) {
                     $("#Precio").val(precio);
                 }
             });
@@ -245,7 +245,7 @@
                         Cantidad: $("#ArticuloCantidad").val(),
                         Precio: $("#Precio").val(),
                     },
-                    success: function (response) {
+                    success: function (partialView) {
                         $('#ListaDetalleVenta tbody:last-child').after().append(partialView);
                         $("#agregarArticuloModal").modal('hide');
                         ClearModal();
