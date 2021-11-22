@@ -4,12 +4,11 @@
 @{
 
 }
-@if (@Model != null)
-{
-}
+
+
 <div class="ibox">
     <div class="ibox-title">
-        <h5>Ultimos Movimientos</h5>
+        <h5>Ultimos 5 Movimientos</h5>
         <div class="ibox-tools">
             <a class="collapse-link">
                 <i class="fa fa-chevron-up"></i>
@@ -20,19 +19,35 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Nombre</th>
-                    <th>Descripcion</th>
-                    <th>Cantidad</th>
+                    <th>#</th>
+                    <th>Tipo</th>
+                    <th>Monto</th>
+                    <th>Comentario</th>
+                    <th>Fecha</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>28</td>
-                    <td>Hilo Blanco</td>
-                    <td>Hilo nylon encerado color blanco</td>
-                    <td>20 metros</td>
-                </tr>
+                @if (Model != null && Model.Any())
+                {
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.TipoMovimiento</td>
+                            <td>@item.Monto</td>
+                            <td>@item.Comentario</td>
+                            <td>@item.FechaCreacion</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+
+                    <tr class="my-4">
+                        <td colspan="7" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>

@@ -31,10 +31,10 @@ namespace Web.Site.Areas
             DashboardSucursalModel dashboard = new DashboardSucursalModel()
             {
                 Sucursal = await _dashboardSucursalService.GetSucursal(),
-                StockBajo = await _dashboardSucursalService.GetArticulosBajoStock(),
-                MasVendidos = await _dashboardSucursalService.Get5MasVendidos(),
-                Movimientos = null,
-                UltimasVentas = null
+                StockBajo = await _dashboardSucursalService.GetArticulosBajoStock(5),
+                MasVendidos = await _dashboardSucursalService.GetMasVendidos(5),
+                UltimosMovimientos = await _dashboardSucursalService.GetUltimosMovimientos(5),
+                UltimasVentas = await _dashboardSucursalService.GetUltimasVentas(5)
             };
 
             return View(dashboard);

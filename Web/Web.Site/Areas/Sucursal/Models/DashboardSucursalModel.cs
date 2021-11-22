@@ -11,7 +11,7 @@ namespace Web.Site.Areas
     public class DashboardSucursalModel
     {
         public Sucursal Sucursal { get; set; }
-        public IEnumerable<CajaSucursal> Movimientos { get; set; }
+        public IEnumerable<CajaSucursal> UltimosMovimientos { get; set; }
         public IEnumerable<ArticuloStock> StockBajo { get; set; }
         public IEnumerable<Venta> UltimasVentas { get; set; }
         public IEnumerable<Tuple<Articulo, int>> MasVendidos { get; set; }
