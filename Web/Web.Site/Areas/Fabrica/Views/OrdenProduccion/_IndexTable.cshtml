@@ -33,7 +33,7 @@
             {
                 foreach (var orden in Model)
                 {
-                    var eventoExpedicion = orden.OrdenProduccionEventos.SingleOrDefault(x => x.EtapaOrdenProduccion.Descripcion == "Expedicion" && x.EstadoEtapaOrdenProduccion == EstadoEtapaOrdenProduccion.Iniciada);
+                    var eventoExpedicion = orden.OrdenProduccionEventos.FirstOrDefault(x => x.EtapaOrdenProduccion.Descripcion == "Expedicion" && x.EstadoEtapaOrdenProduccion == EstadoEtapaOrdenProduccion.Iniciada);
                     var customStyle = "";
                     if (eventoExpedicion != null && orden.EstadoOrdenProduccion != EstadoOrdenProduccion.Finalizada)
                     {
