@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Core.Aplicacion.Auth;
 using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
@@ -68,8 +69,11 @@ namespace Web.Site.Areas
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claims, authenticationProperties);
 
                 if (string.IsNullOrEmpty(returnurl))
-                    return Redirect("/");
-                    //return RedirectToAction("Index", "Dashboard", new { area = "Fabrica" });
+                    if (user.UsuarioRol.GetGroupName() == Policies.IsSucursal)
+                        return Redirect("/sucursal/DashboardSucursal/Index");
+                    else
+                        return Redirect("/fabrica/DashboardFabrica/Index");
+                //return RedirectToAction("Index", "Dashboard", new { area = "Fabrica" });
 
                 return Redirect(returnurl);
             }
