@@ -128,7 +128,7 @@
                         </div>
                         <div class="form-group">
                             <label class="font-normal">Remito</label>
-                            <input class="form-control limitarLength" type="number" id="NroRemito" placeholder="Remito" maxlength="12" required>
+                            <input class="form-control limitarLength" type="number" id="NroRemito" placeholder="Remito" maxlength="12" min="0" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -178,7 +178,7 @@
                         </div>
                         <div class="form-group">
                             <label class="font-normal">A Pagar</label>
-                            <input id="Pagado" class="form-control" type="number" min="0" max="" value="0" placeholder="" required>
+                            <input id="Pagado" class="form-control positive" type="number" min="0" required>
                         </div>
                     </div>
                     <div class="modal-footer">
