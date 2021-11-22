@@ -62,7 +62,7 @@ namespace Core.Aplicacion.Services
             var stockBajo = await _db.ArticulosStock
                 .Where(x => !x.Eliminado)
                 .AsNoTracking()
-                .Where(x => x.IdSucursal == idSucursal && x.StockMinimo * 1.5 > x.StockTotal)
+                .Where(x => x.IdSucursal == idSucursal && x.StockMinimo * 1.5 >= x.StockTotal)
                 .Include(x => x.Articulo)
                     .ThenInclude(x => x.ArticuloCategoria)
                 .OrderByDescending(x => x.StockTotal - x.StockMinimo)
