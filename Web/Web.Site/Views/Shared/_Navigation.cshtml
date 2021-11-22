@@ -21,12 +21,10 @@
                     <ul id="fabrica" class="nav nav-second-level collapse @Html.IsSelected(area: "fabrica", cssClass: "in")">
 
                         <li class="@Html.IsSelected(controller: "DashboardFabrica")"><a href="@Url.Action("Index", "DashboardFabrica", new { area = "fabrica" })">Dashboard</a></li>
-                        <li class="@Html.IsSelected(controller: "ControlStockArticulo") disabled"><a href="@Url.Action("Index", "ControlStockArticulo", new { area = "abm" })">Control de Stock</a></li>
                         <li class="@Html.IsSelected(controller: "CompraInsumo")"><a href="@Url.Action("Index", "CompraInsumo", new { area = "fabrica" })">Compras</a></li>
                         <li class="@Html.IsSelected(controller: "OrdenProduccion")"><a href="@Url.Action("Index", "OrdenProduccion", new { area = "fabrica" })">Ordenes de Produccion</a></li>
                         <li class="@Html.IsSelected(controller: "Recetas")"><a href="@Url.Action("Index", "Recetas", new { area = "fabrica" })">Recetas</a></li>
                         <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Solicitudes</a></li>
-
                     </ul>
                 </li>
             }

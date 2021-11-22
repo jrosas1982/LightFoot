@@ -17,7 +17,7 @@ namespace Core.Aplicacion.Services
 {
     public class DashboardFabricaService : IDashboardFabricaService
     {
-    
 
+        //await _hubContext.Clients.All.SendAsync("FabricaDashboardUpdate");
     }
 }
