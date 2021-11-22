@@ -1,6 +1,7 @@
 ﻿@using HtmlHelpers.BeginCollectionItemCore
 @using Web.Site.Areas
-@model IEnumerable<Articulo>
+
+@model IEnumerable<Tuple<Articulo, int>>
 @{
 }
 
@@ -25,17 +26,18 @@
 
                     @if (@Model != null && Model.Any())
                     {
-                        @*@foreach (var venta in @Model)
+                        @foreach (var venta in @Model)
                         {
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        }*@
+                    <tr>
+                        <td>@venta.Item1.Id</td>
+                        <td>@venta.Item1.CodigoArticulo</td>
+                        <td>@venta.Item1.Nombre</td>
+                        <td>@venta.Item1.ArticuloCategoria.Descripcion</td>
+                        <td>@venta.Item1.PrecioMinorista</td>
+                        <td>@venta.Item1.PrecioMayorista</td>
+                        <td>@venta.Item2</td>
+                    </tr>
+                        }
                     }
                     else
                     {

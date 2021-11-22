@@ -27,15 +27,12 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Index()
         {
-            var sucursal = await _dashboardSucursalService.GetSucursal();
-
-            var stockbajo = await _dashboardSucursalService.GetArticulosBajoStock();
 
             DashboardSucursalModel dashboard = new DashboardSucursalModel()
             {
-                Sucursal = sucursal,
-                StockBajo = stockbajo,
-                MasVendidos = null,
+                Sucursal = await _dashboardSucursalService.GetSucursal(),
+                StockBajo = await _dashboardSucursalService.GetArticulosBajoStock(),
+                MasVendidos = await _dashboardSucursalService.Get5MasVendidos(),
                 Movimientos = null,
                 UltimasVentas = null
             };

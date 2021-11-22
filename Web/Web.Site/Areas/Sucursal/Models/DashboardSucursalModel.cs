@@ -1,5 +1,6 @@
 ﻿using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,6 @@ namespace Web.Site.Areas
         public IEnumerable<CajaSucursal> Movimientos { get; set; }
         public IEnumerable<ArticuloStock> StockBajo { get; set; }
         public IEnumerable<Venta> UltimasVentas { get; set; }
-        public IEnumerable<Articulo> MasVendidos { get; set; }
+        public IEnumerable<Tuple<Articulo, int>> MasVendidos { get; set; }
     }
 }

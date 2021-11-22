@@ -28,25 +28,46 @@ namespace Core.Aplicacion.Services
         public async Task<Sucursal> GetSucursal()
         {
             int idSucursal = int.Parse(_db.GetSucursalId());
-            var sucursal = await _db.Sucursales.Where(x => x.Id == idSucursal).SingleOrDefaultAsync(x => x.Id == idSucursal);
+            var sucursal = await _db.Sucursales.SingleOrDefaultAsync(x => x.Id == idSucursal);
             return sucursal;
         }
 
-        public Task<IEnumerable<Articulo>> Get5MasVendidos()
+        public async Task<IEnumerable<Tuple<Articulo, int>>> Get5MasVendidos()
         {
-            throw new NotImplementedException();
+            int idSucursal = int.Parse(_db.GetSucursalId());
+
+            var masVendidos = await _db.VentasDetalle
+                .Where(x => !x.Eliminado)
+                .AsNoTracking()
+                .Where(x => x.Venta.IdSucursal == idSucursal)
+                .Include(x => x.Articulo)
+                    .ThenInclude(x => x.ArticuloCategoria)
+                .Select(x => new { Articulo = x.Articulo, Cantidad = x.Cantidad })
+                .ToListAsync();
+
+            var masVendidosList = masVendidos
+                .GroupBy(x => x.Articulo)
+                .Select(x => new Tuple<Articulo, int>(x.Key, x.Sum(x => x.Cantidad)))
+                .OrderByDescending(x => x.Item2)
+                .ThenBy(x => x.Item1.Nombre)
+                .Take(5);
+
+            return masVendidosList;
         }
 
         public async Task<IEnumerable<ArticuloStock>> GetArticulosBajoStock()
         {
             int idSucursal = int.Parse(_db.GetSucursalId());
+
             var stockBajo = await _db.ArticulosStock
+                .Where(x => !x.Eliminado)
+                .AsNoTracking()
+                .Where(x => x.IdSucursal == idSucursal)
                 .Include(x => x.Articulo)
                     .ThenInclude(x => x.ArticuloCategoria)
-                .Where(x => x.IdSucursal == idSucursal && x.StockTotal <= x.StockMinimo)
-                .OrderByDescending(x => x.StockMinimo)
-                .ThenBy(x => x.TamañoLote)
-                .Take(2)
+                .OrderByDescending(x => x.StockTotal - x.StockMinimo)
+                .ThenBy(x => x.Articulo.Nombre)
+                .Take(5)
                 .ToListAsync();
 
             return stockBajo;

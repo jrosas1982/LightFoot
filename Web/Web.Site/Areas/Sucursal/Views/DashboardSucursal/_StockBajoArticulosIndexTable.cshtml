@@ -1,9 +1,11 @@
 ﻿@using HtmlHelpers.BeginCollectionItemCore
 @using Web.Site.Areas
+
 @model IEnumerable<ArticuloStock>
 @{
 
 }
+
 <div class="ibox">
     <div class="ibox-title">
         <h5>Articulos con stock bajos</h5>
@@ -21,7 +23,8 @@
                     <th>Nombre</th>
                     <th>Descripcion</th>
                     <th>Categoria</th>
-                    <th>Cantidad</th>
+                    <th>Stock Actual</th>
+                    <th>Stock Minimo</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,13 +39,14 @@
                                 <td>@item.Articulo.Descripcion</td>
                                 <td>@item.Articulo.ArticuloCategoria.Descripcion</td>
                                 <td class="text-danger">@item.StockTotal Unidades</td>
+                                <td class="text-danger">@item.StockMinimo Unidades</td>
                             </tr>
                          }
                     }
                     else
                     {
 
-                         <tr>
+                         <tr class="my-4">
                              <td colspan="6" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
                          </tr>
                     }
