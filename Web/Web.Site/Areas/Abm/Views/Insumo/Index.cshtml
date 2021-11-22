@@ -2,6 +2,7 @@
     ViewData["Title"] = "Insumos";
     Layout = "_Layout";
     string controlador = "Insumo";
+    IEnumerable<string> TypeaheadNombreInsumo = ViewBag.TypeaheadNombreInsumo;
 
 }
 
@@ -41,60 +42,43 @@
         Reporte de Insumos @DateTime.Now
     </div>
 </div>
-
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="ibox-content m-b-sm border-bottom d-print-none">
     <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5>Insumos</h5>
-                </div>
-                <div class="ibox-content">
-
-                    <div class="table-responsive">
-                        <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Descripcion</th>
-                                    <th>Proveedor Preferido</th>
-                                    <th>Stock Actual</th>
-                                    <th data-sort-ignore="true" class="d-print-none">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model != null)
-                                {
-                                    foreach (var item in Model)
-                                    {
-                                        <tr class="gradeC">
-                                            <td>@item.Nombre</td>
-                                            <td>@item.Descripcion</td>
-                                            <td>@(item.IdProveedorPreferido == null ? "No Posee" : item.Proveedor.Nombre)</td>
-                                            <td>@(item.StockTotal + item.Unidad)</td>
-                                            <td class="d-print-none">
-                                                <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarInsumo('@item.Id')">Borrar</button>
-                                                <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarInsumo('@item.Id')">Editar</button>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                            <tfoot class="d-print-none">
-                                <tr>
-                                    <td colspan="6">
-                                        <ul class="pagination float-right"></ul>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
+        <div class="col-sm-12">
+            <div class="form-group">
+                <div class="typeahead__container">
+                    <div class="typeahead__field">
+                        <div class="typeahead__query">
+                            <input class="js-typeahead typeaheadCustom " id="typeInsumo" placeholder="Buscar Insumo" autocomplete="on" />
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
+    <div class="row">
+        <div class="col-sm-12 d-flex align-items-end justify-content-end">
+            <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="Filtrar()">
+                <i class="fa fa-search" aria-hidden="true"></i> Buscar
+            </button>
+        </div>
+    </div>
 </div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>Insumos</h5>
+            </div>
+            <div class="ibox-content">
+                <div id="InsumoPartialView">
+                    <partial name="_InsumoIndexTable.cshtml" model="Model" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Styles {
 
 }
@@ -152,10 +136,40 @@
 
         $(document).ready(function () {
 
-            $('.dataTables-example').DataTable({
-                pageLength: 10,
-                dom: 'Tgitp'    
-            });
         });
+    </script>
+    <script type="text/javascript">
+
+    var typeaheadNInsumo = @Html.Raw(Json.Serialize(TypeaheadNombreInsumo));
+
+    $.typeahead({
+        input: '.js-typeahead',
+        order: "desc",
+        template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+        minLength: 1,
+        source: {
+            NombreInsumo: { data: typeaheadNInsumo }
+        }
+    });
+
+        function Filtrar() {
+                  var insumo = $("#typeInsumo").val();
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("FiltrarInsumo", "Insumo", new { area = "abm" })',
+                traditional: true,
+                data: //formData,
+                {
+                    nombreInsumo: insumo
+                },
+                contentType: "application/json",
+                success: function (partial) {
+                    $("#InsumoPartialView").html(""); //clear the records content
+                    $("#InsumoPartialView").html(partial);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
     </script>
 }
