@@ -26,14 +26,10 @@
 
 <div class="wrapper wrapper-content animated fadeInRight">
 
-    @*detalle
-        nombre
-        direccion*@
-
     <div class="row">
         <div class="col-lg-4">
             <div id="InfoSucursalPartialView">
-                <partial name="_InfoSucursalIndexTable.cshtml" model="null" />
+                <partial name="_InfoSucursalIndexTable.cshtml" model="Model.Sucursal" />
             </div>
         </div>
         <div class="col-lg-8">
@@ -46,7 +42,7 @@
     <div class="row">
         <div class="col-lg-6">
             <div id="StockBajoArticulosPartialView">
-                <partial name="_StockBajoArticulosIndexTable.cshtml" model="null" />
+                <partial name="_StockBajoArticulosIndexTable.cshtml" model="Model.StockBajo" />
             </div>
         </div>
         <div class="col-lg-6">
