@@ -124,6 +124,8 @@ namespace Core.Aplicacion.Services
             _db.Ventas.Add(venta);
             await _db.SaveChangesAsync();
 
+            await EnviarMailVenta(venta.Id);
+
             return venta;
         }
 
@@ -180,5 +182,40 @@ namespace Core.Aplicacion.Services
             return ventasList;
         }
 
+
+        public async Task EnviarMailVenta(int IdVenta)
+        {
+            var ventaRealizada = await _db.Ventas  
+                .Include(x => x.VentaDetalles)
+                .Include(x => x.Cliente)
+                .SingleAsync(x => x.Id == IdVenta);
+
+            byte[] dataRow = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("VentaCliente")["EmailTableRow"]);
+            string templateBaseRow = Encoding.UTF8.GetString(dataRow);
+
+            string Maildetalles = "";
+            foreach (var item in ventaRealizada.VentaDetalles)
+            {
+                var row = templateBaseRow.Replace("@NombreArticulo", $"{item.Articulo.ArticuloCategoria.Descripcion} - {item.Articulo.Nombre}")
+                                         .Replace("@TalleArticulo", item.Articulo.TalleArticulo)
+                                         .Replace("@ColorArticulo", item.Articulo.Color)
+                                         .Replace("@Cantidad", item.Cantidad.ToString() + "u")
+                                         .Replace("@PrecioUnitario", item.PrecioUnitario.ToString());
+                Maildetalles += row;
+            }
+
+
+            byte[] dataMail = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("VentaCliente")["EmailBody"]);
+            string templateBaseMail = Encoding.UTF8.GetString(dataMail);
+
+            var idSucursal = int.Parse(_db.GetSucursalId());
+            var sucursalCompra = await _db.Sucursales.FindAsync(idSucursal);
+
+            var template = templateBaseMail.Replace("@TotalArticulos", ventaRealizada.VentaDetalles.Count().ToString())
+                                           .Replace("@MontoTotal", ventaRealizada.MontoTotal.ToString())
+                                           .Replace("@Cliente", ventaRealizada.Cliente.Nombre);
+
+            await EmailSender.SendEmail($"LightFoot - Nueva Compra #{ventaRealizada.Id}", template, ventaRealizada.Cliente.Email);
+        }
     }
 }
