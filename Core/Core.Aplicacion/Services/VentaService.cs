@@ -187,6 +187,8 @@ namespace Core.Aplicacion.Services
         {
             var ventaRealizada = await _db.Ventas  
                 .Include(x => x.VentaDetalles)
+                    .ThenInclude(x => x.Articulo)
+                        .ThenInclude(x => x.ArticuloCategoria)
                 .Include(x => x.Cliente)
                 .SingleAsync(x => x.Id == IdVenta);
 
@@ -213,7 +215,8 @@ namespace Core.Aplicacion.Services
 
             var template = templateBaseMail.Replace("@TotalArticulos", ventaRealizada.VentaDetalles.Count().ToString())
                                            .Replace("@MontoTotal", ventaRealizada.MontoTotal.ToString())
-                                           .Replace("@Cliente", ventaRealizada.Cliente.Nombre);
+                                           .Replace("@Cliente", ventaRealizada.Cliente.Nombre)
+                                           .Replace("@TableRows", Maildetalles);
 
             await EmailSender.SendEmail($"LightFoot - Nueva Compra #{ventaRealizada.Id}", template, ventaRealizada.Cliente.Email);
         }
