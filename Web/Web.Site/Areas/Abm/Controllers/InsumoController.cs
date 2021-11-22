@@ -26,6 +26,8 @@ namespace Web.Site.Areas
         public async Task<IActionResult> Index()
         {
             var insumosList = await _insumoService.GetInsumos();
+            var proveedoresList = await _proveedorService.GetProveedores();
+            ViewBag.TypeaheadNombreInsumo = insumosList.Select(x => x.Nombre).Distinct();
             return View(insumosList);
         }
 
@@ -71,6 +73,23 @@ namespace Web.Site.Areas
         {
             var result = await _insumoService.EliminarInsumo(insumo);
             return Ok(result);
+        }
+
+        public async Task<IActionResult> FiltrarInsumo(string nombreInsumo)
+        {
+            var Insumos = await _insumoService.GetInsumos();
+
+            if (!string.IsNullOrWhiteSpace(nombreInsumo))
+            {
+                Insumos = Insumos.Where(x => x.Id.ToString().Equals(nombreInsumo.ToLower())
+                                                            || x.Nombre.ToLower().Equals(nombreInsumo.ToLower())).ToList();
+
+                if (!Insumos.Any())
+                    Insumos = Insumos.Where(x => x.Id.ToString().Contains(nombreInsumo.ToLower())
+                                                            || x.Nombre.ToLower().Contains(nombreInsumo.ToLower())).ToList();
+            }
+
+            return PartialView("_InsumoIndexTable", Insumos);
         }
     }
 }
