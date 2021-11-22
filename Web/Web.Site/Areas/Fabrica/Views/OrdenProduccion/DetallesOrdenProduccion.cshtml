@@ -6,6 +6,8 @@
     IEnumerable<EtapaOrdenProduccion> EtapasOrdenProduccion = ViewBag.EtapasOrdenProduccion;
     var EtapasIds = EtapasOrdenProduccion.OrderBy(x => x.Orden).Select(x => x.Id).ToList();
     var NroEtapaProgresoActual = EtapasIds.IndexOf(Model.EtapaOrdenProduccion.Id) + 1;
+
+    var idOrdenProduccion = Model.Id;
 }
 
 @model OrdenProduccion
@@ -29,7 +31,7 @@
         </ol>
     </div>
     <div class="col-lg-2 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()"> 
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()">
             <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
         </button>
     </div>
@@ -104,7 +106,7 @@
 
     <script type="text/javascript">
 
-        function ActualizarInfo(id, metodo) {
+        function CambiarEstadoOrden(id, metodo) {
             $.ajax({
                 type: "Get",
                 url: '/fabrica/OrdenProduccion/' + metodo,
@@ -112,12 +114,7 @@
                 {
                     idOrdenProduccion: id,
                 },
-                contentType: "application/json",
-                success: function (response) {
-                    $("#partialViewEventos").html(""); //clear the records content
-                    $("#partialViewEventos").html(response);  //add the updated content.
-                    partialViewEventosScript();
-                }
+                contentType: "application/json"
             });
         }
 
@@ -126,36 +123,68 @@
         }
 
         function IniciarEtapa(id) {
-            ActualizarInfo(id, 'IniciarEtapa');
+            CambiarEstadoOrden(id, 'IniciarEtapa');
             //window.location = '/fabrica/OrdenProduccion/IniciarEtapa?IdOrdenProduccion=' + id;
         }
         function PausarEtapa(id) {
-            ActualizarInfo(id, 'PausarEtapa');
+            CambiarEstadoOrden(id, 'PausarEtapa');
             //window.location = '/fabrica/OrdenProduccion/PausarEtapa?IdOrdenProduccion=' + id;
         }
         function FinalizarEtapa(id) {
-            ActualizarInfo(id, 'FinalizarEtapa');
+            CambiarEstadoOrden(id, 'FinalizarEtapa');
             //window.location = '/fabrica/OrdenProduccion/FinalizarEtapa?IdOrdenProduccion=' + id;
         }
         function ReanudarEtapa(id) {
-            ActualizarInfo(id, 'ReanudarEtapa');
+            CambiarEstadoOrden(id, 'ReanudarEtapa');
             //window.location = '/fabrica/OrdenProduccion/ReanudarEtapa?IdOrdenProduccion=' + id;
         }
         function RetrabajarEtapa(id) {
-            ActualizarInfo(id, 'RetrabajarEtapa');
+            CambiarEstadoOrden(id, 'RetrabajarEtapa');
             //window.location = '/fabrica/OrdenProduccion/RetrabajarEtapa?IdOrdenProduccion=' + id;
         }
         function AvanzarSiguienteEtapa(id) {
-            ActualizarInfo(id, 'AvanzarSiguienteEtapa');
+            CambiarEstadoOrden(id, 'AvanzarSiguienteEtapa');
             //window.location = '/fabrica/OrdenProduccion/AvanzarSiguienteEtapa?IdOrdenProduccion=' + id;
         }
         function FinalizarOrden(id) {
-            ActualizarInfo(id, 'FinalizarOrden');
+            CambiarEstadoOrden(id, 'FinalizarOrden');
             //window.location = '/fabrica/OrdenProduccion/FinalizarOrden?IdOrdenProduccion=' + id;
         }
         function CancelarOrden(id) {
-            ActualizarInfo(id, 'CancelarOrden');
+            CambiarEstadoOrden(id, 'CancelarOrden');
             //window.location = '/fabrica/OrdenProduccion/CancelarOrden?IdOrdenProduccion=' + id;
+        }
+    </script>
+
+
+    <script type="text/javascript">
+        //Aprtura de WebSockets
+        Object.defineProperty(WebSocket, 'OPEN', { value: 1, });
+
+        //conexion a SignalR
+        var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationsHub").build();
+        connection.start();
+
+        //Accion
+        connection.on("OrdenProduccionUpdate", function () {
+            ActualizarInfo();
+        });
+
+        function ActualizarInfo() {
+            $.ajax({
+                type: "Get",
+                url: '/fabrica/OrdenProduccion/ActualizarInfo',
+                data: //formData,
+                {
+                    idOrdenProduccion: @idOrdenProduccion,
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#partialViewEventos").html(""); //clear the records content
+                    $("#partialViewEventos").html(response);  //add the updated content.
+                    partialViewEventosScript();
+                }
+            });
         }
     </script>
 }
