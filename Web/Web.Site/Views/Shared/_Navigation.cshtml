@@ -37,7 +37,7 @@
 
                         <li class="@Html.IsSelected(controller: "DashboardSucursal")"><a href="@Url.Action("Index", "DashboardSucursal", new { area = "sucursal" })">Dashboard</a></li>
                         <li class="@Html.IsSelected(controller: "CajaSucursal")"><a href="@Url.Action("Index", "CajaSucursal", new { area = "sucursal" })">Caja</a></li>
-                        <li class="@Html.IsSelected(controller: "ControlStockArticulo") "><a href="@Url.Action("Index", "ControlStockArticulo", new { area = "abm" })">Control de Stock</a></li>
+                        <li class="@Html.IsSelected(controller: "ControlStockArticulo") "><a href="@Url.Action("Index", "ControlStockArticulo", new { area = "sucursal" })">Control de Stock</a></li>
                         <li class="@Html.IsSelected(controller: "CompraArticulo")"><a href="@Url.Action("Index", "CompraArticulo", new { area = "sucursal" })">Compras</a></li>
                         <li class="@Html.IsSelected(controller: "CuentaCorriente")"><a href="@Url.Action("Index", "CuentaCorriente", new { area = "sucursal" })">Cuenta Corriente</a></li>
                         <li class="@Html.IsSelected(controller: "Venta")"><a href="@Url.Action("Index", "Venta", new { area = "sucursal" })">Ventas</a></li>

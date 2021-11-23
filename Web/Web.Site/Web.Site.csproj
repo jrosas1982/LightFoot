@@ -7,17 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Abm\Views\ControlStockArticulo\**" />
     <Compile Remove="Areas\Fabrica\Views\NewFolder\**" />
     <Compile Remove="Views\Sucursal\**" />
+    <Content Remove="Areas\Abm\Views\ControlStockArticulo\**" />
     <Content Remove="Areas\Fabrica\Views\NewFolder\**" />
     <Content Remove="Views\Sucursal\**" />
+    <EmbeddedResource Remove="Areas\Abm\Views\ControlStockArticulo\**" />
     <EmbeddedResource Remove="Areas\Fabrica\Views\NewFolder\**" />
     <EmbeddedResource Remove="Views\Sucursal\**" />
+    <None Remove="Areas\Abm\Views\ControlStockArticulo\**" />
     <None Remove="Areas\Fabrica\Views\NewFolder\**" />
     <None Remove="Views\Sucursal\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Abm\Controllers\ControlStockArticuloController.cs" />
+    <Compile Remove="Areas\Abm\Models\ArticuloStockModel.cs" />
     <Compile Remove="Controllers\GestionController.cs" />
     <Compile Remove="Controllers\Gestion\SucursalController.cs" />
     <Compile Remove="Controllers\Gestion\UsuarioController.cs" />
