@@ -17,7 +17,7 @@
 @model IEnumerable<Venta>
 
 <div class="row wrapper border-bottom white-bg page-heading navegacion">
-    <div class="col-xl-10 col-lg-9">
+    <div class="col-xl-8 col-lg-6">
         <h2>@title</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -31,6 +31,11 @@
             </li>
         </ol>
     </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="ReporteSimple()">
+            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
+        </button>
+    </div>
     <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
         <button type="button" class="btn btn-w-m btn-primary w-100"
                 @*onclick="location.href='@Url.Action("VentaArticulo", "Venta", 0)'"*@
@@ -38,6 +43,21 @@
                 data-target="#ModalVenta">
             <span class="icon icon-xs"><span class="fas fa-shopping-bag mr-2"></span></span>Registrar Venta
         </button>
+    </div>
+</div>
+
+<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        <h5>Fecha de reporte: @DateTime.Now</h5>
+        <div class="row">
+            <div class="col-6">
+                <h2>Reporte Ventas de Sucursal</h2>
+            </div>
+            <div class="col-6">
+                <h2>Total Ventas @Model.Count()</h2>
+            </div>
+        </div>
+
     </div>
 </div>
 
