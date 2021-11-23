@@ -42,37 +42,41 @@
         Reporte de Insumos @DateTime.Now
     </div>
 </div>
-<div class="ibox-content m-b-sm border-bottom d-print-none">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="form-group">
-                <div class="typeahead__container">
-                    <div class="typeahead__field">
-                        <div class="typeahead__query">
-                            <input class="js-typeahead typeaheadCustom " id="typeInsumo" placeholder="Buscar Insumo" autocomplete="on" />
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="ibox-content m-b-sm border-bottom d-print-none">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-form-labe" for="solicitud_name">Buscador</label>
+                    <div class="typeahead__container">
+                        <div class="typeahead__field">
+                            <div class="typeahead__query">
+                                <input class="js-typeahead typeaheadCustom " id="typeInsumo" placeholder="Buscar Insumo" autocomplete="on" />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-12 d-flex align-items-end justify-content-end">
-            <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="Filtrar()">
-                <i class="fa fa-search" aria-hidden="true"></i> Buscar
-            </button>
+        <div class="row">
+            <div class="col-sm-12 d-flex align-items-end justify-content-end">
+                <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="Filtrar()">
+                    <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                </button>
+            </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-lg-12">
-        <div class="ibox ">
-            <div class="ibox-title">
-                <h5>Insumos</h5>
-            </div>
-            <div class="ibox-content">
-                <div id="InsumoPartialView">
-                    <partial name="_InsumoIndexTable.cshtml" model="Model" />
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Insumos</h5>
+                </div>
+                <div class="ibox-content">
+                    <div id="InsumoPartialView">
+                        <partial name="_InsumoIndexTable.cshtml" model="Model" />
+                    </div>
                 </div>
             </div>
         </div>
