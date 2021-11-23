@@ -8,7 +8,10 @@ namespace Web.Site.Areas
 {
     public class DashboardFabricaModel
     {
-        //public Sucursal Sucursal { get; set; }
+        public DashbardFabricaInfoGeneralModel DashbardFabricaInfoGeneralModel { get; set; }
+        public IEnumerable<Tuple<Sucursal, int>> TopSucursalesSolicitudes { get; set; }
+        public IEnumerable<Tuple<string, int>> AvanceProduccion { get; set; }
+
         public IEnumerable<Solicitud> Solicitudes { get; set; }
         public IEnumerable<OrdenProduccion> Ordenes { get; set; }
         public IEnumerable<Venta> UltimasVentas { get; set; }

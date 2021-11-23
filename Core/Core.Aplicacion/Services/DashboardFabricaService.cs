@@ -92,8 +92,8 @@ namespace Core.Aplicacion.Services
 
         public async Task<int> GetSolicitudesRecibidas(DateTime fecha, TimeSpan plazoTiempo)
         {
-            var start = fecha;
-            var end = fecha.Add(-plazoTiempo);
+            var start = fecha.Add(-plazoTiempo);
+            var end = fecha.AddDays(1);
 
             var response = await _db.Solicitudes
                     .Where(x => !x.Eliminado)
@@ -129,11 +129,15 @@ namespace Core.Aplicacion.Services
 
             var masSolicitudes = await _db.Solicitudes
                 .Where(x => !x.Eliminado)
+                .Include(x => x.Sucursal)
                 .AsNoTracking()
+                .ToListAsync();
+            
+            var masSolicitudesList = masSolicitudes
                 .GroupBy(x => x.Sucursal)
                 .Select(x => new Tuple<Sucursal, int>(x.Key, x.Count()))
                 .Take(n)
-                .ToListAsync();
+                .ToList();
 
             // var masVendidos = await _db.VentasDetalle
             //    .Where(x => !x.Eliminado)
@@ -151,25 +155,29 @@ namespace Core.Aplicacion.Services
             //    .ThenBy(x => x.Item1.Nombre)
             //    .Take(n);
 
-            return masSolicitudes;
+            return masSolicitudesList;
 
 
         }
 
-        public async Task<IEnumerable<Tuple<EtapaOrdenProduccion, int>>> GetAvanceProduccion(DateTime fecha, TimeSpan plazoTiempo)
+        public async Task<IEnumerable<Tuple<string, int>>> GetAvanceProduccion(DateTime fecha, TimeSpan plazoTiempo)
         {
-            var start = fecha;
-            var end = fecha.Add(-plazoTiempo);
+            var start = fecha.Add(-plazoTiempo);
+            var end = fecha.AddDays(1);
 
             var ordenesPorEtapa = await _db.OrdenesProduccion
                 .Where(x => !x.Eliminado)
                 .AsNoTracking()
                 .Where(x => (x.FechaCreacion.Date > start.Date) && (x.FechaCreacion.Date < end.Date))
-                .GroupBy(x => x.EtapaOrdenProduccion)
-                .Select(x => new Tuple<EtapaOrdenProduccion, int>(x.Key, x.Count()))
+                .Include(x => x.EtapaOrdenProduccion)
                 .ToListAsync();
 
-            return ordenesPorEtapa;
+            var ordenesPorEtapaList = ordenesPorEtapa
+                .GroupBy(x => x.EtapaOrdenProduccion.Descripcion)
+                .Select(x => new Tuple<string, int>(x.Key, x.Count()))
+                .ToList();
+
+            return ordenesPorEtapaList;
         }
 
 
