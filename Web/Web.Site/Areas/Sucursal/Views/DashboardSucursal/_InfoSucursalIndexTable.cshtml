@@ -3,6 +3,7 @@
 @model Sucursal
 @{
     var activo = "danger";
+    var activo_msj = "Inactivo";
 }
 @if (@Model != null)
 {
@@ -16,8 +17,9 @@
             @if (Model.Activo)
             {
                 activo = "navy";
+                activo_msj = "Activo";
             }
-            <div class="stat-percent font-bold text-@activo"><i class="fa fa-city"></i></div>
+            <div class="stat-percent font-bold text-@activo "> @activo_msj <i class="fa fa-city"></i></div>
         </div>
     </div>
 }
