@@ -160,7 +160,7 @@ namespace Core.Aplicacion.Services
 
         }
 
-        public async Task<IEnumerable<Tuple<string, int>>> GetAvanceProduccion(DateTime fecha, TimeSpan plazoTiempo)
+        public async Task<IEnumerable<Tuple<EtapaOrdenProduccion, int>>> GetAvanceProduccion(DateTime fecha, TimeSpan plazoTiempo)
         {
             var start = fecha.Add(-plazoTiempo);
             var end = fecha.AddDays(1);
@@ -177,7 +177,21 @@ namespace Core.Aplicacion.Services
                 .Select(x => new Tuple<string, int>(x.Key, x.Count()))
                 .ToList();
 
-            return ordenesPorEtapaList;
+            var etapas = await _db.EtapasOrdenProduccion.ToListAsync();
+
+            IList<Tuple<EtapaOrdenProduccion, int>> result = new List<Tuple<EtapaOrdenProduccion, int>>();
+
+            foreach (var item in etapas)
+            {
+                var tuplaCantidad = ordenesPorEtapaList.FirstOrDefault(x => x.Item1 == item.Descripcion);
+
+                if (tuplaCantidad != null)
+                    result.Add(new Tuple<EtapaOrdenProduccion, int>(item, tuplaCantidad.Item2));
+                else
+                    result.Add(new Tuple<EtapaOrdenProduccion, int>(item, 0));
+            }
+
+            return result;
         }
 
 

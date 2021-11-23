@@ -1,6 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Dashboard Fabrica";
     Layout = "_Layout";
+
+    var etapas = Model.AvanceProduccion.Select(x => x.Item1.Descripcion);
+    var cantidad = Model.AvanceProduccion.Select(x => x.Item2);
 }
 @model DashboardFabricaModel
 
@@ -90,10 +93,13 @@
         <script type="text/javascript">
             $(document).ready(function () {
 
+                var etapas = JSON.parse('@Html.Raw(Json.Serialize(etapas))')
+                var cantidad = JSON.parse('@Html.Raw(Json.Serialize(cantidad))')
+
                 var doughnutData = {
-                    labels: ["Cortado", "Aparado", "Preparacion", "Montado", "Pegado", "Terminado"],
+                    labels: etapas,
                     datasets: [{
-                        data: [32, 40, 76, 29, 24, 25],
+                        data: cantidad,
                         backgroundColor: ["#a3bfdc", "#81b4ca", "#85bfc7", "#73bfb8", "#55b8a7", "#6bc799"]
                     }]
                 };

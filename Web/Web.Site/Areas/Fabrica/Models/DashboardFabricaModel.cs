@@ -10,7 +10,7 @@ namespace Web.Site.Areas
     {
         public DashbardFabricaInfoGeneralModel DashbardFabricaInfoGeneralModel { get; set; }
         public IEnumerable<Tuple<Sucursal, int>> TopSucursalesSolicitudes { get; set; }
-        public IEnumerable<Tuple<string, int>> AvanceProduccion { get; set; }
+        public IEnumerable<Tuple<EtapaOrdenProduccion, int>> AvanceProduccion { get; set; }
 
         public IEnumerable<Solicitud> Solicitudes { get; set; }
         public IEnumerable<OrdenProduccion> Ordenes { get; set; }
