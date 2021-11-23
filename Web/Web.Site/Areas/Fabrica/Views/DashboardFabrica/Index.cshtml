@@ -2,9 +2,11 @@
     ViewData["Title"] = "Dashboard Fabrica";
     Layout = "_Layout";
 
-    var etapas = Model.AvanceProduccion.Select(x => x.Item1.Descripcion);
-    var cantidad = Model.AvanceProduccion.Select(x => x.Item2);
+    var etapas = Model.Etapas;
+    var cantidad = Model.Cantidad;
+
 }
+
 @model DashboardFabricaModel
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -21,46 +23,50 @@
 </div>
 
 <div class="wrapper wrapper-content">
+    <div class="animated fadeInRight">
+        <div id="tablaInfoGeneral">
+            <partial name="_InfoGeneralSolicitudes.cshtml" model="Model.DashbardFabricaInfoGeneralModel" />
+        </div>
 
-    <div id="tablaInfoGeneral">
-        <partial name="_InfoGeneralSolicitudes.cshtml" model="Model.DashbardFabricaInfoGeneralModel" />
-    </div>
-
-    <div class="row">
-        <div class="col-xl-5">
-            <div class="ibox">
-                <div class="ibox-title">
-                    <h5>Avance semanal de Produccion</h5>
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="close-link">
-                            <i class="fa fa-times"></i>
-                        </a>
+        <div class="row">
+            <div class="col-xl-5">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Avance semanal de Produccion</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content text-center">
+                        <div id="graficoPartialView">
+                            <partial name="_GraficoEtapas.cshtml" model="null" />
+                        </div>
                     </div>
                 </div>
-                <div class="ibox-content text-center">
-                    <canvas id="pieChart"></canvas>
+            </div>
+            <div class="col-lg-7">
+                <div id="tablaIRankingSucursales">
+                    <partial name="_RankingSucursalesTable.cshtml" model="Model.TopSucursalesSolicitudes" />
                 </div>
             </div>
         </div>
-        <div class="col-lg-7">
-            <div id="tablaIRankingSucursales">
-                <partial name="_RankingSucursalesTable.cshtml" model="Model.TopSucursalesSolicitudes" />
+
+
+        <div class="row">
+            <div class="col-xl-12">
+                <div id="tablaInsumoStock">
+                    <partial name="_InsumoStockTable.cshtml" model="Model.InsumosBajoStock" />
+                </div>
             </div>
         </div>
+
     </div>
-
-
-    <div class="row">
-        <div class="col-xl-12">
-            <div id="tablaInsumoStock">
-                <partial name="_InsumoStockTable.cshtml" model="Model.InsumosBajoStock" />
-            </div>
-        </div>
-    </div>
-
+</div>
 
 
     @section Scripts {
@@ -91,40 +97,97 @@
         </environment>
 
         <script type="text/javascript">
-            $(document).ready(function () {
+        $(document).ready(function () {
+            var etapas = JSON.parse('@Html.Raw(Json.Serialize(Model.Etapas))');
+            var cantidad = JSON.parse('@Html.Raw(Json.Serialize(Model.Cantidad))');
+            updateGrafico(etapas, cantidad);
+        });
 
-                var etapas = JSON.parse('@Html.Raw(Json.Serialize(etapas))')
-                var cantidad = JSON.parse('@Html.Raw(Json.Serialize(cantidad))')
-                var colores = ['rgba(247, 184, 178, 1)', 'rgba(172, 185, 232, 1)', 'rgba(117, 185, 219, 1)', 'rgba(155, 211, 222, 1)', 'rgba(204, 153, 222, 1)', 'rgba(233, 223, 143, 1)', 'rgba(178, 236, 171, 1)'];
+        function updateGrafico(etapas, cantidad) {
 
-                var doughnutData = {
-                    labels: etapas,
-                    datasets: [{
-                        data: cantidad,
-                        backgroundColor: colores
-                    }]
-                };
-                var doughnutOptions = {
-                    responsive: true
-                };
-                var ctx4 = document.getElementById("pieChart").getContext("2d");
-                new Chart(ctx4, { type: 'pie', data: doughnutData, options: doughnutOptions });
+            var colores = ['rgba(247, 184, 178, 1)', 'rgba(172, 185, 232, 1)', 'rgba(117, 185, 219, 1)', 'rgba(155, 211, 222, 1)', 'rgba(204, 153, 222, 1)', 'rgba(233, 223, 143, 1)', 'rgba(178, 236, 171, 1)'];
 
-
-            });
+            var doughnutData = {
+                labels: etapas,
+                datasets: [{
+                    data: cantidad,
+                    backgroundColor: colores
+                }]
+            };
+            var doughnutOptions = {
+                responsive: true
+            };
+            var ctx4 = document.getElementById("pieChart").getContext("2d");
+            new Chart(ctx4, { type: 'pie', data: doughnutData, options: doughnutOptions });
+        }
         </script>
 
         <script type="text/javascript">
-            //Aprtura de WebSockets
-            Object.defineProperty(WebSocket, 'OPEN', { value: 1, });
+        //Aprtura de WebSockets
+        Object.defineProperty(WebSocket, 'OPEN', { value: 1, });
 
-            //conexion a SignalR
-            var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationsHub").build();
-            connection.start();
+        //conexion a SignalR
+        var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationsHub").build();
+        connection.start();
 
-            //Accion
-            connection.on("FabricaDashboardUpdate", function () {
-                Filtrar();
+        //Accion
+        connection.on("OrdenProduccionUpdate", function () {
+
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("ActualizarInfoGeneral", "DashboardFabrica", new { area = "fabrica" })',
+                datatype: "json",
+                traditional: true,
+                contentType: "application/json",
+                success: function (response) {
+                    $("#tablaInfoGeneral").html(""); //clear the records content
+                    $("#tablaInfoGeneral").html(response);  //add the updated content.
+                }
             });
+
+            $.ajax({
+               type: "Get",
+               url: '@Url.Action("ActualizarTopSucursalesSolicitudes", "DashboardFabrica", new { area = "fabrica" })',
+               datatype: "json",
+               traditional: true,
+               contentType: "application/json",
+               success: function (response) {
+                   $("#tablaIRankingSucursales").html(""); //clear the records content
+                   $("#tablaIRankingSucursales").html(response);  //add the updated content.
+               }
+            });
+
+            $.ajax({
+               type: "Get",
+               url: '@Url.Action("ActualizarInsumosBajoStock", "DashboardFabrica", new { area = "fabrica" })',
+               datatype: "json",
+               traditional: true,
+               contentType: "application/json",
+               success: function (response) {
+                   $("#tablaInsumoStock").html(""); //clear the records content
+                   $("#tablaInsumoStock").html(response);  //add the updated content.
+               }
+            });
+
+           $.ajax({
+               type: "Get",
+               url: '@Url.Action("ActualizarGrafico", "DashboardFabrica", new { area = "fabrica" })',
+               datatype: "json",
+               traditional: true,
+               contentType: "application/json",
+               success: function (response) {
+                   $("#graficoPartialView").html(""); //clear the records content
+                   $("#graficoPartialView").html(response); //add the updated content.
+                   GraficoPartialViewScript();
+               }
+           });
+
+           $('.footable').footable();
+           $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+        });
+        //connection.on("OrdenProduccionUpdate", function () {
+        //    Filtrar();
+        //});
+
         </script>
     }

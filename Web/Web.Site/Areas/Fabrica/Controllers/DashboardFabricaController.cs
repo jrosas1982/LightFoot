@@ -25,7 +25,7 @@ namespace Web.Site.Areas
         public IDashboardFabricaService _dashboardFabricaService;
         public IMapper _mapper;
         public DashboardFabricaController(ISolicitudService solicitudService, IInsumoService insumoService,
-           IOrdenProduccionService ordenProduccionService, IMapper mapper , IDashboardFabricaService dashboardFabricaService)
+           IOrdenProduccionService ordenProduccionService, IMapper mapper, IDashboardFabricaService dashboardFabricaService)
         {
             _solicitudService = solicitudService;
             _insumoService = insumoService;
@@ -37,6 +37,7 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Index()
         {
+            var avanceProduccion = await _dashboardFabricaService.GetAvanceProduccion(DateTime.Now, TimeSpan.FromDays(7));
 
             DashboardFabricaModel dashboard = new DashboardFabricaModel()
             {
@@ -47,36 +48,55 @@ namespace Web.Site.Areas
                     OrdenesProduccionFinalizadasFecha = await _dashboardFabricaService.GetOrdenesProduccionFinalizadas(DateTime.Now),
                     OrdenesProduccionFinalizadasPlazo = await _dashboardFabricaService.GetOrdenesProduccionFinalizadas(DateTime.Now, TimeSpan.FromDays(7)),
                     OrdenesProduccionEnExpedicionFecha = await _dashboardFabricaService.GetOrdenesProduccionCanceladas(DateTime.Now),
-                    OrdenesProduccionEnExpedicionPlazo = await _dashboardFabricaService.GetOrdenesProduccionCanceladas(DateTime.Now, TimeSpan.FromDays(7))                                      
+                    OrdenesProduccionEnExpedicionPlazo = await _dashboardFabricaService.GetOrdenesProduccionCanceladas(DateTime.Now, TimeSpan.FromDays(7))
                 },
                 TopSucursalesSolicitudes = await _dashboardFabricaService.GetTopSucursalesSolicitudes(5),
-                AvanceProduccion = await _dashboardFabricaService.GetAvanceProduccion(DateTime.Now, TimeSpan.FromDays(7)),
-                InsumosBajoStock = await _dashboardFabricaService.GetInsumosBajoStock(5)
-                //Solicitudes = await _dashboardFabricaService.GetSolicitudes(),
-                //Ordenes = await _dashboardFabricaService.GetOrdenes(),
-            //    UltimosMovimientos = await _dashboardSucursalService.GetUltimosMovimientos(5),
-            //    UltimasVentas = await _dashboardSucursalService.GetUltimasVentas(5)
+                //AvanceProduccion = avanceProduccion,
+                InsumosBajoStock = await _dashboardFabricaService.GetInsumosBajoStock(5),
+                Etapas = avanceProduccion.Select(x => x.Item1.Descripcion).ToArray(),
+                Cantidad = avanceProduccion.Select(x => x.Item2).ToArray()
             };
-
-            //var solicitudes = await _dashboardFabricaService.GetSolicitudes();
-            //ViewBag.SolicitudesHoy = solicitudes.Where(x => x.FechaCreacion >= DateTime.Now.AddDays(-1)).Count();
-            //ViewBag.SolicitudesSemana = solicitudes.Where(x => x.FechaCreacion >= DateTime.Now.AddDays(-7)).Count();
-
-            //var ordenes = await _dashboardFabricaService.GetOrdenes();
-
-            //// buscar el enum
-            //ViewBag.cantTerminadasHoy = ordenes.Where(x => x.IdEtapaOrdenProduccion == (int)EstadoOrdenProduccion.Finalizada  && x.FechaModificacion >= DateTime.Now.AddDays(-1)).Count();
-            //ViewBag.cantTerminadasSemana = ordenes.Where(x => x.IdEtapaOrdenProduccion == (int)EstadoOrdenProduccion.Finalizada && x.FechaModificacion >= DateTime.Now.AddDays(-7)).Count();
-
-            //// buscar el enum
-            //ViewBag.cantEnviadasHoy = ordenes.Where(x => x.IdEtapaOrdenProduccion == 12 &&  x.FechaModificacion >= DateTime.Now.AddDays(-1) ).Count();
-            //ViewBag.cantEnviadasSemana = ordenes.Where(x => x.IdEtapaOrdenProduccion == 12 &&  x.FechaModificacion >= DateTime.Now.AddDays(-7) ).Count();
-
-
-
 
             return View(dashboard);
         }
+
+        public async Task<IActionResult> ActualizarInfoGeneral()
+        {
+            var dashbardFabricaInfoGeneralModel = new DashbardFabricaInfoGeneralModel()
+            {
+                SolicitudesRecibidasFecha = await _dashboardFabricaService.GetSolicitudesRecibidas(DateTime.Now),
+                SolicitudesRecibidasPlazo = await _dashboardFabricaService.GetSolicitudesRecibidas(DateTime.Now, TimeSpan.FromDays(7)),
+                OrdenesProduccionFinalizadasFecha = await _dashboardFabricaService.GetOrdenesProduccionFinalizadas(DateTime.Now),
+                OrdenesProduccionFinalizadasPlazo = await _dashboardFabricaService.GetOrdenesProduccionFinalizadas(DateTime.Now, TimeSpan.FromDays(7)),
+                OrdenesProduccionEnExpedicionFecha = await _dashboardFabricaService.GetOrdenesProduccionCanceladas(DateTime.Now),
+                OrdenesProduccionEnExpedicionPlazo = await _dashboardFabricaService.GetOrdenesProduccionCanceladas(DateTime.Now, TimeSpan.FromDays(7))
+            };
+            return PartialView("_InfoGeneralSolicitudes", dashbardFabricaInfoGeneralModel);
+        }
+
+        public async Task<IActionResult> ActualizarTopSucursalesSolicitudes()
+        {
+            var topSucursalesSolicitudes = await _dashboardFabricaService.GetTopSucursalesSolicitudes(5);
+            return PartialView("_RankingSucursalesTable", topSucursalesSolicitudes);
+        }
+
+        public async Task<IActionResult> ActualizarInsumosBajoStock()
+        {
+            var insumosBajoStock = await _dashboardFabricaService.GetInsumosBajoStock(5);
+            return PartialView("_InsumoStockTable", insumosBajoStock);
+        }
+
+        public async Task<IActionResult> ActualizarGrafico()
+        {
+            var avanceProduccion = await _dashboardFabricaService.GetAvanceProduccion(DateTime.Now, TimeSpan.FromDays(7));
+            var etapas = avanceProduccion.Select(x => x.Item1.Descripcion).ToArray();
+            var cantidad = avanceProduccion.Select(x => x.Item2).ToArray();
+
+            ViewBag.Etapas = etapas;
+            ViewBag.Cantidad = cantidad;
+            return PartialView("_GraficoEtapas", null);
+        }
+
 
     }
 }

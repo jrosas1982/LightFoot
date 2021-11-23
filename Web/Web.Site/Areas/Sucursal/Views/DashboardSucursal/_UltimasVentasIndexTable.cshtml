@@ -41,8 +41,8 @@
                                 <td>@item.Cliente.Nombre</td>
                                 <td>@item.VentaTipo</td>
                                 <td>@item.VentaDetalles.Count()</td>
-                                <td class="text-danger">$ @item.MontoTotal</td>
-                                <td class="text-danger">@(item.FechaModificacion != null ? item.FechaModificacion : item.FechaCreacion)</td>
+                                <td>$ @item.MontoTotal</td>
+                                <td>@(item.FechaModificacion != null ? item.FechaModificacion : item.FechaCreacion)</td>
                             </tr>
                         }
                     }
