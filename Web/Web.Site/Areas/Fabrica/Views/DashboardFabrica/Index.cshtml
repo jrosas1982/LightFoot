@@ -9,8 +9,8 @@
 
 @model DashboardFabricaModel
 
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
+<div class="row wrapper border-bottom white-bg page-heading d-print-none">
+    <div class="col-xl-10 col-lg-9">
         <h2>Bienvenido</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -18,7 +18,16 @@
             </li>
         </ol>
     </div>
-    <div class="col-lg-2">
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="ReporteSimple()">
+            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
+        </button>
+    </div>
+</div>
+
+<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        Reporte de Dashboard Fabrica @DateTime.Now
     </div>
 </div>
 
@@ -37,11 +46,9 @@
                             <a class="collapse-link">
                                 <i class="fa fa-chevron-up"></i>
                             </a>
-                            <a class="close-link">
-                                <i class="fa fa-times"></i>
-                            </a>
                         </div>
                     </div>
+                    <h2 class="d-none d-print-block">Avance semanal de Produccion</h2>
                     <div class="ibox-content text-center">
                         <div id="graficoPartialView">
                             <partial name="_GraficoEtapas.cshtml" model="null" />
@@ -49,7 +56,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-7">
+            <div class="col-xl-7">
                 <div id="tablaIRankingSucursales">
                     <partial name="_RankingSucursalesTable.cshtml" model="Model.TopSucursalesSolicitudes" />
                 </div>
@@ -102,6 +109,10 @@
             var cantidad = JSON.parse('@Html.Raw(Json.Serialize(Model.Cantidad))');
             updateGrafico(etapas, cantidad);
         });
+
+        function Reporte() {
+            window.print();
+        }
 
         function updateGrafico(etapas, cantidad) {
 
