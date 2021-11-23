@@ -29,31 +29,38 @@
                 </tr>
             </thead>
             <tbody>
-                    @if (Model != null && Model.Any())
-                    {
+                @if (Model != null && Model.Any())
+                {
 
-                        @foreach (var item in Model)
-                        {
-                            i = i + 1;
-                            <tr>
-                                <td>@i</td>
-                                <td>@item.Articulo.CodigoArticulo</td>
-                                <td>@item.Articulo.Nombre</td>
-                                <td>@item.Articulo.Descripcion</td>
-                                <td>@item.Articulo.ArticuloCategoria.Descripcion</td>
+                    @foreach (var item in Model)
+                    {
+                        i = i + 1;
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.Articulo.CodigoArticulo</td>
+                            <td>@item.Articulo.Nombre</td>
+                            <td>@item.Articulo.Descripcion</td>
+                            <td>@item.Articulo.ArticuloCategoria.Descripcion</td>
+                            @if (item.StockTotal < item.StockMinimo)
+                            {
                                 <td class="text-danger">@item.StockTotal Unidades</td>
-                                <td class="text-danger">@item.StockMinimo Unidades</td>
-                            </tr>
-                        }
+                            }
+                            else
+                            {
+                                <td>@item.StockTotal Unidades</td>
+                            }
+                            <td>@item.StockMinimo Unidades</td>
+                        </tr>
                     }
-                    else
-                    {
+                }
+                else
+                {
 
-                         <tr class="my-4">
-                             <td colspan="6" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
-                         </tr>
-                    }
-                </tbody>
+                    <tr class="my-4">
+                        <td colspan="6" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
+                    </tr>
+                }
+            </tbody>
         </table>
     </div>
 </div>

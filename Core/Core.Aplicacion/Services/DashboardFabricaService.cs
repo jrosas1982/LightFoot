@@ -158,13 +158,25 @@ namespace Core.Aplicacion.Services
                 .Include(x => x.Sucursal)
                 .AsNoTracking()
                 .ToListAsync();
-            
+
             var masSolicitudesList = masSolicitudes
-                .GroupBy(x => x.Sucursal)
-                .Select(x => new Tuple<Sucursal, int>(x.Key, x.Count()))
+                .GroupBy(x => x.Sucursal.Id)
+                .Select(x => new Tuple<int, int>(x.Key, x.Count()))
                 .Take(n)
                 .ToList();
 
+            var sucursales = await _db.Sucursales.ToListAsync();
+
+            IList<Tuple<Sucursal, int>> result = new List<Tuple<Sucursal, int>>();
+
+            foreach (var item in masSolicitudesList)
+            {
+                var sucursal = sucursales.Single(x => x.Id == item.Item1);
+
+                result.Add(new Tuple<Sucursal, int>(sucursal, item.Item2));
+            }
+
+            result = result.OrderByDescending(x => x.Item2).ToList();
             // var masVendidos = await _db.VentasDetalle
             //    .Where(x => !x.Eliminado)
             //    .AsNoTracking()
@@ -181,7 +193,7 @@ namespace Core.Aplicacion.Services
             //    .ThenBy(x => x.Item1.Nombre)
             //    .Take(n);
 
-            return masSolicitudesList;
+            return result;
 
 
         }
