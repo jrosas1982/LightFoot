@@ -27,7 +27,7 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Index()
         {
-            var stockBajo = await _dashboardSucursalService.GetArticulosBajoStock(1);
+            var stockBajo = await _dashboardSucursalService.GetArticulosBajoStock(-1);
  
             return View(stockBajo);
         }

@@ -53,7 +53,10 @@ namespace Core.Aplicacion.Services
         public async Task<IEnumerable<ArticuloStock>> GetArticulosBajoStock(int n)
         {
             int idSucursal = int.Parse(_db.GetSucursalId());
-
+            if (n == -1)
+            {
+                n = _db.ArticulosStock.Count();
+            }
             var stockBajo = await _db.ArticulosStock
                 .Where(x => !x.Eliminado)
                 .AsNoTracking()
