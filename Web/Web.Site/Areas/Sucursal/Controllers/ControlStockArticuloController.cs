@@ -52,7 +52,7 @@ namespace Web.Site.Areas
         {
             articuloStock.IdSucursal = int.Parse(User.GetUserIdSucursal());
             await _controlStockArticuloService.CrearArticuloStock(articuloStock);
-            return Json(new { redirectToUrl = @Url.Action("Index", "ControlStockArticulo", new { area = "abm" }) });
+            return Json(new { redirectToUrl = @Url.Action("Index", "ControlStockArticulo", new { area = "sucursal" }) });
             //return RedirectToAction("Index");
         }
 
@@ -60,7 +60,7 @@ namespace Web.Site.Areas
         {
             articuloStock.IdSucursal = int.Parse(User.GetUserIdSucursal());
             await _controlStockArticuloService.EditarArticuloStock(articuloStock);
-            return Json(new { redirectToUrl = @Url.Action("Index", "ControlStockArticulo", new { area = "abm" }) });
+            return Json(new { redirectToUrl = @Url.Action("Index", "ControlStockArticulo", new { area = "sucursal" }) });
             //return RedirectToAction("Index");
         }
 

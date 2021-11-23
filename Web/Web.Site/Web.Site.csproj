@@ -1777,6 +1777,7 @@
 
 
   <ItemGroup>
+    <Folder Include="Areas\Reporte\Models\" />
     <Folder Include="Views\Gestion\Sucursal\" />
     <Folder Include="wwwroot\custom\ChosenNew\" />
   </ItemGroup>

@@ -66,7 +66,6 @@ namespace Core.Aplicacion.Services
                 .ToListAsync();
 
             return stockBajo;
-
         }
 
         public async Task<IEnumerable<CajaSucursal>> GetUltimosMovimientos(int n)
