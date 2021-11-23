@@ -30,6 +30,7 @@ namespace Web.Site.Areas.Abm.Controllers
                 ViewBag.MensajeError = "Error inesperado con Mensaje: " + msj;
             }
             var articuloCategoriasList = await _articuloCategoriaService.GetCategorias();
+            ViewBag.TypeaheadCategoria = articuloCategoriasList.Select(x => x.Descripcion).Distinct();
             return View(articuloCategoriasList.ToList());
         }
 
@@ -85,7 +86,23 @@ namespace Web.Site.Areas.Abm.Controllers
         {
             var result = await _articuloCategoriaService.EliminarCategoria(articuloCategoria);
             return Ok(result);
-        }
+        }    
+  
+        public async Task<IActionResult> FiltrarCategoriaArticulos(string NombreCategoriaArticulo)
+        {
+            var articuloCategorias = await _articuloCategoriaService.GetCategorias();
 
+            if (!string.IsNullOrWhiteSpace(NombreCategoriaArticulo))
+            {
+                articuloCategorias = articuloCategorias.Where(x => x.Id.ToString().Equals(NombreCategoriaArticulo.ToLower())
+                                                            || x.Descripcion.ToLower().Equals(NombreCategoriaArticulo.ToLower())).ToList();
+
+                if (!articuloCategorias.Any())
+                    articuloCategorias = articuloCategorias.Where(x => x.Id.ToString().Contains(NombreCategoriaArticulo.ToLower())
+                                                            || x.Descripcion.ToLower().Contains(NombreCategoriaArticulo.ToLower())).ToList();
+            }
+
+            return PartialView("_ArticuloCategoriaIndexTable", articuloCategorias);
+        }
     }
 }
