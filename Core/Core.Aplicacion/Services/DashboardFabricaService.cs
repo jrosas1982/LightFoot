@@ -123,14 +123,53 @@ namespace Core.Aplicacion.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Tuple<Sucursal, int>>> GetTopSucursalesSolicitudes(int n)
+        public async Task<IEnumerable<Tuple<Sucursal, int>>> GetTopSucursalesSolicitudes(int n)
         {
-            throw new NotImplementedException();
+            int idSucursal = int.Parse(_db.GetSucursalId());
+
+            var masSolicitudes = await _db.Solicitudes
+                .Where(x => !x.Eliminado)
+                .AsNoTracking()
+                .GroupBy(x => x.Sucursal)
+                .Select(x => new Tuple<Sucursal, int>(x.Key, x.Count()))
+                .Take(n)
+                .ToListAsync();
+
+            // var masVendidos = await _db.VentasDetalle
+            //    .Where(x => !x.Eliminado)
+            //    .AsNoTracking()
+            //    .Where(x => x.Venta.IdSucursal == idSucursal && x.Venta.FechaCreacion > DateTime.UtcNow.AddDays(-30))
+            //    .Include(x => x.Articulo)
+            //        .ThenInclude(x => x.ArticuloCategoria)
+            //    .Select(x => new { Articulo = x.Articulo, Cantidad = x.Cantidad })
+            //    .ToListAsync();
+
+            //var masVendidosList = masVendidos
+            //    .GroupBy(x => x.Articulo)
+            //    .Select(x => new Tuple<Articulo, int>(x.Key, x.Sum(x => x.Cantidad)))
+            //    .OrderByDescending(x => x.Item2)
+            //    .ThenBy(x => x.Item1.Nombre)
+            //    .Take(n);
+
+            return masSolicitudes;
+
+
         }
 
-        public Task<IEnumerable<Tuple<EtapaOrdenProduccion, int>>> GetAvanceProduccion(TimeSpan plazoTiempo)
+        public async Task<IEnumerable<Tuple<EtapaOrdenProduccion, int>>> GetAvanceProduccion(DateTime fecha, TimeSpan plazoTiempo)
         {
-            throw new NotImplementedException();
+            var start = fecha;
+            var end = fecha.Add(-plazoTiempo);
+
+            var ordenesPorEtapa = await _db.OrdenesProduccion
+                .Where(x => !x.Eliminado)
+                .AsNoTracking()
+                .Where(x => (x.FechaCreacion.Date > start.Date) && (x.FechaCreacion.Date < end.Date))
+                .GroupBy(x => x.EtapaOrdenProduccion)
+                .Select(x => new Tuple<EtapaOrdenProduccion, int>(x.Key, x.Count()))
+                .ToListAsync();
+
+            return ordenesPorEtapa;
         }
 
 
