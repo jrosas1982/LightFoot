@@ -95,12 +95,13 @@
 
                 var etapas = JSON.parse('@Html.Raw(Json.Serialize(etapas))')
                 var cantidad = JSON.parse('@Html.Raw(Json.Serialize(cantidad))')
+                var colores = ['rgba(247, 184, 178, 1)', 'rgba(172, 185, 232, 1)', 'rgba(117, 185, 219, 1)', 'rgba(155, 211, 222, 1)', 'rgba(204, 153, 222, 1)', 'rgba(233, 223, 143, 1)', 'rgba(178, 236, 171, 1)'];
 
                 var doughnutData = {
                     labels: etapas,
                     datasets: [{
                         data: cantidad,
-                        backgroundColor: ["#a3bfdc", "#81b4ca", "#85bfc7", "#73bfb8", "#55b8a7", "#6bc799"]
+                        backgroundColor: colores
                     }]
                 };
                 var doughnutOptions = {
