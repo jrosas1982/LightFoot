@@ -18,6 +18,69 @@ namespace Core.Aplicacion.Services
     public class DashboardFabricaService : IDashboardFabricaService
     {
 
+        private readonly AppDbContext _db;
+        private readonly ILogger<ProveedorService> _logger;
+
+        public DashboardFabricaService(AppDbContext db, ILogger<ProveedorService> logger)
+        {
+            _db = db;
+            _logger = logger;
+        }
+
+
+        public async Task<IEnumerable<Solicitud>> GetSolicitudes()
+        {
+            var solicitudes = await _db.Solicitudes.Where(x => !x.Eliminado).ToListAsync();
+
+            return solicitudes;
+        }
+
+        public async Task<IEnumerable<OrdenProduccion>> GetOrdenes()
+        {
+            var ordenes = await _db.OrdenesProduccion.Where(x => !x.Eliminado).ToListAsync();
+
+            return ordenes;
+        }
+        public async Task<IEnumerable<Insumo>> GetInsumosBajoStock(int n)
+        {
+            int idSucursal = int.Parse(_db.GetSucursalId());
+
+            var stockBajo = await _db.Insumos
+                .Where(x => !x.Eliminado)
+                .AsNoTracking()
+                .Where(x => x.StockTotal >= x.StockTotal * 0.25)
+                .OrderByDescending(x => x.StockTotal)
+                .Take(n)
+                .ToListAsync();
+
+            return stockBajo;
+        }
+        public async Task<IEnumerable<Tuple<int, int>>> RankingSucursales()
+        {
+            var solicitudes = await _db.Solicitudes.Where(x => !x.Eliminado).ToListAsync();
+
+            //var RankingSucursales = solicitudes.GroupBy(x => x.IdSucursal).Select(sp => new { 
+            //    IdSucursal = sp.Key,
+            //    NombreSucursal = solicitudes.Select(x => x.Sucursal.Nombre),
+            //    CantPedidos = sp.Count()
+            //}).ToList();
+            var masVendidos = await _db.Solicitudes
+                         .Where(x => !x.Eliminado)
+                         .AsNoTracking()
+                         .Where(x => x.FechaCreacion > DateTime.UtcNow.AddDays(-30))
+                         .Select(x => new { Solicitud = x , Cantidad = x })
+                         .ToListAsync();
+
+            var masVendidosList = masVendidos
+                .GroupBy(x => x.Solicitud.IdSucursal)
+                .Select(x => new Tuple<int, int>(x.Key, x.Count()))
+                .OrderByDescending(x => x.Item2)
+                .ThenBy(x => x.Item1);
+
+            return masVendidosList;
+        }
+
+
         //await _hubContext.Clients.All.SendAsync("FabricaDashboardUpdate");
     }
 }
