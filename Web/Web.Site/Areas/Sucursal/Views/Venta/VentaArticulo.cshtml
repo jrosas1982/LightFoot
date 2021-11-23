@@ -134,7 +134,7 @@
                     <div class="modal-body py-2">
                         <div class="form-group">
                             <label class="font-normal">Cantidad</label>
-                            <input class="form-control" type="number" id="ArticuloCantidad" placeholder="Cantidad" required oninput="ActualizarPrecio()">
+                            <input class="form-control" type="number" id="ArticuloCantidad" placeholder="Cantidad" required oninput="ActualizarPrecio()" min="1">
                         </div>
                     </div>
                     <div class="modal-body py-2">
@@ -190,7 +190,7 @@
             $("#Precio").val("");
         }
 
-        function ActualizarPrecio() {
+        function ActualizarPrecio(input) {
             $.ajax({
                 type: "post",
                 url: "/sucursal/Venta/ActualizarPrecio",
@@ -199,7 +199,7 @@
                     VentaTipo: $("#dropdownTipoVenta :selected").val(),
                     Cantidad: $("#ArticuloCantidad").val()
                 },
-                success: function (precio) {
+                success: function (precio) {                   
                     $("#Precio").val(precio);
                 }
             });

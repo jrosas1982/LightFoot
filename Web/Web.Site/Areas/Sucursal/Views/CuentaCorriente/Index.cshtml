@@ -31,93 +31,95 @@
           <button type="button" class="btn btn-w-m btn-default w-100" onclick="ReporteSimple()">
             <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
         </button>
-        </div>
+    </div>
 </div>
 <div class="d-none d-print-block w-100">
     <div class="alert alert-default" role="alert">
         Reporte de Cta Corriente @DateTime.Now
     </div>
 </div>
-<div class="ibox-content m-b-sm border-bottom d-print-none">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="form-group">
-                <div class="typeahead__container">
-                    <div class="typeahead__field">
-                        <div class="typeahead__query">
-                            <input class="js-typeahead typeaheadCustom " id="typeCuentaCorriente" placeholder="Buscar Cuenta Corriente de Cliente" autocomplete="on" />
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox-content m-b-sm border-bottom d-print-none">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <div class="typeahead__container">
+                        <div class="typeahead__field">
+                            <div class="typeahead__query">
+                                <input class="js-typeahead typeaheadCustom " id="typeCuentaCorriente" placeholder="Buscar Cuenta Corriente de Cliente" autocomplete="on" />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-sm-12 d-flex align-items-end justify-content-end">
+                <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="Filtrar()">
+                    <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                </button>
+            </div>
+        </div>
     </div>
+
+
     <div class="row">
-        <div class="col-sm-12 d-flex align-items-end justify-content-end">
-            <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="Filtrar()">
-                <i class="fa fa-search" aria-hidden="true"></i> Buscar
-            </button>
-        </div>
-    </div>
-</div>
-
-
-<div class="row">
-    <div class="col-lg-12">
-        <div class="ibox ">
-            <div class="ibox-title">
-                <h5>Cuentas Corrientes</h5>
-            </div>
-            <div class="ibox-content">
-                <div id="VentasPartialView">
-                    <partial name="_CuentaIndexTable.cshtml" model="Model" />
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title" >
+                    <h5>Cuentas Corrientes</h5>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-@*MODAL detalle*@
-
-<div class="modal inmodal fade" id="ModalDetalle" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header pb-1">
-                <div class="row">
-                    <div class="col-sm-12 d-flex justify-content-center">
-                        <h1 style="font-size:30px;">Detalle Cuenta Corriente</h1>
+                <div class="ibox-content">
+                    <div id="VentasPartialView">
+                        <partial name="_CuentaIndexTable.cshtml" model="Model" />
                     </div>
                 </div>
             </div>
-            <div class="modal-body py-2">
-                <div class="mb-3" id="partialViewCabeceraModal">
-                    <partial name="_ComprasClienteCabeceraDetalle.cshtml" model="null" />
+        </div>
+    </div>
+    @*MODAL detalle*@
+
+    <div class="modal inmodal fade" id="ModalDetalle" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header pb-1">
+                    <div class="row">
+                        <div class="col-sm-12 d-flex justify-content-center">
+                            <h1 style="font-size:30px;">Detalle Cuenta Corriente</h1>
+                        </div>
+                    </div>
                 </div>
-                <div id="partialViewEventos">
-                    <partial name="_ComprasClienteDetalle.cshtml" model="null" />
+                <div class="modal-body py-2">
+                    <div class="mb-3" id="partialViewCabeceraModal">
+                        <partial name="_ComprasClienteCabeceraDetalle.cshtml" model="null" />
+                    </div>
+                    <div id="partialViewEventos">
+                        <partial name="_ComprasClienteDetalle.cshtml" model="null" />
+                    </div>
+                    <div id="partialViewModalDetalle">
+                        <partial name="_PagosClienteDetalle.cshtml" model="null" />
+                    </div>
                 </div>
-                <div id="partialViewModalDetalle">
-                    <partial name="_PagosClienteDetalle.cshtml" model="null" />
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
+    @section Styles {
 
-@section Styles {
+    }
 
-}
+    @section Scripts {
 
-@section Scripts {
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.footable').footable();
-        });
-    </script>
-    <script type="text/javascript">
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.footable').footable();
+            });
+        </script>
+        <script type="text/javascript">
 
     var typeaheadICliente = @Html.Raw(Json.Serialize(TypeaheadIdCliente));
     var typeaheadNCliente = @Html.Raw(Json.Serialize(TypeaheadNombreCliente));
@@ -152,68 +154,68 @@
                 }
             });
         }
-    </script>
+        </script>
 
-    <script type="text/javascript">
-        function verDetalle(id) {
-            ActualizarCabeceraModal(id)
-            ActualizarDetalleCompra(id);
-            ActualizarPagosRealizados(id);
+        <script type="text/javascript">
+            function verDetalle(id) {
+                ActualizarCabeceraModal(id)
+                ActualizarDetalleCompra(id);
+                ActualizarPagosRealizados(id);
 
-        }
+            }
 
-        function ActualizarCabeceraModal(id) {
-            $.ajax({
-                type: "Get",
-                url: "/sucursal/CuentaCorriente/CargarInfoCLiente",
-                traditional: true,
-                data: {
-                    IdCliente: id
-                },
-                contentType: "application/json",
-                success: function (response) {
-                    $("#partialViewCabeceraModal").html(""); //clear the records content
-                    $("#partialViewCabeceraModal").html(response);  //add the updated content.
-                    //$('.footable').footable();
-                    //$('.footable').trigger('footable_redraw');
-                }
-            });
-        }
+            function ActualizarCabeceraModal(id) {
+                $.ajax({
+                    type: "Get",
+                    url: "/sucursal/CuentaCorriente/CargarInfoCLiente",
+                    traditional: true,
+                    data: {
+                        IdCliente: id
+                    },
+                    contentType: "application/json",
+                    success: function (response) {
+                        $("#partialViewCabeceraModal").html(""); //clear the records content
+                        $("#partialViewCabeceraModal").html(response);  //add the updated content.
+                        //$('.footable').footable();
+                        //$('.footable').trigger('footable_redraw');
+                    }
+                });
+            }
 
-        function ActualizarDetalleCompra(id) {
-            $.ajax({
-                type: "Get",
-                url: "/sucursal/CuentaCorriente/CargarComprasCliente?IdCliente=" + id,
-                traditional: true,
-                data: {
-                    IdCliente: id
-                },
-                contentType: "application/json",
-                success: function (response) {
-                    $("#partialViewEventos").html(""); //clear the records content
-                    $("#partialViewEventos").html(response);  //add the updated content.
-                    $('.footable').footable();
-                    $('.footable').trigger('footable_redraw');
-                }
-            });
-        }
+            function ActualizarDetalleCompra(id) {
+                $.ajax({
+                    type: "Get",
+                    url: "/sucursal/CuentaCorriente/CargarComprasCliente?IdCliente=" + id,
+                    traditional: true,
+                    data: {
+                        IdCliente: id
+                    },
+                    contentType: "application/json",
+                    success: function (response) {
+                        $("#partialViewEventos").html(""); //clear the records content
+                        $("#partialViewEventos").html(response);  //add the updated content.
+                        $('.footable').footable();
+                        $('.footable').trigger('footable_redraw');
+                    }
+                });
+            }
 
-        function ActualizarPagosRealizados(id) {
-            $.ajax({
-                type: "Get",
-                url: "/sucursal/CuentaCorriente/CargarPagosRecibidos",
-                traditional: true,
-                data: {
-                    IdCliente: id
-                },
-                contentType: "application/json",
-                success: function (response) {
-                    $("#partialViewModalDetalle").html(""); //clear the records content
-                    $("#partialViewModalDetalle").html(response);  //add the updated content.
-                    $('.footable').footable();
-                    $('.footable').trigger('footable_redraw');
-                }
-            });
-        }
-    </script>
-}
+            function ActualizarPagosRealizados(id) {
+                $.ajax({
+                    type: "Get",
+                    url: "/sucursal/CuentaCorriente/CargarPagosRecibidos",
+                    traditional: true,
+                    data: {
+                        IdCliente: id
+                    },
+                    contentType: "application/json",
+                    success: function (response) {
+                        $("#partialViewModalDetalle").html(""); //clear the records content
+                        $("#partialViewModalDetalle").html(response);  //add the updated content.
+                        $('.footable').footable();
+                        $('.footable').trigger('footable_redraw');
+                    }
+                });
+            }
+        </script>
+    }

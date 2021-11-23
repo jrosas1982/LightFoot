@@ -122,7 +122,7 @@
                         <div class="modal-body py-2">
                             <div class="form-group">
                                 <label class="font-normal">Precio</label>
-                                <input id="Precio" class="form-control" type="number" min="0" max="" value="0" placeholder="" required>
+                                <input id="Precio" class="form-control" type="number" min="0" step="any" max="" value="0" placeholder="" required>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -185,8 +185,8 @@
                     url: '@url_base' + 'AgregarDetalleInsumo/',
                     data: {
                         IdProveedor: $("#proveedorSeleccionado").val(),
-                        IdInsumo: $("#IdInsumo").val(),
-                        Precio: $("#Precio").val()
+                        IdInsumo: $("#IdInsumo").val(),                        
+                        Precio: parseFloat($("#Precio").val()).toFixed(2).replace(".", ","),
                     }
                 }).done(function (partialView) {
                     $('#ListaAriticulo tbody:last-child').after().append(partialView);

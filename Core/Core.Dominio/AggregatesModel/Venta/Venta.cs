@@ -26,9 +26,6 @@ namespace Core.Dominio.AggregatesModel
         [ForeignKey("IdCliente")]
         public virtual Cliente Cliente { get; set; }
 
-        [ForeignKey("IdUsuario ")]
-        public virtual Usuario Usuario { get; set; }
-
         public virtual ICollection<VentaDetalle> VentaDetalles { get; set; } = new HashSet<VentaDetalle>();
     }
     //Venta (Id, IdSucursal, IdCliente, IdVentaTipo, IdUsuario, MontoTotal)

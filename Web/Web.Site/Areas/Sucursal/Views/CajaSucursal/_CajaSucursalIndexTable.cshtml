@@ -6,49 +6,57 @@
 
 }
 
-@if (@Model != null)
-{
-    <div class="table-responsive">
-        <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
-            <thead>
-                <tr>
-                    <th style="background-color: #caeee982;">#Movimiento</th>
-                    <th style="background-color: #caeee982;">Movimiento</th>
-                    <th style="background-color: #caeee982;">Monto</th>
-                    <th style="background-color: #caeee982;">Comentario</th>
-                    <th style="background-color: #caeee982;">Fecha</th>
-                    <th style="background-color: #caeee982;">Creado Por</th>
-                    @*<th style="background-color: #caeee982;" data-sort-ignore="true" class="d-print-none">Acciones</th>*@
-                </tr>
-            </thead>
-            <tbody>
+<div class="table-responsive">
+    <table class="footable table table-stripped table-hover toggle-arrow-tiny" data-page-size="15">
+        <thead>
+            <tr>
+                <th>#Movimiento</th>
+                <th>Movimiento</th>
+                <th>Monto</th>
+                <th>Comentario</th>
+                <th>Fecha</th>
+                <th>Creado Por</th>
+                @*<th style="background-color: #caeee982;" data-sort-ignore="true" class="d-print-none">Acciones</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
                 @foreach (var venta in @Model)
                 {
-                <tr>
-                    <td>@venta.Id</td>
-                    <td>@venta.TipoMovimiento</td>
-                    <td>@venta.Monto</td>
-                    <td>@venta.Comentario</td>
-                    <td>@venta.FechaCreacion</td>
-                    <td>@venta.CreadoPor</td>
-                    @*<td class="d-print-none">
-                        <button class="btn btn-outline btn-success btn-xs" type="button"
-                                onclick="verDetalle(@venta.Id)"
-                                data-toggle="modal"
-                                data-target="#ModalDetalle">
-                            Ver Detalles
-                        </button>
-                    </td>*@
-                </tr>
+                    <tr>
+                        <td>@venta.Id</td>
+                        <td>@venta.TipoMovimiento</td>
+                        <td>@venta.Monto</td>
+                        <td>@venta.Comentario</td>
+                        <td>@venta.FechaCreacion</td>
+                        <td>@venta.CreadoPor</td>
+                        @*<td class="d-print-none">
+                    <button class="btn btn-outline btn-success btn-xs" type="button"
+                            onclick="verDetalle(@venta.Id)"
+                            data-toggle="modal"
+                            data-target="#ModalDetalle">
+                        Ver Detalles
+                    </button>
+                </td>*@
+                    </tr>
                 }
-            </tbody>
-            <tfoot>
+            }
+            else
+            {
                 <tr>
-                    <td colspan="6">
-                        <ul class="pagination float-right"></ul>
-                    </td>
+                    <td colspan="7" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
                 </tr>
-            </tfoot>
-        </table>
-    </div>
-}
+            }
+
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="6">
+                    <ul class="pagination float-right"></ul>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
