@@ -102,7 +102,7 @@ namespace LightFoot.Api.Publica.Controllers.v1
             var venta = _db.Ventas
                 .Include(x => x.Sucursal)
                 .Include(x => x.Cliente)
-                .Include(x => x.Usuario)
+                .Include(x => x.UsuarioVenta)
                 .Include(x => x.VentaDetalles)
                 .ThenInclude(x => x.Articulo)
                 .SingleOrDefault(x => x.Id == idVenta); // Busco la venta en la db
@@ -115,7 +115,7 @@ namespace LightFoot.Api.Publica.Controllers.v1
                 IdVenta = venta.Id,
                 NombreSucursal = venta.Sucursal.Nombre,
                 NombreCliente = venta.Cliente.Nombre,
-                NombreUsuarioVendedor = venta.Usuario.NombreUsuario + venta.Usuario.Apellido,
+                UsuarioVendedor = venta.UsuarioVenta,
                 VentaTipo = venta.VentaTipo,
                 MontoTotal = venta.MontoTotal,
                 DescuentoRealizado = venta.Descuento,
