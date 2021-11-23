@@ -38,6 +38,9 @@ namespace Web.Site.Areas
         public async Task<IActionResult> Index()
         {
             var proveedores = await _proveedorService.GetProveedores();
+
+           ViewBag.TypeaheadProveedor = proveedores.Select( x => x.Nombre).Distinct()                ;
+           ViewBag.TypeaheadIdProveedor = proveedores.Select(x => x.Id.ToString());
             return View(proveedores);
         }
 
@@ -207,6 +210,24 @@ namespace Web.Site.Areas
         {
             await _proveedorArticuloService.ModificarPrecioArticulo(id, precio);
             var proveedores = await _proveedorService.GetProveedores();
+            return PartialView("_ProveedorIndexTable", proveedores);
+        }
+        public async Task<IActionResult> FiltrarProveedor(string NombreProveedor)
+        {
+            var proveedores = await _proveedorService.GetProveedores();
+
+            if (!string.IsNullOrWhiteSpace(NombreProveedor))
+            {
+                proveedores = proveedores.Where(x => x.Id.ToString().Equals(NombreProveedor.ToLower())
+                                                            || x.Nombre.ToLower().Equals(NombreProveedor.ToLower())
+                                                            || x.Id.ToString().ToLower().Equals(NombreProveedor.ToLower())).ToList();
+
+                if (!proveedores.Any())
+                    proveedores = proveedores.Where(x => x.Id.ToString().Contains(NombreProveedor.ToLower())
+                                                            || x.Nombre.ToLower().Contains(NombreProveedor.ToLower())
+                                                            || x.Id.ToString().ToLower().Contains(NombreProveedor.ToLower())).ToList();
+
+            }
             return PartialView("_ProveedorIndexTable", proveedores);
         }
 
