@@ -2,7 +2,7 @@
 @using Web.Site.Areas
 @model IEnumerable<CajaSucursal>
 @{
-
+    int i = 0;
 }
 
 
@@ -32,8 +32,9 @@
 
                     @foreach (var item in Model)
                     {
+                        i = i + 1;
                         <tr>
-                            <td>@item.Id</td>
+                            <td>@i</td>
                             <td>@item.TipoMovimiento</td>
                             <td>@item.Monto</td>
                             <td>@item.Comentario</td>

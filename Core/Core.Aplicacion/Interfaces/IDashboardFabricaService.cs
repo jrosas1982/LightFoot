@@ -21,8 +21,8 @@ namespace Core.Aplicacion.Interfaces
         public Task<int> GetOrdenesProduccionFinalizadas(DateTime fecha); //del dia
         public Task<int> GetOrdenesProduccionFinalizadas(DateTime fecha, TimeSpan plazoTiempo); //ultima semana
 
-        public Task<int> GetOrdenesProduccionEnExpedicion(DateTime fecha); //del dia
-        public Task<int> GetOrdenesProduccionEnExpedicion(DateTime fecha, TimeSpan plazoTiempo); //ultima semana
+        public Task<int> GetOrdenesProduccionCanceladas(DateTime fecha); //del dia
+        public Task<int> GetOrdenesProduccionCanceladas(DateTime fecha, TimeSpan plazoTiempo); //ultima semana
 
         public Task<IEnumerable<Tuple<Sucursal, int>>> GetTopSucursalesSolicitudes(int n); //top n sucursales
         public Task<IEnumerable<Tuple<EtapaOrdenProduccion, int>>> GetAvanceProduccion(DateTime fecha, TimeSpan plazoTiempo); //avance semanal

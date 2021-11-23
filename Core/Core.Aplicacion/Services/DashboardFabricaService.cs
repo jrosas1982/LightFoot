@@ -49,7 +49,7 @@ namespace Core.Aplicacion.Services
                 .Where(x => !x.Eliminado)
                 .AsNoTracking()
                 //.Where(x => x.StockTotal >= x.StockTotal * 0.25)
-                .OrderByDescending(x => x.StockTotal)
+                .OrderBy(x => x.StockTotal)
                 .Take(n)
                 .ToListAsync();
 
@@ -103,24 +103,50 @@ namespace Core.Aplicacion.Services
             return response;
         }
 
-        public Task<int> GetOrdenesProduccionFinalizadas(DateTime fecha)
+        public async Task<int> GetOrdenesProduccionFinalizadas(DateTime fecha)
         {
-            throw new NotImplementedException();
+            var response = await _db.OrdenesProduccion
+                .Where(x => !x.Eliminado)
+                .Where(x => x.FechaCreacion.Date == fecha.Date && x.EstadoOrdenProduccion == EstadoOrdenProduccion.Finalizada)
+                .CountAsync();
+
+            return response;
         }
 
-        public Task<int> GetOrdenesProduccionFinalizadas(DateTime fecha, TimeSpan plazoTiempo)
+        public async Task<int> GetOrdenesProduccionFinalizadas(DateTime fecha, TimeSpan plazoTiempo)
         {
-            throw new NotImplementedException();
+            var start = fecha.Add(-plazoTiempo);
+            var end = fecha.AddDays(1);
+
+            var response = await _db.OrdenesProduccion
+                .Where(x => !x.Eliminado)
+                .Where(x => (x.FechaCreacion.Date > start.Date) && (x.FechaCreacion.Date < end.Date) && x.EstadoOrdenProduccion == EstadoOrdenProduccion.Finalizada)
+                .CountAsync();
+
+            return response;
         }
 
-        public Task<int> GetOrdenesProduccionEnExpedicion(DateTime fecha)
+        public async Task<int> GetOrdenesProduccionCanceladas(DateTime fecha)
         {
-            throw new NotImplementedException();
+            var response = await _db.OrdenesProduccion
+                .Where(x => !x.Eliminado)
+                .Where(x => x.FechaCreacion.Date == fecha.Date && x.EstadoOrdenProduccion == EstadoOrdenProduccion.Cancelada)
+                .CountAsync();
+
+            return response;
         }
 
-        public Task<int> GetOrdenesProduccionEnExpedicion(DateTime fecha, TimeSpan plazoTiempo)
+        public async Task<int> GetOrdenesProduccionCanceladas(DateTime fecha, TimeSpan plazoTiempo)
         {
-            throw new NotImplementedException();
+            var start = fecha.Add(-plazoTiempo);
+            var end = fecha.AddDays(1);
+
+            var response = await _db.OrdenesProduccion
+                .Where(x => !x.Eliminado)
+                .Where(x => (x.FechaCreacion.Date > start.Date) && (x.FechaCreacion.Date < end.Date) && x.EstadoOrdenProduccion == EstadoOrdenProduccion.Cancelada)
+                .CountAsync();
+
+            return response;
         }
 
         public async Task<IEnumerable<Tuple<Sucursal, int>>> GetTopSucursalesSolicitudes(int n)

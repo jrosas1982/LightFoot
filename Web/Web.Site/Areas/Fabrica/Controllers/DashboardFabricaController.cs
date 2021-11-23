@@ -40,34 +40,37 @@ namespace Web.Site.Areas
 
             DashboardFabricaModel dashboard = new DashboardFabricaModel()
             {
-                TopSucursalesSolicitudes = await _dashboardFabricaService.GetTopSucursalesSolicitudes(5),
-                AvanceProduccion = await _dashboardFabricaService.GetAvanceProduccion(DateTime.Now, TimeSpan.FromDays(7)),
                 DashbardFabricaInfoGeneralModel = new DashbardFabricaInfoGeneralModel()
                 {
                     SolicitudesRecibidasFecha = await _dashboardFabricaService.GetSolicitudesRecibidas(DateTime.Now),
-                    SolicitudesRecibidasPlazo = await _dashboardFabricaService.GetSolicitudesRecibidas(DateTime.Now, TimeSpan.FromDays(7))
+                    SolicitudesRecibidasPlazo = await _dashboardFabricaService.GetSolicitudesRecibidas(DateTime.Now, TimeSpan.FromDays(7)),
+                    OrdenesProduccionFinalizadasFecha = await _dashboardFabricaService.GetOrdenesProduccionFinalizadas(DateTime.Now),
+                    OrdenesProduccionFinalizadasPlazo = await _dashboardFabricaService.GetOrdenesProduccionFinalizadas(DateTime.Now, TimeSpan.FromDays(7)),
+                    OrdenesProduccionEnExpedicionFecha = await _dashboardFabricaService.GetOrdenesProduccionCanceladas(DateTime.Now),
+                    OrdenesProduccionEnExpedicionPlazo = await _dashboardFabricaService.GetOrdenesProduccionCanceladas(DateTime.Now, TimeSpan.FromDays(7))                                      
                 },
-
-                Solicitudes = await _dashboardFabricaService.GetSolicitudes(),
-                Ordenes = await _dashboardFabricaService.GetOrdenes(),
+                TopSucursalesSolicitudes = await _dashboardFabricaService.GetTopSucursalesSolicitudes(5),
+                AvanceProduccion = await _dashboardFabricaService.GetAvanceProduccion(DateTime.Now, TimeSpan.FromDays(7)),
                 InsumosBajoStock = await _dashboardFabricaService.GetInsumosBajoStock(5)
+                //Solicitudes = await _dashboardFabricaService.GetSolicitudes(),
+                //Ordenes = await _dashboardFabricaService.GetOrdenes(),
             //    UltimosMovimientos = await _dashboardSucursalService.GetUltimosMovimientos(5),
             //    UltimasVentas = await _dashboardSucursalService.GetUltimasVentas(5)
             };
 
-            var solicitudes = await _dashboardFabricaService.GetSolicitudes();
-            ViewBag.SolicitudesHoy = solicitudes.Where(x => x.FechaCreacion >= DateTime.Now.AddDays(-1)).Count();
-            ViewBag.SolicitudesSemana = solicitudes.Where(x => x.FechaCreacion >= DateTime.Now.AddDays(-7)).Count();
+            //var solicitudes = await _dashboardFabricaService.GetSolicitudes();
+            //ViewBag.SolicitudesHoy = solicitudes.Where(x => x.FechaCreacion >= DateTime.Now.AddDays(-1)).Count();
+            //ViewBag.SolicitudesSemana = solicitudes.Where(x => x.FechaCreacion >= DateTime.Now.AddDays(-7)).Count();
 
-            var ordenes = await _dashboardFabricaService.GetOrdenes();
+            //var ordenes = await _dashboardFabricaService.GetOrdenes();
 
-            // buscar el enum
-            ViewBag.cantTerminadasHoy = ordenes.Where(x => x.IdEtapaOrdenProduccion == (int)EstadoOrdenProduccion.Finalizada  && x.FechaModificacion >= DateTime.Now.AddDays(-1)).Count();
-            ViewBag.cantTerminadasSemana = ordenes.Where(x => x.IdEtapaOrdenProduccion == (int)EstadoOrdenProduccion.Finalizada && x.FechaModificacion >= DateTime.Now.AddDays(-7)).Count();
+            //// buscar el enum
+            //ViewBag.cantTerminadasHoy = ordenes.Where(x => x.IdEtapaOrdenProduccion == (int)EstadoOrdenProduccion.Finalizada  && x.FechaModificacion >= DateTime.Now.AddDays(-1)).Count();
+            //ViewBag.cantTerminadasSemana = ordenes.Where(x => x.IdEtapaOrdenProduccion == (int)EstadoOrdenProduccion.Finalizada && x.FechaModificacion >= DateTime.Now.AddDays(-7)).Count();
 
-            // buscar el enum
-            ViewBag.cantEnviadasHoy = ordenes.Where(x => x.IdEtapaOrdenProduccion == 12 &&  x.FechaModificacion >= DateTime.Now.AddDays(-1) ).Count();
-            ViewBag.cantEnviadasSemana = ordenes.Where(x => x.IdEtapaOrdenProduccion == 12 &&  x.FechaModificacion >= DateTime.Now.AddDays(-7) ).Count();
+            //// buscar el enum
+            //ViewBag.cantEnviadasHoy = ordenes.Where(x => x.IdEtapaOrdenProduccion == 12 &&  x.FechaModificacion >= DateTime.Now.AddDays(-1) ).Count();
+            //ViewBag.cantEnviadasSemana = ordenes.Where(x => x.IdEtapaOrdenProduccion == 12 &&  x.FechaModificacion >= DateTime.Now.AddDays(-7) ).Count();
 
 
 

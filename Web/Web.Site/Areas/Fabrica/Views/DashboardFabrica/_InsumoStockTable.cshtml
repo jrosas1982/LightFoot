@@ -3,9 +3,12 @@
 
 @model IEnumerable<Insumo>
 
+@{ 
+    int i = 0;
+}
 <div class="ibox">
     <div class="ibox-title">
-        <h5>Insumos con stock bajos</h5>
+        <h5>Top 5 Insumos con stock mas bajo</h5>
         <div class="ibox-tools">
         </div>
     </div>
@@ -13,6 +16,7 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Id</th>
                     <th>Nombre</th>
                     <th>Descripcion</th>
@@ -25,13 +29,21 @@
 
                     @foreach (var item in Model)
                     {
+                        i = i + 1;
                         <tr>
+                            <td>@i</td>
                             <td>@item.Id</td>
                             <td>@item.Nombre</td>
-                            <td>@item.Descripcion</td>                     
-                            <td class="text-danger">@item.StockTotal Unidades</td>
+                            <td>@item.Descripcion</td>
+                            <td class="text-danger">@item.StockTotal@item.Unidad</td>
                         </tr>
                     }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="9" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
+                    </tr>
                 }
             </tbody>
         </table>

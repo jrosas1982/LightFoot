@@ -1,53 +1,63 @@
 ﻿
-    <div class="ibox ">
-        <div class="ibox-title">
-            <h5>Sucursales con más solicitudes</h5>
-            <div class="ibox-tools">
-                <a class="collapse-link">
-                    <i class="fa fa-chevron-up"></i>
-                </a>
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-wrench"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-user">
-                    <li>
-                        <a href="#" class="dropdown-item">Config option 1</a>
-                    </li>
-                    <li>
-                        <a href="#" class="dropdown-item">Config option 2</a>
-                    </li>
-                </ul>
-                <a class="close-link">
-                    <i class="fa fa-times"></i>
-                </a>
-            </div>
-        </div>
-        <div class="ibox-content">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Sucursal</th>
-                        <th>Solicitudes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>SBC Shoes</td>
-                        <td>11 solicitudes</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Sport Max</td>
-                        <td>11 solicitudes</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Los pepés</td>
-                        <td>9 solicitudes</td>
-                    </tr>
-                </tbody>
-            </table>
+@{
+    int i = 0;
+}
+
+@model IEnumerable<Tuple<Sucursal, int>>
+
+<div class="ibox ">
+    <div class="ibox-title">
+        <h5>Top 5 Sucursales con más solicitudes</h5>
+        <div class="ibox-tools">
+            <a class="collapse-link">
+                <i class="fa fa-chevron-up"></i>
+            </a>
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="fa fa-wrench"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-user">
+                <li>
+                    <a href="#" class="dropdown-item">Config option 1</a>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-item">Config option 2</a>
+                </li>
+            </ul>
+            <a class="close-link">
+                <i class="fa fa-times"></i>
+            </a>
         </div>
     </div>
+    <div class="ibox-content">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Sucursal</th>
+                    <th>Solicitudes</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        i = i + 1;
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.Item1.Nombre</td>
+                            <td>@item.Item1.Descripcion</td>
+                            <td>@item.Item2</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
