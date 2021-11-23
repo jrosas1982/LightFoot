@@ -1,0 +1,59 @@
+﻿
+@model IEnumerable<Usuario>
+
+<div class="ibox-content">
+    <div class="table-responsive">
+        <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Nombre</th>
+                    <th>DNI</th>
+                    <th>Email</th>
+                    <th>Dirección</th>
+                    <th>Telefono</th>
+                    <th>Rol</th>
+                    <th>Activo</th>
+                    <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.NombreUsuario</td>
+                            <td>@item.Nombre @item.Apellido</td>
+                            <td>@item.DNI</td>
+                            <td>@item.Email</td>
+                            <td>@item.Direccion</td>
+                            <td>@item.Telefono</td>
+                            <td>@item.UsuarioRol</td>
+
+                            @if (item.Activo)
+                            {
+                                <td> Si </td>
+                            }
+                            else
+                            {
+                                <td>No </td>
+                            }
+                            <td class="d-print-none">
+                                <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarUsuario('@item.Id')">Borrar</button>
+                                <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarUsuario('@item.Id')">Editar</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+            <tfoot class="d-print-none">
+                <tr>
+                    <td colspan="12">
+                        <ul class="pagination float-right"></ul>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

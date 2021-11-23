@@ -26,6 +26,9 @@ namespace Web.Site.Areas
         public async Task<IActionResult> Index()
         {
             var usuariosList = await _usuarioService.GetUsuarios();
+          ViewBag.TypeaheadUsuario = usuariosList.Select(x => x.Nombre);
+          ViewBag.TypeaheadNombreUsuario = usuariosList.Select(x => x.NombreUsuario);
+          ViewBag.TypeaheadIdUsuario = usuariosList.Select(x => x.Id.ToString()); 
             return View(usuariosList.ToList());
         }
 
@@ -91,6 +94,21 @@ namespace Web.Site.Areas
         {
             var result = await _usuarioService.EliminarUsuario(idUsuario);
             return Ok(result);
+        }
+        public async Task<IActionResult> FiltrarUsuario(string nombreUsuario)
+        {
+            var usuariosList = await _usuarioService.GetUsuarios();
+
+            if (!string.IsNullOrWhiteSpace(nombreUsuario))
+            {
+                usuariosList = usuariosList.Where(x => x.Nombre.ToLower().Equals(nombreUsuario.ToLower())
+                                                        || x.Id.ToString().ToLower().Equals(nombreUsuario.ToLower())).ToList(); 
+                if (!usuariosList.Any())
+                    usuariosList = usuariosList.Where(x => x.Nombre.ToLower().Contains(nombreUsuario.ToLower())
+                                                            || x.Id.ToString().ToLower().Contains(nombreUsuario.ToLower())).ToList();
+            }
+
+            return PartialView("_UsuarioIndexTable", usuariosList);
         }
     }
 }
