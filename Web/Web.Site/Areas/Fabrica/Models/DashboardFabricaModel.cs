@@ -10,19 +10,11 @@ namespace Web.Site.Areas
     {
         //public Sucursal Sucursal { get; set; }
         public IEnumerable<Solicitud> Solicitudes { get; set; }
-        public IEnumerable<DashboardRankingSucursales> SolicitudRanking { get; set; }
         public IEnumerable<OrdenProduccion> Ordenes { get; set; }
         public IEnumerable<Venta> UltimasVentas { get; set; }
         public IEnumerable<Tuple<Articulo, int>> MasVendidos { get; set; }
         public IEnumerable<Insumo> InsumosBajoStock { get; set; }
         
     }
-    public class DashboardRankingSucursales
-    { 
-        public Sucursal Sucursal { get; set; }
-        public Solicitud Solicitud { get; set; }
-        public int Cantidad { get; set; }
 
-
-    }
 }
