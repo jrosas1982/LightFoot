@@ -62,6 +62,8 @@ namespace Web.Site.Areas
             ViewBag.cantEnviadasSemana = ordenes.Where(x => x.IdEtapaOrdenProduccion == 12 &&  x.FechaModificacion >= DateTime.Now.AddDays(-7) ).Count();
 
 
+
+
             return View(dashboard);
         }
 
