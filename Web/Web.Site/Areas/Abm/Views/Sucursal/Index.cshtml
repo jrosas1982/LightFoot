@@ -3,6 +3,9 @@
     //bool esEdicion = (Model.Id != 0);
     Layout = "_Layout";
 
+    IEnumerable<string> TypeaheadNombre = ViewBag.TypeaheadNombre;
+    IEnumerable<string> TypeaheadDescripcion = ViewBag.TypeaheadDescripcion;
+    IEnumerable<string> TypeaheadDireccion = ViewBag.TypeaheadDireccion;
 }
 
 @model IEnumerable<Sucursal>
@@ -42,61 +45,43 @@
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="ibox-content m-b-sm border-bottom d-print-none">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-form-labe" for="solicitud_name">Buscador</label>
+                    <div class="typeahead__container">
+                        <div class="typeahead__field">
+                            <div class="typeahead__query">
+                                <input class="js-typeahead typeaheadCustom " id="typeSucursales" placeholder="Buscar Sucursal" autocomplete="on" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 d-flex align-items-end justify-content-end">
+                <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="Filtrar()">
+                    <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5>Sucursales Light Foot</h5>
+                    <h5>Sucursales</h5>
                 </div>
                 <div class="ibox-content">
 
-                    <div class="table-responsive">
-                        <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
-                            <thead>
-                                <tr>
-                                    @*<th>Número de sucursal</th>*@
-                                    <th>Nombre</th>
-                                    <th>Descripción</th>
-                                    <th>Dirección</th>
-                                    <th>Activo</th>
-                                    <th data-sort-ignore="true" class="d-print-none">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model != null)
-                                {
-                                    foreach (var item in Model)
-                                    {
-                                        <tr class="gradeC">
-                                            @*<td>@item.Id</td>*@
-                                            <td>@item.Nombre</td>
-                                            <td>@item.Descripcion</td>
-                                            <td>@item.Direccion</td>
-                                            @if (item.Activo)
-                                            {
-                                                <td> Si </td>
-                                            }
-                                            else
-                                            {
-                                                <td>No </td>
-                                            }
-                                            <td class="d-print-none">
-                                                <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarSucursal('@item.Id')">Borrar</button>
-                                                <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarSucursal('@item.Id')">Editar</button>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                            <tfoot class="d-print-none">
-                                <tr>
-                                    <td colspan="6">
-                                        <ul class="pagination float-right"></ul>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                    <div id="SucursalesPartialView">
+                        <partial name="_SucursalIndexTable.cshtml" model="Model" />
                     </div>
+
                 </div>
             </div>
         </div>
@@ -109,6 +94,44 @@
 }
 
 @section Scripts {
+
+    <script type="text/javascript">
+        var typeaheadNombre = @Html.Raw(Json.Serialize(TypeaheadNombre));
+        var typeaheadDescripcion = @Html.Raw(Json.Serialize(TypeaheadDescripcion));
+        var typeaheadDireccion = @Html.Raw(Json.Serialize(TypeaheadDireccion));
+
+        $.typeahead({
+            input: '.js-typeahead',
+            order: "desc",
+            template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+            minLength: 1,
+            source: {
+                Nombre: { data: typeaheadNombre },
+                Descripcion: { data: typeaheadDescripcion },
+                Direccion: { data: typeaheadDireccion }
+            }
+        });
+
+        function Filtrar() {
+            var sucursal = $("#typeSucursales").val();
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("FiltrarSucursales", "Sucursal", new { area = "abm" })',
+                traditional: true,
+                data: //formData,
+                {
+                    NombreSucursal: sucursal,
+                },
+                contentType: "application/json",
+                success: function (partial) {
+                    $("#SucursalesPartialView").html(""); //clear the records content
+                    $("#SucursalesPartialView").html(partial);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
+    </script>
 
     <script type="text/javascript">
 
@@ -160,7 +183,7 @@
         $(document).ready(function () {
             $('.dataTables-example').DataTable({
                 pageLength: 25,
-                dom: 'gitp' 
+                dom: 'gitp'
             });
         });
     </script>

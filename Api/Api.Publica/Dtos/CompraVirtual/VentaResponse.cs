@@ -10,7 +10,7 @@ namespace LightFoot.Api.Publica.Dtos.CompraVirtual
         public int IdVenta { get; set; }
         public string NombreSucursal { get; set; }
         public string NombreCliente { get; set; }
-        public string NombreUsuarioVendedor { get; set; }
+        public string UsuarioVendedor { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public VentaTipo VentaTipo { get; set; }
         public decimal MontoTotal { get; set; }

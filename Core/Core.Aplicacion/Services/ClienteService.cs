@@ -1,7 +1,9 @@
-﻿using Core.Aplicacion.Interfaces;
+﻿using Core.Aplicacion.Helpers;
+using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,14 +17,16 @@ namespace Core.Aplicacion.Services
     {
         private readonly AppDbContext _db;
         private readonly ILogger<ClienteService> _logger;
-        public ClienteService(AppDbContext db, ILogger<ClienteService> logger)
+        private readonly IConfiguration _Configuration;
+        public ClienteService(AppDbContext db, ILogger<ClienteService> logger, IConfiguration configuration)
         {
             _logger = logger;
             _db = db;
+            _Configuration = configuration;
         }
         public async Task<Cliente> BuscarPorId(int IdCliente)
         {
-           return await _db.Clientes.SingleOrDefaultAsync(x => x.Id == IdCliente);
+            return await _db.Clientes.SingleOrDefaultAsync(x => x.Id == IdCliente);
         }
 
         public async Task CrearCliente(Cliente cliente)
@@ -30,7 +34,9 @@ namespace Core.Aplicacion.Services
             try
             {
                 _db.Clientes.Add(cliente);
-               await _db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
+
+                await EnviarMailNuevoCliente(cliente.Id);
             }
             catch (Exception ex)
             {
@@ -78,6 +84,26 @@ namespace Core.Aplicacion.Services
                 .Where(x => !x.Eliminado)
                 .OrderByDescending(x => x.Id)
                 .ToListAsync();
+        }
+
+        public async Task EnviarMailNuevoCliente(int idCliente)
+        {
+            var NuevoCliente = await _db.Clientes
+                .SingleAsync(x => x.Id == idCliente);
+
+            byte[] dataMail = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("NuevoCliente")["EmailBody"]);
+            string templateBaseMail = Encoding.UTF8.GetString(dataMail);
+
+            var idSucursal = int.Parse(_db.GetSucursalId());
+
+            var template = templateBaseMail.Replace("@Cliente", NuevoCliente.Nombre)
+                                           .Replace("@Cliente", NuevoCliente.CUIT)
+                                           .Replace("@Cliente", NuevoCliente.Direccion)
+                                           .Replace("@Cliente", NuevoCliente.Telefono)
+                                           .Replace("@Cliente", NuevoCliente.Contacto)
+                                           .Replace("@Cliente", NuevoCliente.Email);
+
+            await EmailSender.SendEmail($"LightFoot - Bienvenido {NuevoCliente.Nombre}", template, NuevoCliente.Email);
         }
     }
 }

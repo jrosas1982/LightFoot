@@ -10,7 +10,7 @@ using Web.Site.Areas.Abm;
 namespace Web.Site.Areas
 {
     [Authorize]
-    [Area("abm")]
+    [Area("sucursal")]
     [Route("[area]/[controller]/[action]")]
     public class ControlStockArticuloController : CustomController
     {

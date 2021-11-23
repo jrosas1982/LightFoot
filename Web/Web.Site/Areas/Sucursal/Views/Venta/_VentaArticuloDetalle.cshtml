@@ -3,28 +3,27 @@
 
 @model VentaDetalleModel
 @{
-
 }
 
 @if (Model != null)
 {
-<tr>
+    <tr>
 
-    @using (Html.BeginCollectionItem("VentaDetalleModels"))
-    {
-        @Html.HiddenFor(x => x.IdArticulo)
-        @Html.HiddenFor(x => x.Cantidad)
-        <td>@Html.DisplayFor(x => x.CodigoArticulo)</td>
-        <td>@Html.DisplayFor(x => x.NombreArticulo)</td>
-        <td>@Html.DisplayFor(x => x.DescripcionArticulo)</td>
-        <td>@Html.DisplayFor(x => x.ColorArticulo)</td>
-        <td>@Html.DisplayFor(x => x.TalleArticulo)</td>
-        <td>@Html.DisplayFor(x => x.ArticuloCategoria)</td>
-        <td>@Html.DisplayFor(x => x.Cantidad)</td>
-        <td>@Html.DisplayFor(x => x.Precio)</td>
-        <td>
-            <button class=" btn btn-outline btn-danger btn-xs" type="button" onclick="removeRow(this)">Borrar</button>
-        </td>
-    }
-</tr>
+        @using (Html.BeginCollectionItem("VentaDetalleModels"))
+        {
+            @Html.HiddenFor(x => x.IdArticulo)
+            @Html.HiddenFor(x => x.Cantidad)
+            <td>@Html.DisplayFor(x => x.CodigoArticulo)</td>
+            <td>@Html.DisplayFor(x => x.NombreArticulo)</td>
+            <td>@Html.DisplayFor(x => x.DescripcionArticulo)</td>
+            <td>@Html.DisplayFor(x => x.ColorArticulo)</td>
+            <td>@Html.DisplayFor(x => x.TalleArticulo)</td>
+            <td>@Html.DisplayFor(x => x.ArticuloCategoria)</td>
+            <td>@Html.DisplayFor(x => x.Cantidad)</td>
+            <td>@Html.DisplayFor(x => x.Precio)</td>
+            <td>
+                <button class=" btn btn-outline btn-danger btn-xs" type="button" onclick="removeRow(this)">Borrar</button>
+            </td>
+        }
+    </tr>
 }

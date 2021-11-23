@@ -27,6 +27,8 @@ namespace Web.Site.Areas.Abm.Controllers
         public async Task<IActionResult> IndexAsync() {
 
             var Clientes = await _clienteService.GetClientes();
+            ViewBag.TypeaheadClientes = Clientes.Select(x =>x.Nombre).Distinct();
+            ViewBag.TypeaheadIdClientes = Clientes.Select(x =>x.Id.ToString());
 
             return View(Clientes);
         }
@@ -108,6 +110,25 @@ namespace Web.Site.Areas.Abm.Controllers
                 ViewBag.MensajeError = ex.Message;
                 return Ok(false);
             }
+        }
+        public async Task<IActionResult> FiltrarClientes(string NombreCliente)
+        {
+            var Clientes = await _clienteService.GetClientes();
+
+            if (!string.IsNullOrWhiteSpace(NombreCliente))
+            {
+                Clientes = Clientes.Where(x => x.Id.ToString().Equals(NombreCliente.ToLower())
+                                                            || x.Nombre.ToLower().Equals(NombreCliente.ToLower())
+                                                            || x.Id.ToString().ToLower().Equals(NombreCliente.ToLower())).ToList();
+
+                if (!Clientes.Any())
+                    Clientes = Clientes.Where(x => x.Id.ToString().Contains(NombreCliente.ToLower())
+                                                            || x.Nombre.ToLower().Contains(NombreCliente.ToLower())
+                                                            || x.Id.ToString().ToLower().Contains(NombreCliente.ToLower())).ToList();
+
+            }
+
+            return PartialView("_ClientesIndexTable", Clientes);
         }
     }
 }

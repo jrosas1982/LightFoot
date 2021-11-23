@@ -1,7 +1,13 @@
 ﻿@{
     ViewData["Title"] = "Dashboard Fabrica";
     Layout = "_Layout";
+
+    var etapas = Model.Etapas;
+    var cantidad = Model.Cantidad;
+
 }
+
+@model DashboardFabricaModel
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -17,189 +23,50 @@
 </div>
 
 <div class="wrapper wrapper-content">
-
-    <div id="tablaInfoGeneral">
-        <partial name="_InfoGeneralSolicitudes.cshtml" model="null" />
-    </div>
-
-    <div class="row">
-        <div class="col-xl-5">
-            <div class="ibox">
-                <div class="ibox-title">
-                    <h5>Avance semanal de Produccion</h5>
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="close-link">
-                            <i class="fa fa-times"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="ibox-content text-center">
-                    <canvas id="pieChart"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-7">
-            <div id="tablaIRankingSucursales">
-                <partial name="_RankingSucursalesTable.cshtml" model="null" />
-            </div>
-        </div>
-    </div>
-   
-
-    <div class="row">
-        <div class="col-xl-12">
-            <div id="tablaInsumoStock">
-                <partial name="_InsumoStockTable.cshtml" model="null" />
-            </div>
+    <div class="animated fadeInRight">
+        <div id="tablaInfoGeneral">
+            <partial name="_InfoGeneralSolicitudes.cshtml" model="Model.DashbardFabricaInfoGeneralModel" />
         </div>
 
-        @*<div class="col-lg-6">
-                <div class="ibox ">
+        <div class="row">
+            <div class="col-xl-5">
+                <div class="ibox">
                     <div class="ibox-title">
-                        <h5>Basic Table</h5>
+                        <h5>Avance semanal de Produccion</h5>
                         <div class="ibox-tools">
                             <a class="collapse-link">
                                 <i class="fa fa-chevron-up"></i>
                             </a>
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                <i class="fa fa-wrench"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-user">
-                                <li>
-                                    <a href="#" class="dropdown-item">Config option 1</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="dropdown-item">Config option 2</a>
-                                </li>
-                            </ul>
                             <a class="close-link">
                                 <i class="fa fa-times"></i>
                             </a>
                         </div>
                     </div>
-                    <div class="ibox-content">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Username</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>mdo</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>fat</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>twitter</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="ibox-content text-center">
+                        <div id="graficoPartialView">
+                            <partial name="_GraficoEtapas.cshtml" model="null" />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>*@
-
-    </div>
-
-    <div class="small-chat-box fadeInRight animated">
-
-        <div class="heading" draggable="true">
-            <small class="chat-date float-right">
-                02.19.2015
-            </small>
-            Small chat
+            <div class="col-lg-7">
+                <div id="tablaIRankingSucursales">
+                    <partial name="_RankingSucursalesTable.cshtml" model="Model.TopSucursalesSolicitudes" />
+                </div>
+            </div>
         </div>
 
-        <div class="content">
 
-            <div class="left">
-                <div class="author-name">
-                    Monica Jackson <small class="chat-date">
-                        10:02 am
-                    </small>
+        <div class="row">
+            <div class="col-xl-12">
+                <div id="tablaInsumoStock">
+                    <partial name="_InsumoStockTable.cshtml" model="Model.InsumosBajoStock" />
                 </div>
-                <div class="chat-message active">
-                    Lorem Ipsum is simply dummy text input.
-                </div>
-
-            </div>
-            <div class="right">
-                <div class="author-name">
-                    Mick Smith
-                    <small class="chat-date">
-                        11:24 am
-                    </small>
-                </div>
-                <div class="chat-message">
-                    Lorem Ipsum is simpl.
-                </div>
-            </div>
-            <div class="left">
-                <div class="author-name">
-                    Alice Novak
-                    <small class="chat-date">
-                        08:45 pm
-                    </small>
-                </div>
-                <div class="chat-message active">
-                    Check this stock char.
-                </div>
-            </div>
-            <div class="right">
-                <div class="author-name">
-                    Anna Lamson
-                    <small class="chat-date">
-                        11:24 am
-                    </small>
-                </div>
-                <div class="chat-message">
-                    The standard chunk of Lorem Ipsum
-                </div>
-            </div>
-            <div class="left">
-                <div class="author-name">
-                    Mick Lane
-                    <small class="chat-date">
-                        08:45 pm
-                    </small>
-                </div>
-                <div class="chat-message active">
-                    I belive that. Lorem Ipsum is simply dummy text.
-                </div>
-            </div>
-
-
-        </div>
-        <div class="form-chat">
-            <div class="input-group input-group-sm">
-                <input type="text" class="form-control"> <span class="input-group-btn">
-                    <button class="btn btn-primary" type="button">
-                        Send
-                    </button>
-                </span>
             </div>
         </div>
 
     </div>
-
-
+</div>
 
 
     @section Scripts {
@@ -230,36 +97,97 @@
         </environment>
 
         <script type="text/javascript">
-            $(document).ready(function () {
+        $(document).ready(function () {
+            var etapas = JSON.parse('@Html.Raw(Json.Serialize(Model.Etapas))');
+            var cantidad = JSON.parse('@Html.Raw(Json.Serialize(Model.Cantidad))');
+            updateGrafico(etapas, cantidad);
+        });
 
-                var doughnutData = {
-                    labels: ["Cortado", "Aparado", "Preparacion", "Montado", "Pegado", "Terminado"],
-                    datasets: [{
-                        data: [32, 40, 76, 29, 24, 25],
-                        backgroundColor: ["#a3bfdc", "#81b4ca", "#85bfc7", "#73bfb8", "#55b8a7", "#6bc799"]
-                    }]
-                };
-                var doughnutOptions = {
-                    responsive: true
-                };
-                var ctx4 = document.getElementById("pieChart").getContext("2d");
-                new Chart(ctx4, { type: 'pie', data: doughnutData, options: doughnutOptions });
+        function updateGrafico(etapas, cantidad) {
 
+            var colores = ['rgba(247, 184, 178, 1)', 'rgba(172, 185, 232, 1)', 'rgba(117, 185, 219, 1)', 'rgba(155, 211, 222, 1)', 'rgba(204, 153, 222, 1)', 'rgba(233, 223, 143, 1)', 'rgba(178, 236, 171, 1)'];
 
-            });
+            var doughnutData = {
+                labels: etapas,
+                datasets: [{
+                    data: cantidad,
+                    backgroundColor: colores
+                }]
+            };
+            var doughnutOptions = {
+                responsive: true
+            };
+            var ctx4 = document.getElementById("pieChart").getContext("2d");
+            new Chart(ctx4, { type: 'pie', data: doughnutData, options: doughnutOptions });
+        }
         </script>
 
         <script type="text/javascript">
-            //Aprtura de WebSockets
-            Object.defineProperty(WebSocket, 'OPEN', { value: 1, });
+        //Aprtura de WebSockets
+        Object.defineProperty(WebSocket, 'OPEN', { value: 1, });
 
-            //conexion a SignalR
-            var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationsHub").build();
-            connection.start();
+        //conexion a SignalR
+        var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationsHub").build();
+        connection.start();
 
-            //Accion
-            connection.on("FabricaDashboardUpdate", function () {
-                Filtrar();
+        //Accion
+        connection.on("OrdenProduccionUpdate", function () {
+
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("ActualizarInfoGeneral", "DashboardFabrica", new { area = "fabrica" })',
+                datatype: "json",
+                traditional: true,
+                contentType: "application/json",
+                success: function (response) {
+                    $("#tablaInfoGeneral").html(""); //clear the records content
+                    $("#tablaInfoGeneral").html(response);  //add the updated content.
+                }
             });
+
+            $.ajax({
+               type: "Get",
+               url: '@Url.Action("ActualizarTopSucursalesSolicitudes", "DashboardFabrica", new { area = "fabrica" })',
+               datatype: "json",
+               traditional: true,
+               contentType: "application/json",
+               success: function (response) {
+                   $("#tablaIRankingSucursales").html(""); //clear the records content
+                   $("#tablaIRankingSucursales").html(response);  //add the updated content.
+               }
+            });
+
+            $.ajax({
+               type: "Get",
+               url: '@Url.Action("ActualizarInsumosBajoStock", "DashboardFabrica", new { area = "fabrica" })',
+               datatype: "json",
+               traditional: true,
+               contentType: "application/json",
+               success: function (response) {
+                   $("#tablaInsumoStock").html(""); //clear the records content
+                   $("#tablaInsumoStock").html(response);  //add the updated content.
+               }
+            });
+
+           $.ajax({
+               type: "Get",
+               url: '@Url.Action("ActualizarGrafico", "DashboardFabrica", new { area = "fabrica" })',
+               datatype: "json",
+               traditional: true,
+               contentType: "application/json",
+               success: function (response) {
+                   $("#graficoPartialView").html(""); //clear the records content
+                   $("#graficoPartialView").html(response); //add the updated content.
+                   GraficoPartialViewScript();
+               }
+           });
+
+           $('.footable').footable();
+           $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+        });
+        //connection.on("OrdenProduccionUpdate", function () {
+        //    Filtrar();
+        //});
+
         </script>
     }

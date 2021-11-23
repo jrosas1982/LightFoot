@@ -2,6 +2,7 @@
     ViewData["Title"] = "Categorias";
     //bool esEdicion = (Model.Id != 0);
     Layout = "_Layout";
+    IEnumerable<string> TypeaheadCategoria = ViewBag.TypeaheadCategoria;
 
 }
 
@@ -31,57 +32,40 @@
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="ibox-content m-b-sm border-bottom  d-print-none">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-form-labe" for="solicitud_name">Articulo</label>
+                    <div class="typeahead__container">
+                        <div class="typeahead__field">
+                            <div class="typeahead__query">
+                                <input class="js-typeahead typeaheadCustom " id="typeArticuloCat" placeholder="Buscar Categoria Articulo" autocomplete="on" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 d-flex align-items-end justify-content-end">
+                <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="FiltrarCategoriaArticulos()">
+                    <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5>Categorias Light Foot</h5>
+                    <h5>Articulo Categorias</h5>
                 </div>
                 <div class="ibox-content">
-
-                    <div class="table-responsive">
-                        <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
-                            <thead>
-                                <tr>
-                                    <th>Descripción</th>
-                                    <th>Comentario</th>
-                                    <th>Activo</th>
-                                    <th data-sort-ignore="true" class="d-print-none">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model != null)
-                                {
-                                    foreach (var item in Model)
-                                    {
-                                        <tr class="gradeC">
-                                            <td>@item.Descripcion</td>
-                                            <td>@item.Comentario</td>
-                                            @if (item.Activo)
-                                            {
-                                                <td> Si </td>
-                                            }
-                                            else
-                                            {
-                                                <td>No </td>
-                                            }
-                                            <td>
-                                                <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarCategoria('@item.Id')">Borrar</button>
-                                                <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarCategoria('@item.Id')">Editar</button>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                            <tfoot class="d-print-none">
-                                <tr>
-                                    <td colspan="6">
-                                        <ul class="pagination float-right"></ul>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                        <div id="tablaContenido">
+                            <partial name="_ArticuloCategoriaIndexTable.cshtml" model="Model" />
+                        </div>
                 </div>
             </div>
         </div>
@@ -130,6 +114,41 @@
                     }, 600);
                 });
             });
-        };      
+        };
+    </script>
+    <script type="text/javascript">
+        var typeaheadCategoria = @Html.Raw(Json.Serialize(TypeaheadCategoria));
+   
+        $.typeahead({
+            input: '.js-typeahead',
+            order: "desc",
+            template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+            minLength: 1,
+            source: {
+                Categoria: { data: typeaheadCategoria }
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+        function FiltrarCategoriaArticulos() {
+            var articulo = $("#typeArticuloCat").val();
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("FiltrarCategoriaArticulos", "ArticuloCategoria", new { area = "abm" })',
+                traditional: true,
+                data: //formData,
+                {
+                    NombreCategoriaArticulo: articulo,
+                },
+                contentType: "application/json",
+                success: function (partial) {
+                    $("#tablaContenido").html(""); //clear the records content
+                    $("#tablaContenido").html(partial);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
     </script>
 }

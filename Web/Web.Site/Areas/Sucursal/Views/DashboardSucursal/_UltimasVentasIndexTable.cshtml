@@ -2,7 +2,7 @@
 @using Web.Site.Areas
 @model IEnumerable<Venta>
 @{
-
+    int i = 0;
 }
 
 <div class="ibox ">
@@ -19,6 +19,7 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>#Venta</th>
                         <th>Cliente</th>
                         <th>Tipo de Venta</th>
@@ -33,13 +34,15 @@
 
                         @foreach (var item in Model)
                         {
+                            i = i + 1;
                             <tr>
+                                <td>@i</td>
                                 <td>@item.Id</td>
                                 <td>@item.Cliente.Nombre</td>
                                 <td>@item.VentaTipo</td>
                                 <td>@item.VentaDetalles.Count()</td>
-                                <td class="text-danger">@item.MontoTotal Unidades</td>
-                                <td class="text-danger">@(item.FechaModificacion != null ? item.FechaModificacion : item.FechaCreacion)</td>
+                                <td>$ @item.MontoTotal</td>
+                                <td>@(item.FechaModificacion != null ? item.FechaModificacion : item.FechaCreacion)</td>
                             </tr>
                         }
                     }

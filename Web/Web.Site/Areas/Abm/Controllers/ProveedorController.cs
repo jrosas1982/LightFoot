@@ -35,9 +35,38 @@ namespace Web.Site.Areas
             _insumoService = insumoService;
         }
 
+        public async Task<IActionResult> FiltrarProveedores(string nombreProveedor)
+        {
+            var proveedoresList = await _proveedorService.GetProveedores();
+
+            if (!string.IsNullOrWhiteSpace(nombreProveedor))
+            {
+                proveedoresList = proveedoresList.Where(x => x.Nombre.ToLower().Equals(nombreProveedor.ToLower())
+                                                        || x.CUIT.ToString().Equals(nombreProveedor.ToLower())
+                                                        || x.Direccion.ToLower().Equals(nombreProveedor.ToLower())
+                                                        || x.Email.ToLower().Equals(nombreProveedor.ToLower())
+                                                        || x.Calificacion.ToString().Equals(nombreProveedor.ToLower()));
+                if (!proveedoresList.Any())
+                    proveedoresList = proveedoresList.Where(x => x.Nombre.ToLower().Contains(nombreProveedor.ToLower())
+                                                            || x.CUIT.ToString().Contains(nombreProveedor.ToLower())
+                                                            || x.Direccion.ToLower().Contains(nombreProveedor.ToLower())
+                                                            || x.Email.ToLower().Contains(nombreProveedor.ToLower())
+                                                            || x.Calificacion.ToString().Contains(nombreProveedor.ToLower()));
+            }
+
+            return PartialView("_ProveedorIndexTable", proveedoresList);
+        }
+
         public async Task<IActionResult> Index()
         {
             var proveedores = await _proveedorService.GetProveedores();
+
+            ViewBag.TypeaheadNombre = proveedores.Select(x => x.Nombre).Distinct();
+            ViewBag.TypeaheadCUIT = proveedores.Select(x => x.CUIT.ToString()).Distinct();
+            ViewBag.TypeaheadDireccion = proveedores.Select(x => x.Direccion).Distinct();
+            ViewBag.TypeaheadEmail = proveedores.Select(x => x.Email).Distinct();
+            ViewBag.TypeaheadCalificacion = proveedores.Select(x => x.Calificacion.ToString()).Distinct();
+
             return View(proveedores);
         }
 

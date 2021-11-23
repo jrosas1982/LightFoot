@@ -9,6 +9,7 @@ using Web.Site.Helpers;
 using Web.Site.Areas.Fabrica;
 using Core.Aplicacion.Interfaces;
 using AutoMapper;
+using Core.Dominio.AggregatesModel;
 
 namespace Web.Site.Areas
 {
@@ -21,29 +22,81 @@ namespace Web.Site.Areas
         public ISolicitudService _solicitudService;
         public IInsumoService _insumoService;
         public IOrdenProduccionService _ordenProduccionService;
+        public IDashboardFabricaService _dashboardFabricaService;
         public IMapper _mapper;
         public DashboardFabricaController(ISolicitudService solicitudService, IInsumoService insumoService,
-           IOrdenProduccionService ordenProduccionService, IMapper mapper)
+           IOrdenProduccionService ordenProduccionService, IMapper mapper, IDashboardFabricaService dashboardFabricaService)
         {
             _solicitudService = solicitudService;
             _insumoService = insumoService;
             _ordenProduccionService = ordenProduccionService;
+            _dashboardFabricaService = dashboardFabricaService;
             _mapper = mapper;
 
         }
 
         public async Task<IActionResult> Index()
         {
-            var solicitudes = await _solicitudService.GetSolicitudes();
+            var avanceProduccion = await _dashboardFabricaService.GetAvanceProduccion(DateTime.Now, TimeSpan.FromDays(7));
 
-            var CantSolHoy = solicitudes.Where(x => x.FechaCreacion >= DateTime.Now.AddDays(-1)).Count();
-            var CantSolsemana = solicitudes.Where(x => x.FechaCreacion >= DateTime.Now.AddDays(-8)).Count();
+            DashboardFabricaModel dashboard = new DashboardFabricaModel()
+            {
+                DashbardFabricaInfoGeneralModel = new DashbardFabricaInfoGeneralModel()
+                {
+                    SolicitudesRecibidasFecha = await _dashboardFabricaService.GetSolicitudesRecibidas(DateTime.Now),
+                    SolicitudesRecibidasPlazo = await _dashboardFabricaService.GetSolicitudesRecibidas(DateTime.Now, TimeSpan.FromDays(7)),
+                    OrdenesProduccionFinalizadasFecha = await _dashboardFabricaService.GetOrdenesProduccionFinalizadas(DateTime.Now),
+                    OrdenesProduccionFinalizadasPlazo = await _dashboardFabricaService.GetOrdenesProduccionFinalizadas(DateTime.Now, TimeSpan.FromDays(7)),
+                    OrdenesProduccionEnExpedicionFecha = await _dashboardFabricaService.GetOrdenesProduccionCanceladas(DateTime.Now),
+                    OrdenesProduccionEnExpedicionPlazo = await _dashboardFabricaService.GetOrdenesProduccionCanceladas(DateTime.Now, TimeSpan.FromDays(7))
+                },
+                TopSucursalesSolicitudes = await _dashboardFabricaService.GetTopSucursalesSolicitudes(5),
+                //AvanceProduccion = avanceProduccion,
+                InsumosBajoStock = await _dashboardFabricaService.GetInsumosBajoStock(5),
+                Etapas = avanceProduccion.Select(x => x.Item1.Descripcion).ToArray(),
+                Cantidad = avanceProduccion.Select(x => x.Item2).ToArray()
+            };
 
-            ViewBag.SolicitudesHoy = CantSolHoy;
-            ViewBag.SolicitudesSemana = CantSolsemana;
-
-            return View();
+            return View(dashboard);
         }
+
+        public async Task<IActionResult> ActualizarInfoGeneral()
+        {
+            var dashbardFabricaInfoGeneralModel = new DashbardFabricaInfoGeneralModel()
+            {
+                SolicitudesRecibidasFecha = await _dashboardFabricaService.GetSolicitudesRecibidas(DateTime.Now),
+                SolicitudesRecibidasPlazo = await _dashboardFabricaService.GetSolicitudesRecibidas(DateTime.Now, TimeSpan.FromDays(7)),
+                OrdenesProduccionFinalizadasFecha = await _dashboardFabricaService.GetOrdenesProduccionFinalizadas(DateTime.Now),
+                OrdenesProduccionFinalizadasPlazo = await _dashboardFabricaService.GetOrdenesProduccionFinalizadas(DateTime.Now, TimeSpan.FromDays(7)),
+                OrdenesProduccionEnExpedicionFecha = await _dashboardFabricaService.GetOrdenesProduccionCanceladas(DateTime.Now),
+                OrdenesProduccionEnExpedicionPlazo = await _dashboardFabricaService.GetOrdenesProduccionCanceladas(DateTime.Now, TimeSpan.FromDays(7))
+            };
+            return PartialView("_InfoGeneralSolicitudes", dashbardFabricaInfoGeneralModel);
+        }
+
+        public async Task<IActionResult> ActualizarTopSucursalesSolicitudes()
+        {
+            var topSucursalesSolicitudes = await _dashboardFabricaService.GetTopSucursalesSolicitudes(5);
+            return PartialView("_RankingSucursalesTable", topSucursalesSolicitudes);
+        }
+
+        public async Task<IActionResult> ActualizarInsumosBajoStock()
+        {
+            var insumosBajoStock = await _dashboardFabricaService.GetInsumosBajoStock(5);
+            return PartialView("_InsumoStockTable", insumosBajoStock);
+        }
+
+        public async Task<IActionResult> ActualizarGrafico()
+        {
+            var avanceProduccion = await _dashboardFabricaService.GetAvanceProduccion(DateTime.Now, TimeSpan.FromDays(7));
+            var etapas = avanceProduccion.Select(x => x.Item1.Descripcion).ToArray();
+            var cantidad = avanceProduccion.Select(x => x.Item2).ToArray();
+
+            ViewBag.Etapas = etapas;
+            ViewBag.Cantidad = cantidad;
+            return PartialView("_GraficoEtapas", null);
+        }
+
 
     }
 }

@@ -37,7 +37,7 @@
 
                         <li class="@Html.IsSelected(controller: "DashboardSucursal")"><a href="@Url.Action("Index", "DashboardSucursal", new { area = "sucursal" })">Dashboard</a></li>
                         <li class="@Html.IsSelected(controller: "CajaSucursal")"><a href="@Url.Action("Index", "CajaSucursal", new { area = "sucursal" })">Caja</a></li>
-                        <li class="@Html.IsSelected(controller: "ControlStockArticulo") "><a href="@Url.Action("Index", "ControlStockArticulo", new { area = "abm" })">Control de Stock</a></li>
+                        <li class="@Html.IsSelected(controller: "ControlStockArticulo") "><a href="@Url.Action("Index", "ControlStockArticulo", new { area = "sucursal" })">Control de Stock</a></li>
                         <li class="@Html.IsSelected(controller: "CompraArticulo")"><a href="@Url.Action("Index", "CompraArticulo", new { area = "sucursal" })">Compras</a></li>
                         <li class="@Html.IsSelected(controller: "CuentaCorriente")"><a href="@Url.Action("Index", "CuentaCorriente", new { area = "sucursal" })">Cuenta Corriente</a></li>
                         <li class="@Html.IsSelected(controller: "Venta")"><a href="@Url.Action("Index", "Venta", new { area = "sucursal" })">Ventas</a></li>
@@ -59,7 +59,7 @@
                 </ul>
             </li>
 
-            @if ((await authorizationService.AuthorizeAsync(User, Policies.IsGod)).Succeeded)
+            @*@if ((await authorizationService.AuthorizeAsync(User, Policies.IsGod)).Succeeded)
             {
                 <li class="@Html.IsSelected(area: "Reporte")">
                     <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label" data-i18n="nav.graphs">Reportes</span><span class="fa arrow"></span></a>
@@ -72,7 +72,7 @@
                         <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Auditoria de precios</a></li>
                     </ul>
                 </li>
-            }
+            }*@
             @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
             {
                 <li class="@Html.IsSelected(area: "Configs")">

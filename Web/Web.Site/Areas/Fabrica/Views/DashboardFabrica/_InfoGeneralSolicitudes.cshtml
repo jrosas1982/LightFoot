@@ -1,16 +1,18 @@
 ﻿
-<div class="row m-b-md border-bottom white-bg dashboard-header animated fadeInRight">
+@model DashbardFabricaInfoGeneralModel
+
+<div class="row m-b-md border-bottom white-bg dashboard-header">
     <div class="col-sm-6">
         <h2>Hoy</h2>
         <ul class="list-group clear-list m-t">
             <li class="list-group-item fist-item">
-                <span class="label label-warning">@ViewBag.SolicitudesHoy</span> Solicitudes Recibidas
+                <span class="label label-warning">@Model.SolicitudesRecibidasFecha</span> Solicitudes Recibidas
             </li>
             <li class="list-group-item">
-                <span class="label label-info">10</span> Solicitud Produccion Realizadas
+                <span class="label label-info">@Model.OrdenesProduccionFinalizadasFecha</span> Ordenes de Produccion Finalizadas
             </li>
             <li class="list-group-item">
-                <span class="label label-primary">0</span> Produccion Enviadas
+                <span class="label label-primary">@Model.OrdenesProduccionEnExpedicionFecha</span> Ordenes de Produccion Canceladas
             </li>
         </ul>
     </div>
@@ -19,13 +21,13 @@
         <h2>Ultimos 7 días</h2>
         <ul class="list-group clear-list m-t">
             <li class="list-group-item fist-item">
-                <span class="label label-warning">@ViewBag.SolicitudesSemana</span> Solicitudes Recibidas
+                <span class="label label-warning">@Model.SolicitudesRecibidasPlazo</span> Solicitudes Recibidas
             </li>
             <li class="list-group-item">
-                <span class="label label-info">50</span> Producciones Realizadas
+                <span class="label label-info">@Model.OrdenesProduccionFinalizadasPlazo</span> Ordenes de Produccion Finalizadas
             </li>
             <li class="list-group-item">
-                <span class="label label-primary">105</span> Productos Enviados
+                <span class="label label-primary">@Model.OrdenesProduccionEnExpedicionPlazo</span> Ordenes de Produccion Canceladas
             </li>
         </ul>
     </div>
