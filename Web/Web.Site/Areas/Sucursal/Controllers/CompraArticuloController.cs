@@ -133,7 +133,7 @@ namespace Web.Site.Areas
             return PartialView("_CompraArticuloIndexDetalle", compra);
         }
 
-        public async Task<IActionResult> RecibirCompra(int idCompra, long nroRemito, int tiempoCalificacion, int distanciaCalificacion, int precioCalificacion, int calidadCalificacion)
+        public async Task<IActionResult> RecibirCompra(int idCompra, long nroRemito)
         {
             var resp = await _compraArticuloService.RecibirCompra(idCompra, nroRemito);
 

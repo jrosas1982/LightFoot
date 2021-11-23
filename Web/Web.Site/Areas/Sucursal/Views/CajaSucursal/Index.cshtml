@@ -84,7 +84,7 @@
                     <div class="modal-body py-2">
                         <div class="form-group">
                             <label class="font-normal">Monto</label>
-                            <input id="Monto" class="form-control" type="number" value="" min="0" placeholder="Monto" required>
+                            <input id="Monto" class="form-control" type="number" value="" min="0" step="any" placeholder="Monto" required>
                         </div>
                         <div class="form-group">
                             <label class="font-normal">Comentario</label>
@@ -151,7 +151,7 @@
                     type: "post",
                     url: "/sucursal/CajaSucursal/Crear",
                     data: {
-                        monto: monto,
+                        monto: parseFloat(monto).toFixed(2).replace(".", ","),
                         comentario: comentario
                     },
                     success: function (response) {

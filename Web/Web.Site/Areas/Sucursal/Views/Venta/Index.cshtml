@@ -204,7 +204,7 @@
                         </div>
                         <div class="form-group">
                             <label class="font-normal">Monto</label>
-                            <input id="Pagando" class="form-control" type="number" min="0" placeholder="Monto" required>
+                            <input id="Pagando" class="form-control" type="number" min="0" step="any" placeholder="Monto" required >
                         </div>
 
                     </div>
@@ -367,7 +367,7 @@
             console.log("cobrar");
             var ventaId = $('#hiddenModalCobrarVenta').val(); console.log(typeof ventaId);
             var tipoPago = $("#metodo_pago :selected").val(); console.log(typeof tipoPago);
-            var montoPagado = $("#Pagando").val(); console.log(typeof montoPagado);
+            var montoPagado = $("#Pagando").val(); console.log($("#Pagando").val());
             CobrarVenta(ventaId, tipoPago, montoPagado);
         }
 
@@ -379,7 +379,7 @@
                     data: {
                         idVenta: ventaId,
                         tipoPago: tipoPago,
-                        montoPagado: pagado
+                        montoPagado: parseFloat(pagado).toFixed(2).replace(".", ","),
                     },
                     success: function (response) {
                         swal(

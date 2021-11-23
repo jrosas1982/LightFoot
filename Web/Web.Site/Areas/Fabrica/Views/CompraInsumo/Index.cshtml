@@ -452,7 +452,7 @@
                     data: {
                         idCompra: idCompra,
                         tipoPago: tipoPago,
-                        montoPagado: pagado
+                        montoPagado: parseFloat(pagado).toFixed(2).replace(".", ","),
                     },
                     success: function (response) {
                         swal(

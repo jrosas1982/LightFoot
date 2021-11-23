@@ -246,7 +246,7 @@
                 data: {
                     IdInsumo: $("#dropdownInsumo :selected").val(),
                     IdProveedor: $("#dropdownProveedor :selected").val(),
-                    Cantidad: $("#InsumoCantidad").val(),
+                    Cantidad: parseFloat($("#InsumoCantidad").val()).toFixed(2).replace(".", ","),                    
                 },
                 success(precio) {
                     $("#Precio").val(precio);
