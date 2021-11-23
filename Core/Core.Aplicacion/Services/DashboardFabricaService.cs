@@ -48,7 +48,7 @@ namespace Core.Aplicacion.Services
             var stockBajo = await _db.Insumos
                 .Where(x => !x.Eliminado)
                 .AsNoTracking()
-                .Where(x => x.StockTotal >= x.StockTotal * 0.25)
+                //.Where(x => x.StockTotal >= x.StockTotal * 0.25)
                 .OrderByDescending(x => x.StockTotal)
                 .Take(n)
                 .ToListAsync();
@@ -80,7 +80,63 @@ namespace Core.Aplicacion.Services
             return masVendidosList;
         }
 
+        public async Task<int> GetSolicitudesRecibidas(DateTime fecha)
+        {
+            var response = await _db.Solicitudes
+                .Where(x => !x.Eliminado)
+                .Where(x => x.FechaCreacion.Date == fecha.Date)
+                .CountAsync();
+
+            return response;
+        }
+
+        public async Task<int> GetSolicitudesRecibidas(DateTime fecha, TimeSpan plazoTiempo)
+        {
+            var start = fecha;
+            var end = fecha.Add(-plazoTiempo);
+
+            var response = await _db.Solicitudes
+                    .Where(x => !x.Eliminado)
+                    .Where(x => (x.FechaCreacion.Date > start.Date) && (x.FechaCreacion.Date < end.Date))
+                    .CountAsync();
+
+            return response;
+        }
+
+        public Task<int> GetOrdenesProduccionFinalizadas(DateTime fecha)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetOrdenesProduccionFinalizadas(DateTime fecha, TimeSpan plazoTiempo)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetOrdenesProduccionEnExpedicion(DateTime fecha)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetOrdenesProduccionEnExpedicion(DateTime fecha, TimeSpan plazoTiempo)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Tuple<Sucursal, int>>> GetTopSucursalesSolicitudes(int n)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Tuple<EtapaOrdenProduccion, int>>> GetAvanceProduccion(TimeSpan plazoTiempo)
+        {
+            throw new NotImplementedException();
+        }
+
+
 
         //await _hubContext.Clients.All.SendAsync("FabricaDashboardUpdate");
+
+
     }
 }
