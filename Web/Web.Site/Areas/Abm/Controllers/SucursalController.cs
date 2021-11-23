@@ -19,9 +19,32 @@ namespace Web.Site.Areas
             _sucursalService = sucursalService;
         }
 
+        public async Task<IActionResult> FiltrarSucursales(string nombreSucursal)
+        {
+            var sucursalesList = await _sucursalService.GetSucursales();
+
+            if (!string.IsNullOrWhiteSpace(nombreSucursal))
+            {
+                sucursalesList = sucursalesList.Where(x => x.Nombre.ToLower().Equals(nombreSucursal.ToLower())
+                                                        || x.Descripcion.ToLower().Equals(nombreSucursal.ToLower())
+                                                        || x.Direccion.ToLower().Equals(nombreSucursal.ToLower()));
+                if (!sucursalesList.Any())
+                    sucursalesList = sucursalesList.Where(x => x.Nombre.ToLower().Contains(nombreSucursal.ToLower())
+                                                            || x.Descripcion.ToLower().Contains(nombreSucursal.ToLower())
+                                                            || x.Direccion.ToLower().Contains(nombreSucursal.ToLower()));
+            }
+
+            return PartialView("_SucursalIndexTable", sucursalesList);
+        }
+
         public async Task<IActionResult> Index()
         {
             var sucursalesList = await _sucursalService.GetSucursales();
+
+            ViewBag.TypeaheadNombre = sucursalesList.Select(x => x.Nombre).Distinct();
+            ViewBag.TypeaheadDescripcion = sucursalesList.Select(x => x.Descripcion).Distinct();
+            ViewBag.TypeaheadDireccion = sucursalesList.Select(x => x.Direccion).Distinct();
+            
             return View(sucursalesList.ToList());
         }
 
