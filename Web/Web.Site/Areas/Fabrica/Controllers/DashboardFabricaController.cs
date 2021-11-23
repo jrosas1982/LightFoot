@@ -40,8 +40,16 @@ namespace Web.Site.Areas
 
             DashboardFabricaModel dashboard = new DashboardFabricaModel()
             {
+                TopSucursalesSolicitudes = await _dashboardFabricaService.GetTopSucursalesSolicitudes(5),
+                AvanceProduccion = await _dashboardFabricaService.GetAvanceProduccion(DateTime.Now, TimeSpan.FromDays(7)),
+                DashbardFabricaInfoGeneralModel = new DashbardFabricaInfoGeneralModel()
+                {
+                    SolicitudesRecibidasFecha = await _dashboardFabricaService.GetSolicitudesRecibidas(DateTime.Now),
+                    SolicitudesRecibidasPlazo = await _dashboardFabricaService.GetSolicitudesRecibidas(DateTime.Now, TimeSpan.FromDays(7))
+                },
+
                 Solicitudes = await _dashboardFabricaService.GetSolicitudes(),
-                Ordenes = await _dashboardFabricaService.GetOrdenes(),            
+                Ordenes = await _dashboardFabricaService.GetOrdenes(),
                 InsumosBajoStock = await _dashboardFabricaService.GetInsumosBajoStock(5)
             //    UltimosMovimientos = await _dashboardSucursalService.GetUltimosMovimientos(5),
             //    UltimasVentas = await _dashboardSucursalService.GetUltimasVentas(5)

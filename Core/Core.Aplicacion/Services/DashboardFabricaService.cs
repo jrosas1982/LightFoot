@@ -130,10 +130,13 @@ namespace Core.Aplicacion.Services
             var masSolicitudes = await _db.Solicitudes
                 .Where(x => !x.Eliminado)
                 .AsNoTracking()
+                .ToListAsync();
+            
+            var masSolicitudesList = masSolicitudes
                 .GroupBy(x => x.Sucursal)
                 .Select(x => new Tuple<Sucursal, int>(x.Key, x.Count()))
                 .Take(n)
-                .ToListAsync();
+                .ToList();
 
             // var masVendidos = await _db.VentasDetalle
             //    .Where(x => !x.Eliminado)
@@ -151,7 +154,7 @@ namespace Core.Aplicacion.Services
             //    .ThenBy(x => x.Item1.Nombre)
             //    .Take(n);
 
-            return masSolicitudes;
+            return masSolicitudesList;
 
 
         }
@@ -165,11 +168,14 @@ namespace Core.Aplicacion.Services
                 .Where(x => !x.Eliminado)
                 .AsNoTracking()
                 .Where(x => (x.FechaCreacion.Date > start.Date) && (x.FechaCreacion.Date < end.Date))
-                .GroupBy(x => x.EtapaOrdenProduccion)
-                .Select(x => new Tuple<EtapaOrdenProduccion, int>(x.Key, x.Count()))
                 .ToListAsync();
 
-            return ordenesPorEtapa;
+            var ordenesPorEtapaList = ordenesPorEtapa
+                .GroupBy(x => x.EtapaOrdenProduccion)
+                .Select(x => new Tuple<EtapaOrdenProduccion, int>(x.Key, x.Count()))
+                .ToList();
+
+            return ordenesPorEtapaList;
         }
 
 
