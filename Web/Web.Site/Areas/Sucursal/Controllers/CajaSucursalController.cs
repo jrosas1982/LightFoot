@@ -34,7 +34,7 @@ namespace Web.Site.Areas
             return View(cajaList);
         }
 
-        public async Task<IActionResult> Crear(int monto, string comentario)
+        public async Task<IActionResult> Crear(decimal monto, string comentario)
         {
             var cajaSucursal = new CajaSucursal()
             {

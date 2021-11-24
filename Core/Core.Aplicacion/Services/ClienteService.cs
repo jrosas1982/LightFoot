@@ -94,14 +94,7 @@ namespace Core.Aplicacion.Services
             byte[] dataMail = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("NuevoCliente")["EmailBody"]);
             string templateBaseMail = Encoding.UTF8.GetString(dataMail);
 
-            var idSucursal = int.Parse(_db.GetSucursalId());
-
-            var template = templateBaseMail.Replace("@Cliente", NuevoCliente.Nombre)
-                                           .Replace("@Cliente", NuevoCliente.CUIT)
-                                           .Replace("@Cliente", NuevoCliente.Direccion)
-                                           .Replace("@Cliente", NuevoCliente.Telefono)
-                                           .Replace("@Cliente", NuevoCliente.Contacto)
-                                           .Replace("@Cliente", NuevoCliente.Email);
+            var template = templateBaseMail.Replace("@NombreCliente", NuevoCliente.Nombre);
 
             await EmailSender.SendEmail($"LightFoot - Bienvenido {NuevoCliente.Nombre}", template, NuevoCliente.Email);
         }

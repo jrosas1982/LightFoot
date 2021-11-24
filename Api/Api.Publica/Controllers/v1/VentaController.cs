@@ -64,7 +64,28 @@ namespace LightFoot.Api.Publica.Controllers.v1
 
             _logger.LogInformation($"Se registro la venta {venta.Id} ");
 
-            return CreatedAtAction(nameof(Get), new { idVenta = venta.Id }, request);
+            var response = new VentaResponse()
+            {
+                IdVenta = venta.Id,
+                NombreSucursal = venta.Sucursal.Nombre,
+                NombreCliente = venta.Cliente.Nombre,
+                UsuarioVendedor = venta.UsuarioVenta,
+                VentaTipo = venta.VentaTipo,
+                MontoTotal = venta.MontoTotal,
+                DescuentoRealizado = venta.Descuento,
+                Fecha = venta.FechaCreacion,
+                FechaPagado = venta.FechaUltimoPago,
+                Detalles = venta.VentaDetalles.Select(x => new VentaDetalleResponse()
+                {
+                    Articulo = x.Articulo.Nombre,
+                    Cantidad = x.Cantidad,
+                    PrecioUnitario = x.PrecioUnitario,
+                    PrecioTotal = x.Cantidad * x.PrecioUnitario
+                })
+            };
+
+            //CreatedAtAction()
+            return CreatedAtAction(nameof(Get), new { idVenta = venta.Id }, response);
         }
 
         [HttpPost("{idVenta}/RegistrarPago")]
