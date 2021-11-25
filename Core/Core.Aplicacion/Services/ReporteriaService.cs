@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
+using Core.Dominio.AggregatesModel;
 using Core.Dominio.CoreModelHelpers;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
@@ -53,7 +54,13 @@ namespace Core.Aplicacion.Services
 
             var ventas = ventasDb.GroupBy(x => x.UsuarioVenta);
 
-            var usuarios = await _db.Usuarios.Where(x => !x.Eliminado).ToListAsync();
+            var usuarios = await _db.Usuarios
+                .Where(x => !x.Eliminado)
+                .Where(x => x.UsuarioRol == UsuarioRol.Vendedor 
+                         || x.UsuarioRol == UsuarioRol.Cajero
+                         || x.UsuarioRol == UsuarioRol.Encargado
+                         || x.UsuarioRol == UsuarioRol.Administrador)
+                .ToListAsync();
 
             var ranking = usuarios.Select(x => new RankingVentasPorUsuarioModel()
             {

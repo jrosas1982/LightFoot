@@ -16,7 +16,6 @@ namespace Core.Aplicacion.Auth
         public const string IsGerente = "IsGerente";
         public const string IsSupervisor = "IsSupervisor";
         public const string IsTesorero = "IsTesorero";
-        public const string IsControlador = "IsControlador";
         public const string IsOperario = "IsOperario";
 
         public const string IsEncargado = "IsEncargado";
@@ -87,20 +86,6 @@ namespace Core.Aplicacion.Auth
                                                    .Build();
         }
 
-        public static AuthorizationPolicy ControladorPolicy()
-        {
-            return new AuthorizationPolicyBuilder().RequireAuthenticatedUser()
-                                                   .RequireAssertion(ctx =>
-                                                   {
-                                                       return ctx.User.IsInRole(UsuarioRol.Administrador.ToString())
-                                                              || ctx.User.IsInRole(UsuarioRol.Gerente.ToString())
-                                                              || ctx.User.IsInRole(UsuarioRol.Supervisor.ToString())
-                                                              || ctx.User.IsInRole(UsuarioRol.Tesorero.ToString())
-                                                              || ctx.User.IsInRole(UsuarioRol.Controlador.ToString());
-                                                   })
-                                                   .Build();
-        }
-
         public static AuthorizationPolicy OperarioPolicy()
         {
             return new AuthorizationPolicyBuilder().RequireAuthenticatedUser()
@@ -109,8 +94,7 @@ namespace Core.Aplicacion.Auth
                                                        return ctx.User.IsInRole(UsuarioRol.Administrador.ToString())
                                                               || ctx.User.IsInRole(UsuarioRol.Gerente.ToString())
                                                               || ctx.User.IsInRole(UsuarioRol.Supervisor.ToString())
-                                                              || ctx.User.IsInRole(UsuarioRol.Tesorero.ToString())
-                                                              || ctx.User.IsInRole(UsuarioRol.Controlador.ToString())
+                                                              || ctx.User.IsInRole(UsuarioRol.Tesorero.ToString())                                                           
                                                               || ctx.User.IsInRole(UsuarioRol.Operario.ToString());
                                                    })
                                                    .Build();

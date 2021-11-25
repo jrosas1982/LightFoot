@@ -18,9 +18,9 @@ namespace Core.Dominio.AggregatesModel
         [Category(Policies.IsTesorero)]
         [Display(GroupName = Policies.IsTesorero)]
         Tesorero = 25,
-        [Category(Policies.IsFabrica)]
-        [Display(GroupName = Policies.IsFabrica)]
-        Controlador = 80,
+        //[Category(Policies.IsFabrica)]
+        //[Display(GroupName = Policies.IsFabrica)]
+        //Controlador = 80,
         [Category(Policies.IsFabrica)]
         [Display(GroupName = Policies.IsFabrica)]
         Operario = 50,

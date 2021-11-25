@@ -10,10 +10,12 @@ using Web.Site.Helpers;
 using System;
 using Core.Dominio.CoreModelHelpers;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using Core.Aplicacion.Auth;
 
 namespace Web.Site.Areas
 {
-    //[Authorize (Policy = Policies.IsControlador)]
+    [Authorize]
     [Area("sucursal")]
     [Route("[area]/[controller]/[action]")]
     public class CompraArticuloController : CustomController
