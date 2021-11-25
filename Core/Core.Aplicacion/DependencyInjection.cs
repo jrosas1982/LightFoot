@@ -10,6 +10,8 @@ namespace Core.Infraestructura
     {
         public static void AddCoreServices(this IServiceCollection serviceCollection)
         {
+            
+            serviceCollection.AddScoped<IArticulosSinStockService, ArticuloSinStockService>();
             serviceCollection.AddScoped<IUsuarioService, UsuarioService>();
             serviceCollection.AddScoped<IUserLoginService, UserLoginService>();
             serviceCollection.AddScoped<ISucursalService, SucursalService>();

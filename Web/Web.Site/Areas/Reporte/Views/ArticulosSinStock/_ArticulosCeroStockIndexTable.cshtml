@@ -15,7 +15,7 @@
             </a>
         </div>
     </div>
-    <h2 class="d-none d-print-block">Articulos con bajo stock</h2>
+    <h2 class="d-none d-print-block">Articulos con cero stock</h2>
     <div class="ibox-content">
         <table class="table table-hover">
             <thead>
@@ -27,7 +27,6 @@
                     <th>Categoria</th>
                     <th>Stock Actual</th>
                     <th>Stock Minimo</th>
-                    <th>%</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,7 +51,6 @@
                                 <td>@item.StockTotal Unidades</td>
                             }
                             <td>@item.StockMinimo Unidades</td>
-                            <td>@((@item.StockTotal / item.StockMinimo)*100)%</td>
                         </tr>
                     }
                 }

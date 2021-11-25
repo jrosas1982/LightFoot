@@ -66,7 +66,7 @@
                     <ul class="nav nav-second-level collapse @Html.IsSelected(area: "a", cssClass: "in")">
                         <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Caja Diaria</a></li>
                         <li class="@Html.IsSelected(controller: "ArticulosBajoStock") "><a href="@Url.Action("Index", "ArticulosBajoStock", new { area = "reporte" })">Articulos con bajo Stock</a></li>
-                        <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Articulos con Stock faltante</a></li>
+                        <li class="@Html.IsSelected(controller: "ArticulosSinStock")"><a href="@Url.Action("Index", "ArticulosSinStock", new { area = "reporte" })">Articulos con Stock faltante</a></li>
                         <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Ventas por sucursal</a></li>
                         <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Ventas por vendedor</a></li>
                         <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Auditoria de precios</a></li>
