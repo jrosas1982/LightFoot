@@ -69,53 +69,57 @@
             </div>
         </div>
     </div>
-
     <div class="row">
         <div class="col-lg-12">
-            <div id="CajaPartialView">
-                <partial name="_CajaIndexTable.cshtml" model="Model" />
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Reporte de Caja</h5>
+                </div>
+                <div class="ibox-content">
+                    <div id="CajaPartialView">
+                        <partial name="_CajaIndexTable.cshtml" model="Model" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-</div>
+    @section Styles {
+        <link rel="stylesheet" href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" />
 
-@section Styles {
-    <link rel="stylesheet" href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" />
+    }
 
-}
+    @section Scripts {
+        <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+        <script src="~/lib/chosen/chosen.jquery.js"></script>
+        <script src="~/custom/bootstrap-datepicker.es.js"></script>
 
-@section Scripts {
-    <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
-    <script src="~/lib/chosen/chosen.jquery.js"></script>
-    <script src="~/custom/bootstrap-datepicker.es.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.footable').footable();
+            });
+        </script>
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.footable').footable();
-        });
-    </script>
+        <script type="text/javascript">
 
-    <script type="text/javascript">
+            $('#fechaRango .input-daterange').datepicker({
+                locale: 'es',
+                language: 'es',
+                format: 'dd/mm/yyyy',
+                endDate: 'today',
+                autoclose: true,
+                todayBtn: true,
+                todayHighlight: true,
+            });
+            $("#fechaDesde").on("dp.change", function (e) {
+                $('#fechaHasta').data("DateTimePicker").minDate(e.date);
+            });
+            $("#fechaHasta").on("dp.change", function (e) {
+                $('#fechaDesde').data("DateTimePicker").maxDate(e.date);
+            });
+        </script>
 
-        $('#fechaRango .input-daterange').datepicker({
-            locale: 'es',
-            language: 'es',
-            format: 'dd/mm/yyyy',
-            endDate: 'today',
-            autoclose: true,
-            todayBtn: true,
-            todayHighlight: true,
-        });
-        $("#fechaDesde").on("dp.change", function (e) {
-            $('#fechaHasta').data("DateTimePicker").minDate(e.date);
-        });
-        $("#fechaHasta").on("dp.change", function (e) {
-            $('#fechaDesde').data("DateTimePicker").maxDate(e.date);
-        });
-    </script>
-
-    <script type="text/javascript">
+        <script type="text/javascript">
 
 
         function Filtrar() {
@@ -141,17 +145,17 @@
             });
         }
 
-    </script> 
+        </script>
 
-   <script type="text/javascript">
-        //prevent the form from doing a submit
-        $(document).on('submit', '.validateDontSubmit', function (e) {
-            e.preventDefault();
-            return false;
-        });
+        <script type="text/javascript">
+            //prevent the form from doing a submit
+            $(document).on('submit', '.validateDontSubmit', function (e) {
+                e.preventDefault();
+                return false;
+            });
 
-    </script>
+        </script>
 
-}
+    }
 
 
