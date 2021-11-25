@@ -2,17 +2,17 @@
     ViewData["Title"] = "Reporte";
     Layout = "_Layout";
 
-    var title = "Articulos Con Stock Bajo";
+    var title = "Ventas Por Sucursal";
 }
 
-@model IEnumerable<ArticuloStock>
+@model IEnumerable<RankingVentasPorSucursalModel>
 
 <div class="row wrapper border-bottom white-bg page-heading navegacion">
     <div class="col-xl-8 col-lg-6">
         <h2>@title</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="@Url.Action("Index", "ArticulosBajoStock", new { area = "reporte" })">Home</a>
+                <a href="@Url.Action("Index", "VentasPorSucursal", new { area = "reporte" })">Home</a>
             </li>
             <li class="breadcrumb-item">
                 <a>Reporte</a>
@@ -21,7 +21,7 @@
                 <strong>@title</strong>
             </li>
         </ol>
-        
+
     </div>
     <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
     </div>
@@ -42,8 +42,8 @@
 
     <div class="row">
         <div class="col-lg-12">
-            <div id="StockBajoArticulosPartialView">
-                <partial name="_StockBajoArticulosIndexTable.cshtml" model="Model" />
+            <div id="TablePartialView">
+                @*<partial name="_VentasPorSucursalIndexTable.cshtml" model="Model" />*@
             </div>
         </div>
     </div>

@@ -10,8 +10,6 @@ namespace Core.Infraestructura
     {
         public static void AddCoreServices(this IServiceCollection serviceCollection)
         {
-            
-            serviceCollection.AddScoped<IArticulosSinStockService, ArticuloSinStockService>();
             serviceCollection.AddScoped<IUsuarioService, UsuarioService>();
             serviceCollection.AddScoped<IUserLoginService, UserLoginService>();
             serviceCollection.AddScoped<ISucursalService, SucursalService>();
@@ -36,6 +34,8 @@ namespace Core.Infraestructura
             serviceCollection.AddScoped<IAdministracionDeCajaService, AdministracionDeCajaService>();
             serviceCollection.AddScoped<IDashboardSucursalService, DashboardSucursalService>();
             serviceCollection.AddScoped<IDashboardFabricaService, DashboardFabricaService>();
+            serviceCollection.AddScoped<IArticulosSinStockService, ArticuloSinStockService>();
+            serviceCollection.AddScoped<IReporteriaService, ReporteriaService>();
 
             serviceCollection.AddScoped<UserResolverService>();
         }
