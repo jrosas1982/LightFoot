@@ -52,7 +52,7 @@
                                 <td>@item.StockTotal Unidades</td>
                             }
                             <td>@item.StockMinimo Unidades</td>
-                            <td>@((@item.StockTotal / item.StockMinimo)*100)%</td>
+                            <td>@(((decimal)@item.StockTotal / item.StockMinimo) *100)%</td>
                         </tr>
                     }
                 }
@@ -60,7 +60,7 @@
                 {
 
                     <tr class="my-4">
-                        <td colspan="7" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
+                        <td colspan="8" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
                     </tr>
                 }
             </tbody>

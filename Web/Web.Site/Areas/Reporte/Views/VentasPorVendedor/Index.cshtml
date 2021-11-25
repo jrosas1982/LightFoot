@@ -2,7 +2,8 @@
     ViewData["Title"] = "Reporte";
     Layout = "_Layout";
 
-    var title = "Ventas Por Vendedor";
+    var title = "Ventas Por Usuarios";
+    
 }
 
 @model IEnumerable<RankingVentasPorUsuarioModel>
@@ -35,6 +36,7 @@
 <div class="d-none d-print-block w-100">
     <div class="alert alert-default" role="alert">
         Reporte de @title @DateTime.Now
+
     </div>
 </div>
 
@@ -43,7 +45,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div id="TablePartialView">
-                @*<partial name="_VentasPorVendedorIndexTable.cshtml" model="Model" />*@
+                <partial name="_VentasPorVendedorIndexTable.cshtml" model="Model" />
             </div>
         </div>
     </div>
@@ -72,7 +74,10 @@
             return false;
         });
 
+
     </script>
+
+    
 
 }
 

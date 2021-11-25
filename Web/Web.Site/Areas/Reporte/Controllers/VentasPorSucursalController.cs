@@ -27,16 +27,11 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Index()
         {
-            PeriodoModel pediodo = new PeriodoModel()
-            {
-                Año=2021,
-                Mes=5
-            };
+            PeriodoModel pediodo = new PeriodoModel();
 
             var ranking = await _reporteriaService.GetRankingVentasPorSucursal(pediodo);
-            var rankingList = ranking.ToList();
 
-            return View(rankingList);
+            return View(ranking);
         }
 
     }
