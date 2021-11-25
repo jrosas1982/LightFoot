@@ -59,8 +59,8 @@
                 </ul>
             </li>
 
-            @if ((await authorizationService.AuthorizeAsync(User, Policies.IsGod)).Succeeded)
-            {
+            @*@if ((await authorizationService.AuthorizeAsync(User, Policies.IsGod)).Succeeded)
+            {*@
                 <li class="@Html.IsSelected(area: "Reporte")">
                     <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label" data-i18n="nav.graphs">Reportes</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse @Html.IsSelected(area: "a", cssClass: "in")">
@@ -72,7 +72,7 @@
                         <li class="@Html.IsSelected(controller: "a") disabled"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Auditoria de precios</a></li>
                     </ul>
                 </li>
-            }
+            @*}*@
             @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
             {
                 <li class="@Html.IsSelected(area: "Configs")">
