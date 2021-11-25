@@ -128,11 +128,11 @@ namespace Core.Aplicacion.Helpers
 
         public async Task LiberarStockReservadoPendiente(int idOrdenProduccion)
         {
-            var ordenDb = _db.OrdenesProduccion.Single(x => x.Id == idOrdenProduccion);
+            var ordenDb = await _db.OrdenesProduccion.Include(x => x.EtapaOrdenProduccion).SingleOrDefaultAsync(x => x.Id == idOrdenProduccion);
 
             var etapaActual = ordenDb.EtapaOrdenProduccion;
-            
-            var siguienteEtapa = _db.EtapasOrdenProduccion.Where(x => x.Orden > etapaActual.Orden).MinBy(x => x.Orden).SingleOrDefault();
+
+            var siguienteEtapa = _db.EtapasOrdenProduccion.Where(x => x.Orden > etapaActual.Orden).ToList().MinBy(x => x.Orden).SingleOrDefault();
 
             if (siguienteEtapa == null)
                 return;

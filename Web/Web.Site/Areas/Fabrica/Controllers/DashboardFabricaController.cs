@@ -14,7 +14,7 @@ using Core.Dominio.AggregatesModel;
 namespace Web.Site.Areas
 {
     [Area("fabrica")]
-    [Authorize(Policy = Policies.IsSupervisor)]
+    [Authorize(Policy = Policies.IsFabrica)]
     [Route("[area]/[controller]/[action]")]
     public class DashboardFabricaController : CustomController
     {

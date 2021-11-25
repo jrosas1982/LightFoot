@@ -25,10 +25,11 @@ namespace Web.Site.Areas.Shared.Controllers
         {
             var groupName = User.GetUserRole().GetValueOrDefault();
 
-            if (Enum.IsDefined(typeof(UsuarioRol), groupName) && groupName.GetGroupName() == Policies.IsSucursal)
-                return Redirect("/sucursal/DashboardSucursal/Index");
-            else
-                return Redirect("/fabrica/DashboardFabrica/Index");
+            if (Enum.IsDefined(typeof(UsuarioRol), groupName))
+                if (groupName.GetGroupName() == Policies.IsSucursal)
+                    return Redirect("/sucursal/DashboardSucursal/Index");
+                else
+                    return Redirect("/fabrica/DashboardFabrica/Index");
 
             return View();
         }

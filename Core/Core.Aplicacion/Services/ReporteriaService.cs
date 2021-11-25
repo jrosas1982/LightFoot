@@ -31,13 +31,15 @@ namespace Core.Aplicacion.Services
 
             var ventas = ventasDb.GroupBy(x => x.IdSucursal);
 
-            var sucursales = await _db.Sucursales.ToListAsync();
+            var sucursales = await _db.Sucursales.Where(x => !x.Eliminado).ToListAsync();
 
             var ranking = sucursales.Select(x => new RankingVentasPorSucursalModel()
             {
                 Sucursal = x,
                 Ventas = ventas.SingleOrDefault(v => v.Key == x.Id),
             });
+
+            ranking = ranking.OrderByDescending(x => x.Ventas?.Sum(x => x.MontoTotal));
 
             return ranking;
         }
@@ -51,13 +53,15 @@ namespace Core.Aplicacion.Services
 
             var ventas = ventasDb.GroupBy(x => x.UsuarioVenta);
 
-            var usuarios = await _db.Usuarios.ToListAsync();
+            var usuarios = await _db.Usuarios.Where(x => !x.Eliminado).ToListAsync();
 
             var ranking = usuarios.Select(x => new RankingVentasPorUsuarioModel()
             {
                 Usuario = x,
                 Ventas = ventas.SingleOrDefault(v => v.Key == x.NombreUsuario),
             });
+
+            ranking = ranking.OrderByDescending(x => x.Ventas?.Sum(x => x.MontoTotal));
 
             return ranking;
         }
