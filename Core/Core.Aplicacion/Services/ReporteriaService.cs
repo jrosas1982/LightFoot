@@ -24,11 +24,13 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<RankingVentasPorSucursalModel>> GetRankingVentasPorSucursal(PeriodoModel periodo)
         {
-            var ventas = await _db.Ventas
+            var ventasDb = await _db.Ventas
                 .Where(x => !x.Eliminado)
-                .Where(x => x.FechaCreacion.Month == periodo.Mes && x.FechaCreacion.Year == periodo.Año)
-                .GroupBy(x => x.IdSucursal)
+                .Where(x => x.FechaCreacion.Month == periodo.Mes && x.FechaCreacion.Year == periodo.Año)              
                 .ToListAsync();
+
+            var ventas = ventasDb.GroupBy(x => x.IdSucursal);
+
             var sucursales = await _db.Sucursales.ToListAsync();
 
             var ranking = sucursales.Select(x => new RankingVentasPorSucursalModel()
@@ -42,11 +44,13 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<RankingVentasPorUsuarioModel>> GetRankingVentasPorUsuario(PeriodoModel periodo)
         {
-            var ventas = await _db.Ventas
+            var ventasDb = await _db.Ventas
                 .Where(x => !x.Eliminado)
-                .Where(x => x.FechaCreacion.Month == periodo.Mes && x.FechaCreacion.Year == periodo.Año)
-                .GroupBy(x => x.UsuarioVenta)
+                .Where(x => x.FechaCreacion.Month == periodo.Mes && x.FechaCreacion.Year == periodo.Año)               
                 .ToListAsync();
+
+            var ventas = ventasDb.GroupBy(x => x.UsuarioVenta);
+
             var usuarios = await _db.Usuarios.ToListAsync();
 
             var ranking = usuarios.Select(x => new RankingVentasPorUsuarioModel()
