@@ -215,6 +215,9 @@ namespace Core.Aplicacion.Services
             ordenDb.EstadoEtapaOrdenProduccion = EstadoEtapaOrdenProduccion.Cancelada;
 
             _db.OrdenesProduccion.Update(ordenDb);
+
+            await _fabricacionService.LiberarStockReservadoPendiente(idOrdenProduccion);
+
             await _db.SaveChangesAsync();
             await GuardarEventoAsync(ordenDb, comentario);
 

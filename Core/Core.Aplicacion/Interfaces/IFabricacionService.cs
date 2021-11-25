@@ -12,5 +12,6 @@ namespace Core.Aplicacion.Interfaces
         Task<IEnumerable<CantidadInsumoNecesarioStock>> VerificarStockInsumos(IEnumerable<CantidadInsumo> insumosNecesarios);
         Task ReservarStockInsumos(IEnumerable<CantidadInsumo> insumosNecesarios);
         Task DescontarStockInsumosReservados(IEnumerable<CantidadInsumo> insumosNecesarios);
+        Task LiberarStockReservadoPendiente(int idOrdenProduccion);
     }
 }

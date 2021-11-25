@@ -125,7 +125,7 @@ namespace Core.Aplicacion.Services
 
             _db.Ventas.Add(venta);
 
-            await DescontarArticulos(venta.VentaDetalles);
+            await DescontarStock(venta.VentaDetalles);
 
             await EvaluarRepoAutomatica();
 
@@ -223,7 +223,7 @@ namespace Core.Aplicacion.Services
             await EmailSender.SendEmail($"LightFoot - Nueva Compra #{ventaRealizada.Id}", template, ventaRealizada.Cliente.Email);
         }
 
-        private async Task DescontarArticulos(IEnumerable<VentaDetalle> ventaDetalles)
+        private async Task DescontarStock(IEnumerable<VentaDetalle> ventaDetalles)
         {
             var idSucursal = int.Parse(_db.GetSucursalId());
 
@@ -239,7 +239,6 @@ namespace Core.Aplicacion.Services
             }
 
             await _db.SaveChangesAsync();
-
         }
 
 
