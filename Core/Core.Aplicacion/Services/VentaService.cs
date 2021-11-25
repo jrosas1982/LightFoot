@@ -23,9 +23,10 @@ namespace Core.Aplicacion.Services
         private readonly IProveedorService _proveedorService;
         private readonly IProveedorArticuloService _proveedorArticuloService;
         private readonly IControlStockArticuloService _controlStockArticuloService;
+        private readonly ISolicitudService _solicitudService;
         private readonly IConfiguration _Configuration;
 
-        public VentaService( AppDbContext db, ILogger<VentaService> logger, IArticuloService articuloService, IProveedorService proveedorService, IProveedorArticuloService proveedorArticuloService, IControlStockArticuloService controlStockArticuloService, IConfiguration configuration)
+        public VentaService(AppDbContext db, ILogger<VentaService> logger, IArticuloService articuloService, IProveedorService proveedorService, IProveedorArticuloService proveedorArticuloService, IControlStockArticuloService controlStockArticuloService, IConfiguration configuration, ISolicitudService solicitudService)
         {
             _db = db;
             _logger = logger;
@@ -34,6 +35,7 @@ namespace Core.Aplicacion.Services
             _proveedorArticuloService = proveedorArticuloService;
             _controlStockArticuloService = controlStockArticuloService;
             _Configuration = configuration;
+            _solicitudService = solicitudService;
         }
 
         public async Task AgregarPagoVenta(int idVenta, TipoPago tipoPago, decimal montoPercibido)
@@ -118,10 +120,15 @@ namespace Core.Aplicacion.Services
                 MontoTotal = montoTotalAcum,//  - descuentoRealizado,
                 VentaTipo = ventaTipo,
                 //Descuento = descuentoRealizado,
-                VentaDetalles = ventaDetalles,                
+                VentaDetalles = ventaDetalles,
             };
 
             _db.Ventas.Add(venta);
+
+            await DescontarStock(venta.VentaDetalles);
+
+            await EvaluarRepoAutomatica();
+
             await _db.SaveChangesAsync();
 
             await EnviarMailVenta(venta.Id);
@@ -129,11 +136,6 @@ namespace Core.Aplicacion.Services
             return venta;
         }
 
-        private class ArticuloPrecio
-        {
-            public int IdArticulo { get; set; }
-            public decimal Precio { get; set; }
-        }
 
         public async Task<IEnumerable<TipoPago>> GetTiposPago()
         {
@@ -219,6 +221,107 @@ namespace Core.Aplicacion.Services
                                            .Replace("@TableRows", Maildetalles);
 
             await EmailSender.SendEmail($"LightFoot - Nueva Compra #{ventaRealizada.Id}", template, ventaRealizada.Cliente.Email);
+        }
+
+        private async Task DescontarStock(IEnumerable<VentaDetalle> ventaDetalles)
+        {
+            var idSucursal = int.Parse(_db.GetSucursalId());
+
+            foreach (var item in ventaDetalles)
+            {
+                var articulo = await _db.ArticulosStock
+                    .Where(x => !x.Eliminado)
+                    .SingleAsync(x => x.IdSucursal == idSucursal && x.IdArticulo == item.IdArticulo);
+
+                articulo.StockTotal = articulo.StockTotal - item.Cantidad;
+
+                _db.ArticulosStock.Update(articulo);
+            }
+
+            await _db.SaveChangesAsync();
+        }
+
+
+        private async Task EvaluarRepoAutomatica()
+        {
+            var idSucursal = int.Parse(_db.GetSucursalId());
+
+            var articulosConRepo = _db.ArticulosStock
+                .Where(x => !x.Eliminado)
+                .Where(x => x.IdSucursal == idSucursal && x.EsReposicionAutomatica && x.StockMinimo > x.StockTotal);
+
+            var articulosSolicitud = new List<ArticuloCantidad>();
+
+            foreach (var articulo in articulosConRepo)
+            {
+                if (articulo.EsReposicionPorLote)
+                    articulosSolicitud.Add(new ArticuloCantidad()
+                    {
+                        IdArticulo = articulo.IdArticulo,
+                        Cantidad = SumarHastaCubrir(articulo.TamañoLote, articulo.StockTotal, articulo.StockMinimo),
+                        Comentario = "Reposicion por Lote"
+                    });
+                else
+                    articulosSolicitud.Add(new ArticuloCantidad()
+                    {
+                        IdArticulo = articulo.IdArticulo,
+                        Cantidad = articulo.StockMinimo - articulo.StockTotal,
+                        Comentario = "Reposicion por unidades"
+                    });
+            }
+
+            await GenerarSolicitud(articulosSolicitud);
+        }
+
+        private int SumarHastaCubrir(int cantidadSumar, int cantidadBase, int canitdadCubrir)
+        {
+            int acum = 0;
+
+            while (cantidadBase < canitdadCubrir)
+            {
+                canitdadCubrir += cantidadSumar;
+                acum += cantidadSumar;
+            }
+
+            return acum;
+        }
+
+        private async Task GenerarSolicitud(IEnumerable<ArticuloCantidad> articulos)
+        {
+            var idSucursal = int.Parse(_db.GetSucursalId());
+
+            var solicitud = new Solicitud()
+            {
+                IdSucursal = idSucursal,
+                Comentario = "Reposicion Automatica",
+            };
+
+            IList<SolicitudDetalle> solicitudDetalles = new List<SolicitudDetalle>();
+
+            foreach (var item in articulos)
+            {
+                solicitudDetalles.Add(new SolicitudDetalle()
+                {
+                    IdArticulo = item.IdArticulo,
+                    CantidadSolicitada = item.Cantidad,
+                    Motivo = item.Comentario
+                });
+            }
+
+            await _solicitudService.CrearSolicitud(solicitud, solicitudDetalles);
+        }
+
+        private class ArticuloPrecio
+        {
+            public int IdArticulo { get; set; }
+            public decimal Precio { get; set; }
+        }
+
+        private class ArticuloCantidad
+        {
+            public int IdArticulo { get; set; }
+            public int Cantidad { get; set; }
+            public string Comentario { get; set; }
         }
     }
 }

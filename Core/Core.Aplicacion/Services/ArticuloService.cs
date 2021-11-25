@@ -123,6 +123,7 @@ namespace Core.Aplicacion.Services
          
              decimal precio;
             var articuloPrecioList = new List<ArticuloPrecio>();
+            var articuloHistoricoList = new List<ArticuloHistorico>();
             var tipoCambio = "Mayorista";
             foreach (var item in modelo.Detalle)
             {
@@ -134,6 +135,7 @@ namespace Core.Aplicacion.Services
                     tipoCambio = "Minorista";
                     precio = articulo.PrecioMinorista;
                 }
+
                 var articuloPrecio = new ArticuloPrecio()
                 {
                     IdArticulo = item.IdArticulo,
@@ -142,6 +144,14 @@ namespace Core.Aplicacion.Services
                     PrecioNuevo = item.NuevoPrecio
                 };
                 articuloPrecioList.Add(articuloPrecio);
+
+                var articuloHistorico = new ArticuloHistorico()
+                {
+                    IdArticulo = item.IdArticulo,
+                    PrecioMinorista = articulo.PrecioMinorista,
+                    PrecioMayorista = articulo.PrecioMayorista
+                };
+                articuloHistoricoList.Add(articuloHistorico);
             }
 
             foreach (var item in articulosDb)
@@ -153,12 +163,14 @@ namespace Core.Aplicacion.Services
                 else
                     item.PrecioMinorista = nuevoPrecio;
 
-                _db.Articulos.Update(item);
-         
+                _db.Articulos.Update(item);         
             }
-            await _db.SaveChangesAsync();
-            await EnviarMailPrecioActualizado(articuloPrecioList, tipoCambio, modelo.Comentario, articuloPrecioList.Count());
 
+            _db.ArticulosHistorico.AddRange(articuloHistoricoList);
+
+            await _db.SaveChangesAsync();
+
+            await EnviarMailPrecioActualizado(articuloPrecioList, tipoCambio, modelo.Comentario, articuloPrecioList.Count());
         }
 
         private async Task EnviarMailPrecioActualizado(List<ArticuloPrecio> articulos, string tipoCambio, string comentario, int cantidadModificada)

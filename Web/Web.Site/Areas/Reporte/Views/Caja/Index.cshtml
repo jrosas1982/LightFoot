@@ -1,0 +1,161 @@
+﻿@{
+    ViewData["Title"] = "Sucursal";
+    Layout = "_Layout";
+
+    var title = "Caja";
+    DateTime FechaDesde = ViewBag.FechaDesde; //DateTime.Today - TimeSpan.FromDays(-30);
+    DateTime FechaHasta = ViewBag.FechaHasta; //DateTime.Today;
+}
+
+@model IEnumerable<CajaSucursal>
+
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
+    <div class="col-xl-8 col-lg-6">
+        <h2>@title</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "ArticulosBajoStock", new { area = "reporte" })">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Reporte</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>@title</strong>
+            </li>
+        </ol>
+
+    </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
+    </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="ReporteSimple()">
+            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
+        </button>
+    </div>
+</div>
+
+<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        Reporte de @title @DateTime.Now
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox-content m-b-sm border-bottom  d-print-none">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group" id="fechaRango">
+                    <label class="col-form-label">Fecha Inicio</label>
+                    <div class="input-daterange input-group">
+                        <input type="text" class="form-control-sm form-control" name="start" id="fechaDesde" value="@FechaDesde.ToString("dd/MM/yyyy")" />
+                        <span class="input-group-addon"> <i class="fa fa-long-arrow-right mx-1"></i> </span>
+                        <input type="text" class="form-control-sm form-control" name="end" id="fechaHasta" value="@FechaHasta.ToString("dd/MM/yyyy")" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12" style="display: flex;flex-direction: column;justify-content: flex-end;">
+                <div class="form-group">
+                    @*<div class="col-sm-12 d-flex align-items-end justify-content-end">
+                            <button class="btn btn-outline-info btn-xl float-right" type="submit" onclick="LimpiarFiltros()">
+                                <i class="fas fa-eraser" aria-hidden="true"></i> Limpiar
+                            </button>
+                        </div>*@
+                    <div class="col-sm-12 d-flex align-items-end justify-content-end">
+                        <button class="btn btn-outline-info btn-xl float-right" type="submit" onclick="Filtrar()">
+                            <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Reporte de Caja</h5>
+                </div>
+                <div class="ibox-content">
+                    <div id="CajaPartialView">
+                        <partial name="_CajaIndexTable.cshtml" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Styles {
+        <link rel="stylesheet" href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" />
+
+    }
+
+    @section Scripts {
+        <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+        <script src="~/lib/chosen/chosen.jquery.js"></script>
+        <script src="~/custom/bootstrap-datepicker.es.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.footable').footable();
+            });
+        </script>
+
+        <script type="text/javascript">
+
+            $('#fechaRango .input-daterange').datepicker({
+                locale: 'es',
+                language: 'es',
+                format: 'dd/mm/yyyy',
+                endDate: 'today',
+                autoclose: true,
+                todayBtn: true,
+                todayHighlight: true,
+            });
+            $("#fechaDesde").on("dp.change", function (e) {
+                $('#fechaHasta').data("DateTimePicker").minDate(e.date);
+            });
+            $("#fechaHasta").on("dp.change", function (e) {
+                $('#fechaDesde').data("DateTimePicker").maxDate(e.date);
+            });
+        </script>
+
+        <script type="text/javascript">
+
+
+        function Filtrar() {
+
+            var FechaDesde = $("#fechaDesde").data('datepicker').getFormattedDate('yyyy-mm-dd');
+            var FechaHasta = $("#fechaHasta").data('datepicker').getFormattedDate('yyyy-mm-dd');
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("Filtrar", "Caja", new { area = "reporte" })',
+                traditional: true,
+                data: //formData,
+                {
+                    FechaDesde: FechaDesde,
+                    FechaHasta: FechaHasta
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#CajaPartialView").html(""); //clear the records content
+                    $("#CajaPartialView").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
+
+        </script>
+
+        <script type="text/javascript">
+            //prevent the form from doing a submit
+            $(document).on('submit', '.validateDontSubmit', function (e) {
+                e.preventDefault();
+                return false;
+            });
+
+        </script>
+
+    }
+
+

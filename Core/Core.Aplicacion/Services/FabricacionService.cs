@@ -9,6 +9,7 @@ using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MoreLinq;
 
 namespace Core.Aplicacion.Helpers
 {
@@ -120,6 +121,38 @@ namespace Core.Aplicacion.Helpers
                     throw new Exception("No hay suficiente stock disponible para descontar para la orden de produccion");
 
             _db.Insumos.Update(insumoAfectado);
+            }
+
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task LiberarStockReservadoPendiente(int idOrdenProduccion)
+        {
+            var ordenDb = _db.OrdenesProduccion.Single(x => x.Id == idOrdenProduccion);
+
+            var etapaActual = ordenDb.EtapaOrdenProduccion;
+            
+            var siguienteEtapa = _db.EtapasOrdenProduccion.Where(x => x.Orden > etapaActual.Orden).MinBy(x => x.Orden).SingleOrDefault();
+
+            if (siguienteEtapa == null)
+                return;
+            
+            var etapasSiguentes = _db.EtapasOrdenProduccion.Where(x => x.Orden > etapaActual.Orden);
+
+            var articulo = _db.Articulos.Include(x => x.Recetas).ThenInclude(x => x.RecetaDetalles).Single(x => x.Id == ordenDb.IdArticulo);
+
+            var Recetadetalles = articulo.Recetas.Single(x => x.Activo).RecetaDetalles.Where(x => etapasSiguentes.Any(y => y.Id == x.IdEtapaOrdenProduccion));
+
+            var insumosStock = _db.Insumos.Where(x => Recetadetalles.Select(y => y.IdInsumo).Contains(x.Id)).ToList();
+          
+            foreach (var detalleReceta in Recetadetalles)
+            {
+                var insumoAfectado = insumosStock.Single(x => x.Id == detalleReceta.IdInsumo);
+                if (insumoAfectado.StockReservado > detalleReceta.Cantidad)
+                    insumoAfectado.StockReservado -= detalleReceta.Cantidad;
+                //insumoAfectado.StockTotal -= detalleReceta.Cantidad;
+
+                _db.Insumos.Update(insumoAfectado);
             }
 
             await _db.SaveChangesAsync();

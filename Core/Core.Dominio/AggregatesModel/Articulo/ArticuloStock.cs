@@ -16,9 +16,9 @@ namespace Core.Dominio.AggregatesModel
         [Display(Name = "# Proveedor Preferido")]
         public int? IdProveedorPreferido { get; set; }
         [Display(Name = "Stock Total")]
-        public double StockTotal { get; set; }
+        public int StockTotal { get; set; }
         [Display(Name = "Punto de Reposición")]
-        public double StockMinimo { get; set; }
+        public int StockMinimo { get; set; }
         [Display(Name = "Activar / Desactivar Reposición Por Lote")]
         public Boolean EsReposicionPorLote { get; set; }
         [Display(Name = "Activar / Desactivar Reposición Automática")]
