@@ -66,10 +66,23 @@ namespace Core.Aplicacion.Services
         public async Task ModificarPrecioInsumo(int idProveedorInsumo, decimal precio)
         {
             var proveedorInsumo = await _db.ProveedoresInsumos.SingleOrDefaultAsync(x => x.Id == idProveedorInsumo);
+
             if (proveedorInsumo == null)
                 throw new ExcepcionControlada("El ProveedorInsumo solicitado no existe");
+
             proveedorInsumo.Precio = precio;
+
+            var historico = new ProveedorInsumoHistorico()
+            {
+                IdProveedor = idProveedorInsumo,
+                IdInsumo = proveedorInsumo.IdInsumo,
+                Precio = precio
+            };
+
+            _db.ProveedoresInsumosHistorico.Add(historico);
+
             _db.ProveedoresInsumos.Update(proveedorInsumo);
+
             await _db.SaveChangesAsync();
         }
 

@@ -23,6 +23,7 @@ namespace Core.Infraestructura
         }
 
         public DbSet<Articulo> Articulos { get; set; }
+        public DbSet<ArticuloHistorico> ArticulosHistorico { get; set; }
         public DbSet<ArticuloCategoria> ArticulosCategoria { get; set; }
         public DbSet<ArticuloStock> ArticulosStock { get; set; }
         public DbSet<MovimientoStock> MovimientosStock { get; set; }
