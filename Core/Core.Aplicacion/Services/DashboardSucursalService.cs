@@ -34,20 +34,34 @@ namespace Core.Aplicacion.Services
             var masVendidos = await _db.VentasDetalle
                 .Where(x => !x.Eliminado)
                 .AsNoTracking()
-                .Where(x => x.Venta.IdSucursal == idSucursal && x.Venta.FechaCreacion > DateTime.UtcNow.AddDays(-30))
+                .Where(x => x.Venta.IdSucursal == idSucursal && x.Venta.FechaCreacion.Month == DateTime.UtcNow.Month)
                 .Include(x => x.Articulo)
-                    .ThenInclude(x => x.ArticuloCategoria)
-                .Select(x => new { Articulo = x.Articulo, Cantidad = x.Cantidad })
+                .Select(x => new { IdArticulo = x.IdArticulo, Cantidad = x.Cantidad })
                 .ToListAsync();
 
             var masVendidosList = masVendidos
-                .GroupBy(x => x.Articulo)
-                .Select(x => new Tuple<Articulo, int>(x.Key, x.Sum(x => x.Cantidad)))
-                .OrderByDescending(x => x.Item2)
-                .ThenBy(x => x.Item1.Nombre)
+                .GroupBy(x => x.IdArticulo)
+                .Select(x => new Tuple<int, int>(x.Key, x.Sum(x => x.Cantidad)))
+ 
                 .Take(n);
 
-            return masVendidosList;
+
+            var articulos = await _db.Articulos
+                    .Include(x => x.ArticuloCategoria)
+                    .ToListAsync();
+
+            IList<Tuple<Articulo, int>> result = new List<Tuple<Articulo, int>>();
+
+            foreach (var item in masVendidosList)
+            {
+                var articulo = articulos.Single(x => x.Id == item.Item1);
+
+                result.Add(new Tuple<Articulo, int>(articulo, item.Item2));
+            }
+
+            result = result.OrderByDescending(x => x.Item2).ThenBy(x => x.Item1.Nombre).ToList();
+
+            return result;
         }
 
         public async Task<IEnumerable<ArticuloStock>> GetArticulosBajoStock(int n)

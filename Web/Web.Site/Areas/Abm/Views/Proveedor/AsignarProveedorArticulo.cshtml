@@ -214,12 +214,8 @@
                     url: '@url_base' + "EliminarDetalleArticulo",
                     data: { id: Id },
                     success: function (result) {
-                        if (result == true) {
-                            swal("Exito!", "El Articulo ha sido eliminado correctamente", "success");
-                            $(row).parents('tr').first().remove();
-                        } else {
-                            swal("Error", "Ocurrió un error inesperado", "error");
-                        }
+                        swal("Exito!", "El Articulo ha sido eliminado correctamente", "success");
+                        $(row).parents('tr').first().remove();
                     }
                   })
             });
