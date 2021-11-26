@@ -126,6 +126,7 @@ namespace Web.Site.Areas
                 nuevoCambio.CambioPrecioMayorista = cambioPrecio.TipoPrecioAfectado.Contains("PrecioMayorista");
                 var esAumento = (cambioPrecio.TipCambio == 1);
                 nuevoCambio.Comentario = cambioPrecio.Comentartio;
+                nuevoCambio.CambioPrecioAumento = esAumento;
 
                 foreach (var item in articulosList)
                 {
