@@ -60,6 +60,7 @@ namespace LightFoot.Web.Site
                 config.AddPolicy(Policies.IsAdmin, Policies.AdminPolicy());
                 config.AddPolicy(Policies.IsGerente, Policies.GerentePolicy());
                 config.AddPolicy(Policies.IsSupervisor, Policies.SupervisorPolicy());
+                config.AddPolicy(Policies.IsTesorero, Policies.TesoreroPolicy());
                 config.AddPolicy(Policies.IsOperario, Policies.OperarioPolicy());
 
                 config.AddPolicy(Policies.IsEncargado, Policies.EncargadoPolicy());

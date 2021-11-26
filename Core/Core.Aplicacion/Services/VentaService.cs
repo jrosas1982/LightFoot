@@ -127,7 +127,7 @@ namespace Core.Aplicacion.Services
 
             await DescontarStock(venta.VentaDetalles);
 
-            await EvaluarRepoAutomatica();
+            await EvaluarRepoAutomatica(venta.Id);
 
             await _db.SaveChangesAsync();
 
@@ -242,13 +242,23 @@ namespace Core.Aplicacion.Services
         }
 
 
-        private async Task EvaluarRepoAutomatica()
+        private async Task EvaluarRepoAutomatica(int idVenta)
         {
+            var ventaRealizada = await _db.Ventas
+                .Include(x => x.VentaDetalles)
+                .SingleAsync(x => x.Id == idVenta);
+
             var idSucursal = int.Parse(_db.GetSucursalId());
 
-            var articulosConRepo = _db.ArticulosStock
+            var articulosConRepoDb = await _db.ArticulosStock
                 .Where(x => !x.Eliminado)
-                .Where(x => x.IdSucursal == idSucursal && x.EsReposicionAutomatica && x.StockMinimo > x.StockTotal);
+                .Where(x => x.IdSucursal == idSucursal && x.EsReposicionAutomatica && x.StockMinimo > x.StockTotal)
+                .ToListAsync();
+
+            var articulosConRepo = articulosConRepoDb.Where(x => ventaRealizada.VentaDetalles.Any(y => y.IdArticulo == x.IdArticulo));
+
+            if (!articulosConRepo.Any())
+                return;
 
             var articulosSolicitud = new List<ArticuloCantidad>();
 
@@ -279,7 +289,7 @@ namespace Core.Aplicacion.Services
 
             while (cantidadBase < canitdadCubrir)
             {
-                canitdadCubrir += cantidadSumar;
+                cantidadBase += cantidadSumar;
                 acum += cantidadSumar;
             }
 
