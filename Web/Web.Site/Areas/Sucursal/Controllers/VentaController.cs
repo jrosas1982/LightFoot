@@ -82,7 +82,7 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> VentaArticulo(int IdCliente, VentaTipo ventaTipo)
         {
-            var articulosList = await _articuloService.GetArticulos();
+            var articulosList = await _articuloService.GetArticulosSucursal();
 
             Cliente cliente = await _clienteService.BuscarPorId(IdCliente);
 
@@ -114,7 +114,10 @@ namespace Web.Site.Areas
                 ArticuloPrecio = Articulo.PrecioMinorista;
             }
 
-            return Json(ArticuloPrecio * cantidad);
+            var stock = Articulo.ArticuloStock.First().StockTotal;
+            var precio = ArticuloPrecio * cantidad;
+
+            return Json(new { precioActual = precio, stockActual = stock });
         }
 
         public async Task<IActionResult> AgregarDetalle(VentaDetalleModel data)
