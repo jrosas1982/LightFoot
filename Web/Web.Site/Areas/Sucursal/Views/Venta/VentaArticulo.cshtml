@@ -121,20 +121,26 @@
                             </select>
                         </div>
                     </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Stock disponible</label>
+                            <input class="form-control" id="StockArticulo" placeholder="" disabled>
+                        </div>
+                    </div>
                     <div class="modal-body p-0" style="height:0px; margin:0px;">
                         <div class="form-floating">
-                        <div class="form-group">
-                            @*<label class="font-normal">Tipo de Venta</label>*@
-                            <select class="form-control p-0" id="dropdownTipoVenta" data-placeholder="" style="width:0px;" required>
-                                <option selected value="@Model.VentaTipo"> @Model.VentaTipo</option>
-                            </select>
-                        </div>
+                            <div class="form-group">
+                                @*<label class="font-normal">Tipo de Venta</label>*@
+                                <select class="form-control p-0" id="dropdownTipoVenta" data-placeholder="" style="width:0px;" required>
+                                    <option selected value="@Model.VentaTipo"> @Model.VentaTipo</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-body py-2">
                         <div class="form-group">
                             <label class="font-normal">Cantidad</label>
-                            <input class="form-control" type="number" id="ArticuloCantidad" placeholder="Cantidad" required oninput="ActualizarPrecio()" min="1">
+                            <input class="form-control" type="number" id="ArticuloCantidad" placeholder="Cantidad" max="" required oninput="ActualizarPrecio()" min="1">
                         </div>
                     </div>
                     <div class="modal-body py-2">
@@ -199,8 +205,12 @@
                     VentaTipo: $("#dropdownTipoVenta :selected").val(),
                     Cantidad: $("#ArticuloCantidad").val()
                 },
-                success: function (precio) {                   
-                    $("#Precio").val(precio);
+                traditional: true,
+                success: function (result) {                   
+                    $("#Precio").val(result.precioActual);
+                    $("#StockArticulo").val(result.stockActual);
+                    document.getElementById("ArticuloCantidad").setAttribute('max', result.stockActual);
+//                    $("#ArticuloCantidad").setAttribute('max', result.stockActual);
                 }
             });
         };

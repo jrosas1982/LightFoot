@@ -63,7 +63,7 @@ namespace Core.Aplicacion.Services
                 .Where(x => x.IdSucursal == idSucursal && x.StockMinimo * 1.5 >= x.StockTotal)
                 .Include(x => x.Articulo)
                     .ThenInclude(x => x.ArticuloCategoria)
-                .OrderByDescending(x => x.StockTotal - x.StockMinimo)
+                .OrderBy(x => x.StockTotal - x.StockMinimo)
                 .ThenBy(x => x.Articulo.Nombre)
                 .Take(n)
                 .ToListAsync();
