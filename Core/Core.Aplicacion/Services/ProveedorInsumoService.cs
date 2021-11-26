@@ -65,6 +65,9 @@ namespace Core.Aplicacion.Services
 
         public async Task ModificarPrecioInsumo(int idProveedorInsumo, decimal precio)
         {
+            try
+            {
+
             var proveedorInsumo = await _db.ProveedoresInsumos.SingleOrDefaultAsync(x => x.Id == idProveedorInsumo);
 
             if (proveedorInsumo == null)
@@ -74,7 +77,7 @@ namespace Core.Aplicacion.Services
 
             var historico = new ProveedorInsumoHistorico()
             {
-                IdProveedor = idProveedorInsumo,
+                IdProveedor = proveedorInsumo.IdProveedor,
                 IdInsumo = proveedorInsumo.IdInsumo,
                 Precio = precio
             };
@@ -84,6 +87,11 @@ namespace Core.Aplicacion.Services
             _db.ProveedoresInsumos.Update(proveedorInsumo);
 
             await _db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<bool> EliminarInsumoDeProveedor(int lineaInsumo)

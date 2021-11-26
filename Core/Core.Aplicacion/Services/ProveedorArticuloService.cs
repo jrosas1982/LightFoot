@@ -98,7 +98,7 @@ namespace Core.Aplicacion.Services
 
             var historico = new ProveedorArticuloHistorico()
             {
-                IdProveedor = idProveedorArticulo,
+                IdProveedor = proveedorArticulo.IdProveedor,
                 IdArticulo = proveedorArticulo.IdArticulo,
                 Precio = precio
             };

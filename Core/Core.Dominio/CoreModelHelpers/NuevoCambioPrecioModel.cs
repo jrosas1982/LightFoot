@@ -9,6 +9,7 @@ namespace Core.Dominio.CoreModelHelpers
     {
         public string Comentario { get; set; }
         public bool CambioPrecioMayorista { get; set; }
+        public bool CambioPrecioAumento { get; set; }
         public ICollection<NuevoCambioPrecioDetalleModel> Detalle { get; set; } 
 
         public NuevoCambioPrecioModel()

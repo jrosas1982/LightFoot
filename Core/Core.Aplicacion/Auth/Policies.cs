@@ -94,7 +94,7 @@ namespace Core.Aplicacion.Auth
                                                        return ctx.User.IsInRole(UsuarioRol.Administrador.ToString())
                                                               || ctx.User.IsInRole(UsuarioRol.Gerente.ToString())
                                                               || ctx.User.IsInRole(UsuarioRol.Supervisor.ToString())
-                                                              || ctx.User.IsInRole(UsuarioRol.Tesorero.ToString())                                                           
+                                                              || ctx.User.IsInRole(UsuarioRol.Tesorero.ToString())
                                                               || ctx.User.IsInRole(UsuarioRol.Operario.ToString());
                                                    })
                                                    .Build();

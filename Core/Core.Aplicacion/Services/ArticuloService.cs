@@ -118,66 +118,83 @@ namespace Core.Aplicacion.Services
 
         public async Task CambioPrecio(NuevoCambioPrecioModel modelo)
         {
-            var articulosDb = _db.Articulos.Where(x => !x.Eliminado).Where(x => modelo.Detalle.Select(a => a.IdArticulo).Contains(x.Id));
 
-         
-             decimal precio;
-            var articuloPrecioList = new List<ArticuloPrecio>();
-            var articuloHistoricoList = new List<ArticuloHistorico>();
-            var tipoCambio = "Mayorista";
-            foreach (var item in modelo.Detalle)
+            try
             {
-                var articulo = articulosDb.Single(x => x.Id == item.IdArticulo);
+                var articulosDb = _db.Articulos.Where(x => !x.Eliminado).Where(x => modelo.Detalle.Select(a => a.IdArticulo).Contains(x.Id));
 
-                if (modelo.CambioPrecioMayorista)
-                    precio = articulo.PrecioMayorista;
-                else {
-                    tipoCambio = "Minorista";
-                    precio = articulo.PrecioMinorista;
+                decimal precio;
+                var articuloPrecioList = new List<ArticuloPrecio>();
+                var articuloHistoricoList = new List<ArticuloHistorico>();
+                var tipoCambio = "Descuento ";
+
+                if (modelo.CambioPrecioAumento)
+                    tipoCambio = "Aumento ";
+
+                var tipoCambio2 = "Mayorista";
+                foreach (var item in modelo.Detalle)
+                {
+                    var articulo = articulosDb.Single(x => x.Id == item.IdArticulo);
+
+                    if (modelo.CambioPrecioMayorista)
+                        precio = articulo.PrecioMayorista;
+                    else
+                    {
+                        tipoCambio2 = "Minorista";
+                        precio = articulo.PrecioMinorista;
+                    }
+
+                    var articuloPrecio = new ArticuloPrecio()
+                    {
+                        IdArticulo = item.IdArticulo,
+                        NombreArticulo = $"{articulo.CodigoArticulo} - {articulo.Nombre} - {articulo.Color} - Talle {articulo.TalleArticulo}",
+                        PrecioAnterior = precio,
+                        PrecioNuevo = item.NuevoPrecio
+                    };
+                    articuloPrecioList.Add(articuloPrecio);
+
+                    var articuloHistorico = new ArticuloHistorico()
+                    {
+                        IdArticulo = item.IdArticulo,
+                        PrecioMinorista = articulo.PrecioMinorista,
+                        PrecioMayorista = articulo.PrecioMayorista
+                    };
+                    articuloHistoricoList.Add(articuloHistorico);
                 }
 
-                var articuloPrecio = new ArticuloPrecio()
+                foreach (var item in articulosDb)
                 {
-                    IdArticulo = item.IdArticulo,
-                    NombreArticulo = $"{articulo.CodigoArticulo} - {articulo.Nombre} - {articulo.Color} - Talle {articulo.TalleArticulo}",
-                    PrecioAnterior = precio,
-                    PrecioNuevo = item.NuevoPrecio
-                };
-                articuloPrecioList.Add(articuloPrecio);
+                    var nuevoPrecio = modelo.Detalle.Single(x => x.IdArticulo == item.Id).NuevoPrecio;
 
-                var articuloHistorico = new ArticuloHistorico()
-                {
-                    IdArticulo = item.IdArticulo,
-                    PrecioMinorista = articulo.PrecioMinorista,
-                    PrecioMayorista = articulo.PrecioMayorista
-                };
-                articuloHistoricoList.Add(articuloHistorico);
+                    if (modelo.CambioPrecioMayorista)
+                        item.PrecioMayorista = nuevoPrecio;
+                    else
+                        item.PrecioMinorista = nuevoPrecio;
+
+                    _db.Articulos.Update(item);
+                }
+
+                tipoCambio += tipoCambio2;
+
+                _db.ArticulosHistorico.AddRange(articuloHistoricoList);
+
+                await _db.SaveChangesAsync();
+
+                await EnviarMailPrecioActualizado(articuloPrecioList, tipoCambio, modelo.Comentario, articuloPrecioList.Count());
             }
-
-            foreach (var item in articulosDb)
+            catch (Exception ex)
             {
-                var nuevoPrecio = modelo.Detalle.Single(x => x.IdArticulo == item.Id).NuevoPrecio;
-
-                if (modelo.CambioPrecioMayorista)
-                    item.PrecioMayorista = nuevoPrecio;
-                else
-                    item.PrecioMinorista = nuevoPrecio;
-
-                _db.Articulos.Update(item);         
+                throw ex;
             }
-
-            _db.ArticulosHistorico.AddRange(articuloHistoricoList);
-
-            await _db.SaveChangesAsync();
-
-            await EnviarMailPrecioActualizado(articuloPrecioList, tipoCambio, modelo.Comentario, articuloPrecioList.Count());
         }
 
         private async Task EnviarMailPrecioActualizado(List<ArticuloPrecio> articulos, string tipoCambio, string comentario, int cantidadModificada)
         {
             //busqueda de supervisores
 
-            var supervisores = _db.Usuarios.Where(x => x.UsuarioRol == UsuarioRol.Supervisor);
+            var supervisores = _db.Usuarios.Where(x => x.UsuarioRol == UsuarioRol.Supervisor 
+                                                    || x.UsuarioRol == UsuarioRol.Gerente
+                                                    || x.UsuarioRol == UsuarioRol.Administrador);
 
             byte[] dataRow = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CambioPrecio")["EmailTableRow"]);
             string templateBaseRow = Encoding.UTF8.GetString(dataRow);
@@ -188,7 +205,7 @@ namespace Core.Aplicacion.Services
             {
                 var row = templateBaseRow.Replace("@NombreArticulo", item.NombreArticulo)
                                          .Replace("@PrecioAnterior", item.PrecioAnterior.ToString())
-                                         .Replace("@PrecioNuevo", item.PrecioNuevo.ToString()); 
+                                         .Replace("@PrecioNuevo", item.PrecioNuevo.ToString());
                 Maildetalles += row;
             }
             byte[] dataMail = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CambioPrecio")["EmailBody"]);
@@ -199,13 +216,13 @@ namespace Core.Aplicacion.Services
             var template = templateBaseMail.Replace("@TipoDeCambio", tipoCambio)
                                            .Replace("@cantMod", cantidadModificada.ToString())
                                            .Replace("@Comentario", comentario)
-                                           .Replace("@TableRows", Maildetalles);
+                                           .Replace("@TableRow", Maildetalles);
 
 
             foreach (var item in supervisores)
             {
-                 var body = template.Replace("@NombreSupervisor!", item.NombreUsuario);
-                 await EmailSender.SendEmail($"Nueva Modificación de precio ", body, item.Email);
+                var body = template.Replace("@NombreSupervisor!", $"{item.Nombre} {item.Apellido}");
+                await EmailSender.SendEmail($"Nueva Modificación de precio ", body, item.Email);
             }
         }
 
