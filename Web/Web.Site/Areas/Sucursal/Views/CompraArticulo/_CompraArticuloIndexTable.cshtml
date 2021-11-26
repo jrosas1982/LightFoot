@@ -62,14 +62,16 @@
                             <td> No posee remito asociado </td>
                         }
 
-                        <td class="d-print-none">
-                            <button class="btn btn-outline btn-success btn-xs" type="button"
-                                    onclick="verDetalle(@compra.Id)"
-                                    data-toggle="modal"
-                                    data-target="#ModalDetalle">
-                                Ver Detalles
-                            </button>
-                            @if (!compra.Recibido)
+                    <td class="d-print-none">
+                        <button class="btn btn-outline btn-success btn-xs" type="button"
+                                onclick="verDetalle(@compra.Id)"
+                                data-toggle="modal"
+                                data-target="#ModalDetalle">
+                            Ver Detalles
+                        </button>
+                        @if (!compra.Recibido)
+                        {
+                            @if ((await authorizationService.AuthorizeAsync(User, Policies.IsEncargado)).Succeeded)
                             {
                                 <button class="btn btn-outline btn-warning btn-xs" type="button"
                                         onclick="ModalRecibirCompra(@compra.Id)"
@@ -77,9 +79,13 @@
                                         data-target="#ModalrecibirCompra">
                                     Marcar Recibido
                                 </button>
+                                }
                             }
                             else
-                                @if (compra.Recibido)
+
+                        @if (compra.Recibido)
+                         {
+                            @if ((await authorizationService.AuthorizeAsync(User, Policies.IsCajero)).Succeeded)
                             {
                                 <button class="btn btn-outline btn-primary btn-xs" type="button"
                                         onclick="ModalPagarCompra(@compra.Id, @compra.MontoTotal)"
@@ -88,7 +94,8 @@
                                     Agregar Pago
                                 </button>
                             }
-                            </td>
+                        }
+                    </td>
                         </tr>
                     }
             </tbody>
