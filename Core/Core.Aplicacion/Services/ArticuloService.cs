@@ -39,6 +39,21 @@ namespace Core.Aplicacion.Services
             return articulosList;
         }
 
+        public async Task<IEnumerable<Articulo>> GetArticulosSucursal()
+        {
+            int idSucursal = int.Parse(_db.GetSucursalId());
+
+            var articulosList = await _db.Articulos
+                .Where(x => !x.Eliminado)
+                .Where(x => x.ArticuloStock.Any(y => y.IdSucursal == idSucursal && y.IdArticulo == x.Id))
+                .Include(x => x.ArticuloCategoria)
+                .Include(x => x.ArticuloStock)
+                .OrderBy(x => x.ArticuloCategoria.Descripcion)
+                .ToListAsync();
+            _logger.LogInformation("Se buscaron los articulos");
+            return articulosList;
+        }
+
         public async Task<IEnumerable<Articulo>> GetArticulosFabrica()
         {
             var articulosList = await _db.Articulos
@@ -53,7 +68,9 @@ namespace Core.Aplicacion.Services
 
         public async Task<Articulo> BuscarPorId(int IdArticulo)
         {
-            var articulo = await _db.Articulos.FindAsync(IdArticulo);
+            int idSucursal = int.Parse(_db.GetSucursalId());
+
+            var articulo = await _db.Articulos.Include(x => x.ArticuloStock.Where(x => x.IdSucursal == idSucursal)).SingleAsync( x => x.Id == IdArticulo);
             return articulo;
         }
 
