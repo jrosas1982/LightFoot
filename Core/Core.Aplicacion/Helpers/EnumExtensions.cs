@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.ComponentModel;
 
 namespace Core.Aplicacion.Helpers
 {
@@ -36,6 +37,21 @@ namespace Core.Aplicacion.Helpers
                 return null;
 
             return customAtt.GetGroupName();
+        }
+
+        public static string GetCategory(this Enum enumValue)
+        {
+            if (enumValue == null) { return string.Empty; }
+            if (!Enum.IsDefined(enumValue.GetType(), enumValue)) { return string.Empty; }
+            var customAtt = enumValue.GetType()
+                            .GetMember(enumValue.ToString())
+                            .First()
+                            .GetCustomAttribute<CategoryAttribute>();
+
+            if (customAtt is null)
+                return null;
+
+            return customAtt.ToString();
         }
 
         public static List<T> GetFlagList<T>(this T enumValue) where T : Enum
@@ -76,6 +92,11 @@ namespace Core.Aplicacion.Helpers
         //}
 
         public static IEnumerable<T> GetValues<T>()
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>();
+        }
+
+        public static IEnumerable<T> GetValues<T>(this T elEnum) where T : Enum
         {
             return Enum.GetValues(typeof(T)).Cast<T>();
         }

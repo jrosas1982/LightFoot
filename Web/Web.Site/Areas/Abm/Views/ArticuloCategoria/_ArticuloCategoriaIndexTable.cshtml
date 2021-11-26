@@ -1,0 +1,49 @@
+﻿
+@model IEnumerable<ArticuloCategoria>
+
+<div class="table-responsive">
+    <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Comentario</th>
+                <th>Activo</th>
+                <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                foreach (var item in Model)
+                {
+                    <tr class="gradeC">
+                        <td>@item.Descripcion</td>
+                        <td>@item.Comentario</td>
+                        @if (item.Activo)
+                        {
+                            <td> Si </td>
+                        }
+                        else
+                        {
+                            <td>No </td>
+                        }
+                    <td>
+                        @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+                        {
+                            <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarCategoria('@item.Id')">Borrar</button>
+                        }
+                            <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarCategoria('@item.Id')">Editar</button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+        <tfoot class="d-print-none">
+            <tr>
+                <td colspan="6">
+                    <ul class="pagination float-right"></ul>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

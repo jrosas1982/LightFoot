@@ -1,0 +1,63 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+@using Web.Site.Areas
+
+@model IEnumerable<RankingVentasPorUsuarioModel>
+@{
+    int i = 0;
+}
+
+<div class="ibox">
+    <div class="ibox-title">
+        <h5>Ventas Por Usuarios (mes)</h5>
+    </div>
+    <h2 class="d-none d-print-block">Ventas Por Usuarios (mes)</h2>
+    <div class="ibox-content">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>NombreUsuario</th>
+                    <th>Nombre</th>
+                    <th>Rol</th>
+                    <th>Ganancia</th>
+                    <th>Cantidad de ventas</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td>@(++i)</td>
+                        <td>@item.Usuario.NombreUsuario</td>
+                        <td>@item.Usuario.Nombre</td>
+                        <td>@item.Usuario.UsuarioRol</td>
+                        
+                        @if (@item.Ventas != null)
+                        {
+                            <td>@item.Ventas.Sum(x => x.MontoTotal)$</td>
+                            <td>@item.Ventas.Count()</td>
+                        }
+                        else
+                        {
+                            <td>0$</td>
+                            <td>0</td>
+                        }
+                        
+                    </tr>
+                    }
+                }
+                else
+                {
+
+                <tr class="my-4">
+                    <td colspan="4" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

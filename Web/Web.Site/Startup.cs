@@ -1,15 +1,21 @@
-﻿using Core.Aplicacion.Auth;
+﻿using System.Globalization;
+using AutoMapper;
+using Core.Aplicacion.Auth;
 using Core.Aplicacion.Hubs;
 using Core.Infraestructura;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using Newtonsoft.Json;
+using Web.Site.Helpers;
 
 namespace LightFoot.Web.Site
 {
@@ -24,22 +30,39 @@ namespace LightFoot.Web.Site
 
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var cultureInfo = new CultureInfo("es-AR");
+            cultureInfo.NumberFormat.CurrencySymbol = "$";
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
             // DbContext
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Conexion")));
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Conexion")), ServiceLifetime.Transient);
 
             // Core Services
             services.AddCoreServices();
             services.AddSecurityServices();
             services.AddHttpContextAccessor();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSignalR();
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
             services.AddAuthorization(config =>
             {
+                config.AddPolicy(Policies.IsGod, Policies.GodPolicy());
+                config.AddPolicy(Policies.IsFabrica, Policies.FabricaPolicy());
+                config.AddPolicy(Policies.IsSucursal, Policies.SucursalPolicy());
+
                 config.AddPolicy(Policies.IsAdmin, Policies.AdminPolicy());
                 config.AddPolicy(Policies.IsGerente, Policies.GerentePolicy());
                 config.AddPolicy(Policies.IsSupervisor, Policies.SupervisorPolicy());
-                config.AddPolicy(Policies.IsControlador, Policies.ControladorPolicy());
+                config.AddPolicy(Policies.IsTesorero, Policies.TesoreroPolicy());
                 config.AddPolicy(Policies.IsOperario, Policies.OperarioPolicy());
+
                 config.AddPolicy(Policies.IsEncargado, Policies.EncargadoPolicy());
                 config.AddPolicy(Policies.IsCajero, Policies.CajeroPolicy());
                 config.AddPolicy(Policies.IsVendedor, Policies.VendedorPolicy());
@@ -60,13 +83,10 @@ namespace LightFoot.Web.Site
                  options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
              }).AddCookie(options =>
                             {
-                                options.LoginPath = "/Auth/Auth/Index"; //test
-                                options.LogoutPath = "/Auth/Auth/LogOutUser"; //test
-                                options.AccessDeniedPath = "/Dashboards/Dashboard_3"; //test
+                                options.LoginPath = "/Auth/LogIn"; //test
+                                options.LogoutPath = "/Auth/LogIn"; //test
+                                options.AccessDeniedPath = "/"; //si no cumplis con authorize te lleva aca
                             });
-
-
-
             //services.ConfigureApplicationCookie(options => {
 
             //    options.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
@@ -83,7 +103,6 @@ namespace LightFoot.Web.Site
 
         }
 
-
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -92,24 +111,34 @@ namespace LightFoot.Web.Site
             }
             else
             {
-                app.UseExceptionHandler("/Dashboards/Dashboard_1");
+                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 
-            app.Use(async (context, next) =>
-            {
-                await next();
-                if (context.Response.StatusCode == 401)
-                {
-                    context.Request.Path = "/Auth/Auth/Index";
-                    await next();
-                }
-                if (context.Response.StatusCode == 404)
-                {
-                    context.Request.Path = "/Pages/NotFoundError";
-                    await next();
-                }
-            });
+            //app.UseExceptionHandler(a => a.Run(async context =>
+            //{
+            //    var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+            //    var exception = exceptionHandlerPathFeature.Error;
+
+            //    var result = JsonConvert.SerializeObject(new { error = exception.Message });
+            //    context.Response.ContentType = "application/json";
+            //    await context.Response.WriteAsync(result);
+            //}));
+
+            //app.Use(async (context, next) =>
+            //{
+            //    await next();
+            //    if (context.Response.StatusCode == 401)
+            //    {
+            //        context.Request.Path = "/Auth/LogIn";
+            //        await next();
+            //    }
+            //    if (context.Response.StatusCode == 404)
+            //    {
+            //        context.Request.Path = "/Pages/NotFoundError";
+            //        await next();
+            //    }
+            //});
 
             app.UseHttpsRedirection();
 
@@ -119,9 +148,9 @@ namespace LightFoot.Web.Site
 
             app.UseAuthentication();
 
-            app.UseAuthorization();
-
             app.UseRouting();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -133,6 +162,7 @@ namespace LightFoot.Web.Site
             //    routes.MapHub<NotificationsHub>("/NotificationsHub");
             //});
 
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 
             app.UseMvc(routes =>
             {

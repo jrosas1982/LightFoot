@@ -1,0 +1,60 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+@using Web.Site.Areas
+@model CompraInsumoProveedorModel
+
+
+@if (Model != null)
+{
+    <div class="row modal-body m-auto py-0">
+        <div class="col-lg-6 p-0 pr-1">
+            @if (Model.ProveedorPreferido != null)
+            {
+                //card Proveedor Preferido
+                <input id="IdProveedorPreferido" value="@Model.ProveedorPreferido.Id" hidden disabled />
+                <h4 class="font-normal no-margins">
+                    Proveedor Preferido
+                </h4>
+                <div class="input-group m-b">
+                    <div class="input-group-prepend">
+                        <span class="input-group-addon bg-success">@Model.ProveedorPreferido.Calificacion</span>
+                    </div>
+                    <input type="text" placeholder="" value="@Model.ProveedorPreferido.Nombre" class="form-control bg-secondary text-white" disabled>
+                </div>
+            }
+            else
+            {
+                //no hay ProveedorPreferido
+                <h4 class="font-normal no-margins">
+                    No hay Proveedor Preferido
+                </h4>
+                <div class="input-group m-b">
+                    <div class="input-group-prepend">
+                        <span class="input-group-addon bg-secondary text-white">-</span>
+                    </div>
+                    <input type="text" placeholder="" value="" class="form-control bg-secondary text-white" disabled>
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-6 p-0 pl-1">
+            @if (Model.ProveedorSugerido != null)
+            {
+                //card Proveedor Sugerido
+                <input id="IdProveedorSugerido" value="@Model.ProveedorSugerido.Id" hidden disabled />
+                <h4 class="font-normal no-margins">
+                    Proveedor Sugerido
+                </h4>
+                <div class="input-group m-b">
+                    <div class="input-group-prepend">
+                        <span class="input-group-addon bg-success">@Model.ProveedorSugerido.Calificacion</span>
+                    </div>
+                    <input type="text" placeholder="" value="@Model.ProveedorSugerido.Nombre" class="form-control bg-secondary text-white" disabled>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <input id="IdProveedorSugerido" value="0" hidden disabled />
+}

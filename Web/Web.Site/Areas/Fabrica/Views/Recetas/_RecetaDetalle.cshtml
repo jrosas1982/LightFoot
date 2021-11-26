@@ -1,0 +1,35 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+
+@model RecetaDetalleModel
+@{
+    bool esEditar = (Model.Id != 0);
+    string idTr = esEditar ? Model.Id + "List" : "";
+}
+<tr id="@idTr">
+    @using (Html.BeginCollectionItem("RecetaDetalles"))
+    {
+        {
+            @Html.HiddenFor(x => x.Id)
+            @Html.HiddenFor(x => x.IdEtapaOrdenProduccion)
+            @Html.HiddenFor(m => m.IdInsumo)
+            @Html.HiddenFor(x => x.Cantidad)
+            @Html.HiddenFor(x => x.Comentario)
+
+            <td>@Html.DisplayFor(x => x.NombreInsumo)</td>
+            <td>@Html.DisplayFor(x => x.Cantidad)</td>
+            <td>@Html.DisplayFor(x => x.NombreEtapaOrdenProduccion)</td>
+            <td>@Html.DisplayFor(x => x.Comentario)</td>
+   
+            <td>
+                @if (!esEditar)
+                {
+                    <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick="removeRow(this)">Borrar</button>
+                }
+                else
+                {
+                    <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="eliminarDetalleInsumo(this, @Model.Id)">Borrar</button>
+                }
+            </td>
+        }
+    }
+</tr>

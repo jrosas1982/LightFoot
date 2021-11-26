@@ -1,0 +1,47 @@
+﻿@{
+    var totalPagado = Model?.Sum(x => x.MontoPagado);
+}
+
+@model IEnumerable<ProveedorArticuloCuentaCorriente>
+
+
+@if (Model != null && Model.Any())
+{
+    <h3>Pagos</h3>
+    <div class="table-responsive">
+        <table class="footable table table-stripped table-hover table-bordered no-paging toggle-arrow-tiny" data-page-size="3">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Monto Pagado</th>
+                    <th>Registrado por</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pago in Model)
+                {
+                    <tr>
+                        <td>@(pago.FechaModificacion != null ? pago.FechaModificacion : pago.FechaCreacion)</td>
+                        <td>@pago.TipoPago</td>
+                        <td>@pago.MontoPagado</td>
+                        <td>@(pago.ModificadoPor != null ? pago.ModificadoPor : pago.CreadoPor)</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="7">
+                        <ul class="pagination float-right"></ul>
+                    </td>
+                </tr>
+
+            </tfoot>
+        </table>
+        <h4>Total Pagado: $@totalPagado</h4>
+    </div>
+}
+@*<th>Fecha</th>
+    <th>Tipo</th>
+    <th>Monto Pagado</th>
+    <th>Registrado por</th>*@

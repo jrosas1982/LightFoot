@@ -1,9 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
+using Core.Dominio;
 using Core.Dominio.AggregatesModel;
+using Core.Dominio.CoreModelHelpers;
 using Core.Infraestructura;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Aplicacion.Services
@@ -12,35 +19,70 @@ namespace Core.Aplicacion.Services
     {
         private readonly AppDbContext _db;
         private readonly ILogger<ArticuloService> _logger;
+        private readonly IConfiguration _Configuration;
 
-        public ArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<ArticuloService> logger)
+        public ArticuloService(AppDbContext db, ILogger<ArticuloService> logger, IConfiguration configuration)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
+            _Configuration = configuration;
         }
 
         public async Task<IEnumerable<Articulo>> GetArticulos()
         {
-            var articulosList = _db.Articulos;
+            var articulosList = await _db.Articulos
+                .Where(x => !x.Eliminado)
+                .Include(x => x.ArticuloCategoria)
+                .OrderBy(x => x.ArticuloCategoria.Descripcion)
+                .ToListAsync();
             _logger.LogInformation("Se buscaron los articulos");
-            return await Task.FromResult(articulosList);
+            return articulosList;
+        }
+
+        public async Task<IEnumerable<Articulo>> GetArticulosSucursal()
+        {
+            int idSucursal = int.Parse(_db.GetSucursalId());
+
+            var articulosList = await _db.Articulos
+                .Where(x => !x.Eliminado)
+                .Where(x => x.ArticuloStock.Any(y => y.IdSucursal == idSucursal && y.IdArticulo == x.Id))
+                .Include(x => x.ArticuloCategoria)
+                .Include(x => x.ArticuloStock)
+                .OrderBy(x => x.ArticuloCategoria.Descripcion)
+                .ToListAsync();
+            _logger.LogInformation("Se buscaron los articulos");
+            return articulosList;
+        }
+
+        public async Task<IEnumerable<Articulo>> GetArticulosFabrica()
+        {
+            var articulosList = await _db.Articulos
+                .Where(x => !x.Eliminado)
+                .Where(x => x.ProveedoresArticulo.Any(z => z.Proveedor.EsFabrica == true))
+                .Include(x => x.ArticuloCategoria)
+                .OrderBy(x => x.ArticuloCategoria.Descripcion)
+                .ToListAsync();
+            _logger.LogInformation("Se buscaron los articulos");
+            return articulosList;
         }
 
         public async Task<Articulo> BuscarPorId(int IdArticulo)
         {
-            var articulo = await _db.Articulos.FindAsync(IdArticulo);
+            int idSucursal = int.Parse(_db.GetSucursalId());
+
+            var articulo = await _db.Articulos.Include(x => x.ArticuloStock.Where(x => x.IdSucursal == idSucursal)).SingleAsync( x => x.Id == IdArticulo);
             return articulo;
         }
 
         public async Task CrearArticulo(Articulo articulo)
         {
-            //if (_db.Usuarios.Any(x => x.NombreUsuario == usuario.NombreUsuario))
-            //    throw new Exception($"El nombre de usuario {usuario.NombreUsuario} ya existe");
+            if (_db.Articulos.Any(x => x.Nombre == articulo.Nombre && x.Color == articulo.Color && x.TalleArticulo == articulo.TalleArticulo))
+                throw new ExcepcionControlada($"El articulo ya existe");
 
             //if (string.IsNullOrEmpty(usuario.Contraseña))
             //    throw new Exception($"La contraeña no puede estar vacia");           
 
-            _db.Add(articulo);
+            _db.Articulos.Add(articulo);
             await _db.SaveChangesAsync();
             _logger.LogInformation($"Se creó el articulo nombre: {articulo.Nombre}");
         }
@@ -52,11 +94,13 @@ namespace Core.Aplicacion.Services
 
             var articuloDb = await _db.Articulos.FindAsync(articulo.Id);
 
-            articulo.CodigoArticulo = articulo.CodigoArticulo;
+            articuloDb.CodigoArticulo = articulo.CodigoArticulo;
             articuloDb.Nombre = articulo.Nombre;
             articuloDb.ArticuloEstado = articulo.ArticuloEstado;
             articuloDb.TalleArticulo = articulo.TalleArticulo;
             articuloDb.Descripcion = articulo.Descripcion;
+            articuloDb.PrecioMinorista = articulo.PrecioMinorista;
+            articuloDb.PrecioMayorista = articulo.PrecioMayorista;
             articuloDb.Color = articulo.Color;
 
             _db.Update(articuloDb);
@@ -68,15 +112,18 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var articuloDb = await _db.Usuarios.FindAsync(articulo.Id);
+                var articuloDb = await _db.Articulos.FindAsync(articulo.Id);
 
-                _db.Remove(articuloDb);
+                articuloDb.Eliminado = true;
+
+                _db.Articulos.Update(articuloDb);
                 await _db.SaveChangesAsync();
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError($"Error al eliminar articulo: {ex.Message }");
                 return false;
             }
         }
@@ -86,5 +133,122 @@ namespace Core.Aplicacion.Services
             return await Task.FromResult(EnumExtensions.GetValues<ArticuloEstado>());
         }
 
+        public async Task CambioPrecio(NuevoCambioPrecioModel modelo)
+        {
+
+            try
+            {
+                var articulosDb = _db.Articulos.Where(x => !x.Eliminado).Where(x => modelo.Detalle.Select(a => a.IdArticulo).Contains(x.Id));
+
+                decimal precio;
+                var articuloPrecioList = new List<ArticuloPrecio>();
+                var articuloHistoricoList = new List<ArticuloHistorico>();
+                var tipoCambio = "Descuento ";
+
+                if (modelo.CambioPrecioAumento)
+                    tipoCambio = "Aumento ";
+
+                var tipoCambio2 = "Mayorista";
+                foreach (var item in modelo.Detalle)
+                {
+                    var articulo = articulosDb.Single(x => x.Id == item.IdArticulo);
+
+                    if (modelo.CambioPrecioMayorista)
+                        precio = articulo.PrecioMayorista;
+                    else
+                    {
+                        tipoCambio2 = "Minorista";
+                        precio = articulo.PrecioMinorista;
+                    }
+
+                    var articuloPrecio = new ArticuloPrecio()
+                    {
+                        IdArticulo = item.IdArticulo,
+                        NombreArticulo = $"{articulo.CodigoArticulo} - {articulo.Nombre} - {articulo.Color} - Talle {articulo.TalleArticulo}",
+                        PrecioAnterior = precio,
+                        PrecioNuevo = item.NuevoPrecio
+                    };
+                    articuloPrecioList.Add(articuloPrecio);
+
+                    var articuloHistorico = new ArticuloHistorico()
+                    {
+                        IdArticulo = item.IdArticulo,
+                        PrecioMinorista = articulo.PrecioMinorista,
+                        PrecioMayorista = articulo.PrecioMayorista
+                    };
+                    articuloHistoricoList.Add(articuloHistorico);
+                }
+
+                foreach (var item in articulosDb)
+                {
+                    var nuevoPrecio = modelo.Detalle.Single(x => x.IdArticulo == item.Id).NuevoPrecio;
+
+                    if (modelo.CambioPrecioMayorista)
+                        item.PrecioMayorista = nuevoPrecio;
+                    else
+                        item.PrecioMinorista = nuevoPrecio;
+
+                    _db.Articulos.Update(item);
+                }
+
+                tipoCambio += tipoCambio2;
+
+                _db.ArticulosHistorico.AddRange(articuloHistoricoList);
+
+                await _db.SaveChangesAsync();
+
+                await EnviarMailPrecioActualizado(articuloPrecioList, tipoCambio, modelo.Comentario, articuloPrecioList.Count());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private async Task EnviarMailPrecioActualizado(List<ArticuloPrecio> articulos, string tipoCambio, string comentario, int cantidadModificada)
+        {
+            //busqueda de supervisores
+
+            var supervisores = _db.Usuarios.Where(x => x.UsuarioRol == UsuarioRol.Supervisor 
+                                                    || x.UsuarioRol == UsuarioRol.Gerente
+                                                    || x.UsuarioRol == UsuarioRol.Administrador);
+
+            byte[] dataRow = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CambioPrecio")["EmailTableRow"]);
+            string templateBaseRow = Encoding.UTF8.GetString(dataRow);
+
+            string Maildetalles = "";
+
+            foreach (var item in articulos)
+            {
+                var row = templateBaseRow.Replace("@NombreArticulo", item.NombreArticulo)
+                                         .Replace("@PrecioAnterior", item.PrecioAnterior.ToString())
+                                         .Replace("@PrecioNuevo", item.PrecioNuevo.ToString());
+                Maildetalles += row;
+            }
+            byte[] dataMail = Convert.FromBase64String(_Configuration.GetSection("EmailTemplates").GetSection("CambioPrecio")["EmailBody"]);
+            string templateBaseMail = Encoding.UTF8.GetString(dataMail);
+
+
+
+            var template = templateBaseMail.Replace("@TipoDeCambio", tipoCambio)
+                                           .Replace("@cantMod", cantidadModificada.ToString())
+                                           .Replace("@Comentario", comentario)
+                                           .Replace("@TableRow", Maildetalles);
+
+
+            foreach (var item in supervisores)
+            {
+                var body = template.Replace("@NombreSupervisor!", $"{item.Nombre} {item.Apellido}");
+                await EmailSender.SendEmail($"Nueva Modificación de precio ", body, item.Email);
+            }
+        }
+
+        private class ArticuloPrecio
+        {
+            public int IdArticulo { get; set; }
+            public string NombreArticulo { get; set; }
+            public decimal PrecioAnterior { get; set; }
+            public decimal PrecioNuevo { get; set; }
+        }
     }
 }

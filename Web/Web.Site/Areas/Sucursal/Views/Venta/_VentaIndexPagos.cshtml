@@ -1,0 +1,81 @@
+﻿@{
+    var totalPagado = Model?.Sum(x => x.MontoPercibido);
+    var totalVenta = ViewBag.TotalVenta;
+    var deuda = totalVenta - totalPagado;
+}
+@model IEnumerable<ClienteCuentaCorriente>
+
+<h3>Pagos</h3>
+<div class="table-responsive">
+    @if (Model != null && Model.Any())
+    {
+        <table class="footable table table-stripped table-hover table-bordered no-paging toggle-arrow-tiny" data-page-size="4">
+            <thead>
+                <tr>
+                    <th># Venta</th>
+                    <th>Monto Pagado</th>
+                    <th>Tipo de Pago</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+
+
+                @foreach (var pago in Model)
+                {
+                    <tr>
+                        <td>@pago.IdVenta</td>
+                        <td>@pago.MontoPercibido</td>
+                        <td>@pago.TipoPago</td>
+                        <td>@(pago.FechaModificacion != null ? pago.FechaModificacion : pago.FechaCreacion)</td>
+                    </tr>
+                }
+
+
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">
+                        <ul class="pagination float-right"></ul>
+                    </td>
+                </tr>
+
+            </tfoot>
+        </table>
+        <div class="d-flex justify-content-between align-items-end">
+            <h4>Deuda: $@deuda</h4> <h4>Total Pagado: $@totalPagado</h4>
+        </div>
+
+
+    }
+    else
+    {
+            <table class="footable table table-stripped table-hover table-bordered no-paging toggle-arrow-tiny" data-page-size="4">
+                <thead>
+                    <tr>
+                        <th># Venta</th>
+                        <th>Monto Pagado</th>
+                        <th>Tipo de Pago</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="4" class="text-center">Sin pagos</td>
+                    </tr>
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">
+                            <ul class="pagination float-right"></ul>
+                        </td>
+                    </tr>
+
+                </tfoot>
+            </table>
+            <div class="d-flex justify-content-between align-items-end">
+                <h4>Deuda: $@deuda</h4> <h4>Total Pagado: $@totalPagado</h4>
+            </div>
+    }
+</div>

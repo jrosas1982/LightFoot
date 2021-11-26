@@ -6,4 +6,4 @@
         confirmButtonText: "Ok",
         closeOnConfirm: false
     });
-};
+}

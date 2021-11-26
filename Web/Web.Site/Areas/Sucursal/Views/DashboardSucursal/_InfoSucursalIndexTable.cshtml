@@ -1,0 +1,26 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+@using Web.Site.Areas
+@model Sucursal
+@{
+    var activo = "danger";
+    var activo_msj = "Inactivo";
+}
+@if (@Model != null)
+{
+    <div class="ibox">
+        <div class="ibox-content widget-text-box w-100">
+            <h4 class="media-heading">@Model.Descripcion</h4>
+            <h1 class="no-margins">@Model.Nombre</h1>
+        </div>
+        <div class="ibox-footer">
+            <small style="font-size: 0.8rem;">@Model.Direccion</small>
+            @if (Model.Activo)
+            {
+                activo = "navy";
+                activo_msj = "Activo";
+            }
+            <div class="stat-percent font-bold text-@activo "> @activo_msj <i class="fa fa-city"></i></div>
+        </div>
+    </div>
+}
+

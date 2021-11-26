@@ -6,6 +6,8 @@ using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Site.Areas.Abm;
+using Web.Site.Helpers;
 
 namespace Web.Site.Areas
 {
@@ -13,7 +15,7 @@ namespace Web.Site.Areas
     [Area("abm")]
     [Route("[area]/[controller]/[action]")]
 
-    public class UsuarioController : Controller
+    public class UsuarioController : CustomController
     {
         private IUsuarioService _usuarioService;
         public UsuarioController(IUsuarioService usuarioService)
@@ -24,6 +26,9 @@ namespace Web.Site.Areas
         public async Task<IActionResult> Index()
         {
             var usuariosList = await _usuarioService.GetUsuarios();
+          ViewBag.TypeaheadUsuario = usuariosList.Select(x => x.Nombre);
+          ViewBag.TypeaheadNombreUsuario = usuariosList.Select(x => x.NombreUsuario);
+          ViewBag.TypeaheadIdUsuario = usuariosList.Select(x => x.Id.ToString()); 
             return View(usuariosList.ToList());
         }
 
@@ -48,25 +53,29 @@ namespace Web.Site.Areas
             return View("CrearEditarUsuario", usuarioModel);
         }
 
-        public IActionResult CrearEditarUsuario(UsuarioModel usuarioModel)
-        {
-            return View(usuarioModel);
-        }
+        //public IActionResult CrearEditarUsuario(UsuarioModel usuarioModel)
+        //{
+        //    return View(usuarioModel);
+        //}
 
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear(UsuarioModel usuarioModel)
         {
-            if (!ModelState.IsValid)
-                return View("CrearEditarUsuario", usuarioModel);
 
             try
             {
+                if (!ModelState.IsValid)
+                    return View("CrearEditarUsuario", usuarioModel);
                 await _usuarioService.CrearUsuario(usuarioModel.Usuario);
-                return RedirectToAction("Index");
+                return Json(new { redirectToUrl = @Url.Action("Index", "Usuario", new { area = "abm" }) });
+                //return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
+                //Response.StatusCode = 500;
+                ////Response.TrySkipIisCustomErrors = true;
+                //return Json(new { message = ex.Message });
             }
         }
 
@@ -77,13 +86,29 @@ namespace Web.Site.Areas
                 return View("CrearEditarUsuario", usuarioModel);
 
             await _usuarioService.EditarUsuario(usuarioModel.Usuario);
-            return RedirectToAction("Index");
+            return Json(new { redirectToUrl = @Url.Action("Index", "Usuario", new { area = "abm" }) });
+            //return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Eliminar(UsuarioModel usuarioModel)
+        public async Task<IActionResult> Eliminar(int idUsuario)
         {
-            var result = await _usuarioService.EliminarUsuario(usuarioModel.Usuario);
+            var result = await _usuarioService.EliminarUsuario(idUsuario);
             return Ok(result);
+        }
+        public async Task<IActionResult> FiltrarUsuario(string nombreUsuario)
+        {
+            var usuariosList = await _usuarioService.GetUsuarios();
+
+            if (!string.IsNullOrWhiteSpace(nombreUsuario))
+            {
+                usuariosList = usuariosList.Where(x => x.Nombre.ToLower().Equals(nombreUsuario.ToLower())
+                                                        || x.Id.ToString().ToLower().Equals(nombreUsuario.ToLower())).ToList(); 
+                if (!usuariosList.Any())
+                    usuariosList = usuariosList.Where(x => x.Nombre.ToLower().Contains(nombreUsuario.ToLower())
+                                                            || x.Id.ToString().ToLower().Contains(nombreUsuario.ToLower())).ToList();
+            }
+
+            return PartialView("_UsuarioIndexTable", usuariosList);
         }
     }
 }

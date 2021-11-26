@@ -1,0 +1,125 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+@using Web.Site.Areas
+@model IEnumerable<CompraInsumo>
+
+@{
+    IEnumerable<string> TypeaheadNumCompra = ViewBag.TypeaheadNumCompra;
+    IEnumerable<string> TypeaheadRemito = ViewBag.TypeaheadRemito;
+    IEnumerable<string> TypeaheadTotal = ViewBag.TypeaheadTotal;
+    IEnumerable<string> TypeaheadProveedor = ViewBag.TypeaheadProveedor;
+}
+
+<head>
+    <link rel="stylesheet" href="~/custom/jquery.typeahead.min.css" />
+</head>
+
+@if (@Model != null)
+{
+    <div class="table-responsive">
+        <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
+            <thead>
+                <tr>
+                    <th style="background-color: #c3daec;">#Compra</th>
+                    <th style="background-color: #c3daec;">Proveedor</th>
+                    <th style="background-color: #c3daec;">Fecha Recibido</th>
+                    <th style="background-color: #c3daec;">Fecha Ultimo Pago</th>
+                    <th style="background-color: #c3daec;">Monto Total</th>
+                    <th style="background-color: #c3daec;">Remito Asociado</th>
+                    <th style="background-color: #c3daec;" data-sort-ignore="true" class="d-print-none">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="ComprasPartialView">
+                @foreach (var compra in @Model)
+                {
+                    <tr>
+                        <td> @compra.Id </td>
+                        <td> @compra.Proveedor.Nombre </td>
+                        @if (compra.FechaRecibido != null)
+                        {
+                            <td> @compra.FechaRecibido.Value.ToLongDateString() </td>
+                        }
+                        else
+                        {
+                            <td> Aun no recibida</td>
+                        }
+                        @if (compra.FechaPagado != null)
+                        {
+                            <td> @compra.FechaPagado.Value.ToLongDateString() </td>
+                        }
+                        else
+                        {
+                            <td> Aun no pagada</td>
+                        }
+                        <td> @compra.MontoTotal </td>
+                        @if (compra.NroRemito != null)
+                        {
+                            <td> @compra.NroRemito.Value</td>
+
+                        }
+                        else
+                        {
+                            <td> No posee remito asociado </td>
+                        }
+
+                        <td class="d-print-none">
+                            <button class="btn btn-outline btn-success btn-xs" type="button"
+                                    onclick="verDetalle(@compra.Id)"
+                                    data-toggle="modal"
+                                    data-target="#ModalDetalle">
+                                Ver Detalles
+                            </button>
+                            @if (!compra.Recibido)
+                            {
+                                <button class="btn btn-outline btn-warning btn-xs" type="button"
+                                        onclick="ModalRecibirCompra(@compra.Id)"
+                                        data-toggle="modal"
+                                        data-target="#ModalrecibirCompra">
+                                    Marcar Recibido
+                                </button>
+                            }
+                            else
+                                @if (compra.Recibido)
+                            {
+                                <button class="btn btn-outline btn-primary btn-xs" type="button"
+                                        onclick="ModalPagarCompra(@compra.Id, @compra.MontoTotal)"
+                                        data-toggle="modal"
+                                        data-target="#ModalPagarCompra">
+                                    Agregar Pago
+                                </button>
+                            }
+                            </td>
+                        </tr>
+                    }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="7">
+                        <ul class="pagination float-right"></ul>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}
+
+<script type="text/javascript">
+    function ComprasPartialViewScript() {
+        var typeaheadNumCompra = @Html.Raw(Json.Serialize(TypeaheadNumCompra));
+        var typeaheadRemito = @Html.Raw(Json.Serialize(TypeaheadRemito));
+        var typeaheadTotal = @Html.Raw(Json.Serialize(TypeaheadTotal));
+        var typeaheadProveedor = @Html.Raw(Json.Serialize(TypeaheadProveedor));
+
+        $.typeahead({
+            input: '.js-typeahead',
+            order: "desc",
+            template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+            minLength: 1,
+            source: {
+                Compra: { data: typeaheadNumCompra },
+                Remito: { data: typeaheadRemito },
+                Total: { data: typeaheadTotal },
+                Proveedor: { data: typeaheadProveedor }
+            }
+        });
+    }
+</script>

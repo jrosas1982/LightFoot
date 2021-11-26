@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Core.Aplicacion.FIlters;
 using Core.Dominio.AggregatesModel;
 
-namespace Web.Site.Areas
+namespace Web.Site.Areas.Fabrica
 {
     public class SolicitudIndexModel
     {

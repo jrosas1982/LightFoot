@@ -1,0 +1,124 @@
+﻿
+@using Core.Dominio.AggregatesModel
+@model IEnumerable<Proveedor>
+
+<div class="table-responsive">
+    <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
+        <thead>
+            <tr>
+
+                <th>Proveedor</th>
+                <th data-hide="all" data-animation="true"></th>
+                <th>CUIT</th>
+                <th>Direccion</th>
+                <th>Email</th>
+                <th>Calificacion</th>
+                <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+
+            </tr>
+        </thead>
+        <tbody>
+
+            @if (Model != null)
+            {
+                foreach (var proveedor in Model)
+                {
+                    <tr>
+                        <td>@proveedor.Nombre</td>
+                        <td>
+                            @if (proveedor.ProveedorInsumos != null && proveedor.ProveedorInsumos.Any())
+                            {
+                                <div class="col">
+                                    <div class="table-responsive">
+                                        <table class="footable table table-striped table-hover table-bordered  toggle-arrow-tiny">
+                                            <thead>
+                                                <tr>
+                                                    <th style="background-color: #9ac5ca82;" width="400px">Insumo</th>
+                                                    <th style="background-color: #9ac5ca82;" width="400px">Descripcion</th>
+                                                    <th style="background-color: #9ac5ca82;" width="100px">Precio</th>
+                                                    <th style="background-color: #9ac5ca82;" width="100px" data-sort-ignore="true" class="d-print-none">Acciones</th>
+                                                    @*<th style="background-color: #9ac5ca82;" data-sort-ignore="true">Historico</th>*@
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var proveedorInsumo in proveedor.ProveedorInsumos)
+                                                {
+                                                    <tr>
+                                                        <td>@proveedorInsumo.Insumo.Nombre</td>
+                                                        <td>@proveedorInsumo.Insumo.Descripcion</td>
+                                                        <td>@proveedorInsumo.Precio</td>
+                                                        <td class="d-print-none">
+                                                            <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="ModificarPrecioInsumo(@proveedorInsumo.Id, 'Insumo', @proveedorInsumo.Precio)" data-toggle="modal" data-target="#ModalModificarPrecio">Modificar Precio</button>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (proveedor.ProveedorArticulos != null && proveedor.ProveedorArticulos.Any())
+                            {
+                                <div class="col">
+                                    <div class="table-responsive">
+                                        <table class="footable table table-striped table-hover table-bordered  toggle-arrow-tiny">
+                                            <thead>
+                                                <tr>
+                                                    <th style="background-color: #99c98d82;" width="100px">Codigo</th>
+                                                    <th style="background-color: #99c98d82;" width="200px">Articulo</th>
+                                                    <th style="background-color: #99c98d82;" width="100px">Categoria</th>
+                                                    <th style="background-color: #99c98d82;" width="400px" >Descripcion</th>
+                                                    <th style="background-color: #99c98d82;" width="100px">Precio</th>
+                                                    <th style="background-color: #99c98d82;" width="100px" data-sort-ignore="true" class="d-print-none">Acciones</th>
+                                                    @*<th style="background-color: #9ac5ca82;" data-sort-ignore="true">Historico</th>*@
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var proveedorArticulo in proveedor.ProveedorArticulos)
+                                                {
+                                                <tr>
+                                                    <td>@proveedorArticulo.Articulo.CodigoArticulo</td>
+                                                    <td>@proveedorArticulo.Articulo.Nombre - @proveedorArticulo.Articulo.Color - Talle @proveedorArticulo.Articulo.TalleArticulo</td>
+                                                    <td>@(string.IsNullOrWhiteSpace(proveedorArticulo.Articulo.ArticuloCategoria.Descripcion)? "Sin Categoria" : proveedorArticulo.Articulo.ArticuloCategoria.Descripcion)</td>
+                                                    <td>@proveedorArticulo.Articulo.Descripcion</td>                                                    
+                                                    <td>@proveedorArticulo.Precio</td>
+                                                    <td class="d-print-none">
+                                                        <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="ModificarPrecioArticulo(@proveedorArticulo.Id, 'Articulo',@proveedorArticulo.Precio)" data-toggle="modal" data-target="#ModalModificarPrecio">Modificar Precio</button>
+                                                    </td>
+                                                </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            }
+                        </td>
+                        <td>@proveedor.CUIT</td>
+                        <td>@proveedor.Direccion</td>
+                        <td>@proveedor.Email</td>
+                        <td>@proveedor.Calificacion</td>
+                        <td class="d-print-none">
+                            <button class="btn btn-outline btn-danger btn-xs" type="button" onclick="BorrarProveedor('@proveedor.Id')">Borrar</button>
+                            <button class="btn btn-outline btn-warning btn-xs" type="button" onclick="EditarProveedor('@proveedor.Id')">Editar</button>
+                            <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AsociarInsumos('@proveedor.Id')">Asociar Insumos</button>
+                            <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AsociarArticulos('@proveedor.Id')">Asociar Articulos</button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+        <tfoot class="d-print-none">
+            <tr>
+                <td colspan="6">
+                    <ul class="pagination float-right"></ul>
+                </td>
+            </tr>
+        </tfoot>
+
+
+    </table>
+</div>

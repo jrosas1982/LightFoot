@@ -1,0 +1,59 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+@using Web.Site.Areas
+
+@model IEnumerable<Tuple<Articulo, int>>
+@{
+    int i = 0;
+}
+
+<div class="ibox ">
+    <div class="ibox-title">
+        <h5 class="">Top 5 Articulos mas vendidos en el mes</h5>
+    </div>
+    <h2 class="d-none d-print-block">Top 5 Articulos mas vendidos en el mes</h2>
+    <div class="ibox-content">
+        <div class="table-responsive">
+            <table class="table table-stripped table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Codigo</th>
+                        <th>Nombre</th>
+                        <th>Categoria</th>
+                        <th>Precio Minorista</th>
+                        <th>Precio Mayorista</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (@Model != null && Model.Any())
+                    {
+                        @foreach (var venta in @Model)
+                        {
+                            i = i + 1;
+                            <tr>
+                                <td>@i</td>
+                                <td>@venta.Item1.CodigoArticulo</td>
+                                <td>@venta.Item1.Nombre</td>
+                                <td>@venta.Item1.ArticuloCategoria.Descripcion</td>
+                                <td>$ @venta.Item1.PrecioMinorista</td>
+                                <td>$ @venta.Item1.PrecioMayorista</td>
+                                <td>@venta.Item2</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+</div>

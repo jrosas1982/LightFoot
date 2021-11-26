@@ -43,6 +43,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("Descripcion")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -50,9 +53,6 @@ namespace Core.Infraestructura.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("IdArticuloCategoria")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IdReceta")
                         .HasColumnType("int");
 
                     b.Property<string>("ModificadoPor")
@@ -75,8 +75,6 @@ namespace Core.Infraestructura.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("IdArticuloCategoria");
-
-                    b.HasIndex("IdReceta");
 
                     b.ToTable("Articulos");
                 });
@@ -101,6 +99,9 @@ namespace Core.Infraestructura.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -115,6 +116,44 @@ namespace Core.Infraestructura.Migrations
                     b.ToTable("ArticulosCategoria");
                 });
 
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.ArticuloHistorico", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CreadoPor")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaModificacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IdArticulo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<decimal>("PrecioMayorista")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PrecioMinorista")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdArticulo");
+
+                    b.ToTable("ArticulosHistorico");
+                });
+
             modelBuilder.Entity("Core.Dominio.AggregatesModel.ArticuloStock", b =>
                 {
                     b.Property<int>("Id")
@@ -124,6 +163,12 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EsReposicionAutomatica")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("EsReposicionPorLote")
                         .HasColumnType("bit");
@@ -173,8 +218,14 @@ namespace Core.Infraestructura.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Comentario")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -221,6 +272,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("Direccion")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -256,6 +310,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -289,7 +346,7 @@ namespace Core.Infraestructura.Migrations
                     b.ToTable("ClientesCuentaCorriente");
                 });
 
-            modelBuilder.Entity("Core.Dominio.AggregatesModel.Compra", b =>
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.CompraArticulo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -299,10 +356,19 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("FechaModificacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaPagado")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaRecibido")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("IdProveedor")
@@ -317,16 +383,25 @@ namespace Core.Infraestructura.Migrations
                     b.Property<decimal>("MontoTotal")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<long?>("NroRemito")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("Pagado")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Recibido")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IdProveedor");
 
                     b.HasIndex("IdSucursal");
 
-                    b.ToTable("Compras");
+                    b.ToTable("ComprasArticulos");
                 });
 
-            modelBuilder.Entity("Core.Dominio.AggregatesModel.CompraArticulo", b =>
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.CompraArticuloDetalle", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -336,8 +411,14 @@ namespace Core.Infraestructura.Migrations
                     b.Property<int>("Cantidad")
                         .HasColumnType("int");
 
+                    b.Property<string>("Comentario")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -348,7 +429,10 @@ namespace Core.Infraestructura.Migrations
                     b.Property<int>("IdArticulo")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdCompra")
+                    b.Property<int>("IdCompraArticulo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdProveedorSugerido")
                         .HasColumnType("int");
 
                     b.Property<string>("ModificadoPor")
@@ -357,16 +441,15 @@ namespace Core.Infraestructura.Migrations
                     b.Property<decimal>("Monto")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<bool>("Recibido")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.HasIndex("IdArticulo");
 
-                    b.HasIndex("IdCompra");
+                    b.HasIndex("IdCompraArticulo");
 
-                    b.ToTable("ComprasArticulos");
+                    b.HasIndex("IdProveedorSugerido");
+
+                    b.ToTable("CompraArticuloDetalles");
                 });
 
             modelBuilder.Entity("Core.Dominio.AggregatesModel.CompraInsumo", b =>
@@ -376,11 +459,11 @@ namespace Core.Infraestructura.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("int");
-
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -388,31 +471,86 @@ namespace Core.Infraestructura.Migrations
                     b.Property<DateTime?>("FechaModificacion")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("IdArticulo")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("FechaPagado")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("IdCompra")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("FechaRecibido")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("IdInsumo")
+                    b.Property<int>("IdProveedor")
                         .HasColumnType("int");
 
                     b.Property<string>("ModificadoPor")
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("MontoRecibido")
+                    b.Property<decimal>("MontoTotal")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("MontoTotal")
+                    b.Property<long?>("NroRemito")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("Pagado")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Recibido")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdProveedor");
+
+                    b.ToTable("ComprasInsumos");
+                });
+
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.CompraInsumoDetalle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Cantidad")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Comentario")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreadoPor")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaModificacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IdCompraInsumo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdInsumo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdProveedorSugerido")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<decimal>("Monto")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdArticulo");
+                    b.HasIndex("IdCompraInsumo");
 
-                    b.HasIndex("IdCompra");
+                    b.HasIndex("IdInsumo");
 
-                    b.ToTable("ComprasInsumos");
+                    b.HasIndex("IdProveedorSugerido");
+
+                    b.ToTable("CompraInsumoDetalles");
                 });
 
             modelBuilder.Entity("Core.Dominio.AggregatesModel.EtapaOrdenProduccion", b =>
@@ -431,6 +569,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -455,7 +596,8 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Cortado",
-                            FechaCreacion = new DateTime(2021, 10, 19, 19, 34, 9, 649, DateTimeKind.Local).AddTicks(4102),
+                            Eliminado = false,
+                            FechaCreacion = new DateTime(2021, 11, 25, 10, 38, 6, 362, DateTimeKind.Local).AddTicks(3586),
                             Orden = 1
                         },
                         new
@@ -464,7 +606,8 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Aparado",
-                            FechaCreacion = new DateTime(2021, 10, 19, 19, 34, 9, 649, DateTimeKind.Local).AddTicks(4306),
+                            Eliminado = false,
+                            FechaCreacion = new DateTime(2021, 11, 25, 10, 38, 6, 362, DateTimeKind.Local).AddTicks(3693),
                             Orden = 2
                         },
                         new
@@ -473,7 +616,8 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Preparacion",
-                            FechaCreacion = new DateTime(2021, 10, 19, 19, 34, 9, 649, DateTimeKind.Local).AddTicks(4315),
+                            Eliminado = false,
+                            FechaCreacion = new DateTime(2021, 11, 25, 10, 38, 6, 362, DateTimeKind.Local).AddTicks(3696),
                             Orden = 3
                         },
                         new
@@ -482,7 +626,8 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Montado",
-                            FechaCreacion = new DateTime(2021, 10, 19, 19, 34, 9, 649, DateTimeKind.Local).AddTicks(4318),
+                            Eliminado = false,
+                            FechaCreacion = new DateTime(2021, 11, 25, 10, 38, 6, 362, DateTimeKind.Local).AddTicks(3699),
                             Orden = 4
                         },
                         new
@@ -491,7 +636,8 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Pegado",
-                            FechaCreacion = new DateTime(2021, 10, 19, 19, 34, 9, 649, DateTimeKind.Local).AddTicks(4321),
+                            Eliminado = false,
+                            FechaCreacion = new DateTime(2021, 11, 25, 10, 38, 6, 362, DateTimeKind.Local).AddTicks(3702),
                             Orden = 5
                         },
                         new
@@ -500,9 +646,49 @@ namespace Core.Infraestructura.Migrations
                             Activo = true,
                             CreadoPor = "Initial",
                             Descripcion = "Terminado ",
-                            FechaCreacion = new DateTime(2021, 10, 19, 19, 34, 9, 649, DateTimeKind.Local).AddTicks(4324),
+                            Eliminado = false,
+                            FechaCreacion = new DateTime(2021, 11, 25, 10, 38, 6, 362, DateTimeKind.Local).AddTicks(3705),
                             Orden = 6
                         });
+                });
+
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.FabricaParametro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CreadoPor")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaModificacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModificadoPor")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Modulo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Parametro")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Valor")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FabricaParametros");
                 });
 
             modelBuilder.Entity("Core.Dominio.AggregatesModel.Insumo", b =>
@@ -518,11 +704,17 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("Descripcion")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("FechaModificacion")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("IdProveedorPreferido")
+                        .HasColumnType("int");
 
                     b.Property<string>("ModificadoPor")
                         .HasColumnType("varchar(50)");
@@ -531,53 +723,21 @@ namespace Core.Infraestructura.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("StockReservado")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("StockTotal")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Unidad")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Insumos");
-                });
-
-            modelBuilder.Entity("Core.Dominio.AggregatesModel.InsumoStock", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CantidadStockReserva")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CantidadStockTotal")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CreadoPor")
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FechaModificacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdInsumo")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IdProveedorPreferido")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ModificadoPor")
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdInsumo");
-
                     b.HasIndex("IdProveedorPreferido");
 
-                    b.ToTable("InsumosStock");
+                    b.ToTable("Insumos");
                 });
 
             modelBuilder.Entity("Core.Dominio.AggregatesModel.MovimientoStock", b =>
@@ -595,6 +755,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -632,14 +795,17 @@ namespace Core.Infraestructura.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CantidadTotal")
+                    b.Property<int>("CantidadFabricada")
                         .HasColumnType("int");
 
-                    b.Property<int>("CantidadTotalFabricada")
+                    b.Property<int>("CantidadTotal")
                         .HasColumnType("int");
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<int>("EstadoEtapaOrdenProduccion")
                         .HasColumnType("int");
@@ -692,6 +858,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<int>("EstadoEtapaOrdenProduccion")
                         .HasColumnType("int");
 
@@ -733,6 +902,9 @@ namespace Core.Infraestructura.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("Calificacion")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
@@ -740,9 +912,15 @@ namespace Core.Infraestructura.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EsFabrica")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -764,6 +942,22 @@ namespace Core.Infraestructura.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Proveedores");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 100,
+                            CUIT = "30709834904",
+                            Calificacion = 0m,
+                            CreadoPor = "Initial",
+                            Direccion = "4562 Hazy Panda Limits, Chair Crossing, Kentucky, US, 607898",
+                            Eliminado = false,
+                            Email = "TrifulcaLightFoot@gmail.com",
+                            EsFabrica = true,
+                            FechaCreacion = new DateTime(2021, 11, 25, 10, 38, 6, 363, DateTimeKind.Local).AddTicks(3334),
+                            Nombre = "Fabrica LightFoot",
+                            Telefono = "+541136558997"
+                        });
                 });
 
             modelBuilder.Entity("Core.Dominio.AggregatesModel.ProveedorArticulo", b =>
@@ -775,6 +969,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -803,6 +1000,49 @@ namespace Core.Infraestructura.Migrations
                     b.ToTable("ProveedoresArticulos");
                 });
 
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.ProveedorArticuloCuentaCorriente", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CreadoPor")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaModificacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IdCompraArticulo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdProveedor")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<decimal>("MontoPagado")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TipoPago")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdCompraArticulo");
+
+                    b.HasIndex("IdProveedor");
+
+                    b.ToTable("ProveedoresArticulosCuentaCorriente");
+                });
+
             modelBuilder.Entity("Core.Dominio.AggregatesModel.ProveedorArticuloHistorico", b =>
                 {
                     b.Property<int>("Id")
@@ -812,6 +1052,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -840,46 +1083,6 @@ namespace Core.Infraestructura.Migrations
                     b.ToTable("ProveedoresArticulosHistorico");
                 });
 
-            modelBuilder.Entity("Core.Dominio.AggregatesModel.ProveedorCuentaCorriente", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CreadoPor")
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FechaModificacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdCompra")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdProveedor")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ModificadoPor")
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<decimal>("MontoPagado")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("TipoPago")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdCompra");
-
-                    b.HasIndex("IdProveedor");
-
-                    b.ToTable("ProveedoresCuentaCorriente");
-                });
-
             modelBuilder.Entity("Core.Dominio.AggregatesModel.ProveedorInsumo", b =>
                 {
                     b.Property<int>("Id")
@@ -889,6 +1092,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -917,6 +1123,49 @@ namespace Core.Infraestructura.Migrations
                     b.ToTable("ProveedoresInsumos");
                 });
 
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.ProveedorInsumoCuentaCorriente", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CreadoPor")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaModificacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IdCompraInsumo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdProveedor")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<decimal>("MontoPagado")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TipoPago")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdCompraInsumo");
+
+                    b.HasIndex("IdProveedor");
+
+                    b.ToTable("ProveedoresInsumosCuentaCorriente");
+                });
+
             modelBuilder.Entity("Core.Dominio.AggregatesModel.ProveedorInsumoHistorico", b =>
                 {
                     b.Property<int>("Id")
@@ -926,6 +1175,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -967,6 +1219,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -993,14 +1248,17 @@ namespace Core.Infraestructura.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Cantidad")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Comentario")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -1044,6 +1302,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<int>("EstadoSolicitud")
                         .HasColumnType("int");
 
@@ -1078,6 +1339,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -1118,6 +1382,9 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<int>("EstadoSolicitud")
                         .HasColumnType("int");
@@ -1161,6 +1428,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("Direccion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -1208,6 +1478,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("Direccion")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1252,11 +1525,14 @@ namespace Core.Infraestructura.Migrations
 
                     b.Property<string>("ApiKey")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
@@ -1264,13 +1540,16 @@ namespace Core.Infraestructura.Migrations
                     b.Property<DateTime?>("FechaModificacion")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("IdSucursal")
+                        .HasColumnType("int");
+
                     b.Property<string>("ModificadoPor")
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -1287,13 +1566,19 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
-                    b.Property<double>("Descuento")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Descuento")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("FechaModificacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaUltimoPago")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("IdCliente")
@@ -1302,14 +1587,17 @@ namespace Core.Infraestructura.Migrations
                     b.Property<int>("IdSucursal")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
-
                     b.Property<string>("ModificadoPor")
                         .HasColumnType("varchar(50)");
 
                     b.Property<decimal>("MontoTotal")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("Pagado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UsuarioVenta")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("VentaTipo")
                         .HasColumnType("int");
@@ -1319,8 +1607,6 @@ namespace Core.Infraestructura.Migrations
                     b.HasIndex("IdCliente");
 
                     b.HasIndex("IdSucursal");
-
-                    b.HasIndex("IdUsuario");
 
                     b.ToTable("Ventas");
                 });
@@ -1338,6 +1624,9 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("CreadoPor")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -1353,7 +1642,7 @@ namespace Core.Infraestructura.Migrations
                     b.Property<string>("ModificadoPor")
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("MontoTotal")
+                    b.Property<decimal>("PrecioUnitario")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -1373,20 +1662,24 @@ namespace Core.Infraestructura.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Core.Dominio.AggregatesModel.Receta", "Receta")
-                        .WithMany()
-                        .HasForeignKey("IdReceta")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.Navigation("ArticuloCategoria");
+                });
 
-                    b.Navigation("Receta");
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.ArticuloHistorico", b =>
+                {
+                    b.HasOne("Core.Dominio.AggregatesModel.Articulo", "Articulo")
+                        .WithMany()
+                        .HasForeignKey("IdArticulo")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Articulo");
                 });
 
             modelBuilder.Entity("Core.Dominio.AggregatesModel.ArticuloStock", b =>
                 {
                     b.HasOne("Core.Dominio.AggregatesModel.Articulo", "Articulo")
-                        .WithMany()
+                        .WithMany("ArticuloStock")
                         .HasForeignKey("IdArticulo")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -1439,7 +1732,7 @@ namespace Core.Infraestructura.Migrations
                     b.Navigation("Venta");
                 });
 
-            modelBuilder.Entity("Core.Dominio.AggregatesModel.Compra", b =>
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.CompraArticulo", b =>
                 {
                     b.HasOne("Core.Dominio.AggregatesModel.Proveedor", "Proveedor")
                         .WithMany()
@@ -1448,7 +1741,7 @@ namespace Core.Infraestructura.Migrations
                         .IsRequired();
 
                     b.HasOne("Core.Dominio.AggregatesModel.Sucursal", "Sucursal")
-                        .WithMany("Compras")
+                        .WithMany("CompraArticulos")
                         .HasForeignKey("IdSucursal")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -1458,7 +1751,7 @@ namespace Core.Infraestructura.Migrations
                     b.Navigation("Sucursal");
                 });
 
-            modelBuilder.Entity("Core.Dominio.AggregatesModel.CompraArticulo", b =>
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.CompraArticuloDetalle", b =>
                 {
                     b.HasOne("Core.Dominio.AggregatesModel.Articulo", "Articulo")
                         .WithMany()
@@ -1466,37 +1759,44 @@ namespace Core.Infraestructura.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Core.Dominio.AggregatesModel.Compra", "Compra")
-                        .WithMany("CompraArticulos")
-                        .HasForeignKey("IdCompra")
+                    b.HasOne("Core.Dominio.AggregatesModel.CompraArticulo", "CompraArticulo")
+                        .WithMany("CompraArticuloDetalles")
+                        .HasForeignKey("IdCompraArticulo")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Core.Dominio.AggregatesModel.Proveedor", "Proveedor")
+                        .WithMany()
+                        .HasForeignKey("IdProveedorSugerido")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Articulo");
 
-                    b.Navigation("Compra");
+                    b.Navigation("CompraArticulo");
+
+                    b.Navigation("Proveedor");
                 });
 
             modelBuilder.Entity("Core.Dominio.AggregatesModel.CompraInsumo", b =>
                 {
-                    b.HasOne("Core.Dominio.AggregatesModel.Insumo", "Insumo")
+                    b.HasOne("Core.Dominio.AggregatesModel.Proveedor", "Proveedor")
                         .WithMany()
-                        .HasForeignKey("IdArticulo")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Core.Dominio.AggregatesModel.Compra", "Compra")
-                        .WithMany("CompraInsumos")
-                        .HasForeignKey("IdCompra")
+                        .HasForeignKey("IdProveedor")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Compra");
-
-                    b.Navigation("Insumo");
+                    b.Navigation("Proveedor");
                 });
 
-            modelBuilder.Entity("Core.Dominio.AggregatesModel.InsumoStock", b =>
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.CompraInsumoDetalle", b =>
                 {
+                    b.HasOne("Core.Dominio.AggregatesModel.CompraInsumo", "CompraInsumo")
+                        .WithMany("CompraInsumoDetalles")
+                        .HasForeignKey("IdCompraInsumo")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("Core.Dominio.AggregatesModel.Insumo", "Insumo")
                         .WithMany()
                         .HasForeignKey("IdInsumo")
@@ -1505,10 +1805,23 @@ namespace Core.Infraestructura.Migrations
 
                     b.HasOne("Core.Dominio.AggregatesModel.Proveedor", "Proveedor")
                         .WithMany()
-                        .HasForeignKey("IdProveedorPreferido")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("IdProveedorSugerido")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CompraInsumo");
 
                     b.Navigation("Insumo");
+
+                    b.Navigation("Proveedor");
+                });
+
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.Insumo", b =>
+                {
+                    b.HasOne("Core.Dominio.AggregatesModel.Proveedor", "Proveedor")
+                        .WithMany()
+                        .HasForeignKey("IdProveedorPreferido")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Proveedor");
                 });
@@ -1576,7 +1889,7 @@ namespace Core.Infraestructura.Migrations
                         .IsRequired();
 
                     b.HasOne("Core.Dominio.AggregatesModel.OrdenProduccion", "OrdenProduccion")
-                        .WithMany()
+                        .WithMany("OrdenProduccionEventos")
                         .HasForeignKey("IdOrdenProduccion")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -1589,7 +1902,7 @@ namespace Core.Infraestructura.Migrations
             modelBuilder.Entity("Core.Dominio.AggregatesModel.ProveedorArticulo", b =>
                 {
                     b.HasOne("Core.Dominio.AggregatesModel.Articulo", "Articulo")
-                        .WithMany()
+                        .WithMany("ProveedoresArticulo")
                         .HasForeignKey("IdArticulo")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -1601,6 +1914,25 @@ namespace Core.Infraestructura.Migrations
                         .IsRequired();
 
                     b.Navigation("Articulo");
+
+                    b.Navigation("Proveedor");
+                });
+
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.ProveedorArticuloCuentaCorriente", b =>
+                {
+                    b.HasOne("Core.Dominio.AggregatesModel.CompraArticulo", "CompraArticulo")
+                        .WithMany()
+                        .HasForeignKey("IdCompraArticulo")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Core.Dominio.AggregatesModel.Proveedor", "Proveedor")
+                        .WithMany("ProvedorCuentaCorriente")
+                        .HasForeignKey("IdProveedor")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CompraArticulo");
 
                     b.Navigation("Proveedor");
                 });
@@ -1624,29 +1956,10 @@ namespace Core.Infraestructura.Migrations
                     b.Navigation("Proveedor");
                 });
 
-            modelBuilder.Entity("Core.Dominio.AggregatesModel.ProveedorCuentaCorriente", b =>
-                {
-                    b.HasOne("Core.Dominio.AggregatesModel.Compra", "Compra")
-                        .WithMany()
-                        .HasForeignKey("IdCompra")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Core.Dominio.AggregatesModel.Proveedor", "Proveedor")
-                        .WithMany("ProvedorCuentaCorriente")
-                        .HasForeignKey("IdProveedor")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Compra");
-
-                    b.Navigation("Proveedor");
-                });
-
             modelBuilder.Entity("Core.Dominio.AggregatesModel.ProveedorInsumo", b =>
                 {
                     b.HasOne("Core.Dominio.AggregatesModel.Insumo", "Insumo")
-                        .WithMany()
+                        .WithMany("ProveedoresInsumo")
                         .HasForeignKey("IdInsumo")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -1662,10 +1975,29 @@ namespace Core.Infraestructura.Migrations
                     b.Navigation("Proveedor");
                 });
 
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.ProveedorInsumoCuentaCorriente", b =>
+                {
+                    b.HasOne("Core.Dominio.AggregatesModel.CompraInsumo", "CompraInsumo")
+                        .WithMany()
+                        .HasForeignKey("IdCompraInsumo")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Core.Dominio.AggregatesModel.Proveedor", "Proveedor")
+                        .WithMany()
+                        .HasForeignKey("IdProveedor")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CompraInsumo");
+
+                    b.Navigation("Proveedor");
+                });
+
             modelBuilder.Entity("Core.Dominio.AggregatesModel.ProveedorInsumoHistorico", b =>
                 {
                     b.HasOne("Core.Dominio.AggregatesModel.Insumo", "Insumo")
-                        .WithMany("InsumoHistorico")
+                        .WithMany("ProveedoresInsumoHistorico")
                         .HasForeignKey("IdInsumo")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -1684,7 +2016,7 @@ namespace Core.Infraestructura.Migrations
             modelBuilder.Entity("Core.Dominio.AggregatesModel.Receta", b =>
                 {
                     b.HasOne("Core.Dominio.AggregatesModel.Articulo", "Articulo")
-                        .WithMany()
+                        .WithMany("Recetas")
                         .HasForeignKey("IdArticulo")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -1774,17 +2106,9 @@ namespace Core.Infraestructura.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Core.Dominio.AggregatesModel.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("Cliente");
 
                     b.Navigation("Sucursal");
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Core.Dominio.AggregatesModel.VentaDetalle", b =>
@@ -1809,6 +2133,12 @@ namespace Core.Infraestructura.Migrations
             modelBuilder.Entity("Core.Dominio.AggregatesModel.Articulo", b =>
                 {
                     b.Navigation("ArticuloHistorico");
+
+                    b.Navigation("ArticuloStock");
+
+                    b.Navigation("ProveedoresArticulo");
+
+                    b.Navigation("Recetas");
                 });
 
             modelBuilder.Entity("Core.Dominio.AggregatesModel.ArticuloCategoria", b =>
@@ -1821,11 +2151,14 @@ namespace Core.Infraestructura.Migrations
                     b.Navigation("ClienteCuentaCorriente");
                 });
 
-            modelBuilder.Entity("Core.Dominio.AggregatesModel.Compra", b =>
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.CompraArticulo", b =>
                 {
-                    b.Navigation("CompraArticulos");
+                    b.Navigation("CompraArticuloDetalles");
+                });
 
-                    b.Navigation("CompraInsumos");
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.CompraInsumo", b =>
+                {
+                    b.Navigation("CompraInsumoDetalles");
                 });
 
             modelBuilder.Entity("Core.Dominio.AggregatesModel.EtapaOrdenProduccion", b =>
@@ -1835,7 +2168,14 @@ namespace Core.Infraestructura.Migrations
 
             modelBuilder.Entity("Core.Dominio.AggregatesModel.Insumo", b =>
                 {
-                    b.Navigation("InsumoHistorico");
+                    b.Navigation("ProveedoresInsumo");
+
+                    b.Navigation("ProveedoresInsumoHistorico");
+                });
+
+            modelBuilder.Entity("Core.Dominio.AggregatesModel.OrdenProduccion", b =>
+                {
+                    b.Navigation("OrdenProduccionEventos");
                 });
 
             modelBuilder.Entity("Core.Dominio.AggregatesModel.Proveedor", b =>
@@ -1870,7 +2210,7 @@ namespace Core.Infraestructura.Migrations
 
                     b.Navigation("CajaSucursal");
 
-                    b.Navigation("Compras");
+                    b.Navigation("CompraArticulos");
 
                     b.Navigation("Solicitudes");
 

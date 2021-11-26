@@ -15,7 +15,6 @@ namespace Core.Dominio.AggregatesModel
         public int CantidadSolicitada { get; set; }
         public string Motivo { get; set; }
 
-
         [ForeignKey("IdSolicitud")]
         public virtual Solicitud Solicitud { get; set; }
 

@@ -28,7 +28,7 @@ namespace Core.Dominio.AggregatesModel
         //public virtual ICollection<MovimientoStock> MovimientoStockDestino { get; set; }
         public virtual ICollection<Solicitud> Solicitudes { get; set; } = new HashSet<Solicitud>();
         public virtual ICollection<CajaSucursal> CajaSucursal { get; set; } = new HashSet<CajaSucursal>();
-        public virtual ICollection<Compra> Compras { get; set; } = new HashSet<Compra>();
+        public virtual ICollection<CompraArticulo> CompraArticulos { get; set; } = new HashSet<CompraArticulo>();
         public virtual ICollection<Venta> Ventas { get; set; } = new HashSet<Venta>();
     }
 }

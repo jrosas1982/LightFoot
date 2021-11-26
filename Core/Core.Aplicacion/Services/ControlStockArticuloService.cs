@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Aplicacion.Services
@@ -10,15 +13,15 @@ namespace Core.Aplicacion.Services
     public class ControlStockArticuloService : IControlStockArticuloService
     {
         private readonly AppDbContext _db;
-        private readonly ILogger<ControlStockInsumoService> _logger;
-        public ControlStockArticuloService(ExtendedAppDbContext extendedAppDbContext, ILogger<ControlStockInsumoService> logger)
+        private readonly ILogger<ControlStockArticuloService> _logger;
+        public ControlStockArticuloService(AppDbContext db, ILogger<ControlStockArticuloService> logger)
         {
             _logger = logger;
-            _db = extendedAppDbContext.context;
+            _db = db;            
         }
         public async Task<ArticuloStock> BuscarPorId(int IdArticuloStock)
         {
-            var articuloStock = await _db.ArticulosStock.FindAsync(IdArticuloStock);
+            var articuloStock = await _db.ArticulosStock.Include(x => x.Articulo).SingleOrDefaultAsync(s => s.Id == IdArticuloStock);
             return articuloStock;
         }
 
@@ -36,6 +39,7 @@ namespace Core.Aplicacion.Services
             articuloStockDb.StockTotal = articuloStock.StockTotal;
             articuloStockDb.StockMinimo = articuloStock.StockMinimo;
             articuloStockDb.EsReposicionPorLote = articuloStock.EsReposicionPorLote;
+            articuloStockDb.EsReposicionAutomatica = articuloStock.EsReposicionAutomatica;
             articuloStockDb.TamañoLote = articuloStock.TamañoLote;
 
             _db.Update(articuloStockDb);
@@ -46,7 +50,7 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var articuloStockDb = await _db.InsumosStock.FindAsync(articuloStock.Id);
+                var articuloStockDb = await _db.ArticulosStock.FindAsync(articuloStock.Id);
                 _db.Remove(articuloStockDb);
                 await _db.SaveChangesAsync();
                 return true;
@@ -59,9 +63,19 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<ArticuloStock>> GetArticuloStock()
         {
-            var articuloStockList = _db.ArticulosStock;
+            int idSucursal = int.Parse(_db.GetSucursalId());
+
+            // var articuloStockList = await _db.ArticulosStock.ToListAsync();
+            var articuloStockList = await _db.ArticulosStock
+                .Where(x => !x.Eliminado)
+                .Where(x => x.IdSucursal == idSucursal)
+                .Include(p => p.Articulo)
+                    .ThenInclude(p => p.ArticuloCategoria)
+                .OrderBy(x => x.Articulo.ArticuloCategoria)
+                    .ThenByDescending(x => x.Articulo.CodigoArticulo)
+                .ToListAsync();
             _logger.LogInformation("Se buscaron el stock de articulos");
-            return await Task.FromResult(articuloStockList);
+            return articuloStockList;
         }
     }
 }

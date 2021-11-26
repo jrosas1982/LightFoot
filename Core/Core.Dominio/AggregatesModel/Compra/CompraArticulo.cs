@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 using Core.Dominio.SeedWork;
 
 namespace Core.Dominio.AggregatesModel
@@ -8,18 +11,23 @@ namespace Core.Dominio.AggregatesModel
     {
         [Key]
         public int Id { get; set; }
-        public int IdCompra { get; set; }
-        public int IdArticulo { get; set; }
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal Monto { get; set; }
-        public int Cantidad { get; set; }
+        public int IdSucursal { get; set; }
+        public int IdProveedor { get; set; }
         public bool Recibido { get; set; }
+        public DateTime? FechaRecibido { get; set; }
+        public bool Pagado { get; set; }
+        public DateTime? FechaPagado { get; set; }
+        public long? NroRemito { get; set; }
+        public decimal MontoTotal { get; set; }
 
-        [ForeignKey("IdCompra")]
-        public virtual Compra Compra { get; set; }
 
-        [ForeignKey("IdArticulo")]
-        public virtual Articulo Articulo { get; set; }
+        [ForeignKey("IdSucursal")]
+        public virtual Sucursal Sucursal { get; set; }
+
+        [ForeignKey("IdProveedor")]
+        public virtual Proveedor Proveedor { get; set; }
+
+        public virtual ICollection<CompraArticuloDetalle> CompraArticuloDetalles { get; set; } = new HashSet<CompraArticuloDetalle>();
     }
     //    CompraArticulo(Id, IdCompra, IdArticulo, Monto, Cantidad, Recibido)
 

@@ -1,0 +1,21 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+@model ProveedorArticulo
+@{
+    //bool esEditar = (Model.Id != 0);
+    //string idTr = esEditar ? Model.Id + "List" : "";
+}
+
+
+@if (Model != null)
+{
+<tr @*id="@idTr*@>
+    <td>@Model.Articulo.CodigoArticulo</td>
+    <td>@Model.Articulo.Nombre - @Model.Articulo.Color - Talle @Model.Articulo.TalleArticulo</td>
+    <td>@Model.Articulo.ArticuloCategoria.Descripcion</td>
+    <td>@Model.Articulo.Descripcion</td>
+    <td>@Model.Precio</td>
+    <td>
+        <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="eliminarDetalleArticulo(this, @Model.Id)">Borrar</button>
+    </td>
+</tr>
+}

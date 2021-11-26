@@ -1,0 +1,43 @@
+﻿@using Web.Site.Areas.Abm
+@model IEnumerable<FabricaParametro>
+
+<div class="ibox-content">
+    <div class="table-responsive">
+        <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
+            <thead>
+                <tr>
+                    <th data-toggle="true"># Parametro</th>
+                    <th>Parametro</th>
+                    <th>Descripción</th>
+                    <th>Valor</th>
+                    <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var parametro in Model)
+                    {
+                     <tr>
+                         <td>@parametro.Id</td>
+                         <td>@parametro.Parametro</td>
+                         <td>@parametro.Descripcion</td>
+                         <td>@parametro.Valor</td>
+
+                         <td class="d-print-none">
+                             <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="EditarParametro(@parametro.Id,'@parametro.Parametro', '@parametro.Descripcion', @parametro.Valor)" data-toggle="modal" data-target="#NewCommentModal">Editar</button>
+                         </td>
+                     </tr>
+                    }
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="12">
+                        <ul class="pagination float-right"></ul>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

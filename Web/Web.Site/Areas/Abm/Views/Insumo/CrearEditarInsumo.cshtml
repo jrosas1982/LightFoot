@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Crear Insumo";
-    bool esEdicion = (Model.Id != 0);
+    bool esEdicion = (Model.Insumo.Id != 0);
     Layout = "_Layout";
 }
 
@@ -8,11 +8,11 @@
 @model InsumoModel
 
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-12">
-        <h2>@(esEdicion ? "Modificar" : "Crear")</h2>
+    <div class="col-xl-10 col-lg-9">
+        <h2>@(esEdicion ? "Modificar Insumo: " + Model.Insumo.Nombre : "Crear")</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="@Url.Action("Dashboard_1", "Dashboards")">Home</a>
+                <a href="@Url.Action("Index", "Dashboard", new { area = "fabrica" })">Home</a>
             </li>
             <li class="breadcrumb-item">
                 <a>Gestion</a>
@@ -25,45 +25,108 @@
             </li>
         </ol>
     </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
+        @*<button type="button" class="btn btn-default w-100"
+                    onclick="location.href='@Url.Action("Index", "Insumo", 0)'">
+                <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+            </button>*@
+    </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight ecommerce">
 
     @using (Html.BeginForm(esEdicion ? "Editar" : "Crear", "Insumo", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.Insumo.Id)
+        @if (esEdicion)
+        {
+            @Html.HiddenFor(x => x.Insumo.Nombre)
+            @Html.HiddenFor(x => x.Insumo.Unidad)
+        }
         <div class="ibox-content m-b-sm border-bottom">
+            @if (!esEdicion)
+            {
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Insumo.Nombre)
+                            @Html.EditorFor(model => model.Insumo.Nombre, new { htmlAttributes = new { @id = "Nombre", @class = "form-control", @placeholder = "Nombre de Insumo", @required = true } })
+                            @Html.ValidationMessageFor(model => model.Insumo.Nombre, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            }
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                     <div class="form-group">
-                        @Html.LabelFor(m => m.Nombre)
-                        @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @id = "Nombre", @class = "form-control", @placeholder = "Nombre de Insumo" } })
-                        @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                        @Html.LabelFor(m => m.Insumo.Descripcion)
+                        @Html.EditorFor(model => model.Insumo.Descripcion, new { htmlAttributes = new { @id = "Descripcion", @class = "form-control", @placeholder = "Descripcion" } })
+                        @Html.ValidationMessageFor(model => model.Insumo.Descripcion, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            @if (!esEdicion)
+            {
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Insumo.Unidad)
+                            @Html.EditorFor(model => model.Insumo.Unidad, new { htmlAttributes = new { @id = "Unidad", @class = "form-control", @placeholder = "Unidad", @required = true } })
+                            @Html.ValidationMessageFor(model => model.Insumo.Unidad, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (esEdicion)
+            {
+                <div class="row">
+                    <div class="col-sm-12">
+                        @if (Model.Proveedores == null || !Model.Proveedores.Any())
+                        {
+                            //TODO corregir onclick abm/Proveedor/AsignarProveedorInsumo?idProveedor=1
+                            <div class="alert alert-warning" role="alert">
+                                Ningun proveedor tiene asociado este insumo
+                                @*No existen proveedores asociados al insumo*@
+                                <button type="button" class="mx-2 btn btn-default" onclick="location.href='@Url.Action("Index", "Proveedor", 0)'">Ir a Proveedores</button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Insumo.IdProveedorPreferido)
+                                @Html.DropDownListFor(m => m.Insumo.IdProveedorPreferido, new SelectList(Model.Proveedores, "Id", "Nombre", Model.Proveedores.FirstOrDefault()), new { @class = "form-control m-b", @id = "dropdownProveedores" })
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Insumo.StockTotal)
+                        @Html.EditorFor(model => model.Insumo.StockTotal, new { htmlAttributes = new { @id = "Unidad", @class = "form-control", @placeholder = "Stock", @onkeypress = "return valideKey(event);", @maxlength = "8" } })
+                        @Html.ValidationMessageFor(model => model.Insumo.StockTotal, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        @Html.LabelFor(m => m.Descripcion)
-                        @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @id = "Descripcion", @class = "form-control", @placeholder = "Descripcion" } })
-                        @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
+                        <button type="Submit" class="btn btn-w-m btn-primary w-100">@(esEdicion ? "Modificar" : "Crear") Insumo </button>
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        @Html.LabelFor(m => m.Unidad)
-                        @Html.EditorFor(model => model.Unidad, new { htmlAttributes = new { @id = "Unidad", @class = "form-control", @placeholder = "Unidad" } })
-                        @Html.ValidationMessageFor(model => model.Unidad, "", new { @class = "text-danger" })
+                        <button type="button" class="btn btn-w-m btn-default w-100"
+                                onclick="location.href='@Url.Action("Index", "Insumo", 0)'">
+                            <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+                        </button>
                     </div>
                 </div>
             </div>
+
         </div>
-        <div style="text-align:right">
-            <button type="Submit" class="btn btn-w-m btn-primary">@(esEdicion ? "Modificar" : "Crear") Insumo </button>
-        </div>
+
     }
 </div>
 
@@ -77,7 +140,7 @@
 @section Scripts {
     <environment names="Development,Staging,Production">
         <script src="~/lib/switchery/switchery.js"></script>
-
+        <script src="~/js/apphelpers.js"></script>
     </environment>
 
     <script type="text/javascript">

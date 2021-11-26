@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core.Aplicacion.Services
 {
@@ -10,15 +12,18 @@ namespace Core.Aplicacion.Services
     {
         private readonly AppDbContext _db;
 
-        public SucursalService(ExtendedAppDbContext extendedAppDbContext)
+        public SucursalService(AppDbContext db)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
         }
 
         public async Task<IEnumerable<Sucursal>> GetSucursales()
         {
-            var sucursalesList = _db.Sucursales;
-            return await Task.FromResult(sucursalesList);
+            var sucursalesList = await _db.Sucursales
+                .Where(x => !x.Eliminado)
+                .OrderBy(x => x.Nombre)
+                .ToListAsync();
+            return sucursalesList;
         }
 
         public async Task<Sucursal> BuscarPorId(int IdSucursal)
@@ -50,9 +55,11 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var sucursalDb = await _db.Sucursales.FindAsync(sucursal.Id);
+                var entidad = await _db.Sucursales.FindAsync(sucursal.Id);
 
-                _db.Remove(sucursalDb);
+                entidad.Eliminado = true;
+
+                _db.Sucursales.Update(entidad);
                 await _db.SaveChangesAsync();
 
                 return true;

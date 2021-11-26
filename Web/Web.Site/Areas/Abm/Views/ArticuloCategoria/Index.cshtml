@@ -2,17 +2,18 @@
     ViewData["Title"] = "Categorias";
     //bool esEdicion = (Model.Id != 0);
     Layout = "_Layout";
+    IEnumerable<string> TypeaheadCategoria = ViewBag.TypeaheadCategoria;
 
 }
 
 @model IEnumerable<ArticuloCategoria>
 
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-12">
+    <div class="col-xl-10 col-lg-9">
         <h2>Categorias</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="@Url.Action("Dashboard_1", "Dashboards")">Home</a>
+                <a href="@Url.Action("Index", "Dashboard", new { area = "fabrica" })">Home</a>
             </li>
             <li class="breadcrumb-item">
                 <a>Gestion</a>
@@ -22,76 +23,68 @@
             </li>
         </ol>
     </div>
-    <div class="col-lg-12" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditarCategoria", "ArticuloCategoria", 0)'"> Crear nueva categoria</button>
-    </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+        @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+        {
+            <button type="button" class="btn btn-w-m btn-primary w-100"
+                    onclick="location.href='@Url.Action("CrearEditarCategoria", "ArticuloCategoria", 0)'">
+                <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Nueva Categoria
+            </button>
+        }
+        </div>
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="ibox-content m-b-sm border-bottom  d-print-none">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-form-labe" for="solicitud_name">Articulo</label>
+                    <div class="typeahead__container">
+                        <div class="typeahead__field">
+                            <div class="typeahead__query">
+                                <input class="js-typeahead typeaheadCustom " id="typeArticuloCat" placeholder="Buscar Categoria Articulo" autocomplete="on" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 d-flex align-items-end justify-content-end">
+                <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="FiltrarCategoriaArticulos()">
+                    <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5>Categorias Light Foot</h5>
+                    <h5>Articulo Categorias</h5>
                 </div>
                 <div class="ibox-content">
-
-                    <table class="table table-striped table-bordered table-hover dataTables-example">
-                        <thead>
-                            <tr>
-                                <th>Descripción</th>
-                                <th>Comentario</th>
-                                <th>Activo</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model != null)
-                            {
-                                foreach (var item in Model)
-                                {
-                                    <tr class="gradeC">
-                                        <td>@item.Descripcion</td>
-                                        <td>@item.Comentario</td>
-                                        @if (item.Activo)
-                                        {
-                                            <td> Si </td>
-                                        }
-                                        else
-                                        {
-                                            <td>No </td>
-                                        }
-                                        <td>
-                                            <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarCategoria('@item.Id')">Borrar</button>
-                                            <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarCategoria('@item.Id')">Editar</button>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Descripción</th>
-                                <th>Comentario</th>
-                                <th>Activo</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                        <div id="tablaContenido">
+                            <partial name="_ArticuloCategoriaIndexTable.cshtml" model="Model" />
+                        </div>
                 </div>
             </div>
         </div>
     </div>
 
 </div>
+
 @section Styles {
-    <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
+
 }
 
 @section Scripts {
-    <script src="~/lib/dataTables/datatables.min.js"></script>
-    <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
     <script type="text/javascript">
+        $(document).ready(function () {
+            $('.footable').footable();
+        });
 
         function BorrarCategoria(Id) {
             alert(Id);
@@ -113,14 +106,10 @@
             }, function () {
                 $.ajax({
                     type: "post",
-                    url: "/abm/Categoria/Eliminar",
+                    url: "/abm/ArticuloCategoria/Eliminar",
                     data: { Id: Id },
                     success: function (result) {
-                        if (result == true) {
-                            swal("Baja Exitosa!", "La Categoria ha sido dado de baja correctamente.", "success");
-                        } else {
-                            swal("Error", "Ocurrió un error intente mas tarde", "error");
-                        }
+                        swal("Baja Exitosa!", "La Categoria ha sido dado de baja correctamente.", "success");
                     }
                 }).done(function () {
                     window.setTimeout(function () {
@@ -129,31 +118,40 @@
                 });
             });
         };
-        $(document).ready(function () {
-
-            $('.dataTables-example').DataTable({
-                pageLength: 25,
-                dom: '<"html5buttons"B>lTfgitp',
-                buttons: [
-                    { extend: 'copy' },
-                    { extend: 'csv' },
-                    { extend: 'excel', title: 'ExampleFile' },
-                    { extend: 'pdf', title: 'ExampleFile' },
-
-                    {
-                        extend: 'print',
-                        customize: function (win) {
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                        }
-                    }
-                ]
-
-            });
+    </script>
+    <script type="text/javascript">
+        var typeaheadCategoria = @Html.Raw(Json.Serialize(TypeaheadCategoria));
+   
+        $.typeahead({
+            input: '.js-typeahead',
+            order: "desc",
+            template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+            minLength: 1,
+            source: {
+                Categoria: { data: typeaheadCategoria }
+            }
         });
+    </script>
+
+    <script type="text/javascript">
+        function FiltrarCategoriaArticulos() {
+            var articulo = $("#typeArticuloCat").val();
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("FiltrarCategoriaArticulos", "ArticuloCategoria", new { area = "abm" })',
+                traditional: true,
+                data: //formData,
+                {
+                    NombreCategoriaArticulo: articulo,
+                },
+                contentType: "application/json",
+                success: function (partial) {
+                    $("#tablaContenido").html(""); //clear the records content
+                    $("#tablaContenido").html(partial);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
     </script>
 }

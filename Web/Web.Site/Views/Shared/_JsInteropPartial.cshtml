@@ -1,5 +1,6 @@
-﻿@if (TempData["JsFunction"] != null)
+﻿@if (TempData["JsFunction"] != null || ViewBag.JsFunction != null)
 {
     <script src="~/custom/Personalizado.js"></script>
     <script type="text/javascript">@Html.Raw(TempData["JsFunction"]);</script>
+    <script type="text/javascript">@Html.Raw(ViewBag.JsFunction);</script>
 }

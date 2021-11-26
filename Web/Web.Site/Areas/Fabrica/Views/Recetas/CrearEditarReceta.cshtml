@@ -1,0 +1,282 @@
+﻿@{
+    ViewData["Title"] = "Crear Receta";
+    Layout = "_Layout";
+    bool esEdicion = (Model.Id != 0);
+    string controlador = "Recetas";
+    string url_base = "/fabrica/recetas/";
+}
+
+@model RecetaModel
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-xl-10 col-lg-9">
+        <h2>@(esEdicion ? "Modificar" : "Crear")</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Dashboard", new { area = "fabrica" })">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Fabrica</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <a href="@Url.Action("Index", "Recetas", new { area = "fabrica" })">@controlador</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>@(esEdicion ? "Modificar" : "Nueva") @controlador</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-default w-100"
+                onclick="location.href='@Url.Action("Index", "Recetas", 0)'">
+            <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+        </button>
+    </div>
+</div>
+
+
+<div class="wrapper wrapper-content animated fadeInRight ecommerce">
+
+    @using (Html.BeginForm(esEdicion ? "Editar" : "CrearEditarReceta", "Recetas", FormMethod.Post, new { id = "formReceta" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Id, new { @id = "IdReceta" })
+        <div class="ibox-content m-b-sm border-bottom">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.IdArticulo, "Articulo")
+                        @if (esEdicion)
+                        {
+                            @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), new { @class = "form-control chosen-select", @id = "dropdownArticulos", @disabled = "disabled" })
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(m => m.IdArticulo, new List<SelectListItem>(ViewBag.Articulos), new { @class = "form-control chosen-select", @id = "dropdownArticulos" })
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="wrapper wrapper-content animated fadeInRight ecommerce">
+            <div class="ibox-content m-b-sm border-bottom">
+                <table id="ListaAriticulo" class="table table-bordered table-hover">
+                    <tr>
+                        <th>Nombre de Insumo </th>
+                        <th>Cantidad</th>
+                        <th>Etapa involucrada</th>
+                        <th>Comentario</th>
+                        <th>Borrar</th>
+                    </tr>
+                    <tbody>
+                        @if (Model.RecetaDetalles != null)
+                        {
+                            @foreach (var Adds in Model.RecetaDetalles)
+                            {
+                                if (Adds != null)
+                                {
+                                    @await Html.PartialAsync("_RecetaDetalle", Adds)
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="ibox-content border-0 pt-0 pr-0">
+                    <div class="text-center d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#agregarInsumoModal">
+                            Agregar Insumo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align:right">
+            @if (esEdicion)
+            {
+                <a class="btn btn-w-m btn-primary" href="@Url.Action("Index", "Recetas", new { area = "fabrica" })">Volver a Recetas</a>
+            }
+            else
+            {
+                <button id="btnReceta" type="Submit" class="btn btn-w-m btn-primary">Crear Receta</button>
+            }
+
+        </div>
+    }
+    @* MODAL NEW COMMENT *@
+    <div class="modal inmodal fade" id="agregarInsumoModal" tabindex="-1" role="dialog" style="display: none;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form class="validateDontSubmit" id="modalForm" name="modalForm">
+                    <div class="modal-header pb-1">
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-center">
+                                <h1 style="font-size:30px;">Nueva @controlador</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Insumo</label>
+                            <select class="form-control  chosen-select " id="IdInsumo" data-placeholder="Seleccione Insumo" required>
+                                <option value=""> -- Seleccionar Insumo --</option>
+                                @foreach (var insumo in ViewBag.Insumos)
+                                {
+                                    <option value="@insumo.Value"> @insumo.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                        @*<div class="form-floating">
+                                @Html.LabelFor(m => m.RecetaDetalle.IdInsumo, "Insumo")
+                                @Html.DropDownListFor(m => m.RecetaDetalle.IdInsumo, new List<SelectListItem>(ViewBag.Insumos), " -- Seleccionar Insumo --", new { @id = "IdInsumo", @class = "form-control  chosen-select  ", required = default(string) })
+                                @Html.ValidationMessageFor(model => model.RecetaDetalle.IdInsumo, "", new { @class = "text-danger" })
+                            </div>*@
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Cantidad</label>
+                            <input class="form-control" type="number" min="1" id="CantidadSolicitada" placeholder="Cantidad" required maxlength="8">
+                        </div>
+                    </div>
+                    @*<div class="form-floating">
+                            @Html.LabelFor(m => m.RecetaDetalle.Cantidad)
+                            @Html.EditorFor(model => model.RecetaDetalle.Cantidad, new { htmlAttributes = new { @id = "CantidadSolicitada", @class = "form-control ", @placeholder = "Cantidad", @onkeypress = "return valideKey(event);", @maxlength = "8", @type = "text", required = default(string) } })
+                            @Html.ValidationMessageFor(model => model.RecetaDetalle.Cantidad, "", new { @class = "text-danger" })
+                        </div>*@
+                    <div class="modal-body py-2">
+                        <label class="font-normal">Etapa Asignada</label>
+                        <select class="form-control  chosen-select " id="IdEtapaOrdenProduccion" data-placeholder="Etapa Asignada" required>
+                            <option value=""> -- Seleccionar Orden de Etapa --</option>
+                            @foreach (var insumo in ViewBag.EtapasOrden)
+                            {
+                                <option value="@insumo.Value"> @insumo.Text</option>
+                            }
+                        </select>
+                    </div>
+                    @*<div class="form-floating">
+                            @Html.LabelFor(m => m.RecetaDetalle.IdEtapaOrdenProduccion, "Etapa Asignada")
+                            @Html.DropDownListFor(m => m.RecetaDetalle.IdEtapaOrdenProduccion, new List<SelectListItem>(ViewBag.EtapasOrden), " -- Seleccionar Orden de Etapa --", new { @id = "IdEtapaOrdenProduccion", @class = "form-control chosen-select", required = default(string) })
+                            @Html.ValidationMessageFor(model => model.RecetaDetalle.IdEtapaOrdenProduccion, "", new { @class = "text-danger" })
+                        </div>*@
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Comentario</label>
+                            <input class="form-control" type="text" id="Comentario" placeholder="Comentario">
+                        </div>
+                    </div>
+                    @*<div class="form-floating">
+                            @Html.LabelFor(m => m.RecetaDetalle.Comentario)
+                            @Html.EditorFor(model => model.RecetaDetalle.Comentario, new { htmlAttributes = new { @id = "Comentario", @class = "form-control", @placeholder = "" } })
+                            @Html.ValidationMessageFor(model => model.RecetaDetalle.Comentario, "", new { @class = "text-danger" })
+                        </div>*@
+
+                    <div class="modal-footer">
+                        <button type="button" onclick="ClearModal()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" onclick="addInsumo()" class="btn btn-primary" >Agregar Insumo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Styles {
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+        <link rel="stylesheet" href="~/lib/chosen/bootstrap-chosen.css" />
+    </environment>
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/validate/jquery.validate.min.js"></script>
+        <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="~/js/apphelpers.js"></script>        
+        <script src="~/lib/chosen/chosen.jquery.js"></script>
+        <script src="~/custom/chosen-patch.js"></script>
+    </environment>
+
+    <script type="text/javascript">
+        //prevent the form from doing a submit
+        $(document).on('submit', '.validateDontSubmit', function (e) {
+            e.preventDefault();
+            return false;
+        })
+
+        $('.chosen-select').chosen({
+            no_results_text: "No hay resultados que coincidan con ",
+        });
+
+        $('#agregarInsumoModal').on('shown.bs.modal', function () {
+            $('.chosen-select', this).chosen('destroy').chosen({
+                no_results_text: "No hay resultados que coincidan con ",
+            });
+        });
+
+        function ClearModal() {
+            $("#IdInsumo").prop("selectedIndex", 0);
+            $("#IdEtapaOrdenProduccion").prop("selectedIndex", 0);
+            $("#CantidadSolicitada").val("");
+            $("#Comentario").val("");
+        }
+
+        function addInsumo() {
+            if (modalForm.checkValidity()) {
+                $.ajax({
+                    type: "post",
+                    url: '@url_base' + 'agregardetalle/',
+                    data: {
+                        IdReceta: $("#IdReceta").val(),
+                        IdInsumo: $("#IdInsumo  :selected").val(),
+                        Cantidad: $("#CantidadSolicitada").val(),
+                        IdEtapaOrdenProduccion: $("#IdEtapaOrdenProduccion  :selected").val(),
+                        Comentario: $("#Comentario").val(),
+                        NombreEtapaOrdenProduccion: $('#IdEtapaOrdenProduccion option:selected').text(),
+                        NombreInsumo: $('#IdInsumo option:selected').text(),
+                        RecetaDetalle: {
+                            Cantidad: $("#CantidadSolicitada").val()
+                        }
+                    }
+                }).done(function (partialView) {
+                    $('#ListaAriticulo tbody:last-child').after().append(partialView);
+                    $("#agregarInsumoModal").modal('hide');
+                    ClearModal();
+                });
+            }
+        }
+
+        function eliminarDetalleInsumo(row,Id) {
+            swal({
+                title: "Seguro que desea eliminar el insumo?",
+                text: "El insumo será eliminad de la lista de detalle. Esta accion no se puede deshacer",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Si, Eliminar!",
+                cancelButtonText: "Cancelar",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    type: "post",
+                    url: '@url_base' + "EliminarDetalle",
+                    data: { id: Id },
+                    success: function (result) {
+                        if (result == true) {
+                            swal("Exito!", "El Insumo ha sido eliminado correctamente", "success");
+                            $(row).parents('tr').first().remove();
+                        } else {
+                            swal("Error", "Ocurrió un error inesperado", "error");
+                        }
+                    }
+                  })
+            });
+        };
+        function removeRow(row) {
+            $(row).parents('tr').first().remove();
+        }
+
+    </script>
+}
+

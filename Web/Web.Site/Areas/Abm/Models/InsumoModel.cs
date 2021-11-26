@@ -1,15 +1,11 @@
-﻿using Core.Dominio.AggregatesModel;
+﻿using System.Collections.Generic;
+using Core.Dominio.AggregatesModel;
 
-namespace Web.Site.Areas
+namespace Web.Site.Areas.Abm
 {
-    public class InsumoModel : Insumo
+    public class InsumoModel
     {
-        public InsumoModel(Insumo insumos)
-        {
-            Id = insumos.Id;
-            Nombre = insumos.Nombre;
-            Descripcion = insumos.Descripcion;
-            Unidad = insumos.Unidad;
-        }
+        public Insumo Insumo { get; set; }
+        public IEnumerable<Proveedor> Proveedores { get; set; }
     }
 }

@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Dominio.AggregatesModel;
 using Web.Site.Dtos;
 
-namespace Web.Site.Areas
+namespace Web.Site.Areas.Fabrica
 {
     public class SolicitudModel : Solicitud
     {
         public IEnumerable<EstadoSolicitud> EstadoSolicitudes { get; set; }      
         public IEnumerable<DesplegableModel> Sucursales { get; set; }
+        public IEnumerable<SolicitudDetalle> SolicitudDetalle { get; set; } = new List<SolicitudDetalle>();
 
         public IEnumerable<SelectListItem> Articulos { get; set; }
         public IEnumerable<SelectListItem> Talles { get; set; }

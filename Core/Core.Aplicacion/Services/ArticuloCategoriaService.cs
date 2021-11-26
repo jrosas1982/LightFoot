@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Aplicacion.Services
@@ -14,16 +16,19 @@ namespace Core.Aplicacion.Services
         private readonly AppDbContext _db;
         private readonly ILogger<UsuarioService> _logger;
 
-        public ArticuloCategoriaService(ExtendedAppDbContext extendedAppDbContext, ILogger<UsuarioService> logger)
+        public ArticuloCategoriaService(AppDbContext db, ILogger<UsuarioService> logger)
         {
-            _db = extendedAppDbContext.context;
+            _db = db;
             _logger = logger;
         }
 
         public async Task<IEnumerable<ArticuloCategoria>> GetCategorias()
         {
-            var categoriasList = _db.ArticulosCategoria;
-            return await Task.FromResult(categoriasList);
+            var categoriasList = await _db.ArticulosCategoria
+                .Where(x => !x.Eliminado)
+                .OrderByDescending(x => x.Descripcion)
+                .ToListAsync();
+            return categoriasList;
         }
 
         public async Task<ArticuloCategoria> BuscarPorId(int IdCategoria)
@@ -55,7 +60,10 @@ namespace Core.Aplicacion.Services
             try
             {
                 var categoriaDb = await _db.ArticulosCategoria.FindAsync(categoria.Id);
-                _db.Remove(categoriaDb);
+
+                categoriaDb.Eliminado = true;
+
+                _db.Update(categoriaDb);
                 await _db.SaveChangesAsync();
 
                 return true;

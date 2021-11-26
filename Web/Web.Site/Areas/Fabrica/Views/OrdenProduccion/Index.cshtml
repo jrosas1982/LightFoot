@@ -2,17 +2,36 @@
     ViewData["Title"] = "Ordenes de Produccion";
     Layout = "_Layout";
 
-    //bool esEdicion = (Model.Id != 0);
+    IEnumerable<string> TypeaheadCodArticulo = ViewBag.TypeaheadCodArticulo;
+    IEnumerable<string> TypeaheadCategoria = ViewBag.TypeaheadCategoria;
+    IEnumerable<string> TypeaheadArticulo = ViewBag.TypeaheadArticulo;
+    IEnumerable<string> TypeaheadColor = ViewBag.TypeaheadColor;
+    IEnumerable<string> TypeaheadTalle = ViewBag.TypeaheadTalle;
+    IEnumerable<EstadoOrdenProduccion> EstadoOrdenProducciones = ViewBag.EstadoOrdenProducciones;
+    IEnumerable<EtapaOrdenProduccion> EtapaOrdenProducciones = ViewBag.EtapaOrdenProducciones;
+    IEnumerable<EstadoEtapaOrdenProduccion> EstadoEtapaOrdenProducciones = ViewBag.EstadoEtapaOrdenProducciones;
+    DateTime FechaDesde = ViewBag.FechaDesde; //DateTime.Today - TimeSpan.FromDays(-30);
+    DateTime FechaHasta = ViewBag.FechaHasta; //DateTime.Today;
+
+    ViewData["parametroExpedicion"] = ViewBag.Expedicion;
+
+    var cantEnProceso = @Model.Where(x => x.EstadoOrdenProduccion == EstadoOrdenProduccion.EnProceso).Count();
+
+    var cantPausadas = @Model.Where(x => x.EstadoOrdenProduccion == EstadoOrdenProduccion.Pausada).Count();
+
+    var cantFinalizadas = @Model.Where(x => x.EstadoOrdenProduccion == EstadoOrdenProduccion.Finalizada).Count();
+
+    var cantCanceladas = @Model.Where(x => x.EstadoOrdenProduccion == EstadoOrdenProduccion.Cancelada).Count();
 }
 
 @model IEnumerable<OrdenProduccion>
 
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-12">
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
+    <div class="col-lg-10">
         <h2>Ordenes de Produccion</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="@Url.Action("Dashboard_1", "Dashboards")">Home</a>
+                <a href="@Url.Action("Index", "Dashboard", new { area = "fabrica" })">Home</a>
             </li>
             <li class="breadcrumb-item">
                 <a>Fabrica</a>
@@ -22,66 +41,111 @@
             </li>
         </ol>
     </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="ReporteSimple()">
+            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
+        </button>
+    </div>
+</div>
+
+<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        <h5>Fecha de reporte: @DateTime.Now</h5>
+        <h4>Total Ordenes de Produccion @Model.Count()</h4>
+        <div class="row">
+            <div class="col-6">
+                <h2>Resumen de Ordenes </h2>
+                <h3>En Proceso: @cantEnProceso</h3>
+                <h3>Pausadas: @cantPausadas</h3>
+            </div>
+            <div class="col-6">
+                <h2>_</h2>
+                <h3>Finalizadas: @cantFinalizadas</h3>
+                <h3>Canceladas: @cantCanceladas</h3>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight ecommerce">
 
-    <div class="ibox-content m-b-sm border-bottom">
+    <div class="ibox-content m-b-sm border-bottom  d-print-none">
         <div class="row">
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label class="col-form-labe" for="articulo_name">Articulo</label>
-                    <input type="text" id="articulo_name" name="articulo_name" value="" placeholder="Articulo" class="form-control">
+                    <label class="font-normal">Articulo</label>
+                    @*<input type="text" id="articulo" name="articulo" value="" placeholder="Articulo" class="form-control">*@
+                    <div class="typeahead__container">
+                        <div class="typeahead__field">
+                            <div class="typeahead__query">
+                                <input class="js-typeahead typeaheadCustom" id="articulo" placeholder="Seleccione articulo" autocomplete="on" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
                     <label class="font-normal">Estado</label>
-                    <select data-placeholder="Estado de solicitud" class="chosen-select" multiple name="estado" id="estado">
-                        <option value="0" selected> Pendiente de aprobacion   </option>
-                        <option value="1">          Aprobado                  </option>
-                        <option value="2">          Rechazado                 </option>
+                    <select class="chosen-select" multiple name="estados_orden" id="estados_orden" data-placeholder="Seleccione estados">
+                        @foreach (var estado in EstadoOrdenProducciones)
+                        {
+                            <option value="@estado"> @estado.GetDisplayName()</option>
+                        }
                     </select>
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
                     <label class="font-normal">Etapa</label>
-                    <select data-placeholder="Estado de solicitud" class="chosen-select" name="etapa_orden" id="etapa_orden">
-                        <option value="0" selected> Cortado         </option>
-                        <option value="1">          Aparado         </option>
-                        <option value="2">          Preparacion     </option>
-                        <option value="3">          Montado         </option>
-                        <option value="4">          Pegado          </option>
-                        <option value="5">          Finalizado      </option>
+                    <select class="chosen-select" multiple name="etapa_orden" id="etapas_orden" data-placeholder="Seleccione etapas">
+                        @foreach (var etapa in EtapaOrdenProducciones)
+                        {
+                            <option value="@etapa.Id"> @etapa.Descripcion </option>
+                        }
                     </select>
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label class="col-form-labe" for="etapa_estado">Etapa del Estado</label>
-                    <select name="etapa_estado" id="etapa_estado" class="form-control">
-                        <option value="0" selected> Pendiente de inicio     </option>
-                        <option value="1">          Iniciada                </option>
+                    <label class="font-normal">Estado de Etapa</label>
+                    <select class="chosen-select" multiple name="estados_etapa" id="estados_etapa" data-placeholder="Seleccione estados de etapa">
+                        @foreach (var estadoEtapa in EstadoEtapaOrdenProducciones)
+                        {
+                            <option value="@estadoEtapa"> @estadoEtapa.GetDisplayName() </option>
+                        }
                     </select>
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group" id="fechaRango">
-                    <label class="col-form-labe" for="fecha">Fecha</label>
-                    <div class="input-daterange input-group" id="datepicker">
-                        <input type="text" class="form-control-sm form-control" name="start" />
+                    <label class="col-form-label">Fecha Inicio</label>
+                    @*<div class="input-daterange input-group">
+                            <input type="date" name="start" id="fechaDesde" value="@(DateTime.Today - TimeSpan.FromDays(-30))">
+                            <span class="input-group-addon"> <i class="fa fa-long-arrow-right mx-1"></i> </span>
+                            <input type="date" name="end" id="fechaHasta" value="@FechaDesde.ToString("dd/MM/yyyy")">
+                        </div>*@
+                    <div class="input-daterange input-group">
+                        <input type="text" class="form-control-sm form-control" name="start" id="fechaDesde" value="@FechaDesde.ToString("dd/MM/yyyy")" />
                         <span class="input-group-addon"> <i class="fa fa-long-arrow-right mx-1"></i> </span>
-                        <input type="text" class="form-control-sm form-control" name="end" />
+                        <input type="text" class="form-control-sm form-control" name="end" id="fechaHasta" value="@FechaHasta.ToString("dd/MM/yyyy")" />
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12 d-flex align-items-end justify-content-end">
-                <button class="btn btn-outline-info btn-xl float-right" type="submit" onclick="">
-                    <i class="fa fa-search" aria-hidden="true"></i> Buscar
-                </button>
+            <div class="col-sm-4" style="display: flex;flex-direction: column;justify-content: flex-end;">
+                <div class="form-group">
+                    @*<div class="col-sm-12 d-flex align-items-end justify-content-end">
+                            <button class="btn btn-outline-info btn-xl float-right" type="submit" onclick="LimpiarFiltros()">
+                                <i class="fas fa-eraser" aria-hidden="true"></i> Limpiar
+                            </button>
+                        </div>*@
+                    <div class="col-sm-12 d-flex align-items-end justify-content-end">
+                        <button class="btn btn-outline-info btn-xl float-right" type="submit" onclick="Filtrar()">
+                            <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -90,63 +154,11 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h5>Solicitudes</h5>
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                    </div>
+                    <h5>Ordenes de Produccion</h5>
                 </div>
-
                 <div class="ibox-content">
-                    <div class="table-responsive">
-                        <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
-                            <thead>
-                                <tr>
-
-                                    <th data-toggle="true">Articulo</th>
-                                    <th>Estado</th>
-                                    <th>Etapa</th>
-                                    <th>Estado de la Etapa</th>
-                                    <th>Cantidad Total</th>
-                                    <th>Cantidad Fabricada</th>
-                                    <th>Tiempo empleado</th>
-                                    <th data-sort-ignore="true">Acciones</th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model != null && Model.Any())
-                                {
-                                    foreach (var orden in Model)
-                                    {
-                                        <tr>
-                                            <td>@orden.Articulo.Nombre - @orden.Articulo.Color - t(@orden.Articulo.TalleArticulo)</td>
-                                            <td>
-                                                <span class="label label-@orden.EstadoOrdenProduccion.GetGroupName()">@orden.EstadoOrdenProduccion.GetDisplayName()</span>
-                                            </td>
-                                            <td>@orden.EtapaOrdenProduccion.Descripcion</td>
-                                            <td>
-                                                <span class="label label-@orden.EstadoEtapaOrdenProduccion.GetGroupName()">@orden.EstadoEtapaOrdenProduccion.GetDisplayName()</span>
-                                            </td>
-                                            <td>@orden.CantidadTotal</td>
-                                            <td>@orden.CantidadTotalFabricada</td>
-                                            <th>@((DateTime.Now - orden.FechaCreacion).ToString(@"hh\:mm\:ss"))</th>
-                                            <td>
-                                                <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerDetalles('@orden.Id')">Ver Detalles</button>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                            <tfoot>
-                                <tr>
-                                    <td colspan="6">
-                                        <ul class="pagination float-right"></ul>
-                                    </td>
-                                </tr>
-                            </tfoot>
-
-                        </table>
+                    <div id="tablaContenido">
+                        <partial name="_IndexTable.cshtml" model="Model" view-data='ViewData' />
                     </div>
                 </div>
             </div>
@@ -156,52 +168,116 @@
 
 
 @section Styles {
-    <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
-    <link rel="stylesheet" href="~/lib/footable/css/footable.core.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" />
     <link rel="stylesheet" href="~/lib/chosen/bootstrap-chosen.css" />
 }
 
 @section Scripts {
-    <script src="~/lib/dataTables/datatables.min.js"></script>
-    <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
-    <script src="~/lib/footable/dist/footable.all.min.js"></script>
     <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
     <script src="~/lib/chosen/chosen.jquery.js"></script>
+    <script src="~/custom/bootstrap-datepicker.es.js"></script>
 
     <script type="text/javascript">
-        $('#fechaRango .input-daterange').datepicker({
-            keyboardNavigation: false,
-            forceParse: false,
-            autoclose: true,
-            endDate: "today",
-            language: "es"
+
+        var typeaheadCodArticulo = @Html.Raw(Json.Serialize(TypeaheadCodArticulo));
+        var typeaheadCategoria = @Html.Raw(Json.Serialize(TypeaheadCategoria));
+        var typeaheadArticulo = @Html.Raw(Json.Serialize(TypeaheadArticulo));
+        var typeaheadColor = @Html.Raw(Json.Serialize(TypeaheadColor));
+        var typeaheadTalle = @Html.Raw(Json.Serialize(TypeaheadTalle));
+
+        $.typeahead({
+            input: '.js-typeahead',
+            order: "desc",
+            template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+            minLength: 1,
+            source: {
+                Codigo: { data: typeaheadCodArticulo },
+                Categoria: { data: typeaheadCategoria },
+                Articulo: { data: typeaheadArticulo },
+                Color: { data: typeaheadColor },
+                Talle: { data: typeaheadTalle }
+            }
         });
-    </script>
 
-    <script type="text/javascript">
+
+        $('#fechaRango .input-daterange').datepicker({
+            locale: 'es',
+            language: 'es',
+            format: 'dd/mm/yyyy',
+            endDate: 'today',
+            autoclose: true,
+            todayBtn: true,
+            todayHighlight: true,
+        });
+        $("#fechaDesde").on("dp.change", function (e) {
+            $('#fechaHasta').data("DateTimePicker").minDate(e.date);
+        });
+        $("#fechaHasta").on("dp.change", function (e) {
+            $('#fechaDesde').data("DateTimePicker").maxDate(e.date);
+        });
+
         $('.chosen-select').chosen({
             no_results_text: "No hay resultados que coincidan con ",
-            
         });
+
+        function LimpiarFiltros() {
+            $("#articulo").val("");
+            $("#estados_orden").val("");
+            $("#etapas_orden").val("");
+            $("#estados_etapa").val("");
+        }
+
+
+        function Filtrar() {
+            var articulo = $("#articulo").val();
+            var estadosOrden = $("#estados_orden").chosen().val();
+            var etapasOrden = $("#etapas_orden").chosen().val();
+            var estadosEtapa = $("#estados_etapa").chosen().val();
+            var FechaDesde = $("#fechaDesde").data('datepicker').getFormattedDate('yyyy-mm-dd');
+            var FechaHasta = $("#fechaHasta").data('datepicker').getFormattedDate('yyyy-mm-dd');
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("FiltrarOrdenes", "OrdenProduccion", new { area = "fabrica" })',
+                traditional: true,
+                data: //formData,
+                {
+                    Articulo: articulo,
+                    EstadosOrden: estadosOrden,
+                    IdEtapasOrden: etapasOrden,
+                    EstadosEtapa: estadosEtapa,
+                    FechaDesde: FechaDesde,
+                    FechaHasta: FechaHasta
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#tablaContenido").html(""); //clear the records content
+                    $("#tablaContenido").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
     </script>
 
     <script type="text/javascript">
+        //Pagina
         $(document).ready(function () {
             $('.footable').footable();
         });
-    </script>
 
-    <script type="text/javascript">
         function RechazarSolicitud(Id) {
-            alert(Id);
+            alerta(Id);
+        }
+
+        function Reporte() {
+            window.print();
         }
 
         function VerDetalles(Id) {
             window.location = '/fabrica/OrdenProduccion/DetallesOrdenProduccion?IdOrdenProduccion=' + Id;
         }
 
-        function alert(Id) {
+        function alerta(Id) {
             swal({
                 title: "Seguro que desea rechazar la solicitud?",
                 text: "La Solicitud será rechazada definitivamente. Esta accion no se puede deshacer",
@@ -214,46 +290,30 @@
             }, function () {
                 $.ajax({
                     type: "post",
-                    url: "/abm/Solicitud/Rechazar",
+                    url: "/fabrica/Solicitud/Rechazar",
                     data: { Id: Id },
                     success: function (result) {
-                        if (result == true) {
-                            swal("Exito!", "La solicitud ha sido rechazada correctamente", "success");
-                        } else {
-                            swal("Error", "Ocurrió un error inesperado", "error");
-                        }
+                        swal("Exito!", "La solicitud ha sido rechazada correctamente", "success");
                     }
                 }).done(function () {
-                    window.setTimeout(function () {
-                        location.reload();
-                    }, 600);
+                    Filtrar();
                 });
             });
         };
-        $(document).ready(function () {
-            $('.dataTables-example').DataTable({
-                pageLength: 25,
-                dom: '<"html5buttons"B>lTfgitp',
-                buttons: [
-                    { extend: 'copy' },
-                    { extend: 'csv' },
-                    { extend: 'excel', title: 'ExampleFile' },
-                    { extend: 'pdf', title: 'ExampleFile' },
 
-                    {
-                        extend: 'print',
-                        customize: function (win) {
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
+    </script>
 
-                            $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                        }
-                    }
-                ]
+    <script type="text/javascript">
+        //Aprtura de WebSockets
+        Object.defineProperty(WebSocket, 'OPEN', { value: 1, });
 
-            });
+        //conexion a SignalR
+        var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationsHub").build();
+        connection.start();
+
+        //Accion
+        connection.on("OrdenProduccionUpdate", function () {
+            Filtrar();
         });
     </script>
 

@@ -1,0 +1,109 @@
+﻿@model IEnumerable<Solicitud>
+<div class="ibox-content">
+    <div class="table-responsive">
+        <table class="footable table table-stripped  table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
+            <thead>
+                <tr>
+
+                    <th >Sucursal</th>
+                    @*<th data-hide="all" data-animation="true" class="d-print-none"></th>*@
+                    <th>Articulos</th>
+                    <th>Comentario</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (Model != null)
+                {
+                    foreach (var solicitud in Model)
+                    {
+                        <tr>
+                            <td>@solicitud.Sucursal.Nombre</td>
+                            @*<td>
+                                @if (solicitud.SolicitudDetalles != null && solicitud.SolicitudDetalles.Any())
+                                {       
+                                        <div class="col">
+                                            <div class="table-responsive">
+                                                <table class="footable table table-striped table-hover table-bordered no-paging toggle-arrow-tiny">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="background-color: #99c98d82;">Articulo</th>
+                                                            <th style="background-color: #99c98d82;">Descripcion</th>
+                                                            <th style="background-color: #99c98d82;">Cantidad Solicitada</th>
+                                                            <th style="background-color: #99c98d82;">Motivo</th>
+                                                            <th style="background-color: #99c98d82;" data-sort-ignore="true">Ordenes de Produccion Asociadas</th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var detalle in solicitud.SolicitudDetalles)
+                                                        {
+                                                            <tr>
+                                                                <td>@detalle.Articulo.ArticuloCategoria.Descripcion - @detalle.Articulo.CodigoArticulo - @detalle.Articulo.Nombre - @detalle.Articulo.Color - Talle @detalle.Articulo.TalleArticulo</td>
+                                                                <td>@detalle.Articulo.Descripcion</td>
+                                                                <td>@detalle.CantidadSolicitada</td>
+                                                                <td>@(string.IsNullOrWhiteSpace(detalle.Motivo) ? "No Posee" : @detalle.Motivo)</td>
+                                                                @if (!detalle.OrdenesProduccion.Any())
+                                                                {
+                                                                    <td>No Posee</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td>
+                                                                        @foreach (var op in detalle.OrdenesProduccion)
+                                                                        {
+                                                                            <button class="btn btn-outline btn-@op.EstadoOrdenProduccion.GetGroupName()  btn-xs" type="button" onclick="VerOrdenAsociada('@op.Id')">Orden @op.Id</button>
+                                                                        }
+                                                                    </td>
+                                                                }
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>            
+
+                                }
+                            </td>*@
+                            <td>@solicitud.SolicitudDetalles.Count()</td>
+                            <td>@solicitud.Comentario</td>
+                            <td>
+                                <span class="label label-@solicitud.EstadoSolicitud.GetGroupName()">@solicitud.EstadoSolicitud.GetDisplayName()</span>
+                            </td>
+                            <td>@solicitud.FechaCreacion</td>
+                            <td class="d-print-none">
+                                <button class="btn btn-outline btn-success btn-xs" type="button" onclick="VerDetalles('@solicitud.Id')">Ver Detalles</button>
+                                @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+                                {
+                                    @if (solicitud.EstadoSolicitud == EstadoSolicitud.PendienteAprobacion)
+                                    {
+                                        <button class="btn btn-outline btn-danger btn-xs" type="button" onclick="RechazarSolicitud('@solicitud.Id')">Rechazar</button>
+                                        <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AprobarSolicitud('@solicitud.Id')">Aprobar</button>
+                                    }
+                                }
+                                    @*else if (solicitud.EstadoSolicitud == EstadoSolicitud.Aprobada)
+          
+                <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerOrdenesAsociadas('@solicitud.Id')">Ver Ordenes asociadas</button>
+            }*@
+
+                                </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+            <tfoot class="d-print-none">
+                <tr>
+                    <td colspan="12">
+                        <ul class="pagination float-right"></ul>
+                    </td>
+                </tr>
+            </tfoot>
+
+
+        </table>
+    </div>
+</div>

@@ -1,18 +1,47 @@
-﻿using Core.Dominio.AggregatesModel;
+﻿using Core.Aplicacion.Helpers;
+using Core.Dominio.AggregatesModel;
+using Core.Infraestructura;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Core.Aplicacion.Auth
 {
     public static class Policies
     {
+        public const string IsGod = "IsGod";
+        public const string IsFabrica = "IsFabrica";
+        public const string IsSucursal = "IsSucursal";
+
         public const string IsAdmin = "IsAdmin";
+
         public const string IsGerente = "IsGerente";
         public const string IsSupervisor = "IsSupervisor";
-        public const string IsControlador = "IsControlador";
+        public const string IsTesorero = "IsTesorero";
         public const string IsOperario = "IsOperario";
+
         public const string IsEncargado = "IsEncargado";
         public const string IsCajero = "IsCajero";
         public const string IsVendedor = "IsVendedor";
+
+
+        public static AuthorizationPolicy FabricaPolicy()
+        {
+            return OperarioPolicy();
+        }
+
+        public static AuthorizationPolicy SucursalPolicy()
+        {
+            return VendedorPolicy();
+        }
+
+        public static AuthorizationPolicy GodPolicy()
+        {
+            return new AuthorizationPolicyBuilder().RequireAuthenticatedUser()
+                                                   .RequireAssertion(ctx =>
+                                                   {
+                                                       return ctx.User.GetUsername().ToLower() == "super";
+                                                   })
+                                                   .Build();
+        }
 
         public static AuthorizationPolicy AdminPolicy()
         {
@@ -44,7 +73,7 @@ namespace Core.Aplicacion.Auth
                                                    .Build();
         }
 
-        public static AuthorizationPolicy ControladorPolicy()
+        public static AuthorizationPolicy TesoreroPolicy()
         {
             return new AuthorizationPolicyBuilder().RequireAuthenticatedUser()
                                                    .RequireAssertion(ctx =>
@@ -52,7 +81,7 @@ namespace Core.Aplicacion.Auth
                                                        return ctx.User.IsInRole(UsuarioRol.Administrador.ToString())
                                                               || ctx.User.IsInRole(UsuarioRol.Gerente.ToString())
                                                               || ctx.User.IsInRole(UsuarioRol.Supervisor.ToString())
-                                                              || ctx.User.IsInRole(UsuarioRol.Controlador.ToString());
+                                                              || ctx.User.IsInRole(UsuarioRol.Tesorero.ToString());
                                                    })
                                                    .Build();
         }
@@ -65,7 +94,7 @@ namespace Core.Aplicacion.Auth
                                                        return ctx.User.IsInRole(UsuarioRol.Administrador.ToString())
                                                               || ctx.User.IsInRole(UsuarioRol.Gerente.ToString())
                                                               || ctx.User.IsInRole(UsuarioRol.Supervisor.ToString())
-                                                              || ctx.User.IsInRole(UsuarioRol.Controlador.ToString())
+                                                              || ctx.User.IsInRole(UsuarioRol.Tesorero.ToString())
                                                               || ctx.User.IsInRole(UsuarioRol.Operario.ToString());
                                                    })
                                                    .Build();

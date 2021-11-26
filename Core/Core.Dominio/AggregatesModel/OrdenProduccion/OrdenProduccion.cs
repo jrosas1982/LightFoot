@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Core.Dominio.SeedWork;
 
@@ -14,7 +15,7 @@ namespace Core.Dominio.AggregatesModel
         public EstadoOrdenProduccion EstadoOrdenProduccion { get; set; }
         public EstadoEtapaOrdenProduccion EstadoEtapaOrdenProduccion { get; set; }
         public int CantidadTotal { get; set; }
-        public int CantidadTotalFabricada { get; set; }
+        public int CantidadFabricada { get; set; }
 
 
         [ForeignKey("IdSolicitudDetalle")]
@@ -25,5 +26,7 @@ namespace Core.Dominio.AggregatesModel
 
         [ForeignKey("IdEtapaOrdenProduccion")]
         public virtual EtapaOrdenProduccion EtapaOrdenProduccion { get; set; }
+
+        public virtual ICollection<OrdenProduccionEvento> OrdenProduccionEventos { get; set; } = new HashSet<OrdenProduccionEvento>();
     }
 }

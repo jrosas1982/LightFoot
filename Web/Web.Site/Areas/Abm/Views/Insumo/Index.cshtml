@@ -1,19 +1,20 @@
 ﻿@{
     ViewData["Title"] = "Insumos";
     Layout = "_Layout";
+    string controlador = "Insumo";
+    IEnumerable<string> TypeaheadNombreInsumo = ViewBag.TypeaheadNombreInsumo;
 
-    //bool esEdicion = (Model.Id != 0);
 }
 
 @using Core.Dominio.AggregatesModel
 @model IEnumerable<Insumo>
 
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-12">
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
+    <div class="col-xl-8 col-lg-6">
         <h2>Insumo</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="@Url.Action("Dashboard_1", "Dashboards")">Home</a>
+                <a href="@Url.Action("Index", "Dashboard", new { area = "fabrica" })">Home</a>
             </li>
             <li class="breadcrumb-item">
                 <a>Gestion</a>
@@ -23,12 +24,52 @@
             </li>
         </ol>
     </div>
-    <div class="col-lg-12" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditarInsumo", "Insumo", 0)'"> Crear nuevo Insumos</button>
+    @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+    {
+        <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
+            <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()">
+                <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
+            </button>
+        </div>
+        <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+            <button type="button" class="btn btn-w-m btn-primary w-100"
+                    onclick="location.href='@Url.Action("CrearEditarInsumo", "Insumo", 0)'">
+                <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Nuevo Insumo
+            </button>
+        </div>
+    }
+    </div>
+
+<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        Reporte de Insumos @DateTime.Now
     </div>
 </div>
-
 <div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="ibox-content m-b-sm border-bottom d-print-none">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-form-labe" for="solicitud_name">Buscador</label>
+                    <div class="typeahead__container">
+                        <div class="typeahead__field">
+                            <div class="typeahead__query">
+                                <input class="js-typeahead typeaheadCustom " id="typeInsumo" placeholder="Buscar Insumo" autocomplete="on" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 d-flex align-items-end justify-content-end">
+                <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="Filtrar()">
+                    <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
@@ -36,69 +77,40 @@
                     <h5>Insumos</h5>
                 </div>
                 <div class="ibox-content">
-
-                    <table class="table table-striped table-bordered table-hover dataTables-example">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Descripcion</th>
-                                <th>Unidad</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model != null)
-                            {
-                                foreach (var item in Model)
-                                {
-                                    <tr class="gradeC">
-                                        <td>@item.Nombre</td>
-                                        <td>@item.Descripcion</td>
-                                        <td>@item.Unidad</td>
-                                        <td>
-                                            <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarInsumo('@item.Id')">Borrar</button>
-                                            <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarInsumo('@item.Id')">Editar</button>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Descripcion</th>
-                                <th>Unidad</th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                    <div id="InsumoPartialView">
+                        <partial name="_InsumoIndexTable.cshtml" model="Model" />
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
+
 @section Styles {
-    <environment names="Development,Staging,Production">
-        <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
-        <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
-    </environment>
+
 }
 
 @section Scripts {
-    <environment names="Development,Staging,Production">
-        <script src="~/lib/dataTables/datatables.min.js"></script>
-        <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
-        <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
-    </environment>
 
     <script type="text/javascript">
+        $(document).ready(function () {
+            $('.footable').footable();
+        });
 
         function BorrarInsumo(Id) {
             alert(Id);
         }
 
         function EditarInsumo(Id) {
-            window.location = '/abm/Insumo/CrearEditarInsumo?IdInsumo=' + Id;
+            window.location = '/abm/@controlador/CrearEditarInsumo?IdInsumo=' + Id;
         }
+
+        function Reporte() {
+            $('.dataTables_filter').addClass("d-print-none")
+            window.print();
+            $('.dataTables_filter').removeClass("d-print-none")
+        }
+
         function alert(Id) {
             swal({
                 title: "Seguro que desea dar de baja el Insumo?",
@@ -112,7 +124,7 @@
             }, function () {
                 $.ajax({
                     type: "post",
-                    url: "/abm/Insumo/Eliminar",
+                    url: "/abm/@controlador/Eliminar",
                     data: { Id: Id },
                     success: function (result) {
                         if (result) {
@@ -128,31 +140,43 @@
                 });
             });
         };
+
         $(document).ready(function () {
 
-            $('.dataTables-example').DataTable({
-                pageLength: 25,
-                dom: '<"html5buttons"B>lTfgitp',
-                buttons: [
-                    { extend: 'copy' },
-                    { extend: 'csv' },
-                    { extend: 'excel', title: 'ExampleFile' },
-                    { extend: 'pdf', title: 'ExampleFile' },
-
-                    {
-                        extend: 'print',
-                        customize: function (win) {
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                        }
-                    }
-                ]
-
-            });
         });
+    </script>
+    <script type="text/javascript">
+
+    var typeaheadNInsumo = @Html.Raw(Json.Serialize(TypeaheadNombreInsumo));
+
+    $.typeahead({
+        input: '.js-typeahead',
+        order: "desc",
+        template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+        minLength: 1,
+        source: {
+            NombreInsumo: { data: typeaheadNInsumo }
+        }
+    });
+
+        function Filtrar() {
+                  var insumo = $("#typeInsumo").val();
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("FiltrarInsumo", "Insumo", new { area = "abm" })',
+                traditional: true,
+                data: //formData,
+                {
+                    nombreInsumo: insumo
+                },
+                contentType: "application/json",
+                success: function (partial) {
+                    $("#InsumoPartialView").html(""); //clear the records content
+                    $("#InsumoPartialView").html(partial);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
     </script>
 }

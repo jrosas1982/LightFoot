@@ -1,0 +1,100 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+@using Web.Site.Areas
+@model IEnumerable<Venta>
+
+@{
+
+}
+
+
+<div class="table-responsive">
+    <table class="footable table table-stripped table-hover toggle-arrow-tiny" data-page-size="15">
+        <thead>
+            <tr>
+                <th>#Venta</th>
+                <th>Vendedor</th>
+                <th>Cliente</th>
+                <th>Tipo de Venta</th>
+                <th>Monto Total</th>
+                <th>Fecha</th>
+                <th>Pagado</th>
+                <th>Fecha Ultimo Pago</th>
+                <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var venta in Model)
+                {
+                    <tr>
+                        <td>@venta.Id</td>
+                        <td>@venta.CreadoPor</td>
+                        <td>@venta.Cliente.Nombre</td>
+                        <td>@venta.VentaTipo</td>
+                        <td>@venta.MontoTotal</td>
+                        <td>@venta.FechaCreacion</td>
+                        @if (@venta.Pagado)
+                        {
+                            <td class="text-info">Pagado</td>
+                        }
+                        else
+                        {
+                            @*<td style="background: #ffc8c8;">No Pagado</td>*@
+                            <td class="text-danger">No Pagado</td>
+                        }
+
+                        @if (@venta.FechaUltimoPago != null)
+                        {
+                            @*<td style="background: #2cdd0029;">@venta.FechaPagado</td>*@
+                            <td>@venta.FechaUltimoPago</td>
+                        }
+                        else
+                        {
+                            <td class="text-center">-</td>
+                        }
+                    <td class="d-print-none">
+                        <button class="btn btn-outline btn-success btn-xs" type="button"
+                                onclick="verDetalle(@venta.Id)"
+                                data-toggle="modal"
+                                data-target="#ModalDetalle">
+                            Ver Detalles
+                        </button>
+
+                        @if (!@venta.Pagado || true)
+                        {
+                            @if ((await authorizationService.AuthorizeAsync(User, Policies.IsCajero)).Succeeded)
+                            {
+                                <button class="btn btn-outline btn-primary btn-xs font-weight-bold " type="button"
+                                        onclick="cobrarModal(@venta.Id)"
+                                        data-toggle="modal"
+                                        data-target="#ModalCobro">
+                                    COBRAR
+                                </button>
+                            }
+                        }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="9" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="9">
+                    <ul class="pagination float-right"></ul>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+
+<script type="text/javascript">
+
+</script>

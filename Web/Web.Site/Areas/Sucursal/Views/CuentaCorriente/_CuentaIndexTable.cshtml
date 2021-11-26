@@ -1,0 +1,64 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore
+@using Web.Site.Areas
+@model IEnumerable<CuentaCorrienteModel>
+
+<div class="table-responsive">
+    <table 
+           class="footable table table-stripped table-hover toggle-arrow-tiny" 
+           data-page-size="15">
+        <thead>
+            <tr >
+                <th ># Ciente</th>
+                <th >Nombre</th>
+                <th >CUIT</th>
+                <th >Total Facturado</th>
+                <th >Total Pagado</th>
+                <th >Estado de Cuenta</th>
+                <th data-sort-ignore="true" class="d-print-none"> Acciones </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.IdCliente</td>
+                        <td>@item.NombreCliente</td>
+                        <td>@item.Cliente.CUIT</td>
+                        <td>@item.TotalFacturado</td>
+                        <td>@item.TotalCobrado</td>
+                        @if (@item.DeudaTotal > 0)
+                        {
+                            <td class="text-danger">@item.DeudaTotal</td>
+                        }
+                        else
+                        {
+                            <td class="text-info">@item.DeudaTotal</td>
+                        }
+                        <td class="d-print-none">
+                            <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="verDetalle('@item.IdCliente')" data-toggle="modal"
+                                    data-target="#ModalDetalle">
+                                Ver Detalle
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-monospace"><i class="fa fa-folder-open"></i> Sin datos</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot class="d-print-none">
+            <tr>
+                <td colspan="12">
+                    <ul class="pagination float-right"></ul>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+

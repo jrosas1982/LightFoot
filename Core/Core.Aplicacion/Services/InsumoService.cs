@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Core.Aplicacion.Interfaces;
+using Core.Dominio;
 using Core.Dominio.AggregatesModel;
 using Core.Infraestructura;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Aplicacion.Services
@@ -11,21 +15,25 @@ namespace Core.Aplicacion.Services
     {
         private readonly AppDbContext _db;
         private readonly ILogger<InsumoService> _logger;
-        public InsumoService(ExtendedAppDbContext extendedAppDbContext, ILogger<InsumoService> logger)
+        public InsumoService(AppDbContext db, ILogger<InsumoService> logger)
         {
             _logger = logger;
-            _db = extendedAppDbContext.context;
+            _db = db;
         }
 
         public async Task<Insumo> BuscarPorId(int IdInsumo)
         {
             var insumo = await _db.Insumos.FindAsync(IdInsumo);
+
+            if (insumo == null)
+                throw new ExcepcionControlada("El insumo solicitado no existe");
+            
             return insumo;
         }
 
         public async Task CrearInsumo(Insumo insumo)
         {
-            _db.Add(insumo);
+            _db.Insumos.Add(insumo);
             await _db.SaveChangesAsync();
             _logger.LogInformation($"Se creo el insumo con nombre: {insumo.Nombre}");
         }
@@ -36,8 +44,10 @@ namespace Core.Aplicacion.Services
             insumoDb.Nombre = insumo.Nombre;
             insumoDb.Descripcion = insumo.Descripcion;
             insumoDb.Unidad = insumo.Unidad;
+            insumoDb.IdProveedorPreferido = insumo.IdProveedorPreferido;
+            insumoDb.StockTotal = insumo.StockTotal;
 
-            _db.Update(insumoDb);
+            _db.Insumos.Update(insumoDb);
             await _db.SaveChangesAsync();
         }
 
@@ -45,9 +55,14 @@ namespace Core.Aplicacion.Services
         {
             try
             {
-                var insumoDb = await _db.Usuarios.FindAsync(insumo.Id);
-                _db.Remove(insumoDb);
+
+                var entidad = await _db.Insumos.FindAsync(insumo.Id);
+
+                entidad.Eliminado = true;
+
+                _db.Insumos.Update(entidad);
                 await _db.SaveChangesAsync();
+
                 return true;
             }
             catch
@@ -58,9 +73,15 @@ namespace Core.Aplicacion.Services
 
         public async Task<IEnumerable<Insumo>> GetInsumos()
         {
-            var insumosList = _db.Insumos;
+            var insumosList = await _db.Insumos.AsNoTracking().Where(x => !x.Eliminado).Include(x => x.Proveedor).OrderBy(x => x.Nombre).ToListAsync();
             _logger.LogInformation("Se buscaron los insumos");
-            return await Task.FromResult(insumosList);
+            return insumosList;
+        }
+
+        public async Task<IEnumerable<Proveedor>> GetProveedoresInsumo(int idInsumo)
+        {
+            var proveedoresList = await _db.Proveedores.Where(x => !x.Eliminado).Where(x => x.ProveedorInsumos.Any(x => x.IdInsumo == idInsumo)).ToListAsync();
+            return proveedoresList;
         }
     }
 }

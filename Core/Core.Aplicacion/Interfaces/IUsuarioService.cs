@@ -10,7 +10,7 @@ namespace Core.Aplicacion.Interfaces
         public Task<Usuario> BuscarPorId(int IdUsuario);
         public Task CrearUsuario(Usuario usuario);
         public Task EditarUsuario(Usuario usuario);
-        public Task<bool> EliminarUsuario(Usuario usuario);
+        public Task<bool> EliminarUsuario(int idUsuario);
         public Task<IEnumerable<UsuarioRol>> GetUsuarioRoles();
     }
 }

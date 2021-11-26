@@ -10,18 +10,22 @@
     @if (IsSectionDefined("Styles"))
         @await RenderSectionAsync("Styles", required: false)
 
-    <!-- LightFoot Begin-->
-    <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
-    <link rel="stylesheet" href="~/custom/Personalizado.css" />
-    <!-- LightFoot End -->
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
     <link rel="stylesheet" href="~/css/animate.css" />
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
 
+    <!-- LightFoot Begin-->
+    <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+    @*<link rel="stylesheet" href="~/custom/sweetalert2.min.css" />*@
+    <link rel="stylesheet" href="~/custom/Personalizado.css" />
+    <link type="text/css" href="~/custom/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/footable/css/footable.core.min.css" />
+    <link rel="stylesheet" href="~/custom/jquery.typeahead.min.css" />
+    <!-- LightFoot End -->
 </head>
-<body>
+<body style="background: white;">
 
     <!-- Skin configuration box -->
     <!-- <partial name="_SkinConfig" /> -->
@@ -32,7 +36,8 @@
         <partial name="_Navigation" />
 
         <!-- Page wraper -->
-        <div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass">
+        @*<div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass">*@
+        <div id="page-wrapper" class="gray-bg overflow-100vh">
 
             <!-- Top Navbar -->
             <partial name="_TopNavbar" />
@@ -41,38 +46,164 @@
             @RenderBody()
 
             <!-- Footer -->
-            <partial name="_Footer" />
+            <!-- <partial name="_Footer" /> -->
 
         </div>
         <!-- End page wrapper-->
         <!-- Right Sidebar -->
         <partial name="_RightSidebar" />
+        <partial name="_TutorialVideo" />
 
     </div>
     <!-- End wrapper-->
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/custom/jquery-3.6.0.min.js"></script>
     <script src="~/lib/Popper/popper.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="~/lib/metisMenu/dist/jquery.metisMenu.js"></script>
-    <script src="~/lib/pace/pace.min.js"></script>
+    @*<script src="~/lib/pace/pace.min.js"></script>*@
     <script src="~/lib/slimScroll/jquery.slimscroll.min.js"></script>
     <script src="~/js/script.js" asp-append-version="true"></script>
 
     <!-- LightFoot Begin-->
-    Object.defineProperty(WebSocket, 'OPEN', { value: 1, });
     <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
+    @*<script src="~/custom/sweetalert2.all.min.js"></script>*@
     <script src="~/custom/signalr.min.js"></script>
-    @*<script src="~/custom/Personalizado.js"></script>*@
+    <script src="~/custom/Personalizado.js"></script>
+    <script src="~/lib/footable/dist/footable.all.min.js"></script>
+    <script src="~/custom/jquery.typeahead.min.js"></script>
+    <script src="~/custom/blockUI.js"></script>
     @*<script type="text/javascript">@Html.Raw(ViewBag.JsFunction);</script>*@
     <!-- LightFoot End -->
-    @*<partial name="_JsInteropPartial"/>*@
-
-    @await Html.PartialAsync("_JsInteropPartial")
-
+    <!-- _JsInteropPartial Begin-->
+    <partial name="_JsInteropPartial" />
+    @*@await Html.PartialAsync("_JsInteropPartial")*@
+    <!-- _JsInteropPartial End-->
+    <!-- _NotificationsHub Begin-->
     @await Html.PartialAsync("_NotificationsHub")
+    <!-- _NotificationsHub End-->
+
+
+    <script type="text/javascript">
+        function ReporteSimple() {
+            $('.footable-even').removeClass("footable-detail-show");
+            $('.footable-odd').removeClass("footable-detail-show");
+            window.print();
+        }
+        function ReporteDetallado() {
+            $('.footable-even').addClass("footable-detail-show");
+            $('.footable-odd').addClass("footable-detail-show");
+            window.print();
+        }
+
+        window.onbeforeprint = function () {
+            $('.dataTables_filter').addClass("d-print-none");
+            var numberOfRows = Number.MAX_SAFE_INTEGER;
+            $('.footable').footable();
+            $('.footable').data('page-size', numberOfRows);
+            $('.footable').trigger('footable_redraw');
+        }
+
+        window.onafterprint = function () {
+            $('.dataTables_filter').removeClass("d-print-none");
+            $('.footable-even').removeClass("footable-detail-show");
+            $('.footable-odd').removeClass("footable-detail-show");
+            var numberOfRows = 15;
+            $('.footable').footable();
+            $('.footable').data('page-size', numberOfRows);
+            $('.footable').trigger('footable_redraw');
+        }
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajaxSetup({
+                error: function (error) {
+                    if (error.responseJSON)
+                        MensajeError("Ocurrio un error", error.responseJSON.message);
+                    else
+                        MensajeError("Ups!", "Ocurrio un error inesperado. Comuniquese con sistemas");
+                }
+            });
+
+            $("form").each(function (index) {
+                $(this).on('submit', function (e) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    $.ajax({
+                        url: this.action,
+                        type: this.method,
+                        data: $(this).serialize(),
+                        success: function (response) {
+                            if (response.redirectToUrl)
+                                window.location.href = response.redirectToUrl;
+                        }
+                    });
+                });
+            });
+
+            $.blockUI.defaults.message = '<h1><img src="/recursos/ajax-loader.gif" /> Procesando...</h1>';
+            $.blockUI.defaults.ignoreIfBlocked = true;
+            $.blockUI.defaults.baseZ = 100000;
+            $.blockUI.defaults.fadeIn = 400;
+            $.blockUI.defaults.fadeOut = 600;
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI).ajaxError($.unblockUI).ajaxComplete($.unblockUI);
+        });
+    </script>
+
+    <script>
+        @if(ViewBag.CatchError == true){
+
+        <text>
+        swal("Error", "@ViewBag.MensajeError" , "error");
+
+        @*swal({
+            title: "Error al procesar",
+            text: '@ViewBag.MensajeError' + ', por favor intente mas tarde'
+        });*@
+        </text>
+    }
+    </script>
+
+    <script type="text/javascript">
+        //uncomment to prevent on startup
+        //removeDefaultFunction();
+        /** Prevents the default function such as the help pop-up **/
+        function removeDefaultFunction() {
+            window.onhelp = function () { return false; }
+        }
+        /** use keydown event and trap only the F-key,
+            but not combinations with SHIFT/CTRL/ALT **/
+        $(window).bind('keydown', function (e) {
+            //This is the F1 key code, but NOT with SHIFT/CTRL/ALT
+            var keyCode = e.keyCode || e.which;
+            if ((keyCode == 112 || e.key == 'F1') &&
+                !(event.altKey || event.ctrlKey || event.shiftKey || event.metaKey)) {
+                // prevent code starts here:
+                removeDefaultFunction();
+                e.cancelable = true;
+                e.stopPropagation();
+                e.preventDefault();
+                e.returnValue = false;
+                // Open help window here instead of alert
+                window.open('https://drive.google.com/file/d/1EonC3xc9kWlBf15MLbIW_M2oGkbeQrEi/view');
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+  
+        function abrirAyuda() {
+            $("#myModal2").modal('show');
+        }
+        $("#myModal2").on('hidden.bs.modal', function (e) {
+            $("#myModal2 iframe").attr("src", $("#myModal2 iframe").attr("src"));
+        });
+
+    </script>
 
     @if (IsSectionDefined("scripts"))
         @await RenderSectionAsync("scripts", required: false)
+
 </body>
 </html>

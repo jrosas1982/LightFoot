@@ -1,0 +1,180 @@
+﻿@{
+    ViewData["Title"] = "Clientes";
+    Layout = "_Layout";
+    IEnumerable<string> TypeaheadClientes = ViewBag.TypeaheadClientes;
+    IEnumerable<string> TypeaheadIdClientes = ViewBag.TypeaheadIdClientes;
+
+}
+
+
+@using Core.Dominio.AggregatesModel
+
+@model IEnumerable<Cliente>
+
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
+    <div class="col-xl-8 col-lg-6">
+        <h2>Clientes</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Dashboard", new { area = "fabrica" })">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Gestion</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>Clientes</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()">
+            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
+        </button>
+    </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-primary w-100"
+                onclick="location.href='@Url.Action("CrearEditarCliente", "Clientes", 0)'">
+            <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Nuevo Cliente
+        </button>
+    </div>
+</div>
+
+<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        Reporte de Clientes @DateTime.Now
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="ibox-content m-b-sm border-bottom  d-print-none">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-form-labe" for="solicitud_name">Clientes</label>
+                    <div class="typeahead__container">
+                        <div class="typeahead__field">
+                            <div class="typeahead__query">
+                                <input class="js-typeahead typeaheadCustom " id="typeClientes" placeholder="Buscar Clientes" autocomplete="on" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 d-flex align-items-end justify-content-end">
+                <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="FiltrarClientes()">
+                    <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Clientes</h5>
+                </div>
+                <div class="ibox-content">
+                    <div id="tablaContenido">
+                        <partial name="_ClientesIndexTable.cshtml" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+
+}
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('.footable').footable();
+        });
+
+        function BorrarCliente(Id) {
+            alerta(Id);
+        }
+
+        function EditarCliente(Id) {
+            window.location = '/abm/Clientes/CrearEditarCliente?IdCliente=' + Id;
+        }
+
+        function Reporte() {
+            window.print();
+        }
+
+        function alerta(Id) {
+            swal({
+                title: "Seguro que desea dar de baja el Cliente?",
+                text: "El Cliente será dada de baja definitivamente!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Si, dar de baja!",
+                cancelButtonText: "Cancelar",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    type: "post",
+                    url: "/abm/Clientes/Eliminar",
+                    data: { Id: Id },
+                    success: function (result) {
+                        if (result == true) {
+                            swal("Baja Exitosa!", "El Cliente ha sido dado de baja correctamente.", "success");
+                        } else {
+                            swal("Error", "Ocurrió un error intente mas tarde", "error");
+                        }
+                    }
+                }).done(function () {
+                    window.setTimeout(function () {
+                        location.reload();
+                    }, 600);
+                });
+            });
+        };
+    </script>
+    <script type="text/javascript">
+        var typeaheadClientes = @Html.Raw(Json.Serialize(TypeaheadClientes));
+        var typeaheadIdClientes = @Html.Raw(Json.Serialize(TypeaheadIdClientes));
+
+        $.typeahead({
+            input: '.js-typeahead',
+            order: "desc",
+            template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+            minLength: 1,
+            source: {
+                NombreClientes: { data: typeaheadClientes },
+                Idliente: { data: typeaheadIdClientes }
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+        function FiltrarClientes() {
+            var cliente = $("#typeClientes").val();
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("FiltrarClientes", "Clientes", new { area = "abm" })',
+                traditional: true,
+                data: //formData,
+                {
+                    NombreCliente: cliente,
+                },
+                contentType: "application/json",
+                success: function (partial) {
+                    $("#tablaContenido").html(""); //clear the records content
+                    $("#tablaContenido").html(partial);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
+    </script>
+}

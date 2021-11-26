@@ -1,0 +1,31 @@
+﻿@{
+
+}
+
+@model Proveedor
+
+
+@if (Model != null)
+{
+    <h5></h5>
+    <div class="row">
+        <div class="col">
+            <h2>Proveedor: @Model.Nombre</h2>
+            <h3>CUIT: @Model.CUIT</h3>
+            <h3>Direccion: @Model.Direccion</h3>
+        </div>
+        <div class="col align-self-end">
+            <h3>Telefono: @Model.Telefono</h3>
+            <h3>Email: @Model.Email</h3>
+            @if (Model.EsFabrica)
+            {
+                <h3>Es Fabrica</h3>
+            }
+            @*<h2>Articulo: @Model.Articulo.Nombre</h2>
+            <h3>Categoria: @Model.Articulo.ArticuloCategoria.Descripcion</h3>
+            <h3>Cod: @Model.Articulo.CodigoArticulo</h3>
+            <h3>Color: @Model.Articulo.Color</h3>
+            <h3>Talle: @Model.Articulo.TalleArticulo</h3>*@
+        </div>
+    </div>
+}

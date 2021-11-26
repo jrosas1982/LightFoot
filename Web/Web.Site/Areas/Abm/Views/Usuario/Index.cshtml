@@ -2,19 +2,21 @@
     ViewData["Title"] = "Usuarios";
     Layout = "_Layout";
 
-    //bool esEdicion = (Model.Id != 0);
+    IEnumerable<string> TypeaheadUsuario = ViewBag.TypeaheadUsuario;
+    IEnumerable<string> TypeaheadIdUsuario = ViewBag.TypeaheadIdUsuario;
+    IEnumerable<string> TypeaheadNombreUsuario = ViewBag.TypeaheadNombreUsuario;
 }
 
 @using Core.Dominio.AggregatesModel
 
 @model IEnumerable<Usuario>
 
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-12">
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
+    <div class="col-xl-8 col-lg-6">
         <h2>Usuarios</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="@Url.Action("Dashboard_1", "Dashboards")">Home</a>
+                <a href="@Url.Action("Index", "Dashboard", new { area = "fabrica" })">Home</a>
             </li>
             <li class="breadcrumb-item">
                 <a>Gestion</a>
@@ -24,100 +26,134 @@
             </li>
         </ol>
     </div>
-    <div class="col-lg-12" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditar", "Usuario", 0)'"> Crear nuevo Usuario</button>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()">
+            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
+        </button>
+    </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-primary w-100"
+                onclick="location.href='@Url.Action("CrearEditar", "Usuario", 0)'">
+            <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Nuevo Usuario
+        </button>
+    </div>
+</div>
+
+<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        Reporte de Usuarios @DateTime.Now
     </div>
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox-content m-b-sm border-bottom d-print-none">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-form-labe" for="solicitud_name">Buscador</label>
+                    <div class="typeahead__container">
+                        <div class="typeahead__field">
+                            <div class="typeahead__query">
+                                <input class="js-typeahead typeaheadCustom " id="typeUsuario" placeholder="Buscar Usuario" autocomplete="on" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 d-flex align-items-end justify-content-end">
+                <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="Filtrar()">
+                    <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5>Usuarios Light Foot</h5>
+                    <h5>Usuarios</h5>
                 </div>
                 <div class="ibox-content">
 
-                    <table class="table table-striped table-bordered table-hover dataTables-example">
-                        <thead>
-                            <tr>
-                                <th>Usuario</th>
-                                <th>Nombre</th>
-                                <th>DNI</th>
-                                <th>Email</th>
-                                <th>Dirección</th>
-                                <th>Telefono</th>
-                                <th>Rol</th>
-                                <th>Activo</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model != null)
-                            {
-                                foreach (var item in Model)
-                                {
-                            <tr class="gradeC">
-                                <td>@item.NombreUsuario</td>
-                                <td>@item.Nombre @item.Apellido</td>
-                                <td>@item.DNI</td>
-                                <td>@item.Email</td>
-                                <td>@item.Direccion</td>
-                                <td>@item.Telefono</td>
-                                <td>@item.UsuarioRol</td>
+                    <div id="UsuariosPartialView">
+                        <partial name="_UsuarioIndexTable.cshtml" model="Model" />
+                    </div>
 
-                                @if (item.Activo)
-                                {
-                                    <td> Si </td>
-                                }
-                                else
-                                {
-                                    <td>No </td>
-                                }
-                                <td>
-                                    <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarUsuario('@item.Id')">Borrar</button>
-                                    <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarUsuario('@item.Id')">Editar</button>
-                                </td>
-                            </tr>
-                                }
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Usuario</th>
-                                <th>Nombre</th>
-                                <th>DNI</th>
-                                <th>Email</th>
-                                <th>Dirección</th>
-                                <th>Telefono</th>
-                                <th>Rol</th>
-                                <th>Activo</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </tfoot>
-                    </table>
                 </div>
+                @*<div class="ibox-content">
+            <div class="table-responsive">
+                <table class="footable table table-stripped table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Nombre</th>
+                            <th>DNI</th>
+                            <th>Email</th>
+                            <th>Dirección</th>
+                            <th>Telefono</th>
+                            <th>Rol</th>
+                            <th>Activo</th>
+                            <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.NombreUsuario</td>
+                                    <td>@item.Nombre @item.Apellido</td>
+                                    <td>@item.DNI</td>
+                                    <td>@item.Email</td>
+                                    <td>@item.Direccion</td>
+                                    <td>@item.Telefono</td>
+                                    <td>@item.UsuarioRol</td>
+
+                                    @if (item.Activo)
+                                    {
+                                        <td> Si </td>
+                                    }
+                                    else
+                                    {
+                                        <td>No </td>
+                                    }
+                                    <td class="d-print-none">
+                                        <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarUsuario('@item.Id')">Borrar</button>
+                                        <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarUsuario('@item.Id')">Editar</button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                    <tfoot class="d-print-none">
+                        <tr>
+                            <td colspan="12">
+                                <ul class="pagination float-right"></ul>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>*@
             </div>
         </div>
     </div>
 
 </div>
 @section Styles {
-    <environment names="Development,Staging,Production">
-        <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
-        <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
-    </environment>
+
 }
 
 @section Scripts {
-    <environment names="Development,Staging,Production">
-        <script src="~/lib/dataTables/datatables.min.js"></script>
-        <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
-        <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
-    </environment>
 
     <script type="text/javascript">
-       
+
+        $(document).ready(function () {
+            $('.footable').footable();
+        });
 
         function BorrarUsuario(Id) {
             alert(Id);
@@ -126,6 +162,11 @@
         function EditarUsuario(Id) {
             window.location = '/abm/Usuario/CrearEditar?IdUsuario=' + Id;
         }
+
+        function Reporte() {
+            window.print();
+        }
+
         function alert(Id) {
             swal({
                 title: "Seguro que desea dar de baja el Usuario?",
@@ -140,7 +181,7 @@
                 $.ajax({
                     type: "post",
                     url: "/abm/Usuario/Eliminar",
-                    data: { Id: Id },
+                    data: { idUsuario: Id },
                     success: function (result) {
                         if (result == true) {
                             swal("Baja Exitosa!", "El Usuario ha sido dado de baja correctamente.", "success");
@@ -155,31 +196,44 @@
                 });
             });
         };
-        $(document).ready(function () {
-
-            $('.dataTables-example').DataTable({
-                pageLength: 25,
-                dom: '<"html5buttons"B>lTfgitp',
-                buttons: [
-                    { extend: 'copy' },
-                    { extend: 'csv' },
-                    { extend: 'excel', title: 'ExampleFile' },
-                    { extend: 'pdf', title: 'ExampleFile' },
-
-                    {
-                        extend: 'print',
-                        customize: function (win) {
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                        }
-                    }
-                ]
-
-            });
-        });
     </script>
+
+    <script type="text/javascript">
+        var TypeaheadIdUsuario = @Html.Raw(Json.Serialize(TypeaheadIdUsuario));
+        var TypeaheadUsuario = @Html.Raw(Json.Serialize(TypeaheadUsuario));
+        var TypeaheadNombreUsuario = @Html.Raw(Json.Serialize(TypeaheadNombreUsuario));
+
+        $.typeahead({
+            input: '.js-typeahead',
+            order: "desc",
+            template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+            minLength: 1,
+            source: {
+                Nombre: { data: TypeaheadUsuario },
+                NombreUsuario: { data: TypeaheadNombreUsuario },
+                IdUsuario: { data: TypeaheadIdUsuario }
+            }
+        });
+
+        function Filtrar() {
+            var usuario = $("#typeUsuario").val();
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("FiltrarUsuario", "Usuario", new { area = "abm" })',
+                traditional: true,
+                data: //formData,
+                {
+                    NombreUsuario: usuario,
+                },
+                contentType: "application/json",
+                success: function (partial) {
+                    $("#UsuariosPartialView").html(""); //clear the records content
+                    $("#UsuariosPartialView").html(partial);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
+    </script>
+    
 }

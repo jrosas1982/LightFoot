@@ -1,0 +1,431 @@
+﻿@{
+    ViewData["Title"] = "Ventas";
+    Layout = "_Layout";
+
+    var title = "Ventas";
+
+    IEnumerable<string> TypeaheadNumVenta = ViewBag.TypeaheadNumVenta;
+    IEnumerable<string> TypeaheadVendedor = ViewBag.TypeaheadVendedor;
+    IEnumerable<string> TypeaheadCliente = ViewBag.TypeaheadCliente;
+    IEnumerable<string> TypeaheadTipoVenta = ViewBag.TypeaheadTipoVenta;
+    IEnumerable<string> TypeaheadTipoMontoTotal = ViewBag.TypeaheadTipoMontoTotal;
+
+    IEnumerable<TipoPago> tiposdePago = ViewBag.TiposPago;
+    //IEnumerable<Cliente> Clientes = ViewBag.Clientes;
+}
+
+@model IEnumerable<Venta>
+
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
+    <div class="col-xl-8 col-lg-6">
+        <h2>@title</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Dashboard", new { area = "sucursal" })">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Sucursal</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>@title</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="ReporteSimple()">
+            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
+        </button>
+    </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+        @if ((await authorizationService.AuthorizeAsync(User, Policies.IsVendedor)).Succeeded)
+        {
+            <button type="button" class="btn btn-w-m btn-primary w-100"
+                    @*onclick="location.href='@Url.Action("VentaArticulo", "Venta", 0)'"*@
+                    data-toggle="modal"
+                    data-target="#ModalVenta">
+                <span class="icon icon-xs"><span class="fas fa-shopping-bag mr-2"></span></span>Registrar Venta
+            </button>
+        }
+        </div>
+</div>
+
+<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        <h5>Fecha de reporte: @DateTime.Now</h5>
+        <div class="row">
+            <div class="col-6">
+                <h2>Reporte Ventas de Sucursal</h2>
+            </div>
+            <div class="col-6">
+                <h2>Total Ventas @Model.Count()</h2>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    @if ((await authorizationService.AuthorizeAsync(User, Policies.IsCajero)).Succeeded)
+    {
+        <div class="ibox-content m-b-sm border-bottom d-print-none">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-form-labe" for="solicitud_name">Venta</label>
+                        <div class="typeahead__container">
+                            <div class="typeahead__field">
+                                <div class="typeahead__query">
+                                    <input class="js-typeahead typeaheadCustom " id="typeVentas" placeholder="Buscar Venta" autocomplete="on" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 d-flex align-items-end justify-content-end">
+                    <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="Filtrar()">
+                        <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+    @if ((await authorizationService.AuthorizeAsync(User, Policies.IsVendedor)).Succeeded)
+    {
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox ">
+                    <div class="ibox-title">
+                        <h5>Ventas de Sucursal</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div id="VentasPartialView">
+                            <partial name="_VentaIndexTable.cshtml" model="Model" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+        @*MODAL detalle*@
+
+        <div class="modal inmodal fade" id="ModalDetalle" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-lg" style="max-width: 900px !important;">
+                <div class="modal-content">
+                    <div class="modal-header pb-1">
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-center">
+                                <h1 style="font-size:30px;">Detalle Venta</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body py-2 border-bottom border-1">
+                        <div class="partialViewDetalle">
+                            <partial name="_VentaIndexDetalle.cshtml" model="null" />
+                        </div>
+                    </div>
+                    <div class="modal-body py-2 ">
+                        <div class="partialViewPagos">
+                            <partial name="_VentaIndexPagos.cshtml" model="null" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        @*MODAL venta*@
+
+        <div class="modal inmodal fade" id="ModalVenta" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-lg" style="max-width: 900px !important;">
+                <div class="modal-content">
+                    <form class="validateDontSubmit" id="modalFormCrear" name="modalFormCrear">
+                        <div class="modal-header pb-1">
+                            <div class="row">
+                                <div class="col-sm-12 d-flex justify-content-center">
+                                    <h1 style="font-size:30px;">Registrar Venta</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-body py-2">
+                            <div class="form-group">
+                                <label class="font-normal">Cliente</label>
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <select required class="form-control chosen-select" id="dropdownCliente" data-placeholder="Seleccione Cliente" onclick="" @*onchange="InsumoSeleccionadoOnChange()"*@>
+                                            <option value=""> -- Seleccionar Cliente --</option>
+                                            @foreach (var cliente in ViewBag.Clientes)
+                                            {
+                                                <option value=@cliente.Value> @cliente.Text</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 py-2 p-lg-0">
+                                        <button type="button" class="btn btn-w-m btn-white w-100"
+                                                onclick="window.location ='/abm/Clientes/CrearEditarCliente'">
+                                            <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Nuevo
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-normal">Tipo de Venta</label>
+                                <select required class="form-control chosen-select" id="dropdownVentaTipo" data-placeholder="" onclick="">
+                                    <option value=""> -- Seleccionar Tipo de Venta --</option>
+                                    @foreach (var tipo in ViewBag.VentaTipos)
+                                    {
+                                        <option value=@((int)tipo)> @tipo</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" onclick="refVenta()" @*"location.href='@Url.Action("VentaArticulo", "Venta", 0)'"*@ class="btn btn-primary">Registrar una Venta</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        @*MODAL cobro*@
+
+        <div class="modal inmodal fade" id="ModalCobro" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-lg" style="max-width: 900px !important;">
+                <div class="modal-content">
+                    <form class="validateDontSubmit" id="modalFormCobro" name="modalFormCobro">
+                        <input type="text" id="hiddenModalCobrarVenta" hidden disabled>
+                        <div class="modal-header pb-1">
+                            <div class="row">
+                                <div class="col-sm-12 d-flex justify-content-center">
+                                    <h1 style="font-size:30px;">Cobrar Venta</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-body py-2">
+                            <div class="partialViewPagos">
+                                <partial name="_VentaIndexPagos.cshtml" model="null" />
+                            </div>
+                        </div>
+                        <div class="modal-body py-2">
+                            <div class="form-group">
+                                <label class="font-normal">Metodo de Pago</label>
+                                <select class="form-control" name="metodo_pago" id="metodo_pago" data-placeholder="-- Metodo de Pago --" required>
+                                    <option value="" selected> -- Metodo de Pago -- </option>
+                                    @if (tiposdePago != null)
+                                    {
+                                        @foreach (var tipo in tiposdePago)
+                                        {
+                                            <option value="@tipo">@tipo</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-normal">Monto</label>
+                                <input id="Pagando" class="form-control" type="number" min="0" step="any" placeholder="Monto" required>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" onclick="btnCobrarVenta()" class="btn btn-primary">Cobrar Venta</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+@section Styles {
+}
+
+@section Scripts {
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.footable').footable();
+        });
+    </script>
+
+    <script type="text/javascript">
+        var typeaheadNumVenta = @Html.Raw(Json.Serialize(TypeaheadNumVenta));
+        var typeaheadVendedor = @Html.Raw(Json.Serialize(TypeaheadVendedor));
+        var typeaheadCliente = @Html.Raw(Json.Serialize(TypeaheadCliente));
+        var typeaheadTipoVenta = @Html.Raw(Json.Serialize(TypeaheadTipoVenta));
+        var typeaheadTipoMontoTotal = @Html.Raw(Json.Serialize(TypeaheadTipoMontoTotal));
+
+        $.typeahead({
+            input: '.js-typeahead',
+            order: "desc",
+            template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+            minLength: 1,
+            source: {
+                Venta: { data: typeaheadNumVenta },
+                Vendedor: { data: typeaheadVendedor },
+                Cliente: { data: typeaheadCliente },
+                Tipo: { data: typeaheadTipoVenta },
+                MontoTotal: { data: typeaheadTipoMontoTotal }
+            }
+        });
+
+        function Filtrar() {
+            var venta = $("#typeVentas").val();
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("FiltrarVentas", "Venta", new { area = "sucursal" })',
+                traditional: true,
+                data: //formData,
+                {
+                    NombreVenta: venta,
+                },
+                contentType: "application/json",
+                success: function (partial) {
+                    $("#VentasPartialView").html(""); //clear the records content
+                    $("#VentasPartialView").html(partial);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
+
+        $('#ModalDetalle').on('hidden.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+            $(".partialViewPagos").html(""); //clear the records content
+            $(".partialViewDetalle").html(""); //clear the records content
+        })
+        $('#ModalVenta').on('hidden.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+        })
+        $('#ModalCobro').on('hidden.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+            $(".partialViewPagos").html(""); //clear the records content
+        })
+
+    </script>
+
+    <script type="text/javascript">
+        function verDetalle(id) {
+            $('#ModalDetalle h1').html('Detalle Venta #' + id);
+            ActualizarDetalleVenta(id);
+            ActualizarPagosVenta(id);
+        }
+
+        function ActualizarDetalleVenta(id) {
+            $.ajax({
+                type: "Get",
+                url: "/sucursal/Venta/ActualizarDetalleVenta?IdVenta=" + id,
+                traditional: true,
+                data: {
+                    Id: id
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $(".partialViewDetalle").html(""); //clear the records content
+                    $(".partialViewDetalle").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
+
+    </script>
+
+    <script type="text/javascript">
+        function verPagos(id) {
+            ActualizarPagosVenta(id);
+        }
+
+        function ActualizarPagosVenta(id) {
+            $.ajax({
+                type: "Get",
+                url: "/sucursal/Venta/ActualizarDetallePagos?IdVenta=" + id,
+                traditional: true,
+                data: {
+                    Id: id
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $(".partialViewPagos").html(""); //clear the records content
+                    $(".partialViewPagos").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
+
+    </script>
+
+    <script type="text/javascript">
+        //prevent the form from doing a submit
+        $(document).on('submit', '.validateDontSubmit', function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+        function refVenta() {
+            Id = $('#dropdownCliente :selected').val();
+            VentaTipo = $('#dropdownVentaTipo :selected').val();
+            if (modalFormCrear.checkValidity()) {
+                window.location = '/sucursal/Venta/VentaArticulo?IdCliente=' + Id + '&&VentaTipo=' + VentaTipo;
+            }
+        }
+
+    </script>
+
+    <script type="text/javascript">
+
+        function cobrarModal(id) {
+            verPagos(id);
+            $('#modalFormCobro h1').html('Cobrar Venta #' + id);
+            $('#hiddenModalCobrarVenta').val(id);
+        }
+
+        function btnCobrarVenta() {
+            console.log("cobrar");
+            var ventaId = $('#hiddenModalCobrarVenta').val(); console.log(typeof ventaId);
+            var tipoPago = $("#metodo_pago :selected").val(); console.log(typeof tipoPago);
+            var montoPagado = $("#Pagando").val(); console.log($("#Pagando").val());
+            CobrarVenta(ventaId, tipoPago, montoPagado);
+        }
+
+        function CobrarVenta(ventaId, tipoPago, pagado) {
+            if (modalFormCobro.checkValidity()) {
+                $.ajax({
+                    type: "post",
+                    url: "/sucursal/Venta/CobrarVenta",
+                    data: {
+                        idVenta: ventaId,
+                        tipoPago: tipoPago,
+                        montoPagado: parseFloat(pagado).toFixed(2).replace(".", ","),
+                    },
+                    success: function (response) {
+                        swal(
+                            'Venta #' + ventaId + ' pagada',
+                            'Se pago ' + pagado + ' (' + tipoPago + ')',
+                            'success'
+                        );
+                        $("#VentasPartialView").html(""); //clear the records content
+                        $("#VentasPartialView").html(response);  //add the updated content.
+                        $('.footable').footable();
+                        $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                        $('#ModalCobro').modal('hide');
+                    }
+                });
+            }
+        }
+
+
+    </script>
+
+}
+
+

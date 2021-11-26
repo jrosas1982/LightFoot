@@ -1,19 +1,21 @@
 ﻿@{
     ViewData["Title"] = "Articulos";
     Layout = "_Layout";
-
-    //bool esEdicion = (Model.Id != 0);
+    IEnumerable<string> TypeaheadCodArticulo = ViewBag.TypeaheadCodArticulo;
+    IEnumerable<string> TypeaheadCategoria = ViewBag.TypeaheadCategoria;
+    IEnumerable<string> TypeaheadArticulo = ViewBag.TypeaheadArticulo;
+    IEnumerable<string> TypeaheadColor = ViewBag.TypeaheadColor;
+    IEnumerable<string> TypeaheadTalle = ViewBag.TypeaheadTalle;
 }
 
-@using Core.Dominio.AggregatesModel
 @model IEnumerable<Articulo>
 
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-12">
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
+    <div class="col-xl-8 col-lg-6">
         <h2>Articulos</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="@Url.Action("Dashboard_1", "Dashboards")">Home</a>
+                <a href="@Url.Action("Index", "Dashboard", new { area = "fabrica" })">Home</a>
             </li>
             <li class="breadcrumb-item">
                 <a>Gestion</a>
@@ -23,91 +25,210 @@
             </li>
         </ol>
     </div>
-    <div class="col-lg-12" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary" onclick="location.href='@Url.Action("CrearEditarArticulo", "Articulo", 0)'"> Crear nuevo Articulos</button>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="ReporteSimple()">
+            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
+        </button>
+    </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+        @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+        {
+            <button type="button" class="btn btn-w-m btn-primary w-100"
+                    onclick="location.href='@Url.Action("CrearEditarArticulo", "Articulo", 0)'">
+                <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Nuevo Articulo
+            </button>
+        }
+        </div>
+</div>
+
+<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        Reporte de Articulos @DateTime.Now
     </div>
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="ibox-content m-b-sm border-bottom  d-print-none">
+        <div class="row">
+            @if ((await authorizationService.AuthorizeAsync(User, Policies.IsOperario)).Succeeded)
+            {
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        <label class="col-form-labe" for="solicitud_name">Articulo</label>
+                        <div class="typeahead__container">
+                            <div class="typeahead__field">
+                                <div class="typeahead__query">
+                                    <input class="js-typeahead typeaheadCustom " id="typeArticulo" placeholder="Buscar Articulo" autocomplete="on" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+                <div class="col-sm-4"></div>
+            </div>
+        <div class="row">
+            <div class="col-sm-8 d-flex align-items-end justify-content-end">
+                <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="FiltrarArticulos()">
+                    <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                </button>
+            </div>
+            @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+            {
+                <div class="col-sm-4 d-flex align-items-end justify-content-end">
+                    <button class="btn btn-block btn-outline-info" type="button" data-toggle="tooltip" data-placement="top" title="Los cambios de precio se aplicarán a los artículos que están seleccionados por el filtro aplicado, si no se aplicaron filtros los cambios se aplicaran a todos los artículos" onclick="ActivarCambioPrecioMasivo()">
+                        <i class="fa fa-money" aria-hidden="true"></i> Cambio de precio masivo
+                    </button>
+                </div>
+            }
+            </div>
+    </div>
+
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
                 <div class="ibox-title">
                     <h5>Articulos Light Foot</h5>
                 </div>
-                <div class="ibox-content">
-
-                    <table class="table table-striped table-bordered table-hover dataTables-example">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Descripcion</th>
-                                <th>Color</th>
-                                <th>Talle</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model != null)
-                            {
-                                foreach (var item in Model)
-                                {
-                                    <tr class="gradeC">
-                                        <td>@item.Nombre</td>
-                                        <td>@item.Descripcion</td>
-                                        <td>@item.Color</td>
-                                        <td>@item.TalleArticulo</td>
-                                        <td>@item.ArticuloEstado.ToString()</td>
-                                        <td>
-                                            <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarArticulo('@item.Id')">Borrar</button>
-                                            <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarArticulo('@item.Id')">Editar</button>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Descripcion</th>
-                                <th>Color</th>
-                                <th>Talle</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                <div id="tablaContenido">
+                    <partial name="_ArticuloIndexTable.cshtml" model="Model" />
                 </div>
             </div>
         </div>
     </div>
 
 </div>
+
+@* MODAL NEW COMMENT *@
+<div class="modal inmodal fade" id="CambioPrecioMasivo" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            @*<form class="validateDontSubmit" id="modalForm" name="modalForm">*@
+            @*@Html.AntiForgeryToken()*@
+            <div class="modal-header pb-1">
+                <div class="row">
+                    <div class="col-sm-12 d-flex justify-content-center">
+                        <h1 style="font-size:30px;">Cambio de Precio</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body py-2">
+                <div class="form-group">
+                    <label class="font-normal">Porcentaje</label>
+                    <input id="porcentaje" class="form-control" type="text" maxlength="9" onkeypress="return valideKey(event);" placeholder="0" required>
+                </div>
+            </div>
+
+            <div class="modal-body py-2">
+                <label class="font-normal">Tipo de cambio</label>
+                <select class="form-control  chosen-select " id="selecTipoCambio" required>
+                    <option value=""> -- Seleccionar tipo de cambio --</option>
+                    <option value="1">Aumento</option>
+                    <option value="-1">Descuento</option>
+                </select>
+            </div>
+            <div class="modal-body py-2">
+                <label class="font-normal">Tipo de precio</label>
+                <select class="form-control  chosen-select " id="selecTipoPrecio" required>
+                    <option value=""> -- Seleccionar tipo de precio --</option>
+                    <option value="PrecioMayorista">Mayorista</option>
+                    <option value="PrecioMinorista">Minorista</option>
+                </select>
+            </div>
+            <div class="modal-body py-2">
+                <div class="form-group">
+                    <label class="font-normal">Comentario</label>
+                    <input id="comentario" class="form-control" type="text" placeholder="Comentario" required>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                @*<button type="submit" onclick="tipoCambio()" class="btn btn-primary">Aceptar</button>*@
+                <button type="submit" onclick="tipoCambio()" class="ladda-button ladda-button-demo btn btn-primary"  data-style="zoom-in">Aceptar</button>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+
 @section Styles {
-    <environment names="Development,Staging,Production">
-        <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
-        <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
-    </environment>
+    <link rel="stylesheet" href="~/lib/ladda/dist/ladda-themeless.min.css" />
+
 }
 
 @section Scripts {
-    <environment names="Development,Staging,Production">
-        <script src="~/lib/dataTables/datatables.min.js"></script>
-        <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
-        <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
-    </environment>
+    <script src="~/lib/ladda/dist/spin.min.js"></script>
+    <script src="~/lib/ladda/dist/ladda.min.js"></script>
+    <script src="~/lib/ladda/dist/ladda.jquery.min.js"></script>
+    <script src="~/js/apphelpers.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.footable').footable();
+
+        
+        });
+    </script>
 
     <script type="text/javascript">
 
+        function tipoCambio() {
+
+            var Porcentaje = $("#porcentaje").val();
+            var selecTipoCambio = $("#selecTipoCambio").val();
+            var selecTipoPrecio = $("#selecTipoPrecio").val();
+            var Comentario = $("#comentario").val();
+            var typeArticulo = $("#typeArticulo").val();
+            var l = $('.ladda-button-demo').ladda();
+            l.ladda('start');
+                $.ajax({
+                type: "Get",
+                url: '@Url.Action("CambiarPrecio", "Articulo", new { area = "abm" })',
+                traditional: true,
+                data: //formData,
+                {
+                    Porcentaje: Porcentaje,
+                    TipCambio: selecTipoCambio,
+                    TipoPrecioAfectado: selecTipoPrecio,
+                    Comentartio: Comentario,
+                    ArticulosAfectados: typeArticulo,
+                },
+                contentType: "application/json",
+                success: function (partial) {
+                    $("#tablaContenido").html(""); //clear the records content
+                    $("#tablaContenido").html(partial);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                    $("#CambioPrecioMasivo").modal('hide');
+                    l.ladda('stop');
+                    },
+                    error: function () {
+                        l.ladda('stop');
+                        swal("Error", "Ocurrió un error intente mas tarde" , "error");
+                    }
+            });
+
+        }
+
+        function ActivarCambioPrecioMasivo() {
+            $('#CambioPrecioMasivo').modal({
+                backdrop: 'static',
+                keyboard: true,
+                show: true
+            });
+        }
+
         function BorrarArticulo(Id) {
-            alert(Id);
+            alerta(Id);
         }
 
         function EditarArticulo(Id) {
             window.location = '/abm/Articulo/CrearEditarArticulo?IdArticulo=' + Id;
         }
-        function alert(Id) {
+
+        function alerta(Id) {
             swal({
                 title: "Seguro que desea dar de baja el Articulo?",
                 text: "El Articulo será dada de baja definitivamente!",
@@ -130,37 +251,53 @@
                         }
                     }
                 }).done(function () {
-                    window.setTimeout(function () {
-                        location.reload();
-                    }, 600);
+                    FiltrarArticulos();
                 });
             });
         };
-        $(document).ready(function () {
+    </script>
 
-            $('.dataTables-example').DataTable({
-                pageLength: 25,
-                dom: '<"html5buttons"B>lTfgitp',
-                buttons: [
-                    { extend: 'copy' },
-                    { extend: 'csv' },
-                    { extend: 'excel', title: 'ExampleFile' },
-                    { extend: 'pdf', title: 'ExampleFile' },
 
-                    {
-                        extend: 'print',
-                        customize: function (win) {
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                        }
-                    }
-                ]
-
-            });
+    <script type="text/javascript">
+        var typeaheadCodArticulo = @Html.Raw(Json.Serialize(TypeaheadCodArticulo));
+        var typeaheadCategoria = @Html.Raw(Json.Serialize(TypeaheadCategoria));
+        var typeaheadArticulo = @Html.Raw(Json.Serialize(TypeaheadArticulo));
+        var typeaheadColor = @Html.Raw(Json.Serialize(TypeaheadColor));
+        var typeaheadTalle = @Html.Raw(Json.Serialize(TypeaheadTalle));
+        $.typeahead({
+            input: '.js-typeahead',
+            order: "desc",
+            template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+            minLength: 1,
+            source: {
+                Codigo: { data: typeaheadCodArticulo },
+                Categoria: { data: typeaheadCategoria },
+                Articulo: { data: typeaheadArticulo },
+                Color: { data: typeaheadColor },
+                Talle: { data: typeaheadTalle }
+            }
         });
+    </script>
+
+    <script type="text/javascript">
+        function FiltrarArticulos() {
+            var articulo = $("#typeArticulo").val();
+            $.ajax({
+                type: "Get",
+                url: '@Url.Action("FiltrarArticulos", "Articulo", new { area = "abm" })',
+                traditional: true,
+                data: //formData,
+                {
+                    NombreArticulo: articulo,
+                },
+                contentType: "application/json",
+                success: function (partial) {
+                    $("#tablaContenido").html(""); //clear the records content
+                    $("#tablaContenido").html(partial);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw'); //reaplicar formato footable
+                }
+            });
+        }
     </script>
 }

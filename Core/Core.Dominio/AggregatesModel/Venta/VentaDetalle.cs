@@ -12,8 +12,7 @@ namespace Core.Dominio.AggregatesModel
         public int IdArticulo { get; set; }
         public int Cantidad { get; set; }
         [Column(TypeName = "decimal(18,2)")]
-        public decimal MontoTotal { get; set; }
-
+        public decimal PrecioUnitario { get; set; }
 
         [ForeignKey("IdVenta")]
         public virtual Venta Venta { get; set; }

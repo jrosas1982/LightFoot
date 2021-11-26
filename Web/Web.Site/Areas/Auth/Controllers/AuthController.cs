@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Core.Aplicacion.Auth;
+using Core.Aplicacion.Helpers;
 using Core.Aplicacion.Interfaces;
 using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Authentication;
@@ -15,7 +17,8 @@ namespace Web.Site.Areas
 {
     [AllowAnonymous]
     [Area("Auth")]
-    [Route("[area]/[controller]/[action]")]
+    [Route("[controller]/[action]")]
+
 
     public class AuthController : CustomController
     {
@@ -27,18 +30,25 @@ namespace Web.Site.Areas
             _userLoginService = userLoginService;
         }
 
-        public async Task<IActionResult> Index(string returnurl)
+        public async Task<IActionResult> LogIn(string returnurl)
         {
-            var sucursalesList = await _sucursalService.GetSucursales();
-
-            var model = new UserLoginModel()
+            try
             {
-                Sucursales = sucursalesList.Select(x => new DesplegableModel() { Id = x.Id, Descripcion = $"{x.Nombre} - {x.Descripcion}" }).ToList(),
-            };
+                var sucursalesList = await _sucursalService.GetSucursales();
 
-            ViewBag.ReturnUrl = returnurl;
+                var model = new UserLoginModel()
+                {
+                    Sucursales = sucursalesList.Where(x => x.Activo).OrderBy(x => x.Id).Select(x => new DesplegableModel() { Id = x.Id, Descripcion = $"{x.Nombre} - {x.Descripcion}" }).ToList(),
+                };
 
-            return View(model);
+                ViewBag.ReturnUrl = returnurl;
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                MensajeError(ex.Message);
+            }
+            return View();
         }
 
         [ValidateAntiForgeryToken]
@@ -59,22 +69,33 @@ namespace Web.Site.Areas
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claims, authenticationProperties);
 
                 if (string.IsNullOrEmpty(returnurl))
-                    return RedirectToAction("Dashboard_1", "Dashboards");
+                    if (user.UsuarioRol.GetGroupName() == Policies.IsSucursal)
+                        return Redirect("/sucursal/DashboardSucursal/Index");
+                    else
+                        return Redirect("/fabrica/DashboardFabrica/Index");
+                //return RedirectToAction("Index", "Dashboard", new { area = "Fabrica" });
 
                 return Redirect(returnurl);
             }
             catch (Exception ex)
             {
                 MensajeError(ex.Message);
-                return View("Index", userLoginModel);
+                return View("LogIn", userLoginModel);
             }
         }
 
         public async Task<IActionResult> LogOutUser()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            return RedirectToAction("Index", "Auth");
+            try
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return RedirectToAction("LogIn", "Auth");
+            }
+            catch (Exception ex)
+            {
+                MensajeError(ex.Message);
+            }
+            return RedirectToAction("LogIn", "Auth");
         }
 
         private async Task<ClaimsPrincipal> GenerarClaimsAsync(Usuario usuario, UserLoginModel userLoginModel)
@@ -89,6 +110,7 @@ namespace Web.Site.Areas
             identity.AddClaim(new Claim(ClaimTypes.Name, userLoginModel.UserLoginDTO.NombreUsuario));
             identity.AddClaim(new Claim(ClaimTypes.Email, usuario.Email));
             identity.AddClaim(new Claim(ClaimTypes.Role, usuario.UsuarioRol.ToString()));
+            identity.AddClaim(new Claim("GrupoRol", usuario.UsuarioRol.GetGroupName()));
 
             var principal = new ClaimsPrincipal(identity);
 

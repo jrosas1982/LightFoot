@@ -8,8 +8,10 @@ namespace Core.Aplicacion.Interfaces
 {
     public interface IFabricacionService
     {
-        Task<IList<CantidadInsumo>> ContabilizarInsumosRequeridos(int Idsolicitud);
-        Task<IList<CantidadInsumoNecesarioStock>> VerificarStockInsumos(IList<CantidadInsumo> insumosNecesarios);
-        Task ReservarStockInsumos(IList<CantidadInsumo> insumosNecesarios);
+        Task<IEnumerable<CantidadInsumo>> ContabilizarInsumosRequeridos(int Idsolicitud);
+        Task<IEnumerable<CantidadInsumoNecesarioStock>> VerificarStockInsumos(IEnumerable<CantidadInsumo> insumosNecesarios);
+        Task ReservarStockInsumos(IEnumerable<CantidadInsumo> insumosNecesarios);
+        Task DescontarStockInsumosReservados(IEnumerable<CantidadInsumo> insumosNecesarios);
+        Task LiberarStockReservadoPendiente(int idOrdenProduccion);
     }
 }

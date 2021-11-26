@@ -1,0 +1,272 @@
+﻿@{
+    ViewData["Title"] = "Venta";
+    Layout = "_Layout";
+
+
+}
+
+@model VentaModel
+
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
+    <div class="col-lg-10">
+        <h2>Ventas</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Dashboard", new { area = "sucursal" })">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Sucursal</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Venta", 0)">Ventas</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>Nuevo</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-default w-100"
+                onclick="location.href='@Url.Action("Index", "Venta", 0)'">
+            <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+        </button>
+    </div>
+</div>
+@*history.go(-1);*@
+
+<div class="wrapper wrapper-content animated fadeInRight ecommerce">
+
+    @using (Html.BeginForm("Crear", "Venta", FormMethod.Post))
+    {
+
+    @Html.AntiForgeryToken()
+        <div class="ibox-content m-b-sm border-bottom">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="font-normal">Cliente</label>
+                        @Html.HiddenFor(x => x.IdCliente)
+                        @Html.HiddenFor(x => x.VentaTipo)
+                        <select class="form-control" id="NOTdropdownCliente" data-placeholder="" onclick="" disabled>
+                            <option value="" selected>@Model.Cliente.Nombre - @Model.VentaTipo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wrapper wrapper-content animated fadeInRight ecommerce">
+            <div class="ibox-content m-b-sm border-bottom">
+                <table id="ListaDetalleVenta" class="table table-bordered">
+                    <tr>
+                        @*<th>#</th>*@
+                        <th>Codigo</th>
+                        <th>Articulo</th>
+                        <th>Descripcion</th>
+                        <th>Color</th>
+                        <th>Talle</th>
+                        <th>Categoria</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Acciones</th>
+                    </tr>
+                    <tbody>
+                         @if (Model.VentaDetalleModels != null)
+                         {
+                                @foreach (var Adds in Model.VentaDetalleModels)
+                                {
+                                    if (Adds != null)
+                                    {
+                                        @await Html.PartialAsync("_VentaArticuloDetalle", Adds)
+                                    }
+                                }
+                         }
+                    </tbody>
+                </table>
+                <div class="ibox-content border-0 pt-0 pr-0">
+                    <div class="text-center d-flex justify-content-end">
+                        <button type="button" class="btn btn-outline btn-default btn-lg mr-1" data-toggle="modal" data-target="#agregarArticuloModal">
+                            <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Agregar Articulo
+                        </button>
+                        <button type="Submit" class="btn btn-primary btn-lg" id="comprar">
+                            Registrar Venta
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }   
+
+    @* MODAL NEW COMMENT *@
+    <div class="modal inmodal fade" id="agregarArticuloModal" tabindex="-1" role="dialog" style="display: none;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form class="validateDontSubmit" id="modalForm" name="modalForm">
+                    <div class="modal-header pb-1">
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-center">
+                                <h1 style="font-size:30px;">Agregar Articulo</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Articulo</label>
+                            <select class="form-control chosen-select " id="dropdownArticulo" data-placeholder="Seleccione Articulo" required>
+                                <option value=""> -- Seleccionar Articulo --</option>
+                                @foreach (var articulo in Model.Articulos)
+                                {
+                                    <option value="@articulo.Value"> @articulo.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Stock disponible</label>
+                            <input class="form-control" id="StockArticulo" placeholder="" disabled>
+                        </div>
+                    </div>
+                    <div class="modal-body p-0" style="height:0px; margin:0px;">
+                        <div class="form-floating">
+                            <div class="form-group">
+                                @*<label class="font-normal">Tipo de Venta</label>*@
+                                <select class="form-control p-0" id="dropdownTipoVenta" data-placeholder="" style="width:0px;" required>
+                                    <option selected value="@Model.VentaTipo"> @Model.VentaTipo</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Cantidad</label>
+                            <input class="form-control" type="number" id="ArticuloCantidad" placeholder="Cantidad" max="" required oninput="ActualizarPrecio()" min="1">
+                        </div>
+                    </div>
+                    <div class="modal-body py-2">
+                        <div class="form-group">
+                            <label class="font-normal">Precio</label>
+                            <input class="form-control" id="Precio" placeholder="" disabled>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="ClearModal()" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" onclick="addArticuloToVenta()" class="btn btn-primary">Agregar Articulo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Styles {
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/chosen/bootstrap-chosen.css" />
+    </environment>
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/chosen/chosen.jquery.js"></script>
+        <script src="~/custom/chosen-patch.js"></script>
+    </environment>
+
+    <script type="text/javascript">
+
+        $('.chosen-select').chosen({
+            no_results_text: "No hay resultados que coincidan con ",
+        });
+
+        $('#agregarArticuloModal').on('shown.bs.modal', function () {
+            $('.chosen-select', this).chosen('destroy').chosen({
+                no_results_text: "No hay resultados que coincidan con ",
+            });
+        });
+
+        function ArticuloSeleccionadoOnChange() {
+            ActualizarPrecio();
+            $("#ArticuloCantidad").val("");
+            $("#Precio").val("");
+        }
+
+        function TipoVentaSeleccionadoOnChange() {
+            ActualizarPrecio();
+            $("#Precio").val("");
+        }
+
+        function ActualizarPrecio(input) {
+            $.ajax({
+                type: "post",
+                url: "/sucursal/Venta/ActualizarPrecio",
+                data: {
+                    IdArticulo: $("#dropdownArticulo :selected").val(),
+                    VentaTipo: $("#dropdownTipoVenta :selected").val(),
+                    Cantidad: $("#ArticuloCantidad").val()
+                },
+                traditional: true,
+                success: function (result) {                   
+                    $("#Precio").val(result.precioActual);
+                    $("#StockArticulo").val(result.stockActual);
+                    document.getElementById("ArticuloCantidad").setAttribute('max', result.stockActual);
+//                    $("#ArticuloCantidad").setAttribute('max', result.stockActual);
+                }
+            });
+        };
+
+        //prevent the form from doing a submit
+        $(document).on('submit', '.validateDontSubmit', function (e) {
+            e.preventDefault();
+            return false;
+        })
+
+        $(document).ready(function () {
+            ArticuloSeleccionadoOnChange();
+            //ObligarComentario();
+            $('#dropdownArticulo').change(function () {
+                ArticuloSeleccionadoOnChange();
+            });
+            //$('#dropdownTipoVenta').change(function () {
+            //    TipoVentaSeleccionadoOnChange();
+            //});
+
+        });
+
+        function ClearModal() {
+            $("#dropdownArticulo").prop("selectedIndex", 0);
+            //$("#dropdownTipoVenta").prop("selectedIndex", 0);
+            $("#ArticuloCantidad").val("");
+            $("#Precio").val("");
+        //    $("#Comentario").val("");
+        }
+
+        $('#agregarArticuloModal').on('hidden.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+        })
+
+        function addArticuloToVenta() {
+            if (modalForm.checkValidity()) {
+                $.ajax({
+                    type: "post",
+                    url: "/sucursal/Venta/agregardetalle",
+                    data: {
+                        IdArticulo: $("#dropdownArticulo :selected").val(),
+                        Cantidad: $("#ArticuloCantidad").val(),
+                        Precio: $("#Precio").val(),
+                    },
+                    success: function (partialView) {
+                        $('#ListaDetalleVenta tbody:last-child').after().append(partialView);
+                        $("#agregarArticuloModal").modal('hide');
+                        ClearModal();
+                    }
+                });
+            }
+        }
+        function removeRow(row) {
+            $(row).parents('tr').first().remove();
+        }
+
+    </script>
+}
+

@@ -1,0 +1,79 @@
+﻿@{
+    ViewData["Title"] = "Reporte";
+    Layout = "_Layout";
+
+    var title = "Articulos Con Stock Bajo";
+}
+
+@model IEnumerable<ArticuloStock>
+
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
+    <div class="col-xl-8 col-lg-6">
+        <h2>@title</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "ArticulosBajoStock", new { area = "reporte" })">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Reporte</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>@title</strong>
+            </li>
+        </ol>
+        
+    </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
+    </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="ReporteSimple()">
+            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
+        </button>
+    </div>
+</div>
+
+<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        Reporte de @title @DateTime.Now
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div id="StockBajoArticulosPartialView">
+                <partial name="_StockBajoArticulosIndexTable.cshtml" model="Model" />
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Styles {
+}
+
+@section Scripts {
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.footable').footable();
+        });
+    </script>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <script type="text/javascript">
+        //prevent the form from doing a submit
+        $(document).on('submit', '.validateDontSubmit', function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+    </script>
+
+}
+
+

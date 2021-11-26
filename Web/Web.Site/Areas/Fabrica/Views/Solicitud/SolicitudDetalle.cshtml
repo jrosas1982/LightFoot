@@ -1,0 +1,237 @@
+﻿@{
+    ViewData["Title"] = "SolicitudDetalle";
+    Layout = "_Layout";
+
+}
+@model Solicitud
+
+<div class="row wrapper border-bottom white-bg page-heading navegacion">
+    <div class="col-xl-8 col-lg-6">
+        <h2>Detalles Solicitud</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Dashboard_1", "Dashboards" )">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Fabrica</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Solicitud", new { area="fabrica" })">Solicitud</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>Detalles</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()">
+            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
+        </button>
+    </div>
+    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2  d-flex justify-content-end align-items-end" style="text-align:right">
+        <button type="button" class="btn btn-default w-100"
+                onclick="location.href='@Url.Action("Index", "Solicitud", 0)'">
+            <span class="icon icon-xs"><span class="fas fa-chevron-left mr-2"></span></span>Volver
+        </button>
+    </div>
+</div>
+
+<!--<div class="d-none d-print-block w-100">
+    <div class="alert alert-default" role="alert">
+        Fecha Reporte: @DateTime.Now-->
+        @*<h4>Sucursal: @Model.Sucursal.Nombre </h4>*@
+        <!--<h5>Detalle solicitud numero @Model.Id | @Model.EstadoSolicitud.GetDisplayName()</h5>
+        <h5>Comentario: @Model.Comentario</h5>
+    </div>
+</div>-->
+
+<div class="wrapper wrapper-content pt-1 animated fadeInRight">
+    <div class="row mt-2" style="text-align: center;">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col align-self-start my-auto">
+                            <h3>Solicitud #@Model.Id <span class="label label-@Model.EstadoSolicitud.GetGroupName()">@Model.EstadoSolicitud.GetDisplayName()</span></h3>
+                            <h5 style="font-size: 12px !important;">@Model.Comentario</h5>
+                        </div>
+                        <div class="col align-self-center my-auto">
+                            <h1>@Model.Sucursal.Nombre</h1>
+                            <h4>@Model.Sucursal.Direccion</h4>
+                        </div>
+                        @*<div class="col align-self-center">
+                            <h4 class="m-b-md">Articulos solicitados</h4>
+                            <h2 class="text-navy">
+                                <i class="fa fa-archive"></i> @Model.SolicitudDetalles.Count()
+                            </h2>
+                        </div>*@
+                        <div class="col align-self-end my-auto">
+                            <h4>Articulos solicitados: @Model.SolicitudDetalles.Count()</h4>
+                            <h5><i class="fa fa-clock-o"></i> Creada:  @Model.FechaCreacion.ToLocalTime()</h5>
+                            @if (Model.EstadoSolicitud == EstadoSolicitud.Aprobada)
+                            {
+                                <h5><i class="fa fa-clock-o"></i> Aprobada:  @Model.FechaModificacion.Value.ToLocalTime()</h5>
+                            }
+                            else if (Model.EstadoSolicitud == EstadoSolicitud.Rechazada)
+                            {
+                                <h5><i class="fa fa-clock-o"></i> Rechazada:  @Model.FechaModificacion.Value.ToLocalTime()</h5>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*<div class="stat-percent font-bold text-@Model.EstadoSolicitud.GetGroupName()">
+            @Model.FechaCreacion.ToLocalTime()
+        </div>*@
+
+        @*<div class="col-lg-5 d-print-none">
+            <div class="ibox">
+                <div class="ibox-content">
+
+                </div>
+            </div>
+        </div>*@
+
+        @foreach (var detalle in Model.SolicitudDetalles)
+        {
+            <div class="col-lg-12">
+                <div class="panel panel-primary">
+
+                    <div class="panel-heading">
+                        Articulo
+                    </div>
+                    <div class="panel-body">
+                        <div class="">
+                            <div class="row">
+                                <div class="col-9">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <small class="stats-label">Codigo</small>
+                                            <h4>@detalle.Articulo.CodigoArticulo</h4>
+                                        </div>
+                                        <div class="col-4">
+                                            <small class="stats-label">Nombre</small>
+                                            <h4>@detalle.Articulo.Nombre</h4>
+                                        </div>
+                                        <div class="col-4">
+                                            <small class="stats-label">Cantidad</small>
+                                            <h4>@detalle.CantidadSolicitada</h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <small class="stats-label">Color</small>
+                                            <h4>@detalle.Articulo.Color</h4>
+                                        </div>
+                                        <div class="col-4">
+                                            <small class="stats-label">Talle</small>
+                                            <h4>@detalle.Articulo.TalleArticulo</h4>
+                                        </div>
+                                        <div class="col-4">
+                                            <small class="stats-label">Descripcion</small>
+                                            <h4>@detalle.Articulo.Descripcion</h4>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-3 my-auto">
+                                    <small class="stats-label">Orden Asociada</small>
+                                    @if (detalle.OrdenesProduccion.Any())
+                                    {
+                                        @foreach (var op in detalle.OrdenesProduccion)
+                                        {
+                                            <h4 onclick="window.location = '/fabrica/OrdenProduccion/DetallesOrdenProduccion?IdOrdenProduccion=' + @op.Id;" class="text-@op.EstadoOrdenProduccion.GetGroupName()"><i class="fa fa-circle "></i> Orden @op.Id</h4>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <h4 class="text-dark"><i class="fa fa-circle "></i> Ninguna </h4>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="panel-footer pb-0 m-0">
+                        Receta
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+
+                            @if (detalle.Articulo.Recetas != null && detalle.Articulo.Recetas.Any(x => x.Activo))
+                            {
+                                <table class="footable table table-stripped table-bordered toggle-arrow-tiny" data-page-size="15">
+                                    <thead>
+                                        <tr>
+                                            <th>Insumo</th>
+                                            <th>Cantidad</th>
+                                            <th>Etapa Asociada</th>
+                                            <th>Comentario</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var detalleReceta in detalle.Articulo.Recetas.Single(x => x.Activo).RecetaDetalles)
+                                        {
+                                            <tr>
+                                                <td>@detalleReceta.Insumo.Nombre</td>
+                                                <td>@detalleReceta.Cantidad@detalleReceta.Insumo.Unidad</td>
+                                                <td>@detalleReceta.EtapaOrdenProduccion.Descripcion</td>
+                                                <td>@detalleReceta.Comentario</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <div class="text-center mt-4 mb-4">
+                                    <p class="text m-0 p-0 font-weight-bold">El articulo no posee una receta asociada</p>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+
+
+@section Styles {
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
+        <link rel="stylesheet" href="~/lib/iCheck/custom.css" />
+        <link rel="stylesheet" href="~/lib/steps/jquery.steps.css" />
+    </environment>
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/dataTables/datatables.min.js"></script>
+        <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
+        <script src="~/lib/iCheck/icheck.min.js"></script>
+        <script src="~/lib/steps/jquery.steps.min.js"></script>
+        <script src="~/lib/validate/jquery.validate.min.js"></script>
+    </environment>
+
+    <script type="text/javascript">
+
+        function Reporte() {
+            $('.dataTables_filter').addClass("d-print-none")
+            window.print();
+            $('.dataTables_filter').removeClass("d-print-none")
+        }
+
+        function Reporte() {
+            window.print();
+        }
+    </script>
+
+}

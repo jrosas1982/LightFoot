@@ -15,17 +15,15 @@ namespace Core.Infraestructura
     public class AppDbContext : DbContext
     {
         public IHttpContextAccessor _httpContextAccessor;
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        //private string username;
+        public AppDbContext(DbContextOptions<AppDbContext> options, IHttpContextAccessor httpContextAccessor) : base(options)
         {
-
-        }
-
-        protected AppDbContext()
-        {
-
+            _httpContextAccessor = httpContextAccessor;
+            //username = _httpContextAccessor.HttpContext.User.GetUsername();
         }
 
         public DbSet<Articulo> Articulos { get; set; }
+        public DbSet<ArticuloHistorico> ArticulosHistorico { get; set; }
         public DbSet<ArticuloCategoria> ArticulosCategoria { get; set; }
         public DbSet<ArticuloStock> ArticulosStock { get; set; }
         public DbSet<MovimientoStock> MovimientosStock { get; set; }
@@ -33,12 +31,12 @@ namespace Core.Infraestructura
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<ClienteCuentaCorriente> ClientesCuentaCorriente { get; set; }
 
-        public DbSet<Compra> Compras { get; set; }
         public DbSet<CompraArticulo> ComprasArticulos { get; set; }
+        public DbSet<CompraArticuloDetalle> CompraArticuloDetalles { get; set; }
         public DbSet<CompraInsumo> ComprasInsumos { get; set; }
+        public DbSet<CompraInsumoDetalle> CompraInsumoDetalles { get; set; }
 
         public DbSet<Insumo> Insumos { get; set; }
-        public DbSet<InsumoStock> InsumosStock { get; set; }
         public DbSet<Receta> Recetas { get; set; }
         public DbSet<RecetaDetalle> RecetaDetalles { get; set; }
 
@@ -49,9 +47,10 @@ namespace Core.Infraestructura
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<ProveedorArticulo> ProveedoresArticulos { get; set; }
         public DbSet<ProveedorArticuloHistorico> ProveedoresArticulosHistorico { get; set; }
-        public DbSet<ProveedorCuentaCorriente> ProveedoresCuentaCorriente { get; set; }
+        public DbSet<ProveedorArticuloCuentaCorriente> ProveedoresArticulosCuentaCorriente { get; set; }
         public DbSet<ProveedorInsumo> ProveedoresInsumos { get; set; }
         public DbSet<ProveedorInsumoHistorico> ProveedoresInsumosHistorico { get; set; }
+        public DbSet<ProveedorInsumoCuentaCorriente> ProveedoresInsumosCuentaCorriente { get; set; }
 
         public DbSet<Solicitud> Solicitudes { get; set; }
         public DbSet<SolicitudDetalle> SolicitudDetalles { get; set; }
@@ -66,18 +65,23 @@ namespace Core.Infraestructura
         public DbSet<Venta> Ventas { get; set; }
         public DbSet<VentaDetalle> VentasDetalle { get; set; }
 
+        public DbSet<FabricaParametro> FabricaParametros { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new EtapaOrdenProduccionEntityTypeConfiguration());
-            //modelBuilder.Entity<Sucursal>(x => x.);
+            modelBuilder.ApplyConfiguration(new ProveedorEntityTypeConfiguration());
 
             foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
                 relationship.DeleteBehavior = DeleteBehavior.NoAction;
             }
+
+            //modelBuilder.Entity<EntityBase>().HasQueryFilter(e => e.Eliminado == false);
+            //modelBuilder.ApplyGlobalFilters<EntityBase>(e => username != null && username.ToLower() != "super" ? e.Eliminado == false : true);
 
             //modelBuilder.Entity<Sucursal>().HasMany(x => x.MovimientoStockOrigen).WithOne(x => x.SucursalOrigen).HasForeignKey(x => x.IdSucursalOrigen).IsRequired();
             //modelBuilder.Entity<Sucursal>().HasMany(x => x.MovimientoStockDestino).WithOne(x => x.SucursalDestino).HasForeignKey(x => x.IdSucursalDestino).IsRequired();
@@ -86,16 +90,12 @@ namespace Core.Infraestructura
             //modelBuilder.Entity<MovimientoStock>().HasOne(x => x.SucursalDestino).WithOne().IsRequired().OnDelete(DeleteBehavior.NoAction);
         }
 
-        private string GetUsername(IPrincipal user)
-        {
-            var claim = ((ClaimsIdentity)user.Identity).FindFirst(ClaimTypes.Name);
-            return claim?.Value;
-        }
+
 
         public override int SaveChanges()
         {
             this.ChangeTracker.DetectChanges();
-            var currentUsername = GetUsername(_httpContextAccessor.HttpContext.User);
+            var currentUsername = _httpContextAccessor.GetUsername();
 
             var added = this.ChangeTracker.Entries()
                         .Where(t => t.Entity is EntityBase && t.State == EntityState.Added)
@@ -127,7 +127,7 @@ namespace Core.Infraestructura
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             this.ChangeTracker.DetectChanges();
-            var currentUsername = GetUsername(_httpContextAccessor.HttpContext.User);
+            var currentUsername = _httpContextAccessor.GetUsername();
 
             var added = this.ChangeTracker.Entries()
                         .Where(t => t.Entity is EntityBase && t.State == EntityState.Added)
