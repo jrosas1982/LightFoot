@@ -107,11 +107,11 @@ namespace Web.Site.Areas
 
         public async Task<IActionResult> Eliminar(Proveedor proveedor)
         {
-            if (ModelState.IsValid)
-            {
-                await _proveedorService.EliminarProveedor(proveedor);
-            }
-            return Ok();
+            await _proveedorService.EliminarProveedor(proveedor);
+
+            var proveedores = await _proveedorService.GetProveedores();
+
+            return PartialView("_ProveedorIndexTable", proveedores);
         }
 
         public async Task<IActionResult> AsignarProveedorArticulo(int idProveedor)

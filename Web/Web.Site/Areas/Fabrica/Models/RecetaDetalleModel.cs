@@ -14,17 +14,15 @@ namespace Web.Site.Areas.Fabrica
 
         [Display(Name = "Nombre Insumo")]
         public int IdInsumo { get; set; }
-        public string NombreInsumo { get; set; }
-
-        [Display(Name = "Nombre Insumo")]
-        public string UnidadDeMedida { get; set; }
-
         [Display(Name = "Nombre Orden")]
         public int IdEtapaOrdenProduccion { get; set; }
-        public string NombreEtapaOrdenProduccion { get; set; }
-     
         public double Cantidad { get; set; }
         public string Comentario { get; set; }
+        [Display(Name = "Nombre Insumo")]
+        public string NombreInsumo { get; set; }
 
+        public string UnidadDeMedida { get; set; }
+        public string NombreEtapaOrdenProduccion { get; set; }
+    
     }
 }

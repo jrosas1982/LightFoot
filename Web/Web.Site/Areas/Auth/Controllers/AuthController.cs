@@ -38,7 +38,7 @@ namespace Web.Site.Areas
 
                 var model = new UserLoginModel()
                 {
-                    Sucursales = sucursalesList.Where(x => x.Activo).Select(x => new DesplegableModel() { Id = x.Id, Descripcion = $"{x.Nombre} - {x.Descripcion}" }).ToList(),
+                    Sucursales = sucursalesList.Where(x => x.Activo).OrderBy(x => x.Id).Select(x => new DesplegableModel() { Id = x.Id, Descripcion = $"{x.Nombre} - {x.Descripcion}" }).ToList(),
                 };
 
                 ViewBag.ReturnUrl = returnurl;

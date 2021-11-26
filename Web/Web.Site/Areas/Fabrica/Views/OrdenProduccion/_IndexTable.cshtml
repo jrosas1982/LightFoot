@@ -22,7 +22,9 @@
                 @*
                     <th>Cantidad Fabricada</th>*@
                 <th>Fecha Inicio</th>
-                <th>Fecha Limite Expedicion</th>
+
+                <th class="d-print-none">Fecha Limite Expedicion</th>
+
                 <th>Tiempo total empleado</th>
                 <th data-sort-ignore="true" class="d-print-none">Acciones</th>
 
@@ -69,12 +71,12 @@
                         @if (eventoExpedicion != null)//orden.EtapaOrdenProduccion.Descripcion == "Expedicion" && orden.EstadoEtapaOrdenProduccion == EstadoEtapaOrdenProduccion.Iniciada)
                         {
                             var fechaLimiteExpedicion = eventoExpedicion.FechaCreacion.AddHours(horasExpedicion);
-                            <th  style="@customStyle">@fechaLimiteExpedicion</th>
+                            <th class="d-print-none" style="@customStyle">@fechaLimiteExpedicion</th>
                             @*<th>@orden.OrdenProduccionEventos.Single(x => x.EtapaOrdenProduccion.Descripcion == "Expedicion" && x.EstadoEtapaOrdenProduccion == EstadoEtapaOrdenProduccion.Iniciada).FechaCreacion.AddHours(horasExpedicion)</th>*@
                         }
                         else
                         {
-                            <th>-@*La orden aun no se encuentra en etapa de Expedicion*@</th>
+                            <th class="d-print-none">-@*La orden aun no se encuentra en etapa de Expedicion*@</th>
                         }
 
                         <th>@((DateTime.Now - orden.FechaCreacion).ToString(@"hh\:mm\:ss"))</th>
