@@ -109,8 +109,8 @@
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label class="col-form-labe" for="estados_etapa">Estado de Etapa</label>
-                    <select class="chosen-select" multiple name="estados_etapa" id="estados_etapa" data-placeholder="Seleccione estados">
+                    <label class="font-normal">Estado de Etapa</label>
+                    <select class="chosen-select" multiple name="estados_etapa" id="estados_etapa" data-placeholder="Seleccione estados de etapa">
                         @foreach (var estadoEtapa in EstadoEtapaOrdenProducciones)
                         {
                             <option value="@estadoEtapa"> @estadoEtapa.GetDisplayName() </option>

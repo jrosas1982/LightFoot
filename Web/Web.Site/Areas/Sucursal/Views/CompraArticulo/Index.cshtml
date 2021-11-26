@@ -388,7 +388,7 @@
         }
 
         function pagarCompra(idCompra, pagado, tipoPago) {
-            if (modalForm.checkValidity()) {
+            if (modalForm2.checkValidity()) {
                 $.ajax({
                     type: "post",
                     url: "/sucursal/CompraArticulo/PagarCompra",
@@ -398,13 +398,11 @@
                         montoPagado: parseFloat(pagado).toFixed(2).replace(".", ","),
                     },
                     success: function (response) {
-                        if (response) {
-                            swal(
-                                'Compra #' + idCompra + ' pagada',
-                                'Se pago ' + pagado,
-                                'success'
-                            );
-                        }
+                        swal(
+                            'Compra #' + idCompra + ' pagada',
+                            'Se pago ' + pagado,
+                            'success'
+                        );
                         $("#ComprasPartialView").html(""); //clear the records content
                         $("#ComprasPartialView").html(response);  //add the updated content.
                         $('.footable').footable();
