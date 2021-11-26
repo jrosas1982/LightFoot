@@ -24,21 +24,13 @@ namespace Core.Aplicacion.Services
 
         public async Task<int> AgregarArticuloAProveedor(ProveedorArticulo articuloProveedor)
         {
-            try
-            {
-                var exists = _db.ProveedoresArticulos.Any(x => x.IdArticulo == articuloProveedor.IdArticulo && x.IdProveedor == articuloProveedor.IdProveedor);
-                if (exists)
-                    throw new ExcepcionControlada("Un proveedor no puede tener asignado el mismo articulo dos veces");
-                _db.ProveedoresArticulos.Add(articuloProveedor);
-                //_logger.LogInformation($"Insumo creado para receta : {insumoProveedor.IdReceta}");
-                await _db.SaveChangesAsync();
-                return articuloProveedor.Id;
-            }
-            catch (Exception ex)
-            {
-                //_logger.LogInformation($"Error al crear detalle para la solicitud : {insumoProveedor.IdReceta} - Error: {ex.Message}");
-                return -1;
-            }
+            var exists = _db.ProveedoresArticulos.Any(x => x.IdArticulo == articuloProveedor.IdArticulo && x.IdProveedor == articuloProveedor.IdProveedor);
+            if (exists)
+                throw new ExcepcionControlada("Un proveedor no puede tener asignado el mismo articulo dos veces");
+            _db.ProveedoresArticulos.Add(articuloProveedor);
+            //_logger.LogInformation($"Insumo creado para receta : {insumoProveedor.IdReceta}");
+            await _db.SaveChangesAsync();
+            return articuloProveedor.Id;
         }
 
         public async Task<ProveedorArticulo> BuscarProveedorArticulo(int idArticulo, int idProveedor)
@@ -52,8 +44,10 @@ namespace Core.Aplicacion.Services
         public async Task<ProveedorArticulo> BuscarProveedorArticuloPorId(int idProveedorArticulo)
         {
             var detalle = await _db.ProveedoresArticulos.Include(x => x.Articulo).ThenInclude(x => x.ArticuloCategoria).SingleOrDefaultAsync(x => x.Id == idProveedorArticulo);
+           
             if (detalle == null)
                 throw new ExcepcionControlada("El ProveedorArticulo solicitado no existe");
+
             return detalle;
         }
 

@@ -41,7 +41,7 @@
                                 <td>@item.Id</td>
                                 <td>@item.Cliente.Nombre</td>
                                 <td>@item.VentaTipo</td>
-                                <td>@item.VentaDetalles.Count()</td>
+                                <td>@item.VentaDetalles.Sum(x => x.Cantidad)</td>
                                 <td>$ @item.MontoTotal</td>
                                 <td>@(item.FechaModificacion != null ? item.FechaModificacion : item.FechaCreacion)</td>
                             </tr>
