@@ -27,8 +27,11 @@
                         {
                             <td>No </td>
                         }
-                        <td>
+                    <td>
+                        @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+                        {
                             <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarCategoria('@item.Id')">Borrar</button>
+                        }
                             <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarCategoria('@item.Id')">Editar</button>
                         </td>
                     </tr>

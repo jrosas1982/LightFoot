@@ -53,15 +53,17 @@
                         {
                             <td class="text-center">-</td>
                         }
-                        <td class="d-print-none">
-                            <button class="btn btn-outline btn-success btn-xs" type="button"
-                                    onclick="verDetalle(@venta.Id)"
-                                    data-toggle="modal"
-                                    data-target="#ModalDetalle">
-                                Ver Detalles
-                            </button>
+                    <td class="d-print-none">
+                        <button class="btn btn-outline btn-success btn-xs" type="button"
+                                onclick="verDetalle(@venta.Id)"
+                                data-toggle="modal"
+                                data-target="#ModalDetalle">
+                            Ver Detalles
+                        </button>
 
-                            @if (!@venta.Pagado || true)
+                        @if (!@venta.Pagado || true)
+                        {
+                            @if ((await authorizationService.AuthorizeAsync(User, Policies.IsCajero)).Succeeded)
                             {
                                 <button class="btn btn-outline btn-primary btn-xs font-weight-bold " type="button"
                                         onclick="cobrarModal(@venta.Id)"
@@ -70,6 +72,7 @@
                                     COBRAR
                                 </button>
                             }
+                        }
                         </td>
                     </tr>
                 }
