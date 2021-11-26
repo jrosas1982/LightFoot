@@ -26,9 +26,12 @@
                             <td>@(item.IdProveedorPreferido == null ? "No Posee" : item.Proveedor.Nombre)</td>
                             <td>@(item.StockTotal + item.Unidad)</td>
                             <td class="d-print-none">
-                                <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarInsumo('@item.Id')">Borrar</button>
-                                <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarInsumo('@item.Id')">Editar</button>
-                            </td>
+                                @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+                                {
+                                    <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarInsumo('@item.Id')">Borrar</button>
+                                }
+                                    <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarInsumo('@item.Id')">Editar</button>
+                                </td>
                         </tr>
                     }
                 }

@@ -14,8 +14,11 @@
                     <th>Estado</th>
                     <th>PrecioMayorista</th>
                     <th>PrecioMinorista</th>
-                    <th data-sort-ignore="true" class="d-print-none">Acciones</th>
-                </tr>
+                    @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+                    {
+                        <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+                    }
+                    </tr>
             </thead>
             <tbody>
                 @if (Model != null)
