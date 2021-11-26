@@ -31,11 +31,14 @@
         </button>
     </div>
     <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary w-100"
-                onclick="location.href='@Url.Action("CrearEditarArticulo", "Articulo", 0)'">
-            <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Nuevo Articulo
-        </button>
-    </div>
+        @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+        {
+            <button type="button" class="btn btn-w-m btn-primary w-100"
+                    onclick="location.href='@Url.Action("CrearEditarArticulo", "Articulo", 0)'">
+                <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Nuevo Articulo
+            </button>
+        }
+        </div>
 </div>
 
 <div class="d-none d-print-block w-100">
@@ -48,32 +51,38 @@
 
     <div class="ibox-content m-b-sm border-bottom  d-print-none">
         <div class="row">
-            <div class="col-sm-8">
-                <div class="form-group">
-                    <label class="col-form-labe" for="solicitud_name">Articulo</label>
-                    <div class="typeahead__container">
-                        <div class="typeahead__field">
-                            <div class="typeahead__query">
-                                <input class="js-typeahead typeaheadCustom " id="typeArticulo" placeholder="Buscar Articulo" autocomplete="on" />
+            @if ((await authorizationService.AuthorizeAsync(User, Policies.IsOperario)).Succeeded)
+            {
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        <label class="col-form-labe" for="solicitud_name">Articulo</label>
+                        <div class="typeahead__container">
+                            <div class="typeahead__field">
+                                <div class="typeahead__query">
+                                    <input class="js-typeahead typeaheadCustom " id="typeArticulo" placeholder="Buscar Articulo" autocomplete="on" />
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            }
+                <div class="col-sm-4"></div>
             </div>
-            <div class="col-sm-4"></div>
-        </div>
         <div class="row">
             <div class="col-sm-8 d-flex align-items-end justify-content-end">
                 <button class="btn btn-outline-info btn-xl float-right" type="button" onclick="FiltrarArticulos()">
                     <i class="fa fa-search" aria-hidden="true"></i> Buscar
                 </button>
             </div>
-            <div class="col-sm-4 d-flex align-items-end justify-content-end">
-                <button class="btn btn-block btn-outline-info" type="button" data-toggle="tooltip" data-placement="top" title="Los cambios de precio se aplicarán a los artículos que están seleccionados por el filtro aplicado, si no se aplicaron filtros los cambios se aplicaran a todos los artículos" onclick="ActivarCambioPrecioMasivo()">
-                    <i class="fa fa-money" aria-hidden="true"></i> Cambio de precio masivo
-                </button>
+            @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+            {
+                <div class="col-sm-4 d-flex align-items-end justify-content-end">
+                    <button class="btn btn-block btn-outline-info" type="button" data-toggle="tooltip" data-placement="top" title="Los cambios de precio se aplicarán a los artículos que están seleccionados por el filtro aplicado, si no se aplicaron filtros los cambios se aplicaran a todos los artículos" onclick="ActivarCambioPrecioMasivo()">
+                        <i class="fa fa-money" aria-hidden="true"></i> Cambio de precio masivo
+                    </button>
+                </div>
+            }
             </div>
-        </div>
     </div>
 
     <div class="row">

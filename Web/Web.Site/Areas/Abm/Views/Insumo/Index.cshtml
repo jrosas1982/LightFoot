@@ -24,18 +24,21 @@
             </li>
         </ol>
     </div>
-    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()">
-            <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
-        </button>
+    @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+    {
+        <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
+            <button type="button" class="btn btn-w-m btn-default w-100" onclick="Reporte()">
+                <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
+            </button>
+        </div>
+        <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
+            <button type="button" class="btn btn-w-m btn-primary w-100"
+                    onclick="location.href='@Url.Action("CrearEditarInsumo", "Insumo", 0)'">
+                <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Nuevo Insumo
+            </button>
+        </div>
+    }
     </div>
-    <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
-        <button type="button" class="btn btn-w-m btn-primary w-100"
-                onclick="location.href='@Url.Action("CrearEditarInsumo", "Insumo", 0)'">
-            <span class="icon icon-xs"><span class="fas fa-plus mr-2"></span></span>Nuevo Insumo
-        </button>
-    </div>
-</div>
 
 <div class="d-none d-print-block w-100">
     <div class="alert alert-default" role="alert">
