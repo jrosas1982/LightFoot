@@ -295,14 +295,10 @@
                     type: "post",
                     url: "/abm/Proveedor/Eliminar",
                     data: { Id: Id },
-                    success: function (result) {
-                        if (result) {
-                            swal("Baja Exitosa!", "El Proveedor ha sido dado de baja correctamente.", "success");
-                        } else {
-                            swal("Error", "Ocurrió un error intente mas tarde", "error");
-                        }
-                        $("#ComprasPartialView").html(""); //clear the records content
-                        $("#ComprasPartialView").html(response);  //add the updated content.
+                    success: function (response) {
+                        swal("Baja Exitosa!", "El Proveedor ha sido dado de baja correctamente.", "success");
+                        $("#partialViewTable").html(""); //clear the records content
+                        $("#partialViewTable").html(response);  //add the updated content.
                         $('.footable').footable();
                         $('.footable').trigger('footable_redraw');
                         $('#ModalrecibirCompra').modal('hide');
