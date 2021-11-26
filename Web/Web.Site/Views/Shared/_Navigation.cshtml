@@ -23,8 +23,11 @@
                         <li class="@Html.IsSelected(controller: "DashboardFabrica")"><a href="@Url.Action("Index", "DashboardFabrica", new { area = "fabrica" })">Dashboard</a></li>
                         <li class="@Html.IsSelected(controller: "CompraInsumo")"><a href="@Url.Action("Index", "CompraInsumo", new { area = "fabrica" })">Compras</a></li>
                         <li class="@Html.IsSelected(controller: "OrdenProduccion")"><a href="@Url.Action("Index", "OrdenProduccion", new { area = "fabrica" })">Ordenes de Produccion</a></li>
-                        <li class="@Html.IsSelected(controller: "Recetas")"><a href="@Url.Action("Index", "Recetas", new { area = "fabrica" })">Recetas</a></li>
-                        <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Solicitudes</a></li>
+                        @if ((await authorizationService.AuthorizeAsync(User, Policies.IsOperario)).Succeeded)
+                        {
+                            <li class="@Html.IsSelected(controller: "Recetas")"><a href="@Url.Action("Index", "Recetas", new { area = "fabrica" })">Recetas</a></li>
+                            <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Solicitudes</a></li>
+                        }
                     </ul>
                 </li>
             }
@@ -37,12 +40,15 @@
 
                         <li class="@Html.IsSelected(controller: "DashboardSucursal")"><a href="@Url.Action("Index", "DashboardSucursal", new { area = "sucursal" })">Dashboard</a></li>
                         <li class="@Html.IsSelected(controller: "CajaSucursal")"><a href="@Url.Action("Index", "CajaSucursal", new { area = "sucursal" })">Caja</a></li>
-                        <li class="@Html.IsSelected(controller: "ControlStockArticulo") "><a href="@Url.Action("Index", "ControlStockArticulo", new { area = "sucursal" })">Control de Stock</a></li>
+                        @if ((await authorizationService.AuthorizeAsync(User, Policies.IsCajero)).Succeeded)
+                        {
+                            <li class="@Html.IsSelected(controller: "ControlStockArticulo") "><a href="@Url.Action("Index", "ControlStockArticulo", new { area = "sucursal" })">Control de Stock</a></li>
+                        }
                         <li class="@Html.IsSelected(controller: "CompraArticulo")"><a href="@Url.Action("Index", "CompraArticulo", new { area = "sucursal" })">Compras</a></li>
                         <li class="@Html.IsSelected(controller: "CuentaCorriente")"><a href="@Url.Action("Index", "CuentaCorriente", new { area = "sucursal" })">Cuenta Corriente</a></li>
                         <li class="@Html.IsSelected(controller: "Venta")"><a href="@Url.Action("Index", "Venta", new { area = "sucursal" })">Ventas</a></li>
 
-                    </ul>
+                        </ul>
                 </li>
             }
 

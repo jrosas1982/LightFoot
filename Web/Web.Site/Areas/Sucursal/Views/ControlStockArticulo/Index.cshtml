@@ -23,13 +23,10 @@
             </li>
         </ol>
     </div>
-    @*<div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end p-lg-0" style="text-align:right">
-                <button type="button" class="btn btn-w-m btn-primary"
-                    onclick="location.href='@Url.Action("CrearEditarStockArticulo", "ControlStockArticulo", 0 )'">Crear nuevo Stock de Articulos</button>
-        </div>*@
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
+
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
@@ -48,8 +45,12 @@
                                     <th>Reposición Lote</th>
                                     <th>Reposición Automática</th>
                                     <th>Tamaño lote</th>
-                                    <th>Acciones</th>
-                                </tr>
+
+                                    @if ((await authorizationService.AuthorizeAsync(User, Policies.IsCajero)).Succeeded)
+                                    {
+                                       <th>Acciones</th>
+                                    }
+                                    </tr>
                             </thead>
                             <tbody>
                                 @if (Model != null)
@@ -78,10 +79,14 @@
                                                 <td>No</td>
                                             }
                                             <td>@item.TamañoLote</td>
+
+                                            @if ((await authorizationService.AuthorizeAsync(User, Policies.IsVendedor)).Succeeded)
+                                            {
                                             <td>
                                                 @*<button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarArticulo('@item.Id')">Borrar</button>*@
                                                 <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarStockArticulo('@item.Id')">Editar</button>
                                             </td>
+                                            }
                                         </tr>
                                     }
                                 }

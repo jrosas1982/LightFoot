@@ -6,7 +6,7 @@
             <table class="footable table table-stripped  table-hover table-bordered toggle-arrow-tiny" data-page-size="15">
                 <thead>
                     <tr>
-                        <th ># Receta</th>
+                        <th># Receta</th>
                         <th data-hide="all" data-animation="true"></th>
                         <th>Codigo</th>
                         <th>Articulo</th>
@@ -16,8 +16,11 @@
                         <th>Estado</th>
                         <th>Usuario Modificacion</th>
                         <th>Fecha Modificacion</th>
-                        <th data-sort-ignore="true" class="d-print-none">Acciones</th>
-                    </tr>
+                        @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+                        {
+                            <th data-sort-ignore="true" class="d-print-none">Acciones</th>
+                        }
+                        </tr>
                 </thead>
                 <tbody>
                     @if (Model != null && Model.Any())
@@ -92,18 +95,21 @@
                                     <td>@receta.FechaCreacion</td>
                                 }
 
-                                <td class="d-print-none">
-                                    <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="EditarReceta(@receta.Id)">Editar</button>
-                                    @if (receta.Activo)
-                                    {
-                                        <button class=" btn btn-outline btn-warning btn-xs " type="button" onclick='accionReceta(@receta.Id , "desactivar")'>Desactivar</button>
-                                    }
-                                    else
-                                    {
-                                        <button class=" btn btn-outline btn-info btn-xs " type="button" onclick='accionReceta(@receta.Id , "activar")'>Activar</button>
-                                    }
-                                    <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick='accionReceta(@receta.Id, "eliminar")'>Eliminar</button>
-                                </td>
+                                @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+                                {
+                                    <td class="d-print-none">
+                                        <button class=" btn btn-outline btn-primary  btn-xs " type="button" onclick="EditarReceta(@receta.Id)">Editar</button>
+                                        @if (receta.Activo)
+                                        {
+                                            <button class=" btn btn-outline btn-warning btn-xs " type="button" onclick='accionReceta(@receta.Id , "desactivar")'>Desactivar</button>
+                                        }
+                                        else
+                                        {
+                                            <button class=" btn btn-outline btn-info btn-xs " type="button" onclick='accionReceta(@receta.Id , "activar")'>Activar</button>
+                                        }
+                                        <button class=" btn btn-outline btn-danger  btn-xs " type="button" onclick='accionReceta(@receta.Id, "eliminar")'>Eliminar</button>
+                                    </td>
+                                }
                             </tr>
                         }
                     }

@@ -9,11 +9,12 @@ using Web.Site.Dtos;
 using Web.Site.Helpers;
 using System;
 using Web.Site.Areas.Fabrica;
-
+using Microsoft.AspNetCore.Authorization;
+using Core.Aplicacion.Auth;
 
 namespace Web.Site.Areas
 {
-    //[Authorize (Policy = Policies.IsControlador)]
+    [Authorize (Policy = Policies.IsSupervisor)]
     [Area("fabrica")]
     [Route("[area]/[controller]/[action]")]
     public class SolicitudController : CustomController
