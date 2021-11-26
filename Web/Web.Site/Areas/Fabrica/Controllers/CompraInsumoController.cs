@@ -11,10 +11,12 @@ using System;
 using Web.Site.Areas.Fabrica;
 using Core.Dominio.CoreModelHelpers;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using Core.Aplicacion.Auth;
 
 namespace Web.Site.Areas
 {
-    //[Authorize (Policy = Policies.IsControlador)]
+    [Authorize]
     [Area("fabrica")]
     [Route("[area]/[controller]/[action]")]
     public class CompraInsumoController : CustomController

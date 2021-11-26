@@ -7,10 +7,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Web.Site.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Core.Aplicacion.Auth;
 
 namespace Web.Site.Areas
 {
-    //[Authorize (Policy = Policies.IsControlador)]
+    [Authorize]
     [Area("sucursal")]
     [Route("[area]/[controller]/[action]")]
     public class CuentaCorrienteController : CustomController
