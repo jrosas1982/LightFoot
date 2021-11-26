@@ -46,7 +46,7 @@
                                     <th>Reposición Automática</th>
                                     <th>Tamaño lote</th>
 
-                                    @if ((await authorizationService.AuthorizeAsync(User, Policies.IsCajero)).Succeeded)
+                                    @if ((await authorizationService.AuthorizeAsync(User, Policies.IsVendedor)).Succeeded)
                                     {
                                        <th>Acciones</th>
                                     }

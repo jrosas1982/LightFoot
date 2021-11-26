@@ -77,18 +77,20 @@
                             <td>@solicitud.FechaCreacion</td>
                             <td class="d-print-none">
                                 <button class="btn btn-outline btn-success btn-xs" type="button" onclick="VerDetalles('@solicitud.Id')">Ver Detalles</button>
-
-                                @if (solicitud.EstadoSolicitud == EstadoSolicitud.PendienteAprobacion)
+                                @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
                                 {
-                                    <button class="btn btn-outline btn-danger btn-xs" type="button" onclick="RechazarSolicitud('@solicitud.Id')">Rechazar</button>
-                                    <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AprobarSolicitud('@solicitud.Id')">Aprobar</button>
-                                }
-                                @*else if (solicitud.EstadoSolicitud == EstadoSolicitud.Aprobada)
+                                    @if (solicitud.EstadoSolicitud == EstadoSolicitud.PendienteAprobacion)
                                     {
-                                        <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerOrdenesAsociadas('@solicitud.Id')">Ver Ordenes asociadas</button>
-                                    }*@
+                                        <button class="btn btn-outline btn-danger btn-xs" type="button" onclick="RechazarSolicitud('@solicitud.Id')">Rechazar</button>
+                                        <button class="btn btn-outline btn-primary btn-xs" type="button" onclick="AprobarSolicitud('@solicitud.Id')">Aprobar</button>
+                                    }
+                                }
+                                    @*else if (solicitud.EstadoSolicitud == EstadoSolicitud.Aprobada)
+          
+                <button class="btn btn-outline btn-success  btn-xs" type="button" onclick="VerOrdenesAsociadas('@solicitud.Id')">Ver Ordenes asociadas</button>
+            }*@
 
-                            </td>
+                                </td>
                         </tr>
                     }
                 }

@@ -19,12 +19,14 @@
                 <li class="@Html.IsSelected(area: "fabrica")">
                     <a href="#"><i class="fa fa-building"></i> <span class="nav-label" data-i18n="nav.graphs">Fabrica</span><span class="fa arrow"></span></a>
                     <ul id="fabrica" class="nav nav-second-level collapse @Html.IsSelected(area: "fabrica", cssClass: "in")">
-
                         <li class="@Html.IsSelected(controller: "DashboardFabrica")"><a href="@Url.Action("Index", "DashboardFabrica", new { area = "fabrica" })">Dashboard</a></li>
-                        <li class="@Html.IsSelected(controller: "CompraInsumo")"><a href="@Url.Action("Index", "CompraInsumo", new { area = "fabrica" })">Compras</a></li>
-                        <li class="@Html.IsSelected(controller: "OrdenProduccion")"><a href="@Url.Action("Index", "OrdenProduccion", new { area = "fabrica" })">Ordenes de Produccion</a></li>
+                        @if ((await authorizationService.AuthorizeAsync(User, Policies.IsTesorero)).Succeeded)
+                        {
+                            <li class="@Html.IsSelected(controller: "CompraInsumo")"><a href="@Url.Action("Index", "CompraInsumo", new { area = "fabrica" })">Compras</a></li>
+                        }
                         @if ((await authorizationService.AuthorizeAsync(User, Policies.IsOperario)).Succeeded)
                         {
+                            <li class="@Html.IsSelected(controller: "OrdenProduccion")"><a href="@Url.Action("Index", "OrdenProduccion", new { area = "fabrica" })">Ordenes de Produccion</a></li>
                             <li class="@Html.IsSelected(controller: "Recetas")"><a href="@Url.Action("Index", "Recetas", new { area = "fabrica" })">Recetas</a></li>
                             <li class="@Html.IsSelected(controller: "Solicitud")"><a href="@Url.Action("Index", "Solicitud", new { area = "fabrica" })">Solicitudes</a></li>
                         }
@@ -37,31 +39,54 @@
                 <li class="@Html.IsSelected(area: "sucursal")">
                     <a href="#"><i class="fa fa-sitemap"></i> <span class="nav-label" data-i18n="nav.graphs">Sucursal</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse @Html.IsSelected(area: "sucursal", cssClass: "in")">
-
                         <li class="@Html.IsSelected(controller: "DashboardSucursal")"><a href="@Url.Action("Index", "DashboardSucursal", new { area = "sucursal" })">Dashboard</a></li>
-                        <li class="@Html.IsSelected(controller: "CajaSucursal")"><a href="@Url.Action("Index", "CajaSucursal", new { area = "sucursal" })">Caja</a></li>
                         @if ((await authorizationService.AuthorizeAsync(User, Policies.IsCajero)).Succeeded)
+                        {
+                            <li class="@Html.IsSelected(controller: "CajaSucursal")"><a href="@Url.Action("Index", "CajaSucursal", new { area = "sucursal" })">Caja</a></li>
+                        }
+                        @if ((await authorizationService.AuthorizeAsync(User, Policies.IsVendedor)).Succeeded)
                         {
                             <li class="@Html.IsSelected(controller: "ControlStockArticulo") "><a href="@Url.Action("Index", "ControlStockArticulo", new { area = "sucursal" })">Control de Stock</a></li>
                         }
-                        <li class="@Html.IsSelected(controller: "CompraArticulo")"><a href="@Url.Action("Index", "CompraArticulo", new { area = "sucursal" })">Compras</a></li>
-                        <li class="@Html.IsSelected(controller: "CuentaCorriente")"><a href="@Url.Action("Index", "CuentaCorriente", new { area = "sucursal" })">Cuenta Corriente</a></li>
-                        <li class="@Html.IsSelected(controller: "Venta")"><a href="@Url.Action("Index", "Venta", new { area = "sucursal" })">Ventas</a></li>
-
-                        </ul>
+                        @if ((await authorizationService.AuthorizeAsync(User, Policies.IsCajero)).Succeeded)
+                        {
+                            <li class="@Html.IsSelected(controller: "CompraArticulo")"><a href="@Url.Action("Index", "CompraArticulo", new { area = "sucursal" })">Compras</a></li>
+                            <li class="@Html.IsSelected(controller: "CuentaCorriente")"><a href="@Url.Action("Index", "CuentaCorriente", new { area = "sucursal" })">Cuenta Corriente</a></li>
+                        }
+                        @if ((await authorizationService.AuthorizeAsync(User, Policies.IsVendedor)).Succeeded)
+                        {
+                            <li class="@Html.IsSelected(controller: "Venta")"><a href="@Url.Action("Index", "Venta", new { area = "sucursal" })">Ventas</a></li>
+                        }
+                    </ul>
                 </li>
             }
 
             <li class="@Html.IsSelected(area: "abm")">
                 <a href="#"><i class="fa fa-sliders"></i> <span class="nav-label" data-i18n="nav.graphs">Gestion</span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse @Html.IsSelected(area: "abm", cssClass: "in")">
-                    <li class="@Html.IsSelected(controller: "Articulo")"><a href="@Url.Action("Index", "Articulo", new { area = "abm" })">Articulos</a></li>
-                    <li class="@Html.IsSelected(controller: "ArticuloCategoria")"><a href="@Url.Action("Index", "ArticuloCategoria", new { area = "abm" })">Articulos Categoría</a></li>
-                    <li class="@Html.IsSelected(controller: "Clientes")"><a href="@Url.Action("Index", "Clientes", new { area = "abm" })">Clientes</a></li>
-                    <li class="@Html.IsSelected(controller: "Insumo")"><a href="@Url.Action("Index", "Insumo", new { area = "abm" })">Insumos</a></li>
-                    <li class="@Html.IsSelected(controller: "Proveedor")"><a href="@Url.Action("Index", "Proveedor", new { area = "abm" })">Proveedores</a></li>
-                    <li class="@Html.IsSelected(controller: "Sucursal")"><a href="@Url.Action("Index", "Sucursal", new { area = "abm" })">Sucursales</a></li>
-                    <li class="@Html.IsSelected(controller: "Usuario")"><a href="@Url.Action("Index", "Usuario", new { area = "abm" })">Usuarios</a></li>
+                    @if ((await authorizationService.AuthorizeAsync(User, Policies.IsOperario)).Succeeded || (await authorizationService.AuthorizeAsync(User, Policies.IsCajero)).Succeeded)
+                    {
+                        <li class="@Html.IsSelected(controller: "Articulo")"><a href="@Url.Action("Index", "Articulo", new { area = "abm" })">Articulos</a></li>
+                        <li class="@Html.IsSelected(controller: "ArticuloCategoria")"><a href="@Url.Action("Index", "ArticuloCategoria", new { area = "abm" })">Articulos Categoría</a></li>
+
+                    }
+                    @if ((await authorizationService.AuthorizeAsync(User, Policies.IsVendedor)).Succeeded)
+                    {
+                        <li class="@Html.IsSelected(controller: "Clientes")"><a href="@Url.Action("Index", "Clientes", new { area = "abm" })">Clientes</a></li>
+                    }
+                    @if ((await authorizationService.AuthorizeAsync(User, Policies.IsOperario)).Succeeded)
+                    {
+                        <li class="@Html.IsSelected(controller: "Insumo")"><a href="@Url.Action("Index", "Insumo", new { area = "abm" })">Insumos</a></li>
+                    }
+                    @if ((await authorizationService.AuthorizeAsync(User, Policies.IsTesorero)).Succeeded)
+                    {
+                        <li class="@Html.IsSelected(controller: "Proveedor")"><a href="@Url.Action("Index", "Proveedor", new { area = "abm" })">Proveedores</a></li>
+                    }
+                    @if ((await authorizationService.AuthorizeAsync(User, Policies.IsAdmin)).Succeeded)
+                    {
+                        <li class="@Html.IsSelected(controller: "Sucursal")"><a href="@Url.Action("Index", "Sucursal", new { area = "abm" })">Sucursales</a></li>
+                        <li class="@Html.IsSelected(controller: "Usuario")"><a href="@Url.Action("Index", "Usuario", new { area = "abm" })">Usuarios</a></li>
+                    }
                 </ul>
             </li>
 

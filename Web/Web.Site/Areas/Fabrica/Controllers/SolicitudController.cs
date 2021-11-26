@@ -14,7 +14,7 @@ using Core.Aplicacion.Auth;
 
 namespace Web.Site.Areas
 {
-    [Authorize (Policy = Policies.IsSupervisor)]
+    [Authorize (Policy = Policies.IsOperario)]
     [Area("fabrica")]
     [Route("[area]/[controller]/[action]")]
     public class SolicitudController : CustomController
