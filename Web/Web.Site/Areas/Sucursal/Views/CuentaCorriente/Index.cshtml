@@ -26,9 +26,9 @@
         </ol>
     </div>
     <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
-        </div>
+    </div>
     <div class="col-xl-2 col-lg-3 mt-1 mt-sm-2 d-flex justify-content-end align-items-end" style="text-align:right">
-          <button type="button" class="btn btn-w-m btn-default w-100" onclick="ReporteSimple()">
+        <button type="button" class="btn btn-w-m btn-default w-100" onclick="ReporteSimple()">
             <span class="icon icon-xs"><span class="fas fa-file mr-2"></span></span>Reporte
         </button>
     </div>
@@ -67,13 +67,16 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
-                <div class="ibox-title" >
+                <div class="ibox-title">
                     <h5>Cuentas Corrientes</h5>
                 </div>
                 <div class="ibox-content">
-                    <div id="VentasPartialView">
-                        <partial name="_CuentaIndexTable.cshtml" model="Model" />
-                    </div>
+                    @if ((await authorizationService.AuthorizeAsync(User, Policies.IsCajero)).Succeeded)
+                    {
+                        <div id="VentasPartialView">
+                            <partial name="_CuentaIndexTable.cshtml" model="Model" />
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -108,18 +111,18 @@
         </div>
     </div>
 </div>
-    @section Styles {
+@section Styles {
 
-    }
+}
 
-    @section Scripts {
+@section Scripts {
 
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $('.footable').footable();
-            });
-        </script>
-        <script type="text/javascript">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.footable').footable();
+        });
+    </script>
+    <script type="text/javascript">
 
     var typeaheadICliente = @Html.Raw(Json.Serialize(TypeaheadIdCliente));
     var typeaheadNCliente = @Html.Raw(Json.Serialize(TypeaheadNombreCliente));
@@ -154,68 +157,68 @@
                 }
             });
         }
-        </script>
+    </script>
 
-        <script type="text/javascript">
-            function verDetalle(id) {
-                ActualizarCabeceraModal(id)
-                ActualizarDetalleCompra(id);
-                ActualizarPagosRealizados(id);
+    <script type="text/javascript">
+        function verDetalle(id) {
+            ActualizarCabeceraModal(id)
+            ActualizarDetalleCompra(id);
+            ActualizarPagosRealizados(id);
 
-            }
+        }
 
-            function ActualizarCabeceraModal(id) {
-                $.ajax({
-                    type: "Get",
-                    url: "/sucursal/CuentaCorriente/CargarInfoCLiente",
-                    traditional: true,
-                    data: {
-                        IdCliente: id
-                    },
-                    contentType: "application/json",
-                    success: function (response) {
-                        $("#partialViewCabeceraModal").html(""); //clear the records content
-                        $("#partialViewCabeceraModal").html(response);  //add the updated content.
-                        //$('.footable').footable();
-                        //$('.footable').trigger('footable_redraw');
-                    }
-                });
-            }
+        function ActualizarCabeceraModal(id) {
+            $.ajax({
+                type: "Get",
+                url: "/sucursal/CuentaCorriente/CargarInfoCLiente",
+                traditional: true,
+                data: {
+                    IdCliente: id
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#partialViewCabeceraModal").html(""); //clear the records content
+                    $("#partialViewCabeceraModal").html(response);  //add the updated content.
+                    //$('.footable').footable();
+                    //$('.footable').trigger('footable_redraw');
+                }
+            });
+        }
 
-            function ActualizarDetalleCompra(id) {
-                $.ajax({
-                    type: "Get",
-                    url: "/sucursal/CuentaCorriente/CargarComprasCliente?IdCliente=" + id,
-                    traditional: true,
-                    data: {
-                        IdCliente: id
-                    },
-                    contentType: "application/json",
-                    success: function (response) {
-                        $("#partialViewEventos").html(""); //clear the records content
-                        $("#partialViewEventos").html(response);  //add the updated content.
-                        $('.footable').footable();
-                        $('.footable').trigger('footable_redraw');
-                    }
-                });
-            }
+        function ActualizarDetalleCompra(id) {
+            $.ajax({
+                type: "Get",
+                url: "/sucursal/CuentaCorriente/CargarComprasCliente?IdCliente=" + id,
+                traditional: true,
+                data: {
+                    IdCliente: id
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#partialViewEventos").html(""); //clear the records content
+                    $("#partialViewEventos").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw');
+                }
+            });
+        }
 
-            function ActualizarPagosRealizados(id) {
-                $.ajax({
-                    type: "Get",
-                    url: "/sucursal/CuentaCorriente/CargarPagosRecibidos",
-                    traditional: true,
-                    data: {
-                        IdCliente: id
-                    },
-                    contentType: "application/json",
-                    success: function (response) {
-                        $("#partialViewModalDetalle").html(""); //clear the records content
-                        $("#partialViewModalDetalle").html(response);  //add the updated content.
-                        $('.footable').footable();
-                        $('.footable').trigger('footable_redraw');
-                    }
-                });
-            }
-        </script>
-    }
+        function ActualizarPagosRealizados(id) {
+            $.ajax({
+                type: "Get",
+                url: "/sucursal/CuentaCorriente/CargarPagosRecibidos",
+                traditional: true,
+                data: {
+                    IdCliente: id
+                },
+                contentType: "application/json",
+                success: function (response) {
+                    $("#partialViewModalDetalle").html(""); //clear the records content
+                    $("#partialViewModalDetalle").html(response);  //add the updated content.
+                    $('.footable').footable();
+                    $('.footable').trigger('footable_redraw');
+                }
+            });
+        }
+    </script>
+}
