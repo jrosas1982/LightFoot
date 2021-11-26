@@ -7,9 +7,12 @@ using Core.Dominio.AggregatesModel;
 using Microsoft.AspNetCore.Mvc;
 using Web.Site.Areas.Fabrica;
 using Web.Site.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Core.Aplicacion.Auth;
 
 namespace Web.Site.Areas
 {
+    [Authorize]
     [Area("fabrica")]
     [Route("[area]/[controller]/[action]")]
     public class OrdenProduccionController : CustomController

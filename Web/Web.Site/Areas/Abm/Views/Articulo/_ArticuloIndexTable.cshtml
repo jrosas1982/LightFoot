@@ -22,21 +22,24 @@
                 {
                     foreach (var item in Model)
                     {
-                        <tr>
-                            <td>@item.CodigoArticulo</td>
-                            <td>@item.Nombre</td>
-                            <td>@item.Descripcion</td>
-                            <td>@item.Color</td>
-                            <td>@item.TalleArticulo</td>
-                            <td>@item.ArticuloCategoria.Descripcion</td>
-                            <td>@item.ArticuloEstado.ToString()</td>
-                            <td>@item.PrecioMayorista</td>
-                            <td>@item.PrecioMinorista</td>
-                            <td class="d-print-none">
-                                <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarArticulo('@item.Id')">Borrar</button>
-                                <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarArticulo('@item.Id')">Editar</button>
-                            </td>
-                        </tr>
+                <tr>
+                    <td>@item.CodigoArticulo</td>
+                    <td>@item.Nombre</td>
+                    <td>@item.Descripcion</td>
+                    <td>@item.Color</td>
+                    <td>@item.TalleArticulo</td>
+                    <td>@item.ArticuloCategoria.Descripcion</td>
+                    <td>@item.ArticuloEstado.ToString()</td>
+                    <td>@item.PrecioMayorista</td>
+                    <td>@item.PrecioMinorista</td>
+                    @if ((await authorizationService.AuthorizeAsync(User, Policies.IsSupervisor)).Succeeded)
+                    {
+                        <td class="d-print-none">
+                            <button class="btn btn-outline btn-danger  btn-xs" type="button" onclick="BorrarArticulo('@item.Id')">Borrar</button>
+                            <button class="btn btn-outline btn-warning  btn-xs" type="button" onclick="EditarArticulo('@item.Id')">Editar</button>
+                        </td>
+                    }
+                    </tr>
                     }
                 }
             </tbody>
