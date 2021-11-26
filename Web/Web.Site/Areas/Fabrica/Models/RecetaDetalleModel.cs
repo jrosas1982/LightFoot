@@ -23,7 +23,7 @@ namespace Web.Site.Areas.Fabrica
         public int IdEtapaOrdenProduccion { get; set; }
         public string NombreEtapaOrdenProduccion { get; set; }
      
-        public int Cantidad { get; set; }
+        public double Cantidad { get; set; }
         public string Comentario { get; set; }
 
     }

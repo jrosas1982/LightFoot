@@ -40,7 +40,7 @@ namespace Core.Aplicacion.Services
 
         public async Task<RecetaDetalle> BuscarInsumoDeRecetaPorId(int idInsumo)
         {
-            var detalle = await _db.RecetaDetalles.SingleOrDefaultAsync(x => x.Id == idInsumo);
+            var detalle = await _db.RecetaDetalles.Include(e => e.EtapaOrdenProduccion).Include(e => e.Insumo).SingleOrDefaultAsync(x => x.Id == idInsumo);
             if (detalle == null)
                 throw new ExcepcionControlada("La solicitud solicitada no existe");
             return detalle;

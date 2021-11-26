@@ -153,8 +153,21 @@ namespace Web.Site.Areas.Fabrica.Controllers
             {
                 var agregarDetalle = _mapper.Map<RecetaDetalle>(data);
                 agregarDetalle.ModificadoPor = User.GetUserIdSucursal();
-                var nuevoLineaReceta = _recetaDetalleService.BuscarInsumoDeRecetaPorId(await _recetaDetalleService.AgregarInsumoAReceta(agregarDetalle));
-                var recetaDetalleModelo = _mapper.Map<RecetaDetalleModel>(nuevoLineaReceta);
+                var nuevoLineaReceta = _recetaDetalleService.BuscarInsumoDeRecetaPorId(await _recetaDetalleService.AgregarInsumoAReceta(agregarDetalle)).Result;
+                var recetaDetalleModelo = new RecetaDetalleModel()
+                {
+                    Id = nuevoLineaReceta.Id,
+                    IdReceta = nuevoLineaReceta.IdReceta,
+                    IdInsumo = nuevoLineaReceta.IdInsumo,
+                    NombreInsumo = nuevoLineaReceta.Insumo.Nombre,
+                    UnidadDeMedida = nuevoLineaReceta.Insumo.Unidad,
+                    IdEtapaOrdenProduccion = nuevoLineaReceta.IdEtapaOrdenProduccion,
+                    NombreEtapaOrdenProduccion = nuevoLineaReceta.EtapaOrdenProduccion.Descripcion,
+                    Cantidad = nuevoLineaReceta.Cantidad,
+                    Comentario = nuevoLineaReceta.Comentario
+                }; 
+                //_mapper.Map<RecetaDetalleModel>(nuevoLineaReceta);
+                //var recetaDetalleModelo = _mapper.Map<RecetaDetalleModel>(nuevoLineaReceta);
                 recetaDetalleModelo.NombreInsumo = data.NombreInsumo;
                 recetaDetalleModelo.NombreEtapaOrdenProduccion = data.NombreEtapaOrdenProduccion;
 
