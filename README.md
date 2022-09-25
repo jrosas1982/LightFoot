@@ -4,7 +4,7 @@ El desarrollo cubre estos tres puntos del negocio
 
 -----
 # Reseña 
-Se trata de un proyecto universitario desarrollado para la materia de Proyecto profecional 1 de la Universidad de General Sarmiento (UNGS).
+Se trata de un proyecto universitario desarrollado para la materia de Proyecto profesional 1 de la Universidad de General Sarmiento (UNGS).
 El objetivo fue poner a los equipos de la cursada simular un proceso de competencia entre un cliente y varias empresas de software.
 
 Video de presentación
